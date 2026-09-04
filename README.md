@@ -23,12 +23,12 @@
 - 出发 / 跨年 / 回程 三枚倒计时圆环
 - 9 天行程折叠时间线 + **日历条**（12月/1月，行程日按 景点/美食/交通 着色分类点，点日期直达当天）——API 失败时内置数据兜底
 - 交通专区：航班（去/回）/ KTX / AREX / T-money / 出租车 / 交通贴士
-- 待办专区：预订待办（10 项）+ 打卡清单（云端同步 + 本地缓存）
+- 待办专区：预订待办（9 项）+ 打卡清单（云端同步 + 本地缓存）
 - 行李清单（云端同步 + 本地缓存）
 - 多币种记账（KRW/CNY/USD → 人均 RMB，预算进度条 + **分类占比环形图**，底部弹层表单）
 - 文件专区：证件状态打卡 + 备注 + 压缩照片云端共享（弱网时 localStorage 兜底；隐私提示见 REQUIREMENTS.md §3.4）
 - 锦囊：美食（釜山/首尔分组）/ 韩语短语 / 冬季贴士
-- PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v8`）
+- PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v9`）
 
 ## 技术栈
 
