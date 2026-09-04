@@ -678,7 +678,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   flex:1;min-width:130px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
   padding:0 12px;font-weight:800;font-size:14px;color:var(--text)
 }
-.doc-icon-select{
+.doc-type-select{
   flex-shrink:0;min-width:90px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--green-xl);
   color:var(--green-d);font-weight:800;font-size:12.5px;text-align:center;text-align-last:center;padding:0 10px
 }
@@ -696,6 +696,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 }
 .doc-btn .ic{width:16px;height:16px}
 .doc-btn:active{background:var(--line)}
+.doc-btn.danger{flex:.72;color:#9B6468;background:#F8ECEC;border-color:#EBCFD1}
 .doc-thumb{position:relative;margin-top:2px}
 .doc-thumb img{width:100%;max-height:150px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
 .doc-done-wrap{
@@ -1117,7 +1118,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   <div class="wrap">
     <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">自定义上传 · 云端共享 · 多设备同步</span></h2>
     <div class="grid g2 g3" id="docsGrid" style="gap:12px"></div>
-    <div class="docs-hint">同步说明：文件状态、备注和压缩后的照片会<b>云端持久化共享</b>，你们任意设备修改后都能同步。这里不预设文件类型，你们可以自己命名、自己选图标；护照等敏感证件建议只记状态/备注，确实需要再上传照片。</div>
+    <div class="docs-hint">同步说明：文件状态、备注和压缩后的照片会<b>云端持久化共享</b>，你们任意设备修改后都能同步。这里不预设具体文件，你们只需要自己填写名称并选择类型；护照等敏感证件建议只记状态/备注，确实需要再上传照片。</div>
   </div>
 </section>
 
@@ -2697,34 +2698,68 @@ const DOC_STYLE = {
   '已确认': ['#A98245', '#FCF3E1'],
   '已归档': ['#7F789F', '#F0EBFA']
 };
-const DOC_LEGACY_TITLES = new Set(['护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式']);
-const DOC_ICON_OPTIONS = ['📋', '🧾', '📎', '✈️', '🏨', '🚄', '💳', '📍', '💬', '🕐', '⏳', '📖', '✏️', '📸', '🎒', '✅', '🆘', '🗺️'];
+const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
+const DOC_TYPES = [
+  ['document', '普通文件', 'file'],
+  ['identity', '证件资料', 'passport'],
+  ['booking', '住宿订单', 'hotel'],
+  ['transport', '交通票据', 'train'],
+  ['receipt', '付款凭证', 'receipt'],
+  ['note', '备注资料', 'book'],
+  ['emergency', '紧急信息', 'shield']
+];
+const DOC_TYPE_MAP = Object.fromEntries(DOC_TYPES.map(([value, label, icon]) => [value, { label, icon }]));
 let docsData = null;
+function inferDocType(doc) {
+  if (doc.type && DOC_TYPE_MAP[doc.type]) return doc.type;
+  const text = `${doc.title || ''} ${doc.hint || ''}`;
+  if (/护照|证件|签证|K-ETA/i.test(text)) return 'identity';
+  if (/酒店|住宿|Hotel|Marriott|Asti/i.test(text)) return 'booking';
+  if (/机票|航班|KTX|车票|AREX|交通/i.test(text)) return 'transport';
+  if (/发票|收据|付款|费用|保险/i.test(text)) return 'receipt';
+  if (/紧急|联系/i.test(text)) return 'emergency';
+  return 'document';
+}
+function shouldKeepDoc(doc) {
+  const title = String(doc.title || '').trim();
+  const hasUserContent = Boolean(String(doc.note || '').trim() || doc.photo);
+  if (!hasUserContent && DOC_LEGACY_TITLES.has(title)) return false;
+  if (!hasUserContent && !title) return false;
+  return true;
+}
 function cleanDocForCloud(doc, idx) {
-  const legacy = DOC_LEGACY_TITLES.has(doc.title);
+  const title = String(doc.title || '').trim();
+  const type = inferDocType(doc);
   return {
     id: doc.id || `doc-${idx + 1}`,
     sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
-    emoji: doc.emoji || '📋',
-    title: legacy ? '新文件' : (doc.title || '新文件'),
-    hint: legacy ? '自己命名 · 自己选图标 · 自己上传照片' : (doc.hint || '自己命名 · 自己选图标 · 自己上传照片'),
+    type,
+    title,
+    hint: DOC_TYPE_MAP[type].label,
     status: DOC_STATUSES.includes(doc.status) ? doc.status : '待准备',
     note: doc.note || '',
     photo: doc.photo || null
   };
 }
 function newDocCard(idx = 0) {
-  return cleanDocForCloud({ id: `doc-${Date.now()}-${idx}`, emoji: '📋', title: '新文件', hint: '自己命名 · 自己选图标 · 自己上传照片', status: '待准备', note: '', photo: null, sortOrder: idx + 1 }, idx);
+  return cleanDocForCloud({ id: `doc-${Date.now()}-${idx}`, type: 'document', title: '', status: '待准备', note: '', photo: null, sortOrder: idx + 1 }, idx);
 }
 async function loadDocs() {
   const cached = Array.isArray(cache.get('kr_docs')) ? cache.get('kr_docs') : [];
   const cloudDocs = await apiGet('/docs', 'kr_docs', cached);
   const source = Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : cached;
-  docsData = (source || []).map((d, idx) => cleanDocForCloud(d, idx));
+  const cleaned = (source || [])
+    .map((d, idx) => cleanDocForCloud(d, idx))
+    .filter(shouldKeepDoc)
+    .map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
+  docsData = cleaned;
   cache.set('kr_docs', docsData);
+  if ((source || []).length !== docsData.length) {
+    apiPost('/docs', { items: docsData }).catch(() => {});
+  }
 }
 async function persistDocs() {
-  const payload = docsData.map(cleanDocForCloud);
+  const payload = docsData.map(cleanDocForCloud).filter(shouldKeepDoc);
   if (!cache.set('kr_docs', payload)) alert('本地缓存已满：照片压缩后仍放不下，请删掉几张或换设备。');
   try {
     await apiPost('/docs', { items: payload });
@@ -2735,22 +2770,24 @@ async function persistDocs() {
 function renderDocs() {
   const renderOne = (d, compact = false) => {
     const [fc, bc] = DOC_STYLE[d.status] || ['#87938C', '#EFF3F0'];
+    const typeMeta = DOC_TYPE_MAP[d.type] || DOC_TYPE_MAP.document;
     return `<div class="card doc-card${compact ? ' done' : ''}" data-id="${esc(d.id)}">
       <div class="doc-top">
-        <span class="doc-ic">${iconFor(d.emoji)}</span>
+        <span class="doc-ic">${ic(typeMeta.icon)}</span>
         <div class="doc-head-fields">
           <input class="doc-title-input" data-act="title" value="${esc(d.title)}" placeholder="文件名称">
-          <select class="doc-icon-select" data-act="emoji" aria-label="选择图标">${DOC_ICON_OPTIONS.map((s) => `<option value="${esc(s)}"${s === d.emoji ? ' selected' : ''}>${esc(s)}</option>`).join('')}</select>
+          <select class="doc-type-select" data-act="type" aria-label="文件类型">${DOC_TYPES.map(([value, label]) => `<option value="${esc(value)}"${value === d.type ? ' selected' : ''}>${esc(label)}</option>`).join('')}</select>
         </div>
         <select class="doc-status-select" data-act="status" aria-label="修改状态" style="color:${fc};background:${bc}">
           ${DOC_STATUSES.map((s) => `<option value="${esc(s)}"${s === d.status ? ' selected' : ''}>${esc(s)}</option>`).join('')}
         </select>
       </div>
-      <div class="doc-hint">${esc(d.hint)}</div>
+      <div class="doc-hint">${esc(typeMeta.label)} · 云端同步</div>
       <div class="doc-note">${esc(d.note) || '暂无备注'}</div>
       <div class="doc-actions">
         <button class="doc-btn" data-act="attach">${ic('camera')}${d.photo ? '换照片' : '拍照/上传'}</button>
         <button class="doc-btn" data-act="note">${ic('edit')}备注</button>
+        <button class="doc-btn danger" data-act="delete">${ic('x')}删除</button>
       </div>
       ${d.photo ? `<div class="doc-thumb"><img src="${d.photo}" alt=""><button class="dt-del" data-act="delphoto">✕</button></div>` : ''}
     </div>`;
@@ -2759,12 +2796,12 @@ function renderDocs() {
   const done = docsData.filter((d) => d.status !== '待准备');
   const addCard = `<button class="card doc-card doc-add-card" data-act="newdoc">
     <div class="doc-add-ic">+</div>
-    <div class="doc-add-title">新增一个自定义文件</div>
-    <div class="doc-add-sub">文件名、图标、状态都自己选，不再预设签证 / K-ETA / 行程单模板</div>
+    <div class="doc-add-title">新增文件</div>
+    <div class="doc-add-sub">自己填写名称、类型、状态和备注；不再预设任何文件模板</div>
   </button>`;
   const pendingHTML = pending.length
     ? `<div class="doc-pending">${pending.map((d) => renderOne(d, false)).join('')}</div>`
-    : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">还没有待准备文件，先点上面的“新增一个自定义文件”。</div>`;
+    : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">还没有待准备文件，先点上面的“新增文件”。</div>`;
   const doneHTML = done.length
     ? `<details class="doc-done-wrap">
         <summary class="doc-done-summary">${ic('chevron')}已整理 ${done.length} 项 <span>已上传 / 已确认 / 已归档会先收起来</span></summary>
@@ -2812,6 +2849,8 @@ async function initDocs() {
     if (add) {
       docsData.unshift(newDocCard(docsData.length));
       renderDocs();
+      const firstInput = $('#docsGrid .doc-title-input');
+      if (firstInput) firstInput.focus();
       await persistDocs();
       return;
     }
@@ -2827,17 +2866,26 @@ async function initDocs() {
       if (v !== null) { doc.note = v.trim(); renderDocs(); await persistDocs(); }
     } else if (act === 'delphoto') {
       if (confirm('删除这张照片？')) { doc.photo = null; renderDocs(); await persistDocs(); }
+    } else if (act === 'delete') {
+      if (confirm('删除这个文件记录？')) {
+        docsData = docsData.filter((d) => d.id !== doc.id);
+        renderDocs();
+        await persistDocs();
+      }
     }
   });
   $('#docsGrid').addEventListener('change', async (e) => {
     const sel = e.target.closest('.doc-status-select');
-    const iconSel = e.target.closest('.doc-icon-select');
-    if (!sel && !iconSel) return;
+    const typeSel = e.target.closest('.doc-type-select');
+    if (!sel && !typeSel) return;
     const card = e.target.closest('.doc-card');
     const doc = docsData.find((d) => d.id == card.dataset.id);
     if (!doc) return;
     if (sel) doc.status = sel.value;
-    if (iconSel) doc.emoji = iconSel.value;
+    if (typeSel) {
+      doc.type = typeSel.value;
+      doc.hint = (DOC_TYPE_MAP[doc.type] || DOC_TYPE_MAP.document).label;
+    }
     renderDocs();
     await persistDocs();
   });
@@ -2847,7 +2895,7 @@ async function initDocs() {
     const card = e.target.closest('.doc-card');
     const doc = docsData.find((d) => d.id == card.dataset.id);
     if (!doc) return;
-    doc.title = input.value.trim() || '新文件';
+    doc.title = input.value.trim();
     renderDocs();
     await persistDocs();
   });

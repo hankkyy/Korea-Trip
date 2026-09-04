@@ -19,7 +19,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 2. 9 Tab 多视图 + 底部悬浮胶囊导航（首页/行程/地图/交通/待办/行李/支出/文件/锦囊），不要长页下滑。
 3. 视觉去 AI 化：薄荷绿清爽风（bg #F4F8F5、主色 #2FA36E、白卡片 16-20px 圆角），
    全站 60+ 手绘线条 SVG 图标替换 emoji——界面不能出现满屏 emoji。参考设计稿 ~/Downloads/IMG_3900~3904.PNG。
-4. 文件区状态、备注、压缩照片需要 CloudBase 云端持久化共享；文件卡片必须支持用户自定义标题 / 图标 / 状态 / 备注 / 照片，不再预设签证、K-ETA、机票行程单等模板；敏感证件照片要保留“谨慎上传”的隐私提示。
+4. 文件区状态、备注、压缩照片需要 CloudBase 云端持久化共享；文件卡片只支持用户自定义名称 / 类型 / 状态 / 备注 / 照片，不再预设签证、K-ETA、机票行程单等模板，也不让用户手动选择 emoji/logo；图标由文件类型自动映射为统一线条 SVG；敏感证件照片要保留“谨慎上传”的隐私提示。
 5. 改完代码必须本地零报错（node --check + 无头 Chrome 验证 9 个面板全渲染）。
 
 ## 当前状态
@@ -27,11 +27,11 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 部署：Vercel 项目已链接到本仓库，`.vercel/project.json` 里记录的 projectId 是
   `prj_m9oqrYcJj3jTcrkgpXSakIwZ616Y`，生产域名是 `https://korea-vercel.vercel.app`。
 - 线上前端已经包含最新的薄荷绿重设计、可编辑行程、更新后的航班/酒店信息和新 app 图标。
-- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.png` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v10`。
+- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.png` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v11`。
 - 2026-09-04：CloudBase 正式部署源 `/Users/hankzhang/Desktop/cloudfunctions/korea-api` 已同步仓库云函数代码并重新部署；线上 `POST /itinerary` 已恢复，`kr_itinerary` 已刷新为 43 条新版行程，旧“海云台酒店”数据已清掉。
 - 后端已上线：CloudBase HTTP 云函数 `korea-api`，API_BASE = `https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
 - 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses` / `kr_docs`。
-- 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步自定义文件卡片的标题 / 图标 / 状态 / 备注 / 压缩照片；localStorage 仅作弱网兜底。
+- 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步自定义文件卡片的名称 / 类型 / 状态 / 备注 / 压缩照片；localStorage 仅作弱网兜底。旧模板空壳已清理，新增文件按钮必须可用。
 - 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api + 三份文档 + 本文件）。
 
 ## 部署方法
@@ -60,7 +60,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 ### 已上线的两个入口（2026-09-04 从深圳宽带实测通过）
 1. **CloudApp webapps（国内直连，无密码）**：https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/
    - 环境 hanoi-d4gj8vd2q1e7a3dc0（ap-shanghai），服务名 korea，静态文件位于托管桶 `korea/` 前缀
-   - 2026-09-04 16:29 EDT 已用 `tcb hosting deploy <dist> /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json` 补齐最新前端与全部图片；实测釜山 ASTI 酒店 PNG、`sw.js` v10、自定义文件区均已在 CloudApp 生效。
+   - 2026-09-04 16:29 EDT 已用 `tcb hosting deploy <dist> /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json` 补齐最新前端与全部图片；16:45 EDT 再次同步文件区修复；实测釜山 ASTI 酒店 PNG、`sw.js` v11、自定义文件区均已在 CloudApp 生效。
 2. **jinlu.cloud（Vercel 自定义域名，2026-09-04 用户自己在 Vercel 控制台完成）**：https://jinlu.cloud（308 → www.jinlu.cloud，Vercel 设 www 为主域，正常现象）
    - DNS：jinlu.cloud CNAME cname.vercel-dns.com（A 216.198.79.1）
    - 页面 / sw.js / manifest / 照片全 200，可直接发给女朋友
@@ -74,7 +74,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 发布后必须用 cache-busting URL 验证：
   ```bash
   curl -I "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/assets/photos/busan-asti-hotel-editorial.png?v=$(date +%s)"
-  curl -Ls "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/?v=$(date +%s)" | rg "korea-trip-v10|busan-asti-hotel-editorial.png|新增一个自定义文件"
+  curl -Ls "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/?v=$(date +%s)" | rg "korea-trip-v11|busan-asti-hotel-editorial.png|新增文件"
   ```
 - 旧方案备用：MCP manageApps 有类型 bug（deployApp 的 CosTimestamp schema 是 integer 但后端要 string；getBuildLog 的 BuildId 要求 int64）→ **绕 MCP，用 callCloudApi**：
   - 上传：queryApps getUploadUrl 拿预签名 COS URL → `curl PUT zip`（**大文件会衰减卡死，1.4MB 小包 22-115s 正常，28MB 包 420s+ 卡死**）
@@ -105,7 +105,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - [x] 现金与保险决策已更新：不提前大量换韩元现金；到韩国用 Fidelity 卡 ATM 无手续费取现，旅行保险不单独购买
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
-- [x] 文件区跨设备同步（自定义标题 / 图标 / 状态 / 备注 / 压缩照片）
+- [x] 文件区跨设备同步（自定义名称 / 类型 / 状态 / 备注 / 压缩照片；无预设模板、无 emoji 选择）
 - [x] 自定义域名 jinlu.cloud 已上线（Vercel，用户控制台操作；备案通过后换绑 CloudBase）
 - [ ] 补传剩余 4 张 editorial PNG（seoul-airport / seoul-marriott-myeongdong / seoul-night / seoul-palace）到托管 korea/assets/photos/，单文件逐个传 + findFiles 验证
 - [ ] jinlu.cloud 提交「新增网站」备案（用户操作）→ 通过后按上文步骤绑 CloudBase
