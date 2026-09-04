@@ -3,13 +3,13 @@
 ```
 你是接手「可乐 & 金鹿 韩国之旅」项目（~/Desktop/korea-vercel）的工程师。
 代码已托管在 GitHub：git clone git@github.com:hankkyy/Korea-Trip.git
-（本机 gh CLI token 已失效、HTTPS 凭据链不可用，clone/push 一律走 SSH 地址 git@github.com:hankkyy/Korea-Trip.git）
+（如果要推送，优先走 SSH；不要把任何 token 写进仓库）
 若 macOS TCC 阻止读取 Desktop 目录（EPERM），改用备份目录 /tmp/kr_split/，内容与源码一致。
 
 ## 项目背景
 可乐 & 金鹿的韩国冬季旅行计划站（PWA，手机/iPad 优先）：
-2026-12-26 凌晨深圳飞首尔 → 当日 AREX+KTX 南下釜山（12/26–12/29）→ 12/29 晚 KTX 北上首尔
-→ 12/31 普信阁跨年敲钟 → 2027-01-03 深夜航班回深圳，01-04 凌晨落地。
+2026-12-26 02:25 深圳飞首尔 → 当日 AREX+KTX 南下釜山（12/26–12/29）→ 12/29 傍晚 KTX 北上首尔
+→ 首尔酒店已定为 Courtyard by Marriott Seoul Myeongdong → 12/31 普信阁跨年敲钟 → 2027-01-03 22:10 回深圳，01-04 01:15 落地。
 参考项目 ~/Desktop/hanoi-vercel（架构规范）；后端复用其 CloudBase 环境 hanoi-d4gj8vd2q1e7a3dc0，
 NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 🚫 红色安全线：~/Desktop/hanoi-vercel/.env.local 里的 VERCEL_OIDC_TOKEN 绝不能复制进本项目或任何输出。
@@ -24,39 +24,41 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 
 ## 当前状态
 - v1.2 薄荷绿重设计已完成并本地验证通过。
-- 部署：旧 Vercel 项目 korea-vercel 对当前 MCP 身份权限受限（list/get 404、deploy 403），
-  新版已部署到新项目 korea-trip（https://korea-trip.vercel.app）；
-  旧 URL https://korea-vercel.vercel.app 仍是旧 emoji 版，未动。
-- 后端已上线：kr_itinerary(43 条)/kr_todos(12)/kr_checklist(16)/kr_bucketlist(16)/kr_expenses(0)，
-  API_BASE = https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api
-- 部署文件备份在 /tmp/kr_split/：index.html 四分片 part_aa~part_ad 按序拼接
-  （sha256 e9227b76118259c2f9114849e2901cd0d9e970b449962eed7a564dbd83c8dbbb），
-  另有 manifest.json / sw.js / vercel.json / icon.svg / hero-bg-1~4.svg 与 PNG 的 base64（*.b64）。
-- 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api +
-  三份文档 + 本文件；push 走 SSH，见上）。
+- 部署：Vercel 项目已链接到本仓库，`.vercel/project.json` 里记录的 projectId 是
+  `prj_m9oqrYcJj3jTcrkgpXSakIwZ616Y`，生产域名是 `https://korea-vercel.vercel.app`。
+- 线上前端已经包含最新的薄荷绿重设计、可编辑行程、更新后的航班/酒店信息和新 app 图标。
+- 后端已上线：CloudBase HTTP 云函数 `korea-api`，API_BASE = `https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
+- 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses`。
+- 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api + 三份文档 + 本文件）。
 
-## 部署方法（Vercel MCP deploy_to_vercel）
-- name: korea-trip（勿用 korea-vercel），teamId: team_wHIZB9oM0g4eyRlzun2xSPfo，
-  target: production（403 则退回 preview），不传 projectSettings（静态站点自动识别）。
-- 文件（13 个）：index.html、manifest.json、sw.js、vercel.json、assets/icons/icon.svg、
-  assets/icons/icon-192.png（encoding base64）、assets/icons/icon-512.png（base64）、
-  assets/icons/apple-touch-icon.png（base64）、assets/photos/hero-bg-1~4.svg。
-- 验证：线上 URL 200、meta theme-color 为 #2FA36E、含「遇见首尔的浪漫时光」、无满屏 emoji；
-  /manifest.json 含 "Korea Trip"。
+## 部署方法
+
+### 前端（Vercel）
+- 项目名：`korea-vercel`
+- teamId：`team_wHIZB9oM0g4eyRlzun2xSPfo`
+- 生产域名：`https://korea-vercel.vercel.app`
+- 最稳妥流程：
+  1. 本地更新 `index.html / manifest.json / sw.js / vercel.json / assets/`
+  2. `git add` → `git commit` → `git push origin main`
+  3. 等 Vercel 自动出 production build，或用 CLI / MCP 触发
+  4. 验证首页标题、9 个 Tab、行程编辑、图标、移动端适配
+
+### 后端（CloudBase）
+- HTTP 云函数：`korea-api`
+- API_BASE：`https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`
+- 先发云函数，再确认前端能读到 `kr_` 集合数据
 
 ## 待办清单
-- [ ] Vercel 控制台删除探测垃圾项目 korea-probe（MCP 无删除工具，需用户手动删）
-- [ ] 决定旧项目 korea-vercel 去留（修复权限后可部署回原项目拿回原 URL，或删除旧项目）
-- [ ] hankzhang.cloud 域名换绑（当前绑 hanoi 项目：vercel domains rm → add，命令见 README）
-- [ ] 填深圳⇄首尔航班号、釜山/首尔酒店信息（订票后）
+- [ ] 釜山酒店最终确认后补进住宿卡和行程卡
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
 - [ ] 文件区 v2 跨设备同步
+- [ ] 如需自定义域名，再按 README 里的 Vercel 命令操作
 
 ## 关键文件与细节
 - index.html：单文件应用（~122KB / 2059 行），顶部常量区 FX_RATES（1 RMB≈190 KRW、USD 6.80）、
   BUDGET_TOTAL=10000、D1/BUSAN_END/TRIP_END/NEWYEAR 时间常量、HERO_IMAGES。
-- sw.js 缓存版本 korea-trip-v2；manifest.json theme_color #2FA36E。
+- sw.js 缓存版本已更新；manifest.json theme_color #2FA36E。
 - 完整文档：README.md（含交接状态）与 REQUIREMENTS.md，在项目根目录和 /tmp/kr_split/ 均有。
 - 会话记忆：~/.claude/projects/-Users-hankzhang/memory/korea-vercel-project.md。
 ```
