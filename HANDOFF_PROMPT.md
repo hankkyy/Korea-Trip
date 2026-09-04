@@ -27,7 +27,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 部署：Vercel 项目已链接到本仓库，`.vercel/project.json` 里记录的 projectId 是
   `prj_m9oqrYcJj3jTcrkgpXSakIwZ616Y`，生产域名是 `https://korea-vercel.vercel.app`。
 - 线上前端已经包含最新的薄荷绿重设计、可编辑行程、更新后的航班/酒店信息和新 app 图标。
-- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.svg` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v9`。
+- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.png` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v10`。
 - 2026-09-04：CloudBase 正式部署源 `/Users/hankzhang/Desktop/cloudfunctions/korea-api` 已同步仓库云函数代码并重新部署；线上 `POST /itinerary` 已恢复，`kr_itinerary` 已刷新为 43 条新版行程，旧“海云台酒店”数据已清掉。
 - 后端已上线：CloudBase HTTP 云函数 `korea-api`，API_BASE = `https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
 - 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses` / `kr_docs`。
@@ -59,24 +59,29 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 
 ### 已上线的两个入口（2026-09-04 从深圳宽带实测通过）
 1. **CloudApp webapps（国内直连，无密码）**：https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/
-   - 环境 hanoi-d4gj8vd2q1e7a3dc0（ap-shanghai），服务名 korea，版本 korea-003
-   - 缺陷：6 张 editorial 大 PNG 已补 2/6（见「照片补传」），其余区块暂显占位
+   - 环境 hanoi-d4gj8vd2q1e7a3dc0（ap-shanghai），服务名 korea，静态文件位于托管桶 `korea/` 前缀
+   - 2026-09-04 16:29 EDT 已用 `tcb hosting deploy <dist> /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json` 补齐最新前端与全部图片；实测釜山 ASTI 酒店 PNG、`sw.js` v10、自定义文件区均已在 CloudApp 生效。
 2. **jinlu.cloud（Vercel 自定义域名，2026-09-04 用户自己在 Vercel 控制台完成）**：https://jinlu.cloud（308 → www.jinlu.cloud，Vercel 设 www 为主域，正常现象）
    - DNS：jinlu.cloud CNAME cname.vercel-dns.com（A 216.198.79.1）
    - 页面 / sw.js / manifest / 照片全 200，可直接发给女朋友
 
 ### CloudApp 部署方法（下次更新国内站必读）
-- MCP manageApps 有类型 bug（deployApp 的 CosTimestamp schema 是 integer 但后端要 string；getBuildLog 的 BuildId 要求 int64）→ **绕 MCP，用 callCloudApi**：
+- **重要：只推 GitHub/Vercel 不会更新 CloudApp。** 每次前端或图片变更后，都要额外把静态包发布到 CloudBase 的 `/korea` 前缀，否则中国大陆直连入口会继续显示旧版本或缺图。
+- 推荐当前稳定做法：在本机打一个干净静态包，只包含 `index.html / manifest.json / sw.js / vercel.json / assets/`，不要包含 `.env.local / .git / .vercel / 签证文件 / 截图`，然后执行：
+  ```bash
+  tcb hosting deploy /tmp/korea-cloudbase-static-XXXXXX/dist /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json
+  ```
+- 发布后必须用 cache-busting URL 验证：
+  ```bash
+  curl -I "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/assets/photos/busan-asti-hotel-editorial.png?v=$(date +%s)"
+  curl -Ls "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/?v=$(date +%s)" | rg "korea-trip-v10|busan-asti-hotel-editorial.png|新增一个自定义文件"
+  ```
+- 旧方案备用：MCP manageApps 有类型 bug（deployApp 的 CosTimestamp schema 是 integer 但后端要 string；getBuildLog 的 BuildId 要求 int64）→ **绕 MCP，用 callCloudApi**：
   - 上传：queryApps getUploadUrl 拿预签名 COS URL → `curl PUT zip`（**大文件会衰减卡死，1.4MB 小包 22-115s 正常，28MB 包 420s+ 卡死**）
   - 触发构建：callCloudApi（service=tcb, action=CreateCloudApp, region=ap-shanghai），params：EnvId、ServiceName="korea"、DeployType="static-hosting"、BuildType="ZIP"、StaticConfig{Framework, AppPath:"/korea", BuildPath:"dist", CosTimestamp:"<字符串>", StaticCmd{DeployCmd:"tcb hosting deploy . /korea" **必须显式传**，否则管线 cd 进 dist 后还找 dist/dist 报 Path does not exist}}
   - 每次部署同 ServiceName 生成新版本 korea-00N 递增；构建日志：callCloudApi tcb/DescribeCloudBaseRunBuildLog，BuildId 传数字
 - **AppPath 只是共享托管挂载点；webapps 域名在根路径提供应用** → 包内全部根路径引用（/assets/、/manifest.json、register('/sw.js')、sw scope "/"）；托管桶文件在 korea/ 前缀下（hanoi 根目录勿动）
-- 部署包：/tmp/korea-root/dist（无前缀根路径版）+ /tmp/korea-root/korea-root.zip；完整源 /tmp/korea-cn/dist（27MB）
-
-### 照片补传（还剩 4 张，未完成）
-- 托管现状：korea/assets/photos/ 已有 busan-harbor-editorial.png ✅、busan-village-editorial.png ✅，缺 seoul-airport / seoul-marriott-myeongdong / seoul-night / seoul-palace 4 张 editorial PNG
-- 源文件：/tmp/korea-cn/dist/assets/photos/<名字>.png（2.5-3MB/张）
-- 方法：manageHosting action=upload files=[{localPath, cloudPath:"korea/assets/photos/<名字>.png"}] **单文件逐个传**（批量 6 张曾卡死 20 分钟；单文件 1-2 分钟能成），每张传完用 queryHosting findFiles 验证再传下一张
+- 已废弃的旧包路径：/tmp/korea-root/dist、/tmp/korea-cn/dist。不要继续相信旧文档里的“照片补传还剩 4 张”状态；当前已整包补齐。
 
 ### jinlu.cloud 备案（未开始，等用户操作）
 - jinlu.cloud 未备案；CloudBase 国内绑域名硬性要求 ICP 备案。用户需在腾讯云备案控制台提「新增网站」备案（已有 hankzhang.cloud 主体，约 7-20 工作日）

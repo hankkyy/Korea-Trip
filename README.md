@@ -93,9 +93,15 @@ korea-vercel/
 # 前端 → Vercel（首次会自动创建项目 korea-vercel 并生成 .vercel/project.json）
 cd ~/Desktop/korea-vercel && vercel --prod
 
+# 前端 → CloudBase 国内直连入口（每次改前端/图片都要额外同步）
+# 先准备只含 index.html / manifest.json / sw.js / vercel.json / assets/ 的干净 dist，再上传到 /korea
+tcb hosting deploy /tmp/korea-cloudbase-static-XXXXXX/dist /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json
+
 # 后端 → CloudBase 云函数（在 ~/Desktop 目录执行，函数目录为 cloudfunctions/korea-api）
 tcb fn deploy korea-api
 ```
+
+> 注意：GitHub/Vercel 自动部署不会同步 CloudBase webapps。中国大陆入口要单独执行上面的 `tcb hosting deploy ... /korea`，并用 `?v=<timestamp>` 验证图片与 `sw.js` 是否已刷新。
 
 ## 域名换绑（可选，上线稳定后）
 
@@ -134,7 +140,7 @@ cd ~/Desktop/korea-vercel && vercel domains add hankzhang.cloud
 
 1. 把照片放进 `assets/photos/`；
 2. 英雄区：替换 `seoul-watercolor.webp` / `busan-watercolor.webp` / `palace-watercolor.webp`，或改 `index.html` 里 `HERO_IMAGES` / `DAY_ART` 数组。
-3. 住宿封面已经加入 `assets/photos/busan-asti-hotel-editorial.svg`，后续如要换成真实照片，直接改 `HERO_IMAGES` / `DAY_ART` / `PHOTO_LIBRARY` 即可。
+3. 住宿封面已经加入 `assets/photos/busan-asti-hotel-editorial.png`，后续如要换成真实照片，直接改 `HERO_IMAGES` / `DAY_ART` / `PHOTO_LIBRARY` 即可。
 
 ## 部署说明（Vercel MCP）
 

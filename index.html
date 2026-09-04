@@ -447,7 +447,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .legend-chip i{width:7px;height:7px;border-radius:50%;background:var(--lc)}
 /* ============ 交通 ============ */
 .board-card{padding:18px;display:flex;flex-direction:column;gap:6px}
-.bc-photo{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin:-2px 0 8px;border:1px solid rgba(224,235,223,.95);box-shadow:0 6px 16px rgba(63,96,78,.07)}
+.bc-photo{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;margin:-2px 0 8px;border:1px solid rgba(224,235,223,.95);box-shadow:0 6px 16px rgba(63,96,78,.07);background:var(--green-xl)}
 .bc-route{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
 .bc-route .bc-plane{color:var(--green);display:flex}
 .bc-route .bc-plane .ic{width:20px;height:20px}
@@ -850,7 +850,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
     <div class="grid g2">
       <div class="card board-card">
-        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.svg" alt="Asti Hotel Busan Station 手绘外观">
+        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="Asti Hotel Busan Station 手帐风外观">
         <div class="bc-route">Asti Hotel Busan Station</div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
         <div class="bc-meta">釜山站步行级别 / 方便 12/29 晚上直接坐 KTX 去首尔</div>
@@ -963,7 +963,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="block-title"><i class="ti" data-ic="hotel"></i>住宿</div>
     <div class="grid g2">
       <div class="card board-card">
-        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.svg" alt="Asti Hotel Busan Station 手绘外观">
+        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="Asti Hotel Busan Station 手帐风外观">
         <div class="bc-route">Asti Hotel Busan Station</div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
         <div class="bc-meta">釜山站步行级别 / 方便 12/29 晚上直接坐 KTX 去首尔</div>
@@ -1470,7 +1470,7 @@ const DAY_THEMES = {
   5: '景福宫 · 韩屋村', 6: '明洞 · 跨年敲钟', 7: '元旦 · N首尔塔 · 弘大', 8: '圣水洞 · 汉江', 9: '免税店 · 回国'
 };
 const DAY_ART = {
-  1: 'assets/photos/busan-asti-hotel-editorial.svg',
+  1: 'assets/photos/busan-asti-hotel-editorial.png',
   2: 'assets/photos/busan-harbor-editorial.png',
   3: 'assets/photos/busan-village-editorial.png',
   4: 'assets/photos/seoul-night-editorial.png',
@@ -1482,7 +1482,7 @@ const DAY_ART = {
 };
 const PHOTO_LIBRARY = [
   { value: '', label: '自动匹配（按内容）', preview: 'assets/photos/palace-watercolor.webp' },
-  { value: 'assets/photos/busan-asti-hotel-editorial.svg', label: '釜山 ASTI 酒店 / 釜山站', preview: 'assets/photos/busan-asti-hotel-editorial.svg' },
+  { value: 'assets/photos/busan-asti-hotel-editorial.png', label: '釜山 ASTI 酒店 / 釜山站', preview: 'assets/photos/busan-asti-hotel-editorial.png' },
   { value: 'assets/photos/busan-harbor-editorial.png', label: '釜山海云台 / 胶囊列车', preview: 'assets/photos/busan-harbor-editorial.png' },
   { value: 'assets/photos/busan-village-editorial.png', label: '釜山甘川 / 山坡彩屋', preview: 'assets/photos/busan-village-editorial.png' },
   { value: 'assets/photos/seoul-palace-editorial.png', label: '首尔景福宫 / 古宫水墨', preview: 'assets/photos/seoul-palace-editorial.png' },
@@ -1494,7 +1494,7 @@ const PHOTO_LIBRARY = [
   { value: 'assets/photos/palace-watercolor.webp', label: '景福宫 / 传统水彩', preview: 'assets/photos/palace-watercolor.webp' }
 ];
 const PHOTO_MATCHERS = [
-  { re: /(Asti|ASTI|釜山站.*酒店|酒店.*釜山站|Busan Station)/, src: 'assets/photos/busan-asti-hotel-editorial.svg' },
+  { re: /(Asti|ASTI|釜山站.*酒店|酒店.*釜山站|Busan Station)/, src: 'assets/photos/busan-asti-hotel-editorial.png' },
   { re: /(景福宫|北村|韩屋|仁寺洞|普信阁|韩服|参鸡汤|古宫)/, src: 'assets/photos/seoul-palace-editorial.png' },
   { re: /(海云台|胶囊|青沙浦|广安里|太宗台|KTX|釜山站|港口|海鲜|札嘎其|胶囊小火车)/, src: 'assets/photos/busan-harbor-editorial.png' },
   { re: /(甘川|白浅滩|文化村|小王子|南浦|BIFF|富平|村|山坡)/, src: 'assets/photos/busan-village-editorial.png' },
