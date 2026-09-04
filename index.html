@@ -372,7 +372,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   overflow:hidden;background:linear-gradient(180deg,rgba(255,254,251,.95),rgba(245,250,247,.95));
 }
 .map-canvas{
-  position:relative;height:clamp(380px,58vh,620px);border-radius:var(--radius);overflow:hidden;
+  position:relative;height:clamp(320px,48vh,560px);border-radius:var(--radius);overflow:hidden;
   background-image:linear-gradient(180deg,rgba(255,254,251,.35),rgba(255,254,251,.1)),var(--map-art);
   background-size:cover;background-position:center;isolation:isolate;
 }
@@ -1793,12 +1793,49 @@ const LEGEND_COLOR_NAME = {
   '#A7C8CF': '景点', '#D7A0A5': '打卡点', '#E2B96F': '美食购物', '#94A7B8': '交通', '#87938C': '住宿'
 };
 const MAP_META = {
-  busan: { title: '釜山区域关系图', hint: '海边、山坡村、市场和 KTX 站的大致位置', art: 'url("assets/photos/busan-watercolor.webp")' },
-  seoul: { title: '首尔区域关系图', hint: '古宫、明洞、弘大、汉江和机场/车站的大致关系', art: 'url("assets/photos/seoul-watercolor.webp")' }
+  busan: { title: '釜山关系示意图', hint: '海边、山坡老城、市场和 KTX 站的大致关系', art: 'url("assets/photos/busan-watercolor.webp")' },
+  seoul: { title: '首尔关系示意图', hint: '古宫、明洞、弘大、汉江和机场/车站的大致关系', art: 'url("assets/photos/seoul-watercolor.webp")' }
 };
 const MAP_VISIBLE = {
-  busan: ['金海机场', '釜山站', '海云台', '胶囊小火车', '甘川文化村', '札嘎其市场', '广安里大桥', '太宗台'],
-  seoul: ['仁川机场', '首尔站', '景福宫', '北村韩屋村', '明洞', '广藏市场', '普信阁', 'N首尔塔', '弘大', '汉江公园']
+  busan: ['金海机场', '釜山站', '酒店·釜山站附近(待定)', '海云台', '胶囊小火车', '广安里大桥', '甘川文化村', '札嘎其市场', 'BIFF广场', '白浅滩文化村', '太宗台'],
+  seoul: ['仁川机场', '首尔站', 'Courtyard by Marriott Seoul Myeongdong', '景福宫', '北村韩屋村', '明洞', '仁寺洞', '普信阁', '广藏市场', 'N首尔塔', '弘大', '圣水洞', '汉江公园']
+};
+const MAP_LAYOUT = {
+  busan: {
+    '金海机场': { x: 12, y: 18 },
+    '釜山站': { x: 28, y: 36 },
+    '酒店·釜山站附近(待定)': { x: 31, y: 47 },
+    '海云台海水浴场': { x: 80, y: 22 },
+    '海云台': { x: 80, y: 22 },
+    '胶囊小火车·青沙浦': { x: 89, y: 30 },
+    '胶囊小火车': { x: 89, y: 30 },
+    '广安里大桥': { x: 70, y: 45 },
+    '甘川文化村': { x: 21, y: 64 },
+    '札嘎其市场': { x: 35, y: 58 },
+    'BIFF广场': { x: 42, y: 60 },
+    '白浅滩文化村': { x: 61, y: 74 },
+    '太宗台': { x: 73, y: 83 }
+  },
+  seoul: {
+    '仁川机场': { x: 10, y: 20 },
+    '首尔站': { x: 22, y: 30 },
+    'Courtyard by Marriott Seoul Myeongdong': { x: 33, y: 37 },
+    '景福宫': { x: 34, y: 18 },
+    '北村韩屋村': { x: 43, y: 17 },
+    '仁寺洞': { x: 46, y: 26 },
+    '明洞': { x: 37, y: 39 },
+    '普信阁': { x: 49, y: 34 },
+    '广藏市场': { x: 57, y: 30 },
+    'N首尔塔': { x: 45, y: 51 },
+    '弘大': { x: 16, y: 46 },
+    '圣水洞': { x: 66, y: 46 },
+    '汉江公园·汝矣岛': { x: 45, y: 65 },
+    '汉江公园': { x: 45, y: 65 }
+  }
+};
+const MAP_ROUTE_ORDER = {
+  busan: ['金海机场', '釜山站', '酒店·釜山站附近(待定)', '海云台海水浴场', '胶囊小火车·青沙浦', '广安里大桥', '甘川文化村', '札嘎其市场', 'BIFF广场', '白浅滩文化村', '太宗台'],
+  seoul: ['仁川机场', '首尔站', 'Courtyard by Marriott Seoul Myeongdong', '景福宫', '北村韩屋村', '仁寺洞', '明洞', '普信阁', '广藏市场', 'N首尔塔', '弘大', '圣水洞', '汉江公园']
 };
 function mapLabel(s) {
   return s.label
@@ -1813,9 +1850,12 @@ function mapLabel(s) {
 }
 function visibleSpots(city) {
   const names = MAP_VISIBLE[city] || [];
-  return SPOTS[city].filter((s) => !s.label.includes('酒店') && names.some((n) => s.label.includes(n)));
+  return SPOTS[city].filter((s) => names.some((n) => s.label.includes(n)));
 }
 function spotPoint(city, s) {
+  const layout = MAP_LAYOUT[city] || {};
+  const direct = layout[s.label] || Object.entries(layout).find(([k]) => s.label.includes(k))?.[1];
+  if (direct) return direct;
   const spots = SPOTS[city];
   const minLat = Math.min(...spots.map((x) => x.lat));
   const maxLat = Math.max(...spots.map((x) => x.lat));
@@ -1826,8 +1866,10 @@ function spotPoint(city, s) {
   return { x: Math.max(14, Math.min(86, x)), y: Math.max(10, Math.min(88, y)) };
 }
 function mapPath(city, spots) {
-  if (spots.length < 2) return '';
-  return spots.map((s, i) => {
+  const order = (MAP_ROUTE_ORDER[city] || []).map((name) => spots.find((s) => s.label === name || s.label.includes(name))).filter(Boolean);
+  const route = order.length >= 2 ? order : spots;
+  if (route.length < 2) return '';
+  return route.map((s, i) => {
     const p = spotPoint(city, s);
     return `${i ? 'L' : 'M'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`;
   }).join(' ');
