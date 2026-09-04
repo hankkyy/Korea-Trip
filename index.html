@@ -437,6 +437,15 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .map-caption h3{font-size:16px;color:var(--ink);line-height:1.35}
 .map-caption p{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.5}
 .map-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.map-actions a,.map-actions button{font-size:12px;font-weight:800;border-radius:999px;background:var(--green-xl);padding:8px 12px;color:var(--green-d);border:1px solid var(--line)}
+.map-actions .apple-primary,.map-open-city{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 8px 18px rgba(63,96,78,.16)}
+.map-intro{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:12px 14px;margin-bottom:12px;border-radius:18px;background:rgba(255,255,251,.78);border:1px solid var(--line);
+  color:var(--muted);font-size:12.5px;line-height:1.45;
+}
+.map-intro b{color:var(--green-d)}
+.map-open-city{min-height:38px;border-radius:999px;padding:0 14px;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:900}
+.map-open-city .ic{width:15px;height:15px}
 .map-list{display:grid;gap:9px;margin-top:12px}
 .map-mini{padding:11px 12px;border-radius:15px;background:rgba(255,255,251,.9);display:grid;gap:3px;border:1px solid rgba(231,238,231,.9)}
 .map-mini b{font-size:13.5px;color:var(--text)}.map-mini span{font-size:12px;color:var(--muted)}
@@ -1005,7 +1014,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 地图 ============ -->
 <section class="panel" id="tab-map">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="pin"></i>双城地图 <span class="st-sub">点标记看详情</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="pin"></i>双城地图 <span class="st-sub">本地示意图 + Apple Maps 主导航</span></h2>
     <div class="map-tabs" id="mapTabs">
       <button class="city-tab active" data-city="busan" style="max-width:none"><i class="ti" data-ic="wave"></i>釜山</button>
       <button class="city-tab" data-city="seoul" style="max-width:none"><i class="ti" data-ic="temple"></i>首尔</button>
@@ -1069,7 +1078,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="block-title"><i class="ti" data-ic="warning"></i>交通贴士</div>
     <div class="card list-card">
       <div class="tip-line"><i class="ti" data-ic="subway"></i><span class="tl-txt"><b>地铁</b>：爱心座（粉色/黄色）别坐；扶梯靠右，左侧留给赶时间的人。</span></div>
-      <div class="tip-line"><i class="ti" data-ic="map"></i><span class="tl-txt"><b>导航</b>：Google / Naver / Kakao 都可以保留，但别只留一个入口；再配坐标和 Amap / Apple 兜底更稳。</span></div>
+      <div class="tip-line"><i class="ti" data-ic="map"></i><span class="tl-txt"><b>导航</b>：网页内地图只做离线关系示意；iPhone/iPad 优先点 Apple 地图，韩国本地细节再用 Naver / Kakao 交叉确认，Google/Amap 作为备用入口。</span></div>
       <div class="tip-line"><i class="ti" data-ic="train"></i><span class="tl-txt"><b>KTX</b>：开车前 20 分钟到站即可，无安检；电子票截图存手机。</span></div>
       <div class="tip-line"><i class="ti" data-ic="plane"></i><span class="tl-txt"><b>离境</b>：退税 + 免税店提货都在安检后，登机口附近取现金，别忘记。</span></div>
       <div class="tip-line"><i class="ti" data-ic="bag"></i><span class="tl-txt"><b>行李</b>：机场 ⇄ 首尔站有大件行李寄存柜；釜山站有行李寄存（一日 ₩4,000 起）。</span></div>
@@ -1608,7 +1617,7 @@ const TIPS = [
   ['🧣', '保暖穿搭', '首尔 1 月均温 -6~2°C：羽绒服 + 围巾 + 手套 + 暖宝宝。室内暖气足，内搭别太厚。'],
   ['🚇', '地铁交通', '地铁最方便，T-money 卡地铁/公交/出租车/便利店通用，进出站各刷一次。'],
   ['🚄', 'KTX 购票', '用 KORAIL App 或 korail.com 买票，釜山→首尔约 2.5–3h，座位宽可充电。'],
-  ['🗺️', '地图导航', 'Google / Naver / Kakao 都可保留，但别只依赖一个入口；再配坐标和 Amap / Apple 兜底更稳。'],
+  ['🗺️', '地图导航', '网页内看双城关系，Apple 地图作为 iPhone/iPad 主入口；Naver / Kakao / Google / Amap 和坐标都保留做备用。'],
   ['💳', '支付', '大额刷 VISA/Master，小额现金；部分商户支持 Alipay/微信，Olive Young 基本可支付宝。'],
   ['📶', '通信', 'eSIM（LG U+/SKT）落地即用；或机场租 WiFi 蛋。Papago 翻译记得下好离线包。'],
   ['🎉', '跨年活动', '普信阁敲钟是韩国跨年传统（钟路，人超多早点占位）；汉江和首尔塔也有烟花。'],
@@ -1961,6 +1970,12 @@ function amapUrl(s) {
 function appleMapUrl(s) {
   return `https://maps.apple.com/?ll=${s.lat},${s.lon}&q=${encodeURIComponent(s.label.replace(/·.*/, ''))}`;
 }
+function appleCityUrl(city) {
+  const center = city === 'seoul'
+    ? { lat: 37.5665, lon: 126.9780, label: '首尔 韩国' }
+    : { lat: 35.1796, lon: 129.0756, label: '釜山 韩国' };
+  return `https://maps.apple.com/?ll=${center.lat},${center.lon}&q=${encodeURIComponent(center.label)}`;
+}
 function initMap() {
   renderMapCity('busan');
 }
@@ -2054,12 +2069,12 @@ function selectedMapHTML(city, s) {
   return `<h3>${esc(s.label)}</h3>
     <p>${esc(s.desc || '')} · 坐标 ${s.lat.toFixed(4)}, ${s.lon.toFixed(4)}</p>
     <div class="map-actions">
+      <a class="apple-primary" href="${appleMapUrl(s)}" target="_blank" rel="noopener">Apple 地图</a>
+      <button onclick="copyCoord('${s.lat},${s.lon}', this)">复制坐标</button>
       <a href="${naverUrl(s)}" target="_blank" rel="noopener">Naver</a>
       <a href="${kakaoUrl(s)}" target="_blank" rel="noopener">Kakao</a>
       <a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}" target="_blank" rel="noopener">Google</a>
       <a href="${amapUrl(s)}" target="_blank" rel="noopener">Amap</a>
-      <a href="${appleMapUrl(s)}" target="_blank" rel="noopener">Apple</a>
-      <button onclick="copyCoord('${s.lat},${s.lon}', this)">复制坐标</button>
     </div>`;
 }
 window.copyCoord = function (txt, btn) {
@@ -2085,6 +2100,10 @@ function renderMapCity(city) {
     return `<button class="map-point${i === 0 ? ' active' : ''}" data-label="${esc(s.label)}" style="--x:${p.x}%;--y:${p.y}%;--c:${s.color}" onclick="selectMapSpot('${city}','${esc(s.label)}')">${esc(mapLabel(s))}</button>`;
   }).join('');
   $('#map').innerHTML = `<div class="card map-board">
+    <div class="map-intro">
+      <span><b>${esc(meta.title)}</b>：网页里是手帐式离线关系图，不加载 Google/Naver 底图；点地点后优先用 Apple Maps 打开。</span>
+      <a class="map-open-city" href="${appleCityUrl(city)}" target="_blank" rel="noopener">${ic('pin')}打开 Apple 地图</a>
+    </div>
     <div class="map-canvas" style="--map-art:${meta.art}">
       <svg class="map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <path d="${mapPath(city, visible)}"></path>

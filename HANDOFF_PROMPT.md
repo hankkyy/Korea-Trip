@@ -33,6 +33,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses` / `kr_docs`。
 - 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步自定义文件卡片的名称 / 类型 / 状态 / 备注 / 压缩照片；localStorage 仅作弱网兜底。旧模板空壳已清理，新增文件按钮必须可用。
 - 2026-09-04：待办与行李已改成可编辑清单：勾选、新增、编辑、删除、上下重排序；`POST /todos` 与 `POST /checklist` 全量替换保存，旧的 `/:docId` done 接口保留兼容。行李行内不要显示“云端/本地”标签。
+- 2026-09-04：地图页已明确改为“本地手帐关系示意图 + Apple Maps 主跳转”。不要接入 Google/Naver/Kakao SDK 或 iframe 底图；每个地点保留坐标、Apple 主按钮、Naver/Kakao/Google/Amap 备用按钮。
 - 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api + 三份文档 + 本文件）。
 
 ## 部署方法
@@ -94,7 +95,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 
 - 这个站不是只服务一个地区；必须同时保证中国大陆、美国和韩国都能正常打开。
 - 页面里的图片、封面、图标、地图跳转、按钮外链、天气接口、服务工作线程缓存资源都要优先选择三地可稳定访问的路径。
-- Google / Naver 可以保留，但不能只留单一入口；如果有外链，必须同时提供坐标、Naver / Kakao / Google / Amap / Apple 这类备用入口，避免某个地区打不开就断路。
+- Google / Naver 可以保留，但不能只留单一入口；如果有外链，必须同时提供坐标、Apple 主入口、Naver / Kakao / Google / Amap 备用入口，避免某个地区打不开就断路。
 - 如果用户反馈“某张照片加载不出来”，优先检查：是否外链资源、是否缺文件、是否只在某个地区/网络能访问，而不是先假设手机有问题。
 - 日后新增图片时优先放本地 `assets/photos/`，并同步进 Service Worker 缓存与文档索引，避免某个地区首访时图片断档。
 
