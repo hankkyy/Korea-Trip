@@ -51,12 +51,51 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - API_BASE：`https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`
 - 先发云函数，再确认前端能读到 `kr_` 集合数据
 
+## 2026-09-04 下午追加：国内访问与 jinlu.cloud（本段最重要，先读）
+
+### 背景
+- GFW 屏蔽 *.vercel.app（DNS 污染 + SNI 阻断），中国大陆直连打不开 korea-vercel.vercel.app / korea-trip.vercel.app。
+- 自定义域名指向 Vercel 不受影响（SNI 是自己的域名）；CloudBase 国内环境不受影响。
+
+### 已上线的两个入口（2026-09-04 从深圳宽带实测通过）
+1. **CloudApp webapps（国内直连，无密码）**：https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/
+   - 环境 hanoi-d4gj8vd2q1e7a3dc0（ap-shanghai），服务名 korea，版本 korea-003
+   - 缺陷：6 张 editorial 大 PNG 已补 2/6（见「照片补传」），其余区块暂显占位
+2. **jinlu.cloud（Vercel 自定义域名，2026-09-04 用户自己在 Vercel 控制台完成）**：https://jinlu.cloud（308 → www.jinlu.cloud，Vercel 设 www 为主域，正常现象）
+   - DNS：jinlu.cloud CNAME cname.vercel-dns.com（A 216.198.79.1）
+   - 页面 / sw.js / manifest / 照片全 200，可直接发给女朋友
+
+### CloudApp 部署方法（下次更新国内站必读）
+- MCP manageApps 有类型 bug（deployApp 的 CosTimestamp schema 是 integer 但后端要 string；getBuildLog 的 BuildId 要求 int64）→ **绕 MCP，用 callCloudApi**：
+  - 上传：queryApps getUploadUrl 拿预签名 COS URL → `curl PUT zip`（**大文件会衰减卡死，1.4MB 小包 22-115s 正常，28MB 包 420s+ 卡死**）
+  - 触发构建：callCloudApi（service=tcb, action=CreateCloudApp, region=ap-shanghai），params：EnvId、ServiceName="korea"、DeployType="static-hosting"、BuildType="ZIP"、StaticConfig{Framework, AppPath:"/korea", BuildPath:"dist", CosTimestamp:"<字符串>", StaticCmd{DeployCmd:"tcb hosting deploy . /korea" **必须显式传**，否则管线 cd 进 dist 后还找 dist/dist 报 Path does not exist}}
+  - 每次部署同 ServiceName 生成新版本 korea-00N 递增；构建日志：callCloudApi tcb/DescribeCloudBaseRunBuildLog，BuildId 传数字
+- **AppPath 只是共享托管挂载点；webapps 域名在根路径提供应用** → 包内全部根路径引用（/assets/、/manifest.json、register('/sw.js')、sw scope "/"）；托管桶文件在 korea/ 前缀下（hanoi 根目录勿动）
+- 部署包：/tmp/korea-root/dist（无前缀根路径版）+ /tmp/korea-root/korea-root.zip；完整源 /tmp/korea-cn/dist（27MB）
+
+### 照片补传（还剩 4 张，未完成）
+- 托管现状：korea/assets/photos/ 已有 busan-harbor-editorial.png ✅、busan-village-editorial.png ✅，缺 seoul-airport / seoul-marriott-myeongdong / seoul-night / seoul-palace 4 张 editorial PNG
+- 源文件：/tmp/korea-cn/dist/assets/photos/<名字>.png（2.5-3MB/张）
+- 方法：manageHosting action=upload files=[{localPath, cloudPath:"korea/assets/photos/<名字>.png"}] **单文件逐个传**（批量 6 张曾卡死 20 分钟；单文件 1-2 分钟能成），每张传完用 queryHosting findFiles 验证再传下一张
+
+### jinlu.cloud 备案（未开始，等用户操作）
+- jinlu.cloud 未备案；CloudBase 国内绑域名硬性要求 ICP 备案。用户需在腾讯云备案控制台提「新增网站」备案（已有 hankzhang.cloud 主体，约 7-20 工作日）
+- ⚠️ 提交备案前，jinlu.cloud 解析必须临时指回腾讯云（管局查解析与接入商一致，指 Vercel 会被打回）；期间用 webapps 链接顶上
+- 备案通过后的绑定步骤（按顺序）：1) manageGateway bindCustomDomain（域名归属 TXT _cloudbase-challenge 已验证通过，保留即可）→ 2) 证书自动签发 → 3) DNSPod 撤掉 Vercel 的 A/CNAME，指向网关 OriginDomain hanoi-d4gj8vd2q1e7a3dc0.tcbaccess-in.tencentcloudbase.com → 4) 路由：MCP createRoute 无 pathRewrite 字段，用 CLI `tcb routes add -e hanoi-d4gj8vd2q1e7a3dc0 --data '{"domain":"jinlu.cloud","routes":[{"path":"/","upstreamResourceType":"STATIC_STORE","upstreamResourceName":"staticstore","pathRewrite":{"prefix":"/korea"}}]}'`（需先 `! tcb login`）
+- 备选：korea.hankzhang.cloud（hankzhang.cloud 已备案，子域名可直接绑 CloudBase，几分钟上线）
+
+### 安全红线（不变）
+🚫 hanoi 的 .env.local VERCEL_OIDC_TOKEN 绝不能复制到本项目；Desktop 下 签证文件/ 目录及 .env.local、.git、.vercel、截图、cloudfunctions 绝不能上传部署。
+
 ## 待办清单
 - [x] 釜山酒店已确认并补进住宿卡和行程卡（Asti Hotel Busan Station，12/26–12/29）
+- [x] 现金与保险决策已更新：不提前大量换韩元现金；到韩国用 Fidelity 卡 ATM 无手续费取现，旅行保险不单独购买
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
 - [x] 文件区跨设备同步（状态 / 备注 / 压缩照片）
-- [ ] 如需自定义域名，再按 README 里的 Vercel 命令操作
+- [x] 自定义域名 jinlu.cloud 已上线（Vercel，用户控制台操作；备案通过后换绑 CloudBase）
+- [ ] 补传剩余 4 张 editorial PNG（seoul-airport / seoul-marriott-myeongdong / seoul-night / seoul-palace）到托管 korea/assets/photos/，单文件逐个传 + findFiles 验证
+- [ ] jinlu.cloud 提交「新增网站」备案（用户操作）→ 通过后按上文步骤绑 CloudBase
 
 ## 关键文件与细节
 - index.html：单文件应用（~122KB / 2059 行），顶部常量区 FX_RATES（1 RMB≈190 KRW、USD 6.80）、

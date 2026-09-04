@@ -1,6 +1,6 @@
 // Korea Trip — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'korea-trip-v8';
+const CACHE = 'korea-trip-v9';
 const PRECACHE = [
   '/',
   '/manifest.json',
@@ -36,7 +36,7 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   // API 请求不缓存，直连
-  if (url.hostname.includes('tcloudbase.com')) return;
+  if (url.hostname === 'hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com') return;
 
   // 页面导航：网络优先，失败回退缓存（离线打开 App 壳）
   if (e.request.mode === 'navigate') {

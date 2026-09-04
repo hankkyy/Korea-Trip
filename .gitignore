@@ -9,3 +9,6 @@
 node_modules
 npm-debug.log*
 .env*
+
+# 隐私
+签证文件/
