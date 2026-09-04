@@ -16,17 +16,17 @@
 <style>
 /* ============ 设计令牌 · Korea Travel Journal ============ */
 :root{
-  --green:#78AA8B; --green-d:#3F6B55; --green-l:#EDF6EF; --green-xl:#F7FBF6;
-  --blue:#9ECBD5; --blue-d:#6F98A5; --blue-l:#F2FAFA;
-  --orange:#E7C680; --pink:#DDB0B3; --purple:#B0BDC4; --slate:#9AA9B3;
-  --bg:#F7FBF8; --card:#FFFDF8; --text:#2D3A32; --muted:#87938C;
-  --line:#E6EEE6; --ok:#3F6B55; --ok-l:#EDF6EF; --warn:#A98245; --warn-l:#FBF3E3;
+  --green:#72A67F; --green-d:#40684F; --green-l:#EAF5EB; --green-xl:#F6FBF5;
+  --blue:#A6CED6; --blue-d:#6A99A4; --blue-l:#F0FAFB;
+  --orange:#EACB8B; --pink:#DBB0B5; --purple:#B4C0CB; --slate:#A2AFB6;
+  --bg:#F7FBF6; --card:#FFFEFA; --text:#2B3A33; --muted:#87958C;
+  --line:#E3EDE3; --ok:#40684F; --ok-l:#EDF6EF; --warn:#A98245; --warn-l:#FCF3E1;
   --radius:18px; --radius-s:12px;
-  --ink:#3D6650; --paper:#FFFFFA; --wash:#F1F8F5;
-  --shadow:0 6px 18px rgba(63,96,78,.055);
-  --shadow-lg:0 14px 30px rgba(63,96,78,.09);
-  --grad:linear-gradient(120deg,#95C0A6,#76AA8B);
-  --grad-soft:linear-gradient(135deg,#FBFDF8 0%,#EEF7F5 58%,#FFF8EC 100%);
+  --ink:#395F4A; --paper:#FFFFFB; --wash:#F2F8F4;
+  --shadow:0 8px 22px rgba(63,96,78,.06);
+  --shadow-lg:0 16px 34px rgba(63,96,78,.11);
+  --grad:linear-gradient(120deg,#86B59A,#6EA381);
+  --grad-soft:linear-gradient(135deg,#FCFDF9 0%,#EEF8F4 60%,#FFF7EB 100%);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
@@ -57,7 +57,7 @@ a:active{opacity:.7}
 h2.sec-title{font-size:clamp(19px,4.4vw,24px);font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:14px;letter-spacing:0;color:var(--ink)}
 h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-left:auto}
 .block-title{font-size:15px;font-weight:800;margin:24px 0 10px;display:flex;align-items:center;gap:8px;color:var(--text)}
-.card{background:rgba(255,255,251,.92);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(231,238,231,.9)}
+.card{background:rgba(255,255,251,.95);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(224,235,223,.95)}
 .grid{display:grid;gap:12px}
 @media(min-width:640px){.grid.g2{grid-template-columns:1fr 1fr}}
 @media(min-width:960px){.grid.g3{grid-template-columns:repeat(3,1fr)}}
@@ -135,7 +135,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   transition:opacity 1.6s ease;opacity:0;
 }
 .hero-layer.active{opacity:1}
-.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,254,248,.78) 0%,rgba(255,254,248,.22) 48%,rgba(255,254,248,.72) 100%)}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,254,248,.88) 0%,rgba(255,254,248,.24) 48%,rgba(255,254,248,.76) 100%)}
 .hero-inner{
   position:relative;z-index:2;color:var(--ink);text-align:left;padding:34px 24px 42px;
   display:flex;flex-direction:column;align-items:flex-start;gap:7px;width:100%;
@@ -147,7 +147,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .hero-inner h1{
   display:inline-block;font-family:"STXingkai","Xingkai SC","Kaiti SC","Songti SC",serif;
   font-size:clamp(42px,12vw,72px);font-weight:700;letter-spacing:0;line-height:1.08;margin-top:2px;
-  color:#335C49;text-shadow:0 2px 16px rgba(255,255,250,.96),0 0 1px rgba(255,255,250,.9);
+  color:#315845;text-shadow:0 3px 14px rgba(255,255,250,.98),0 0 2px rgba(255,255,250,.85);
 }
 .hero-sub{font-size:clamp(13.5px,3.8vw,16px);font-weight:600;opacity:.96}
 .hero-meta{font-size:12px;font-weight:600;opacity:.85}
@@ -1135,9 +1135,10 @@ const CITIES = {
 };
 
 const HERO_IMAGES = [
-  'assets/photos/seoul-watercolor.webp',
   'assets/photos/busan-watercolor.webp',
-  'assets/photos/palace-watercolor.webp'
+  'assets/photos/busan-harbor-editorial.png',
+  'assets/photos/seoul-palace-editorial.png',
+  'assets/photos/seoul-night-editorial.png'
 ];
 const PHOTO_FALLBACK = 'linear-gradient(135deg,#EEF7EF,#F1F9F9,#FFF9ED)';
 
@@ -1339,22 +1340,23 @@ const DAY_THEMES = {
   5: '景福宫 · 韩屋村', 6: '明洞 · 跨年敲钟', 7: '元旦 · N首尔塔 · 弘大', 8: '圣水洞 · 汉江', 9: '免税店 · 回国'
 };
 const DAY_ART = {
-  1: 'assets/photos/seoul-palace-editorial.png',
+  1: 'assets/photos/busan-watercolor.webp',
   2: 'assets/photos/busan-harbor-editorial.png',
   3: 'assets/photos/busan-village-editorial.png',
   4: 'assets/photos/seoul-night-editorial.png',
-  5: 'assets/photos/palace-watercolor.webp',
+  5: 'assets/photos/seoul-palace-editorial.png',
   6: 'assets/photos/seoul-night-editorial.png',
   7: 'assets/photos/seoul-night-editorial.png',
   8: 'assets/photos/seoul-watercolor.webp',
-  9: 'assets/photos/seoul-palace-editorial.png'
+  9: 'assets/photos/seoul-airport-editorial.png'
 };
 const PHOTO_LIBRARY = [
   { value: '', label: '自动匹配（按内容）', preview: 'assets/photos/palace-watercolor.webp' },
-  { value: 'assets/photos/seoul-palace-editorial.png', label: '首尔古宫 / Hanok', preview: 'assets/photos/seoul-palace-editorial.png' },
-  { value: 'assets/photos/busan-harbor-editorial.png', label: '釜山海港 / 缆车', preview: 'assets/photos/busan-harbor-editorial.png' },
-  { value: 'assets/photos/busan-village-editorial.png', label: '釜山山坡 / 村落', preview: 'assets/photos/busan-village-editorial.png' },
-  { value: 'assets/photos/seoul-night-editorial.png', label: '首尔夜景 / 城市灯火', preview: 'assets/photos/seoul-night-editorial.png' },
+  { value: 'assets/photos/busan-harbor-editorial.png', label: '釜山海云台 / 胶囊列车', preview: 'assets/photos/busan-harbor-editorial.png' },
+  { value: 'assets/photos/busan-village-editorial.png', label: '釜山甘川 / 山坡彩屋', preview: 'assets/photos/busan-village-editorial.png' },
+  { value: 'assets/photos/seoul-palace-editorial.png', label: '首尔景福宫 / 古宫水墨', preview: 'assets/photos/seoul-palace-editorial.png' },
+  { value: 'assets/photos/seoul-night-editorial.png', label: '首尔夜色 / 明洞塔影', preview: 'assets/photos/seoul-night-editorial.png' },
+  { value: 'assets/photos/seoul-airport-editorial.png', label: '返程机场 / 行李与落日', preview: 'assets/photos/seoul-airport-editorial.png' },
   { value: 'assets/photos/seoul-watercolor.webp', label: '首尔清晨 / 汉江', preview: 'assets/photos/seoul-watercolor.webp' },
   { value: 'assets/photos/busan-watercolor.webp', label: '釜山清晨 / 海风', preview: 'assets/photos/busan-watercolor.webp' },
   { value: 'assets/photos/busan-editorial.webp', label: '釜山文艺 / 轻海岸', preview: 'assets/photos/busan-editorial.webp' },
@@ -1365,7 +1367,7 @@ const PHOTO_MATCHERS = [
   { re: /(海云台|胶囊|青沙浦|广安里|太宗台|KTX|釜山站|港口|海鲜|札嘎其|胶囊小火车)/, src: 'assets/photos/busan-harbor-editorial.png' },
   { re: /(甘川|白浅滩|文化村|小王子|南浦|BIFF|富平|村|山坡)/, src: 'assets/photos/busan-village-editorial.png' },
   { re: /(明洞|弘大|汉江|圣水洞|N首尔塔|夜景|跨年|炸鸡|购物|滑冰|广藏市场)/, src: 'assets/photos/seoul-night-editorial.png' },
-  { re: /(机场|落地|出发|回国|免税店|酒店|换汇|T-money)/, src: 'assets/photos/seoul-watercolor.webp' }
+  { re: /(机场|落地|出发|回国|免税店|换汇|T-money|行李|返程|航站楼)/, src: 'assets/photos/seoul-airport-editorial.png' }
 ];
 function defaultDayArt(day) {
   return DAY_ART[day] || 'assets/photos/palace-watercolor.webp';
