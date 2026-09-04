@@ -1,6 +1,6 @@
 // Korea Trip — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'korea-trip-v6';
+const CACHE = 'korea-trip-v7';
 const PRECACHE = [
   '/',
   '/manifest.json',
@@ -15,7 +15,8 @@ const PRECACHE = [
   '/assets/photos/busan-harbor-editorial.png',
   '/assets/photos/busan-village-editorial.png',
   '/assets/photos/seoul-night-editorial.png',
-  '/assets/photos/seoul-airport-editorial.png'
+  '/assets/photos/seoul-airport-editorial.png',
+  '/assets/photos/seoul-marriott-myeongdong-editorial.png'
 ];
 
 self.addEventListener('install', (e) => {

@@ -406,6 +406,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .legend-chip i{width:7px;height:7px;border-radius:50%;background:var(--lc)}
 /* ============ 交通 ============ */
 .board-card{padding:18px;display:flex;flex-direction:column;gap:6px}
+.bc-photo{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin:-2px 0 8px;border:1px solid rgba(224,235,223,.95);box-shadow:0 6px 16px rgba(63,96,78,.07)}
 .bc-route{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
 .bc-route .bc-plane{color:var(--green);display:flex}
 .bc-route .bc-plane .ic{width:20px;height:20px}
@@ -751,6 +752,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <div class="bc-note">先按釜山站附近酒店占位，后面再手动替换具体酒店。</div>
       </div>
       <div class="card board-card">
+        <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="Courtyard by Marriott Seoul Myeongdong 手绘酒店外观">
         <div class="bc-route">Courtyard by Marriott Seoul Myeongdong</div>
         <div class="bc-date">12/29 - 1/3 · 5 晚</div>
         <div class="bc-meta">Check-in 12/29 15:00 · Check-out 1/3 11:00</div>
@@ -863,6 +865,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <span class="bc-tbd">待定</span>
       </div>
       <div class="card board-card">
+        <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="Courtyard by Marriott Seoul Myeongdong 手绘酒店外观">
         <div class="bc-route">Courtyard by Marriott Seoul Myeongdong</div>
         <div class="bc-date">12/29 - 1/3 · 5 晚</div>
         <div class="bc-meta">Check-in 12/29 15:00 · Check-out 1/3 11:00</div>
@@ -1412,7 +1415,7 @@ function dayGalleryFor(items, day) {
 const EMBEDDED_TODOS = [
   { id: 1, emoji: '✈️', title: '订深圳 ⇄ 首尔机票', note: '12/26 02:25 去 · 1/3 22:10 回' },
   { id: 2, emoji: '🛂', title: '办签证 / K-ETA', note: '按最新政策，出发前 2 周完成' },
-  { id: 3, emoji: '🏨', title: '订釜山酒店（3 晚）', note: '海云台区域 · 12/26–29（待定）' },
+  { id: 3, emoji: '🏨', title: '订釜山酒店（3 晚）', note: '釜山站附近 · 12/26–29（待定）' },
   { id: 4, emoji: '🏨', title: '订首尔酒店（5 晚）', note: 'Courtyard by Marriott Seoul Myeongdong · 12/29–1/3' },
   { id: 5, emoji: '🚄', title: '买 KTX 釜山→首尔车票', note: 'KORAIL · 12/29 晚些时候' },
   { id: 6, emoji: '📶', title: '买 eSIM / 开漫游', note: 'LG U+ / SKT 对比后定' },
