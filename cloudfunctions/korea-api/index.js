@@ -16,7 +16,8 @@ const COL = {
   checklist: 'kr_checklist',
   expenses: 'kr_expenses',
   bucketList: 'kr_bucketlist',
-  todos: 'kr_todos'
+  todos: 'kr_todos',
+  docs: 'kr_docs'
 };
 
 function json(res, data, statusCode = 200) {
@@ -138,6 +139,38 @@ const server = http.createServer(async (req, res) => {
       const { done } = await readBody(req);
       const result = await db.collection(COL.checklist).doc(docId).update({ done });
       return json(res, { success: true, updated: result.updated });
+    }
+
+    // GET /docs（文件资料：状态、备注、压缩照片）
+    if (route === '/docs' && req.method === 'GET') {
+      const result = await db.collection(COL.docs)
+        .orderBy('sortOrder', 'asc')
+        .limit(50)
+        .get();
+      return json(res, { success: true, data: result.data });
+    }
+
+    // POST /docs (batch save: replace all)
+    if (route === '/docs' && req.method === 'POST') {
+      const { items } = await readBody(req);
+      if (!Array.isArray(items)) {
+        return json(res, { success: false, error: 'items must be an array' }, 400);
+      }
+
+      const existing = await db.collection(COL.docs).get();
+      const removeTasks = existing.data.map(doc => db.collection(COL.docs).doc(doc._id).remove());
+      await Promise.all(removeTasks);
+
+      if (items.length > 0) {
+        const addTasks = items.map((item, idx) => db.collection(COL.docs).add({
+          ...item,
+          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : idx + 1,
+          updatedAt: Date.now()
+        }));
+        await Promise.all(addTasks);
+      }
+
+      return json(res, { success: true, count: items.length });
     }
 
     // GET /expenses

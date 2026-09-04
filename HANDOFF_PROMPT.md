@@ -19,7 +19,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 2. 9 Tab 多视图 + 底部悬浮胶囊导航（首页/行程/地图/交通/待办/行李/支出/文件/锦囊），不要长页下滑。
 3. 视觉去 AI 化：薄荷绿清爽风（bg #F4F8F5、主色 #2FA36E、白卡片 16-20px 圆角），
    全站 60+ 手绘线条 SVG 图标替换 emoji——界面不能出现满屏 emoji。参考设计稿 ~/Downloads/IMG_3900~3904.PNG。
-4. 文件区照片只存本机 localStorage，不上传服务器（隐私）。
+4. 文件区状态、备注、压缩照片需要 CloudBase 云端持久化共享；敏感证件照片要保留“谨慎上传”的隐私提示。
 5. 改完代码必须本地零报错（node --check + 无头 Chrome 验证 9 个面板全渲染）。
 
 ## 当前状态
@@ -30,7 +30,8 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v7`。
 - 2026-09-04：CloudBase 正式部署源 `/Users/hankzhang/Desktop/cloudfunctions/korea-api` 已同步仓库云函数代码并重新部署；线上 `POST /itinerary` 已恢复，`kr_itinerary` 已刷新为 43 条新版行程，旧“海云台酒店”数据已清掉。
 - 后端已上线：CloudBase HTTP 云函数 `korea-api`，API_BASE = `https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
-- 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses`。
+- 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses` / `kr_docs`。
+- 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步证件状态、备注和压缩照片；localStorage 仅作弱网兜底。
 - 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api + 三份文档 + 本文件）。
 
 ## 部署方法
@@ -54,7 +55,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - [ ] 釜山酒店最终确认后补进住宿卡和行程卡（当前先按“釜山站附近酒店”占位，方便 12/29 晚饭前后直接从釜山站去首尔）
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
-- [ ] 文件区 v2 跨设备同步
+- [x] 文件区跨设备同步（状态 / 备注 / 压缩照片）
 - [ ] 如需自定义域名，再按 README 里的 Vercel 命令操作
 
 ## 关键文件与细节

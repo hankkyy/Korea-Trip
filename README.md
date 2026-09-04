@@ -26,9 +26,9 @@
 - 待办专区：预订待办（12 项）+ 打卡清单（云端同步 + 本地缓存）
 - 行李清单（云端同步 + 本地缓存）
 - 多币种记账（KRW/CNY/USD → 人均 RMB，预算进度条 + **分类占比环形图**，底部弹层表单）
-- 文件专区：证件状态打卡 + 照片存本机（隐私设计，见 REQUIREMENTS.md §3.4）
+- 文件专区：证件状态打卡 + 备注 + 压缩照片云端共享（弱网时 localStorage 兜底；隐私提示见 REQUIREMENTS.md §3.4）
 - 锦囊：美食（釜山/首尔分组）/ 韩语短语 / 冬季贴士
-- PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v5`）
+- PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v8`）
 
 ## 技术栈
 
@@ -37,7 +37,7 @@
 | 前端 | 纯 HTML/CSS/JS 单文件（`index.html`），无地图 SDK 依赖 |
 | 天气 | Open-Meteo 免费 API（无需 key） |
 | 后端 | CloudBase 云函数 `korea-api`（Node.js 18，HTTP 触发） |
-| 数据库 | CloudBase NoSQL：`kr_itinerary` / `kr_checklist` / `kr_expenses` / `kr_bucketlist` / `kr_todos` |
+| 数据库 | CloudBase NoSQL：`kr_itinerary` / `kr_checklist` / `kr_expenses` / `kr_bucketlist` / `kr_todos` / `kr_docs` |
 | 部署 | Vercel（前端静态托管）+ `tcb fn deploy`（云函数） |
 
 ## 项目结构
@@ -73,6 +73,8 @@ korea-vercel/
 | POST | `/todos/:docId` | 更新待办 `{done}` |
 | GET | `/expenses` | 记账列表 |
 | POST | `/expenses` | 全量替换保存 `{items:[...]}` |
+| GET | `/docs` | 文件状态、备注、压缩照片 |
+| POST | `/docs` | 全量替换保存 `{items:[...]}` |
 
 > 复用河内项目的 CloudBase 环境，集合使用 `kr_` 前缀，与河内数据互不干扰。
 
@@ -110,7 +112,7 @@ cd ~/Desktop/korea-vercel && vercel domains add hankzhang.cloud
 
 1. **CloudBase 控制台** → 数据库 → 对应 `kr_` 集合，直接增删改文档。
 2. **Claude Code + CloudBase MCP**（推荐）：`readNoSqlDatabaseContent` / `writeNoSqlDatabaseContent` 工具操作 `kr_` 集合。
-3. 记账 / 打卡 / 清单在网页上直接操作（自动同步云端）；行程页也支持直接编辑并整页同步保存到云端。
+3. 记账 / 打卡 / 清单 / 文件资料在网页上直接操作（自动同步云端）；行程页也支持直接编辑并整页同步保存到云端。
 
 ### 行程文档字段
 
@@ -145,7 +147,7 @@ cd ~/Desktop/korea-vercel && vercel domains add hankzhang.cloud
 - `viewport-fit=cover` + safe-area 适配：顶部 Tab Bar 不被刘海/灵动岛遮挡，记账弹层不被手势条遮挡
 - 天气/贴士/短语横向滑动（scroll-snap）
 - 触屏设备地图不拦截页面滚动
-- API 失败时行程/清单用内置数据 + localStorage 兜底
+- API 失败时行程/清单/文件资料用内置数据或 localStorage 兜底
 
 ---
 

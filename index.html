@@ -1009,9 +1009,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 文件 ============ -->
 <section class="panel" id="tab-docs">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">状态打卡 · 照片存本机</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">云端共享 · 多设备同步</span></h2>
     <div class="grid g2 g3" id="docsGrid" style="gap:12px"></div>
-    <div class="docs-hint">隐私说明：文件照片<b>只存在你手机/平板的本地存储里，不会上传服务器</b>——护照这类敏感信息留在自己设备上更安全。两人生成的内容目前各存各的设备（跨设备同步列入 v2）。</div>
+    <div class="docs-hint">同步说明：文件状态、备注和压缩后的照片会<b>云端持久化共享</b>，你们任意设备修改后都能同步。护照等敏感证件建议只记状态/备注，确实需要再上传照片。</div>
   </div>
 </section>
 
@@ -2484,7 +2484,7 @@ function initSheet() {
   });
 }
 
-/* ================= 文件（本地存储） ================= */
+/* ================= 文件（云端同步 + 本地兜底） ================= */
 const DOC_STATUSES = ['待准备', '已办理', '已拍照', '已打印', '电子版'];
 const DOC_STYLE = {
   '待准备': ['#87938C', '#EFF3F0'],
@@ -2506,12 +2506,40 @@ const DOC_TEMPLATES = [
   { id: 'emergency', emoji: '🆘', title: '紧急联系方式', hint: '大使馆 · 报警112 · 急救119' }
 ];
 let docsData = null;
-function loadDocs() {
-  docsData = cache.get('kr_docs');
-  if (!docsData) docsData = DOC_TEMPLATES.map((d) => ({ ...d, status: '待准备', note: '', photo: null }));
+function cleanDocForCloud(doc, idx) {
+  return {
+    id: doc.id,
+    sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
+    emoji: doc.emoji,
+    title: doc.title,
+    hint: doc.hint,
+    status: DOC_STATUSES.includes(doc.status) ? doc.status : '待准备',
+    note: doc.note || '',
+    photo: doc.photo || null
+  };
 }
-function saveDocs() {
-  if (!cache.set('kr_docs', docsData)) alert('本地存储已满：照片压缩后仍放不下，请删掉几张或换设备。');
+function mergeDocTemplates(list) {
+  const byId = new Map((Array.isArray(list) ? list : []).map((d) => [d.id, d]));
+  return DOC_TEMPLATES.map((tpl, idx) => {
+    const saved = byId.get(tpl.id) || {};
+    return cleanDocForCloud({ ...tpl, ...saved, sortOrder: idx + 1 }, idx);
+  });
+}
+async function loadDocs() {
+  const empty = DOC_TEMPLATES.map((d, idx) => cleanDocForCloud({ ...d, status: '待准备', note: '', photo: null }, idx));
+  const cached = cache.get('kr_docs') || empty;
+  const cloudDocs = await apiGet('/docs', 'kr_docs', cached);
+  docsData = mergeDocTemplates(cloudDocs && cloudDocs.length ? cloudDocs : cached);
+  cache.set('kr_docs', docsData);
+}
+async function persistDocs() {
+  const payload = docsData.map(cleanDocForCloud);
+  if (!cache.set('kr_docs', payload)) alert('本地缓存已满：照片压缩后仍放不下，请删掉几张或换设备。');
+  try {
+    await apiPost('/docs', { items: payload });
+  } catch (err) {
+    alert('文件资料已先保存在本机，云端同步暂时失败；网络恢复后再改一次即可同步。');
+  }
 }
 function renderDocs() {
   $('#docsGrid').innerHTML = docsData.map((d) => {
@@ -2536,12 +2564,12 @@ function renderDocs() {
 function compressImage(file, cb) {
   const img = new Image();
   img.onload = () => {
-    const MAX = 900;
+    const MAX = 720;
     const r = Math.min(1, MAX / Math.max(img.width, img.height));
     const c = document.createElement('canvas');
     c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    cb(c.toDataURL('image/jpeg', 0.72));
+    cb(c.toDataURL('image/jpeg', 0.64));
   };
   img.onerror = () => alert('图片读取失败，换一张试试');
   img.src = URL.createObjectURL(file);
@@ -2556,15 +2584,17 @@ function attachPhoto(doc) {
     if (file.size > 8 * 1024 * 1024) { alert('图片太大（>8MB），先压缩或换一张'); return; }
     compressImage(file, (dataUrl) => {
       doc.photo = dataUrl;
-      saveDocs(); renderDocs();
+      doc.status = '已拍照';
+      renderDocs();
+      persistDocs();
     });
   };
   input.click();
 }
-function initDocs() {
-  loadDocs();
+async function initDocs() {
+  await loadDocs();
   renderDocs();
-  $('#docsGrid').addEventListener('click', (e) => {
+  $('#docsGrid').addEventListener('click', async (e) => {
     const btn = e.target.closest('.doc-btn, .dt-del');
     if (!btn) return;
     const card = e.target.closest('.doc-card');
@@ -2575,19 +2605,20 @@ function initDocs() {
       attachPhoto(doc);
     } else if (act === 'note') {
       const v = prompt('备注：', doc.note || '');
-      if (v !== null) { doc.note = v.trim(); saveDocs(); renderDocs(); }
+      if (v !== null) { doc.note = v.trim(); renderDocs(); await persistDocs(); }
     } else if (act === 'delphoto') {
-      if (confirm('删除这张照片？')) { doc.photo = null; saveDocs(); renderDocs(); }
+      if (confirm('删除这张照片？')) { doc.photo = null; renderDocs(); await persistDocs(); }
     }
   });
-  $('#docsGrid').addEventListener('change', (e) => {
+  $('#docsGrid').addEventListener('change', async (e) => {
     const sel = e.target.closest('.doc-status-select');
     if (!sel) return;
     const card = e.target.closest('.doc-card');
     const doc = docsData.find((d) => d.id == card.dataset.id);
     if (!doc) return;
     doc.status = sel.value;
-    saveDocs(); renderDocs();
+    renderDocs();
+    await persistDocs();
   });
 }
 
