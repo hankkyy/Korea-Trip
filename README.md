@@ -24,12 +24,12 @@
 - 出发 / 跨年 / 回程 三枚倒计时圆环
 - 9 天行程折叠时间线 + **日历条**（12月/1月，行程日按 景点/美食/交通 着色分类点，点日期直达当天）——API 失败时内置数据兜底
 - 交通专区：航班（去/回）/ KTX / AREX / T-money / 出租车 / 交通贴士
-- 待办专区：预订待办（9 项）+ 打卡清单（云端同步 + 本地缓存）
-- 行李清单（云端同步 + 本地缓存）
+- 待办专区：预订待办支持勾选、新增、编辑、删除、上下重排序；打卡清单支持同步勾选
+- 行李清单支持勾选、新增、编辑、删除、上下重排序
 - 多币种记账（KRW/CNY/USD → 人均 RMB，预算进度条 + **分类占比环形图**，底部弹层表单）
 - 文件专区：自定义文件卡片（名称 / 类型 / 状态 / 备注 / 压缩照片）云端共享；不预设具体证件或订单，图标由文件类型自动匹配（弱网时 localStorage 兜底；隐私提示见 REQUIREMENTS.md §3.4）
 - 锦囊：美食（釜山/首尔分组）/ 韩语短语 / 冬季贴士
-- PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v9`）
+- PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v12`）
 
 ## 技术栈
 
@@ -66,12 +66,14 @@ korea-vercel/
 |---|---|---|
 | GET | `/itinerary` | 行程（按 day, sortOrder 排序） |
 | POST | `/itinerary` | 全量替换保存行程 `{items:[...]}` |
-| GET | `/checklist` | 出行清单（按 id 排序） |
-| POST | `/checklist/:docId` | 更新清单项 `{done}` |
+| GET | `/checklist` | 出行清单（按 sortOrder 排序） |
+| POST | `/checklist` | 全量替换保存 `{items:[...]}`，用于新增/编辑/删除/排序 |
+| POST | `/checklist/:docId` | 兼容旧版：更新清单项 `{done}` |
 | GET | `/bucket-list` | 打卡清单 |
 | POST | `/bucket-list/:docId` | 更新打卡 `{done}` |
 | GET | `/todos` | 预订待办列表 |
-| POST | `/todos/:docId` | 更新待办 `{done}` |
+| POST | `/todos` | 全量替换保存 `{items:[...]}`，用于新增/编辑/删除/排序 |
+| POST | `/todos/:docId` | 兼容旧版：更新待办 `{done}` |
 | GET | `/expenses` | 记账列表 |
 | POST | `/expenses` | 全量替换保存 `{items:[...]}` |
 | GET | `/docs` | 文件状态、备注、压缩照片 |

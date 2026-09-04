@@ -482,7 +482,23 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .l-note{font-size:12px;color:var(--muted);margin-top:1px}
 .l-ic{color:var(--green);flex-shrink:0;display:flex}
 .l-row.done .l-ic{opacity:.55}
-.l-tag{flex-shrink:0;font-size:10.5px;font-weight:700;color:var(--muted);background:var(--bg);border-radius:8px;padding:4px 8px}
+.list-toolbar{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.list-add-btn{
+  min-height:42px;border-radius:14px;padding:0 14px;background:var(--green-xl);color:var(--green-d);
+  border:1px solid rgba(118,169,138,.22);font-size:13px;font-weight:900;display:flex;align-items:center;gap:7px;
+}
+.list-add-btn .ic{width:16px;height:16px}
+.l-toggle{flex-shrink:0}
+.l-toggle .l-check{pointer-events:none}
+.l-actions{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.l-mini{
+  width:30px;height:30px;border-radius:10px;border:1px solid rgba(224,232,226,.95);background:var(--bg);
+  color:var(--muted);display:flex;align-items:center;justify-content:center;
+}
+.l-mini .ic{width:14px;height:14px}
+.l-mini[data-act="up"] .ic{transform:rotate(180deg)}
+.l-mini:disabled{opacity:.28}
+.l-mini.danger{color:#9B6468;background:#F8ECEC;border-color:#EBCFD1}
 .progress-strip{
   display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--grad-soft);
   border-radius:var(--radius);margin-bottom:14px;
@@ -1070,6 +1086,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <span class="ps-num" id="todosNum">0/0</span>
       <div class="ps-track"><i id="todosBar"></i></div>
     </div>
+    <div class="list-toolbar"><button class="list-add-btn" id="todoAdd" type="button"><i class="ti" data-ic="plus"></i>新增待办</button></div>
     <div class="card list-card" id="todosList"></div>
 
     <h2 class="sec-title" style="margin-top:28px"><i class="ti" data-ic="check"></i>打卡清单 <span class="st-sub" id="bucketCount"></span></h2>
@@ -1086,6 +1103,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <span class="ps-num" id="clNum">0/0</span>
       <div class="ps-track"><i id="clBar"></i></div>
     </div>
+    <div class="list-toolbar"><button class="list-add-btn" id="checklistAdd" type="button"><i class="ti" data-ic="plus"></i>新增行李</button></div>
     <div class="card list-card" id="checklistList"></div>
     <div class="cl-hint">入境提示：护照有效期 6 个月以上，签证/K-ETA 按最新政策准备；出发前把行程单和酒店订单存手机相册，没网也能查。</div>
   </div>
@@ -1569,10 +1587,6 @@ const EMBEDDED_CHECKLIST = [
   { id: 14, text: '一次性拖鞋', note: '长途飞行用' },
   { id: 15, text: '相机/稳定器', note: '充电' },
   { id: 16, text: 'VISA/Master 信用卡', note: '大额刷卡' }
-];
-const STATIC_CHECKLIST = [
-  { id: 'st-power', text: '备用充电宝', note: '本地项', done: false },
-  { id: 'st-cream', text: '护手霜 + 润唇膏', note: '本地项', done: false }
 ];
 const PHRASES = [
   ['안녕하세요', 'an-nyeong-ha-se-yo', '你好'],
@@ -2434,40 +2448,96 @@ async function initItinerary() {
 
 /* ================= 待办（预订） ================= */
 let todoItems = [], todoTimer = null;
+function normalizeTodo(t, idx) {
+  return {
+    id: t.id || t.clientId || `todo-${Date.now()}-${idx}`,
+    sortOrder: Number.isFinite(Number(t.sortOrder)) ? Number(t.sortOrder) : idx + 1,
+    emoji: t.emoji || '📋',
+    title: t.title || '新待办',
+    note: t.note || '',
+    done: Boolean(t.done)
+  };
+}
+function sortByOrder(items) {
+  return [...items].sort((a, b) => (Number(a.sortOrder) || 9999) - (Number(b.sortOrder) || 9999));
+}
+function resequence(items) {
+  items.forEach((it, idx) => { it.sortOrder = idx + 1; });
+}
+async function persistTodos() {
+  resequence(todoItems);
+  const payload = todoItems.map(normalizeTodo);
+  cache.set('kr_cache_todos', payload);
+  try {
+    await apiPost('/todos', { items: payload });
+  } catch {
+    alert('待办已先保存在本机，云端同步暂时失败；网络恢复后再改一次即可同步。');
+  }
+}
 function renderTodos() {
   const done = todoItems.filter((t) => t.done).length;
   $('#todosCount').textContent = `${done}/${todoItems.length}`;
   $('#todosNum').textContent = `${done}/${todoItems.length}`;
   $('#todosBar').style.width = (todoItems.length ? done / todoItems.length * 100 : 0) + '%';
-  $('#todosList').innerHTML = todoItems.map((t) => `
-    <div class="l-row${t.done ? ' done' : ''}" data-id="${esc(t._id || t.id)}" onclick="toggleTodo(this)">
+  $('#todosList').innerHTML = todoItems.map((t, idx) => `
+    <div class="l-row${t.done ? ' done' : ''}" data-id="${esc(t.id)}">
+      <button class="l-toggle" data-act="toggle" aria-label="完成状态">
+        <span class="l-check">✓</span>
+      </button>
       <span class="l-ic">${iconFor(t.emoji)}</span>
       <span class="l-main"><span class="l-text">${esc(t.title)}</span>
         ${t.note ? `<div class="l-note">${esc(t.note)}</div>` : ''}</span>
-      <span class="l-check">✓</span>
+      <span class="l-actions">
+        <button class="l-mini" data-act="up" aria-label="上移" ${idx === 0 ? 'disabled' : ''}>${ic('chevron')}</button>
+        <button class="l-mini" data-act="down" aria-label="下移" ${idx === todoItems.length - 1 ? 'disabled' : ''}>${ic('chevron')}</button>
+        <button class="l-mini" data-act="edit" aria-label="编辑">${ic('edit')}</button>
+        <button class="l-mini danger" data-act="delete" aria-label="删除">${ic('x')}</button>
+      </span>
     </div>`).join('');
 }
-window.toggleTodo = async function (el) {
-  const id = el.dataset.id;
-  const item = todoItems.find((t) => (t._id || t.id) == id);
+function editTodo(item) {
+  const title = prompt('待办名称：', item.title || '');
+  if (title === null) return false;
+  const note = prompt('备注：', item.note || '');
+  if (note === null) return false;
+  item.title = title.trim() || '新待办';
+  item.note = note.trim();
+  return true;
+}
+async function handleTodoAction(action, id) {
+  const idx = todoItems.findIndex((t) => t.id == id);
+  const item = todoItems[idx];
   if (!item) return;
-  const prev = item.done;
-  item.done = !item.done;
-  renderTodos();
-  try {
-    if (String(id).length > 20) {
-      await fetch(`${API_BASE}/todos/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ done: item.done }) });
-    }
-  } catch {
-    item.done = prev; renderTodos();
+  if (action === 'toggle') item.done = !item.done;
+  if (action === 'up' && idx > 0) [todoItems[idx - 1], todoItems[idx]] = [todoItems[idx], todoItems[idx - 1]];
+  if (action === 'down' && idx < todoItems.length - 1) [todoItems[idx + 1], todoItems[idx]] = [todoItems[idx], todoItems[idx + 1]];
+  if (action === 'edit' && !editTodo(item)) return;
+  if (action === 'delete') {
+    if (!confirm('删除这个待办？')) return;
+    todoItems.splice(idx, 1);
   }
-};
-async function initTodos() {
-  todoItems = await apiGet('/todos', 'kr_cache_todos', EMBEDDED_TODOS);
   renderTodos();
+  await persistTodos();
+}
+async function initTodos() {
+  todoItems = sortByOrder((await apiGet('/todos', 'kr_cache_todos', EMBEDDED_TODOS)).map(normalizeTodo));
+  renderTodos();
+  $('#todoAdd').addEventListener('click', async () => {
+    const item = normalizeTodo({ id: `todo-${Date.now()}`, title: '', note: '', done: false }, todoItems.length);
+    if (!editTodo(item)) return;
+    todoItems.push(item);
+    renderTodos();
+    await persistTodos();
+  });
+  $('#todosList').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const row = e.target.closest('.l-row');
+    await handleTodoAction(btn.dataset.act, row.dataset.id);
+  });
   todoTimer = setInterval(async () => {
     const fresh = await apiGet('/todos', 'kr_cache_todos', EMBEDDED_TODOS);
-    todoItems = fresh; renderTodos();
+    todoItems = sortByOrder(fresh.map(normalizeTodo)); renderTodos();
   }, 10000);
 }
 
@@ -2510,54 +2580,89 @@ async function initBucket() {
 
 /* ================= 行李清单 ================= */
 let checklistItems = [], checklistTimer = null;
-function staticItems() {
-  const saved = cache.get('kr_static_cl');
-  if (saved) return saved;
-  return STATIC_CHECKLIST.map((s) => ({ ...s }));
+function normalizeChecklistItem(i, idx) {
+  return {
+    id: i.id || i.clientId || `cl-${Date.now()}-${idx}`,
+    sortOrder: Number.isFinite(Number(i.sortOrder)) ? Number(i.sortOrder) : idx + 1,
+    text: i.text || '新行李',
+    note: i.note || '',
+    done: Boolean(i.done)
+  };
+}
+async function persistChecklist() {
+  resequence(checklistItems);
+  const payload = checklistItems.map(normalizeChecklistItem);
+  cache.set('kr_cache_checklist', payload);
+  try {
+    await apiPost('/checklist', { items: payload });
+  } catch {
+    alert('行李清单已先保存在本机，同步暂时失败；网络恢复后再改一次即可同步。');
+  }
 }
 function renderChecklist() {
-  const statics = staticItems();
-  const all = [...checklistItems, ...statics];
-  const done = all.filter((i) => i.done).length;
-  $('#clCount').textContent = `${done}/${all.length}`;
-  $('#clNum').textContent = `${done}/${all.length}`;
-  $('#clBar').style.width = (all.length ? done / all.length * 100 : 0) + '%';
-  $('#checklistList').innerHTML = all.map((i) => `
-    <div class="l-row${i.done ? ' done' : ''}" data-id="${esc(i._id || i.id)}" data-static="${i.id && String(i.id).startsWith('st-') ? 1 : 0}" onclick="toggleChecklist(this)">
-      <span class="l-ic">${iconFor(String(i.id).startsWith('st-') ? '🧴' : '🎒')}</span>
+  const done = checklistItems.filter((i) => i.done).length;
+  $('#clCount').textContent = `${done}/${checklistItems.length}`;
+  $('#clNum').textContent = `${done}/${checklistItems.length}`;
+  $('#clBar').style.width = (checklistItems.length ? done / checklistItems.length * 100 : 0) + '%';
+  $('#checklistList').innerHTML = checklistItems.map((i, idx) => `
+    <div class="l-row${i.done ? ' done' : ''}" data-id="${esc(i.id)}">
+      <button class="l-toggle" data-act="toggle" aria-label="完成状态">
+        <span class="l-check">✓</span>
+      </button>
+      <span class="l-ic">${iconFor('🎒')}</span>
       <span class="l-main"><span class="l-text">${esc(i.text)}</span>
         ${i.note ? `<div class="l-note">${esc(i.note)}</div>` : ''}</span>
-      <span class="l-tag">${String(i.id).startsWith('st-') ? '本地' : '云端'}</span>
-      <span class="l-check">✓</span>
+      <span class="l-actions">
+        <button class="l-mini" data-act="up" aria-label="上移" ${idx === 0 ? 'disabled' : ''}>${ic('chevron')}</button>
+        <button class="l-mini" data-act="down" aria-label="下移" ${idx === checklistItems.length - 1 ? 'disabled' : ''}>${ic('chevron')}</button>
+        <button class="l-mini" data-act="edit" aria-label="编辑">${ic('edit')}</button>
+        <button class="l-mini danger" data-act="delete" aria-label="删除">${ic('x')}</button>
+      </span>
     </div>`).join('');
 }
-window.toggleChecklist = async function (el) {
-  const id = el.dataset.id;
-  const isStatic = el.dataset.static === '1';
-  if (isStatic) {
-    const statics = staticItems();
-    const item = statics.find((i) => i.id == id);
-    if (item) { item.done = !item.done; cache.set('kr_static_cl', statics); }
-    renderChecklist();
-    return;
-  }
-  const item = checklistItems.find((i) => (i._id || i.id) == id);
+function editChecklistItem(item) {
+  const text = prompt('行李名称：', item.text || '');
+  if (text === null) return false;
+  const note = prompt('备注：', item.note || '');
+  if (note === null) return false;
+  item.text = text.trim() || '新行李';
+  item.note = note.trim();
+  return true;
+}
+async function handleChecklistAction(action, id) {
+  const idx = checklistItems.findIndex((i) => i.id == id);
+  const item = checklistItems[idx];
   if (!item) return;
-  const prev = item.done;
-  item.done = !item.done;
-  renderChecklist();
-  try {
-    await fetch(`${API_BASE}/checklist/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ done: item.done }) });
-  } catch {
-    item.done = prev; renderChecklist();
+  if (action === 'toggle') item.done = !item.done;
+  if (action === 'up' && idx > 0) [checklistItems[idx - 1], checklistItems[idx]] = [checklistItems[idx], checklistItems[idx - 1]];
+  if (action === 'down' && idx < checklistItems.length - 1) [checklistItems[idx + 1], checklistItems[idx]] = [checklistItems[idx], checklistItems[idx + 1]];
+  if (action === 'edit' && !editChecklistItem(item)) return;
+  if (action === 'delete') {
+    if (!confirm('删除这个行李项？')) return;
+    checklistItems.splice(idx, 1);
   }
-};
-async function initChecklist() {
-  checklistItems = await apiGet('/checklist', 'kr_cache_checklist', EMBEDDED_CHECKLIST);
   renderChecklist();
+  await persistChecklist();
+}
+async function initChecklist() {
+  checklistItems = sortByOrder((await apiGet('/checklist', 'kr_cache_checklist', EMBEDDED_CHECKLIST)).map(normalizeChecklistItem));
+  renderChecklist();
+  $('#checklistAdd').addEventListener('click', async () => {
+    const item = normalizeChecklistItem({ id: `cl-${Date.now()}`, text: '', note: '', done: false }, checklistItems.length);
+    if (!editChecklistItem(item)) return;
+    checklistItems.push(item);
+    renderChecklist();
+    await persistChecklist();
+  });
+  $('#checklistList').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const row = e.target.closest('.l-row');
+    await handleChecklistAction(btn.dataset.act, row.dataset.id);
+  });
   checklistTimer = setInterval(async () => {
     const fresh = await apiGet('/checklist', 'kr_cache_checklist', EMBEDDED_CHECKLIST);
-    checklistItems = fresh; renderChecklist();
+    checklistItems = sortByOrder(fresh.map(normalizeChecklistItem)); renderChecklist();
   }, 10000);
 }
 

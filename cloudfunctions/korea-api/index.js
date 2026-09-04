@@ -108,10 +108,37 @@ const server = http.createServer(async (req, res) => {
     // GET /todos（预订待办）
     if (route === '/todos' && req.method === 'GET') {
       const result = await db.collection(COL.todos)
-        .orderBy('id', 'asc')
+        .orderBy('sortOrder', 'asc')
         .limit(50)
         .get();
       return json(res, { success: true, data: result.data });
+    }
+
+    // POST /todos (batch save: replace all)
+    if (route === '/todos' && req.method === 'POST') {
+      const { items } = await readBody(req);
+      if (!Array.isArray(items)) {
+        return json(res, { success: false, error: 'items must be an array' }, 400);
+      }
+
+      const existing = await db.collection(COL.todos).get();
+      const removeTasks = existing.data.map(doc => db.collection(COL.todos).doc(doc._id).remove());
+      await Promise.all(removeTasks);
+
+      if (items.length > 0) {
+        const addTasks = items.map((item, idx) => db.collection(COL.todos).add({
+          id: item.id || `todo-${idx + 1}`,
+          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : idx + 1,
+          emoji: item.emoji || '📋',
+          title: item.title || '新待办',
+          note: item.note || '',
+          done: Boolean(item.done),
+          updatedAt: Date.now()
+        }));
+        await Promise.all(addTasks);
+      }
+
+      return json(res, { success: true, count: items.length });
     }
 
     // POST /todos/:docId
@@ -126,10 +153,36 @@ const server = http.createServer(async (req, res) => {
     // GET /checklist
     if (route === '/checklist' && req.method === 'GET') {
       const result = await db.collection(COL.checklist)
-        .orderBy('id', 'asc')
+        .orderBy('sortOrder', 'asc')
         .limit(30)
         .get();
       return json(res, { success: true, data: result.data });
+    }
+
+    // POST /checklist (batch save: replace all)
+    if (route === '/checklist' && req.method === 'POST') {
+      const { items } = await readBody(req);
+      if (!Array.isArray(items)) {
+        return json(res, { success: false, error: 'items must be an array' }, 400);
+      }
+
+      const existing = await db.collection(COL.checklist).get();
+      const removeTasks = existing.data.map(doc => db.collection(COL.checklist).doc(doc._id).remove());
+      await Promise.all(removeTasks);
+
+      if (items.length > 0) {
+        const addTasks = items.map((item, idx) => db.collection(COL.checklist).add({
+          id: item.id || `cl-${idx + 1}`,
+          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : idx + 1,
+          text: item.text || '新行李',
+          note: item.note || '',
+          done: Boolean(item.done),
+          updatedAt: Date.now()
+        }));
+        await Promise.all(addTasks);
+      }
+
+      return json(res, { success: true, count: items.length });
     }
 
     // POST /checklist/:docId

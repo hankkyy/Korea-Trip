@@ -27,11 +27,12 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 部署：Vercel 项目已链接到本仓库，`.vercel/project.json` 里记录的 projectId 是
   `prj_m9oqrYcJj3jTcrkgpXSakIwZ616Y`，生产域名是 `https://korea-vercel.vercel.app`。
 - 线上前端已经包含最新的薄荷绿重设计、可编辑行程、更新后的航班/酒店信息和新 app 图标。
-- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.png` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v11`。
+- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.png` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v12`。
 - 2026-09-04：CloudBase 正式部署源 `/Users/hankzhang/Desktop/cloudfunctions/korea-api` 已同步仓库云函数代码并重新部署；线上 `POST /itinerary` 已恢复，`kr_itinerary` 已刷新为 43 条新版行程，旧“海云台酒店”数据已清掉。
 - 后端已上线：CloudBase HTTP 云函数 `korea-api`，API_BASE = `https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
 - 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses` / `kr_docs`。
 - 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步自定义文件卡片的名称 / 类型 / 状态 / 备注 / 压缩照片；localStorage 仅作弱网兜底。旧模板空壳已清理，新增文件按钮必须可用。
+- 2026-09-04：待办与行李已改成可编辑清单：勾选、新增、编辑、删除、上下重排序；`POST /todos` 与 `POST /checklist` 全量替换保存，旧的 `/:docId` done 接口保留兼容。行李行内不要显示“云端/本地”标签。
 - 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api + 三份文档 + 本文件）。
 
 ## 部署方法
@@ -74,7 +75,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 发布后必须用 cache-busting URL 验证：
   ```bash
   curl -I "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/assets/photos/busan-asti-hotel-editorial.png?v=$(date +%s)"
-  curl -Ls "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/?v=$(date +%s)" | rg "korea-trip-v11|busan-asti-hotel-editorial.png|新增文件"
+  curl -Ls "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/?v=$(date +%s)" | rg "korea-trip-v12|busan-asti-hotel-editorial.png|新增文件"
   ```
 - 旧方案备用：MCP manageApps 有类型 bug（deployApp 的 CosTimestamp schema 是 integer 但后端要 string；getBuildLog 的 BuildId 要求 int64）→ **绕 MCP，用 callCloudApi**：
   - 上传：queryApps getUploadUrl 拿预签名 COS URL → `curl PUT zip`（**大文件会衰减卡死，1.4MB 小包 22-115s 正常，28MB 包 420s+ 卡死**）
@@ -106,6 +107,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
 - [x] 文件区跨设备同步（自定义名称 / 类型 / 状态 / 备注 / 压缩照片；无预设模板、无 emoji 选择）
+- [x] 待办 / 行李支持新增、编辑、删除、上下重排序
 - [x] 自定义域名 jinlu.cloud 已上线（Vercel，用户控制台操作；备案通过后换绑 CloudBase）
 - [ ] 补传剩余 4 张 editorial PNG（seoul-airport / seoul-marriott-myeongdong / seoul-night / seoul-palace）到托管 korea/assets/photos/，单文件逐个传 + findFiles 验证
 - [ ] jinlu.cloud 提交「新增网站」备案（用户操作）→ 通过后按上文步骤绑 CloudBase
