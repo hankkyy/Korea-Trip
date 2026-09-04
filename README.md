@@ -137,6 +137,7 @@ cd ~/Desktop/korea-vercel && vercel domains add hankzhang.cloud
 
 **文件位置**：
 - 源码：`~/Desktop/korea-vercel/`（index.html 2059 行 / 122KB 等全部文件）
+- **代码仓库：`https://github.com/hankkyy/Korea-Trip`（main 分支，2026-09-03 已推送；clone/push 走 SSH：`git@github.com:hankkyy/Korea-Trip.git`——本机 gh CLI token 已失效，勿用 HTTPS）**
 - 部署用文件备份：`/tmp/kr_split/`（index.html 4 分片 part_aa~ad + manifest/sw/vercel.json + assets 全部；分片拼接 sha256 = `e9227b76118259c2f9114849e2901cd0d9e970b449962eed7a564dbd83c8dbbb`，与 Desktop 版字节一致；PNG 的 base64 在 *.b64 文件）
 - 云函数正式源码：`~/Desktop/cloudfunctions/korea-api/index.js`（项目内 `cloudfunctions/korea-api/` 有副本）
 

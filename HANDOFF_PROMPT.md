@@ -2,6 +2,8 @@
 
 ```
 你是接手「可乐 & 金鹿 韩国之旅」项目（~/Desktop/korea-vercel）的工程师。
+代码已托管在 GitHub：git clone git@github.com:hankkyy/Korea-Trip.git
+（本机 gh CLI token 已失效、HTTPS 凭据链不可用，clone/push 一律走 SSH 地址 git@github.com:hankkyy/Korea-Trip.git）
 若 macOS TCC 阻止读取 Desktop 目录（EPERM），改用备份目录 /tmp/kr_split/，内容与源码一致。
 
 ## 项目背景
@@ -30,6 +32,8 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 部署文件备份在 /tmp/kr_split/：index.html 四分片 part_aa~part_ad 按序拼接
   （sha256 e9227b76118259c2f9114849e2901cd0d9e970b449962eed7a564dbd83c8dbbb），
   另有 manifest.json / sw.js / vercel.json / icon.svg / hero-bg-1~4.svg 与 PNG 的 base64（*.b64）。
+- 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api +
+  三份文档 + 本文件；push 走 SSH，见上）。
 
 ## 部署方法（Vercel MCP deploy_to_vercel）
 - name: korea-trip（勿用 korea-vercel），teamId: team_wHIZB9oM0g4eyRlzun2xSPfo，
