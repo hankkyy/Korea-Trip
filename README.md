@@ -1,6 +1,6 @@
-# 在璐上 · 首尔 × 釜山
+# Korea Trip · 首尔 × 釜山
 
-**可乐 & 金鹿** 的韩国冬季之旅可视化计划站。Add to Home Screen 后桌面名称为 **“在璐上”**。
+**可乐 & 金鹿** 的韩国冬季之旅可视化计划站。网页内品牌名保持 **“Korea Trip”**，Add to Home Screen 后桌面名称为 **“在璐上”**。
 
 - 行程：深圳 ⇄ 首尔 · **2026.12.26 – 2027.1.3**（12/26 02:25 由深圳飞首尔 → 当日南下釜山 → 12/26–12/29 住 Asti Hotel Busan Station → 12/29 傍晚 KTX 回首尔 → 首尔酒店已定为 Courtyard by Marriott Seoul Myeongdong → 普信阁跨年 → 1/3 22:10 回深圳，1/4 01:15 落地）
 - 域名：当前 `https://korea-vercel.vercel.app`（默认域名；上线稳定后可换绑 `hankzhang.cloud`）
