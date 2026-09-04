@@ -32,8 +32,10 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 后端已上线：CloudBase HTTP 云函数 `korea-api`，API_BASE = `https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
 - 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses` / `kr_docs`。
 - 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步自定义文件卡片的名称 / 类型 / 状态 / 备注 / 压缩照片；localStorage 仅作弱网兜底。旧模板空壳已清理，新增文件按钮必须可用。
-- 2026-09-04：待办与行李已改成可编辑清单：勾选、新增、编辑、删除、上下重排序；`POST /todos` 与 `POST /checklist` 全量替换保存，旧的 `/:docId` done 接口保留兼容。行李行内不要显示“云端/本地”标签。
-- 2026-09-04：地图页已明确改为“本地手帐关系示意图 + Apple Maps 主跳转”。不要接入 Google/Naver/Kakao SDK 或 iframe 底图；每个地点保留坐标、Apple 主按钮、Naver/Kakao/Google/Amap 备用按钮。
+- 2026-09-04：待办与行李已改成可编辑清单：勾选、新增、编辑、删除、拖动重排序；`POST /todos` 与 `POST /checklist` 全量替换保存，旧的 `/:docId` done 接口保留兼容。行李行内不要显示“云端/本地”标签。
+- 2026-09-04：地图页已明确改为“页内可读的手帐攻略地图 + Apple Maps 主跳转”。不要接入 Google/Naver/Kakao SDK 或 iframe 底图；页内地图本身必须能看懂区域、住宿、景点和大致动线，且支持拖动浏览 / 放大缩小。每个地点保留坐标、Apple 主按钮、Naver/Kakao/Google/Amap 备用按钮。
+- 2026-09-04：完成 9 项交互修复：日历点击直达当天；清理产品说明式提示词；待办/行李拖动排序；待办/行李统一底部编辑面板并保存后即时刷新；日程图片去掉“当天封面/图2/图3”标签；行程行点击展开/收起；页面文案尽量中文化；PWA 名称改“在璐上”；地图改固定比例可拖动可缩放。
+- 2026-09-04：补充弱网策略：行程、待办、行李、打卡必须先用 localStorage / 内置数据渲染，再异步拉 CloudBase 覆盖；不要让 CloudBase、天气或外部地图网络拖空首屏。
 - 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api + 三份文档 + 本文件）。
 
 ## 部署方法
@@ -108,7 +110,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
 - [x] 文件区跨设备同步（自定义名称 / 类型 / 状态 / 备注 / 压缩照片；无预设模板、无 emoji 选择）
-- [x] 待办 / 行李支持新增、编辑、删除、上下重排序
+- [x] 待办 / 行李支持新增、编辑、删除、拖动重排序
 - [x] 自定义域名 jinlu.cloud 已上线（Vercel，用户控制台操作；备案通过后换绑 CloudBase）
 - [ ] 补传剩余 4 张 editorial PNG（seoul-airport / seoul-marriott-myeongdong / seoul-night / seoul-palace）到托管 korea/assets/photos/，单文件逐个传 + findFiles 验证
 - [ ] jinlu.cloud 提交「新增网站」备案（用户操作）→ 通过后按上文步骤绑 CloudBase
@@ -116,7 +118,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 ## 关键文件与细节
 - index.html：单文件应用（~122KB / 2059 行），顶部常量区 FX_RATES（1 RMB≈190 KRW、USD 6.80）、
   BUDGET_TOTAL=10000、D1/BUSAN_END/TRIP_END/NEWYEAR 时间常量、HERO_IMAGES。
-- sw.js 缓存版本已更新；manifest.json theme_color #2FA36E。
+- sw.js 缓存版本已更新到 `korea-trip-v15`；manifest.json theme_color #78AA8B，Add to Home Screen 名称为“在璐上”。
 - 完整文档：README.md（含交接状态）与 REQUIREMENTS.md，在项目根目录和 /tmp/kr_split/ 均有。
 - 会话记忆：~/.claude/projects/-Users-hankzhang/memory/korea-vercel-project.md。
 ```

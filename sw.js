@@ -1,6 +1,6 @@
-// Korea Trip — Service Worker
+// 在璐上 — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'korea-trip-v13';
+const CACHE = 'korea-trip-v15';
 const PRECACHE = [
   '/',
   '/manifest.json',
