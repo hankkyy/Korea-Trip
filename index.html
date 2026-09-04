@@ -837,7 +837,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="block-title"><i class="ti" data-ic="hotel"></i>住宿</div>
     <div class="grid g2">
       <div class="card board-card">
-        <div class="bc-route">釜山 · 海云台酒店</div>
+        <div class="bc-route">釜山 · 釜山站附近酒店</div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
         <div class="bc-meta">靠海边 / 方便去胶囊小火车和海云台海水浴场</div>
         <div class="bc-note">目前还没最终定，先按海云台区域占位，后面再手动替换具体酒店。</div>
@@ -895,7 +895,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
     <div class="block-title"><i class="ti" data-ic="train"></i>城际铁路 KTX</div>
     <div class="card info-card">
-      <b>12/29（周二）釜山站 → 首尔站</b> · 约 18:00–19:00 出发，21:00 左右抵达 · 车程 2.5–3h<br>
+      <b>12/29（周二）釜山站 → 首尔站</b> · 约晚饭前后 18:00–19:00 出发，21:00 左右抵达 · 车程 2.5–3h<br>
       二等座约 <b>₩59,800</b>（约 ¥315），非节假日提前 2–3 天购票即可；座位带充电口，车上补觉刚好。
       <div class="ic-links">
         <a href="https://www.letskorail.com/ebizbf/EbizbfForeign_pr16100.do?gubun=1" target="_blank" rel="noopener">KORAIL 官网购票</a>
@@ -1294,7 +1294,7 @@ const EMBEDDED_ITINERARY = [
   { day: 1, sortOrder: 1, time: '02:25', title: '深圳宝安 T3 起飞', subtitle: 'SZX → 首尔仁川 T2 · OZ372', detail: '凌晨深夜出发，提前 2.5–3 小时到机场值机。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Shenzhen+Baoan+Airport' },
   { day: 1, sortOrder: 2, time: '06:50', title: '落地首尔仁川机场', subtitle: '入境 + 换汇 + 买 T-money', detail: '出关后到机场便利店买 T-money 卡并充值，坐地铁/机场快线都能用。' },
   { day: 1, sortOrder: 3, time: '09:00', title: '仁川机场 → 首尔站 → 釜山', subtitle: 'AREX + KTX 直达南下', detail: '机场快线到首尔站，换乘 KTX 去釜山，车程约 2.5–3h。' },
-  { day: 1, sortOrder: 4, time: '14:00', title: '抵达釜山，入住海云台酒店', subtitle: '放行李 · 海边散步', detail: '冬天海云台人少安静，适合拍照。' },
+  { day: 1, sortOrder: 4, time: '14:00', title: '抵达釜山，入住釜山站附近酒店', subtitle: '放行李 · 转车更方便', detail: '釜山站附近更适合后面 12/29 晚上直接坐 KTX 去首尔，也方便当天到站后休整。' },
   { day: 1, sortOrder: 5, time: '18:00', title: '晚餐：猪肉汤饭', subtitle: '돼지국밥 · 海云台传统市场附近', detail: '落地第一顿吃热汤饭暖胃。', mapUrl: 'https://map.naver.com/p/search/해운대돼지국밥' },
   { day: 2, sortOrder: 1, time: '09:00', title: '海云台海水浴场', subtitle: '海边散步 · 冬天人少的海', detail: '拍空景大片的好机会，海边风大注意保暖。', mapUrl: 'https://map.naver.com/p/search/해운대해수욕장' },
   { day: 2, sortOrder: 2, time: '10:30', title: '胶囊小火车', subtitle: '海云台 Blueline Park · 天空舱', detail: '青沙浦站出发，沿海行驶的海上小火车，超适合拍照。', mapUrl: 'https://map.naver.com/p/search/해운대블루라인파크' },
@@ -1786,7 +1786,7 @@ function mapLabel(s) {
     .replace('广安里大桥', '广安里')
     .replace('汉江公园·汝矣岛', '汉江公园')
     .replace('北村韩屋村', '北村')
-    .replace('酒店·海云台(待定)', '海云台酒店')
+    .replace('酒店·海云台(待定)', '釜山站附近酒店')
     .replace('Courtyard by Marriott Seoul Myeongdong', '首尔酒店');
 }
 function visibleSpots(city) {
