@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Korea Trip · 首尔 × 釜山</title>
+<meta name="description" content="可乐 & 金鹿 · 韩国冬季之旅 · 2026.12.26 – 2027.1.3">
+<meta name="theme-color" content="#2FA36E">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Korea Trip">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+/* ============ 设计令牌 · Korea Mint ============ */
+:root{
+  --green:#2FA36E; --green-d:#23855A; --green-l:#E4F4EC; --green-xl:#F1F9F5;
+  --blue:#5B8DEF; --blue-d:#3D6FC8; --blue-l:#E9F0FC;
+  --orange:#F2A65A; --pink:#F08BA6; --purple:#9C8CE8; --slate:#94A7B8;
+  --bg:#F4F8F5; --card:#FFFFFF; --text:#1F2A24; --muted:#7C8A83;
+  --line:#E5EDE7; --ok:#23855A; --ok-l:#E4F4EC; --warn:#B07A2E; --warn-l:#F7EFE1;
+  --radius:18px; --radius-s:12px;
+  --shadow:0 2px 6px rgba(31,64,46,.05);
+  --shadow-lg:0 10px 28px rgba(31,64,46,.10);
+  --grad:linear-gradient(120deg,#4FBE93,#2FA36E);
+  --grad-soft:linear-gradient(135deg,#F1F9F5,#E9F0FC);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue","Apple SD Gothic Neo",sans-serif;
+  background:var(--bg);color:var(--text);
+  font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+}
+button{font-family:inherit;font-size:inherit;cursor:pointer;touch-action:manipulation;border:none;background:none;color:inherit}
+input,select{font-family:inherit;font-size:16px} /* ≥16px 防 iOS 聚焦放大 */
+img{max-width:100%;display:block}
+a{color:var(--blue-d);text-decoration:none}
+a:active{opacity:.7}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.panel{display:none;padding:16px 0 8px}
+.panel.active{display:block;animation:rise .35s ease}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h2.sec-title{font-size:clamp(19px,4.4vw,24px);font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:14px;letter-spacing:-.01em}
+h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-left:auto}
+.block-title{font-size:15px;font-weight:800;margin:24px 0 10px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line)}
+.grid{display:grid;gap:12px}
+@media(min-width:640px){.grid.g2{grid-template-columns:1fr 1fr}}
+@media(min-width:960px){.grid.g3{grid-template-columns:repeat(3,1fr)}}
+
+/* ============ 通用图标 ============ */
+.ti{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green)}
+.ic{width:22px;height:22px;flex-shrink:0;display:block}
+.sec-title .ti .ic{width:22px;height:22px}
+.block-title .ti .ic{width:18px;height:18px}
+.fg-head .ti .ic{width:20px;height:20px}
+.tip-line .ti .ic{width:20px;height:20px}
+.tip-card .ti .ic{width:20px;height:20px}
+.resto-card .ti .ic{width:22px;height:22px}
+.doc-card .ti .ic{width:24px;height:24px}
+.qcard .ti .ic{width:20px;height:20px}
+#ctaPlan .ti .ic{width:20px;height:20px}
+.l-ic .ic{width:26px;height:26px}
+.bl-ic .ic{width:26px;height:26px}
+.nu-ic .ic{width:24px;height:24px}
+.wx-big-ic .ic{width:34px;height:34px}
+.wd-ic .ic{width:26px;height:26px}
+.wh-ic .ic{width:22px;height:22px}
+.city-tab .ti .ic{width:18px;height:18px}
+
+/* ============ 顶部 App 头 ============ */
+#appHeader{
+  position:sticky;top:0;z-index:900;
+  padding-top:env(safe-area-inset-top);
+  background:rgba(244,248,245,.92);
+  backdrop-filter:saturate(1.4) blur(16px);-webkit-backdrop-filter:saturate(1.4) blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.header-row{
+  max-width:1120px;margin:0 auto;height:44px;display:flex;align-items:center;gap:8px;padding:0 16px;
+}
+.brand{font-weight:900;font-size:15px;letter-spacing:-.01em;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.brand .ti{color:var(--green)}
+.brand .ti .ic{width:18px;height:18px}
+.brand .ba{color:var(--green-d)}
+#tb-phase{
+  font-size:11.5px;font-weight:800;color:#fff;background:var(--grad);border-radius:999px;
+  padding:4px 11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44vw;
+}
+#tb-time{font-size:12.5px;color:var(--muted);font-weight:700;margin-left:auto;white-space:nowrap}
+
+/* ============ 底部悬浮导航 ============ */
+#bnav{
+  position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(10px + env(safe-area-inset-bottom));z-index:950;
+  display:flex;gap:2px;max-width:calc(100vw - 20px);overflow-x:auto;padding:6px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--line);border-radius:999px;
+  box-shadow:0 8px 30px rgba(31,64,46,.13);
+  scrollbar-width:none;
+}
+#bnav::-webkit-scrollbar{display:none}
+.bn-btn{
+  flex-shrink:0;min-width:48px;height:52px;padding:0 8px;border-radius:999px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:10.5px;font-weight:700;color:var(--muted);
+}
+.bn-btn span{line-height:1}
+.bn-btn.active{background:var(--green-l);color:var(--green-d)}
+@media(min-width:720px){.bn-btn{min-width:60px;padding:0 12px}}
+
+/* ============ 首页 Hero ============ */
+.hero{
+  position:relative;min-height:min(56vh,430px);display:flex;align-items:flex-end;overflow:hidden;
+  border-radius:20px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:14px;
+}
+.hero-layer{
+  position:absolute;inset:0;background-size:cover;background-position:center;
+  transition:opacity 1.6s ease;opacity:0;
+}
+.hero-layer.active{opacity:1}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,38,31,.05) 0%,rgba(24,38,31,.38) 100%)}
+.hero-inner{
+  position:relative;z-index:2;color:#fff;text-align:left;padding:26px 22px 40px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:7px;width:100%;
+}
+.hero-badge{
+  font-size:10.5px;font-weight:800;letter-spacing:.3em;border:1px solid rgba(255,255,255,.6);border-radius:999px;
+  padding:6px 14px;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+}
+.hero-inner h1{font-size:clamp(32px,9vw,52px);font-weight:900;letter-spacing:.01em;text-shadow:0 4px 24px rgba(24,38,31,.35);line-height:1.15;margin-top:2px}
+.hero-sub{font-size:clamp(13.5px,3.8vw,16px);font-weight:600;opacity:.96}
+.hero-meta{font-size:12px;font-weight:600;opacity:.85}
+.hero-countdown{
+  margin-top:8px;font-size:13.5px;font-weight:800;color:#fff;
+  background:rgba(24,38,31,.34);border:1px solid rgba(255,255,255,.38);
+  border-radius:999px;padding:8px 18px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.hero-progress{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;height:4px;background:rgba(255,255,255,.24);
+}
+.hero-progress i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#8FE0B8,#4FBE93);transition:width 1s linear}
+
+/* ============ 首页 · CTA + 快捷卡片 ============ */
+#ctaPlan{
+  width:100%;height:54px;border-radius:16px;background:var(--grad);color:#fff;font-weight:900;font-size:16px;
+  display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px rgba(47,163,110,.28);
+  margin-bottom:14px;
+}
+#ctaPlan:active{opacity:.88;transform:scale(.99)}
+.qcards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.qcard{
+  padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:800;color:var(--text);border-radius:var(--radius);min-height:96px;
+}
+.qcard .qc-ic{width:42px;height:42px;border-radius:14px;background:var(--green-xl);color:var(--green-d);display:flex;align-items:center;justify-content:center}
+.qcard .qc-sub{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:-4px}
+.qcard:active{transform:scale(.97)}
+
+/* ============ 首页 · 下一站 ============ */
+.nu-card{padding:15px;display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.nu-ic{
+  flex-shrink:0;width:46px;height:46px;border-radius:15px;background:var(--green-xl);color:var(--green-d);
+  display:flex;align-items:center;justify-content:center;
+}
+.nu-title{font-weight:800;font-size:14.5px}
+.nu-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* ============ 天气 ============ */
+.city-tabs{display:flex;gap:8px;margin-bottom:12px}
+.city-tab{
+  flex:1;max-width:180px;height:46px;border-radius:999px;font-weight:800;font-size:14.5px;
+  background:var(--card);border:1.5px solid var(--line);color:var(--muted);
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.city-tab.active{background:var(--green);border-color:var(--green);color:#fff;box-shadow:var(--shadow)}
+.city-tab.active .ti{color:#fff}
+.wx-now{display:flex;align-items:center;gap:15px;padding:18px;margin-bottom:12px}
+.wx-big-ic{
+  flex-shrink:0;width:64px;height:64px;border-radius:18px;background:var(--green-xl);color:var(--green-d);
+  display:flex;align-items:center;justify-content:center;
+}
+.wx-now .wx-temp{font-size:clamp(32px,8vw,44px);font-weight:900;line-height:1}
+.wx-now .wx-info{display:flex;flex-direction:column;gap:3px}
+.wx-now .wx-desc{font-weight:700;font-size:15px}
+.wx-now .wx-sub{font-size:12.5px;color:var(--muted)}
+.wx-now .wx-city-tag{margin-left:auto;text-align:right}
+.wx-now .wx-city-tag .wct-name{font-weight:800;font-size:15px}
+.wx-now .wx-city-tag .wct-upd{font-size:11px;color:var(--muted)}
+.hscroll{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:2px 2px 8px;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.hscroll>*{scroll-snap-align:start;flex-shrink:0}
+.wx-day{width:96px;text-align:center;padding:12px 6px;border-radius:var(--radius-s)}
+.wx-day .wd-name{font-size:12px;font-weight:700;color:var(--muted)}
+.wx-day .wd-ic{display:flex;justify-content:center;margin:7px 0;color:var(--green)}
+.wx-day .wd-temp{font-size:14px;font-weight:800}
+.wx-day .wd-temp span{color:var(--muted);font-weight:600}
+.wx-hour{width:74px;text-align:center;padding:10px 4px;border-radius:var(--radius-s)}
+.wx-hour .wh-t{font-size:12px;color:var(--muted);font-weight:600}
+.wx-hour .wh-ic{display:flex;justify-content:center;margin:6px 0;color:var(--green)}
+.wx-hour .wh-temp{font-size:14px;font-weight:800}
+#wxHourlyBtn{
+  height:46px;padding:0 18px;border-radius:999px;background:var(--card);border:1.5px solid var(--line);
+  font-weight:700;font-size:14px;margin-top:4px;display:flex;align-items:center;gap:6px;
+}
+#wxHourlyBtn.active{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d)}
+#wxHourlyWrap{display:none;margin-top:12px}
+#wxHourlyWrap.open{display:block}
+
+/* ============ 倒计时圆环 ============ */
+.ring-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+.ring-card{padding:16px 6px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.ring-wrap{position:relative;width:clamp(78px,19vw,108px);height:clamp(78px,19vw,108px)}
+.ring-wrap svg{transform:rotate(-90deg);width:100%;height:100%}
+.ring-bg{fill:none;stroke:var(--line);stroke-width:9}
+.ring-fg{fill:none;stroke:url(#rg);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.ring-center .rc-num{font-size:clamp(16px,4.4vw,23px);font-weight:900}
+.ring-center .rc-unit{font-size:10.5px;color:var(--muted);font-weight:700}
+.ring-label{font-weight:800;font-size:13.5px}
+.ring-detail{font-size:11.5px;color:var(--muted);font-weight:600;text-align:center}
+.ring-card.done .ring-fg{stroke:var(--ok)}
+.ring-card.done .rc-num{color:var(--ok)}
+
+/* ============ 行程 · 日历条 ============ */
+.cal-card{padding:16px 14px 14px;margin-bottom:14px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+#calTitle{font-weight:800;font-size:15px}
+.cal-nav{
+  width:40px;height:40px;border-radius:12px;background:var(--bg);border:1px solid var(--line);color:var(--text);
+  display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;
+}
+.cal-nav:disabled{opacity:.3}
+.cal-nav:active{background:var(--line)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-wd{font-size:11px;color:var(--muted);text-align:center;font-weight:700;padding:2px 0 6px}
+.cal-cell{
+  height:42px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  font-size:13px;font-weight:600;color:var(--muted);
+}
+.cal-cell.trip{color:var(--text);font-weight:800;background:var(--green-xl);cursor:pointer}
+.cal-cell.trip:active{background:var(--green-l)}
+.cal-cell.today{box-shadow:inset 0 0 0 2px var(--green)}
+.cal-dots{display:flex;gap:3px;height:5px}
+.cal-dot{width:5px;height:5px;border-radius:50%;background:var(--cd)}
+.cal-legend{display:flex;gap:14px;margin-top:12px;flex-wrap:wrap}
+.cal-lg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);font-weight:600}
+.cal-lg i{width:7px;height:7px;border-radius:50%;background:var(--lc)}
+
+/* ============ 行程 · 日卡片 ============ */
+#dayChips{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none;padding-bottom:4px}
+#dayChips::-webkit-scrollbar{display:none}
+.day-chip{
+  flex-shrink:0;height:44px;padding:0 15px;border-radius:999px;font-weight:800;font-size:13.5px;
+  background:var(--card);border:1.5px solid var(--line);color:var(--muted);
+}
+.day-chip.active{background:var(--grad);color:#fff;border-color:transparent}
+.day-chip.today{box-shadow:0 0 0 2px var(--green)}
+.day-card{margin-bottom:12px;overflow:hidden}
+.dc-head{
+  width:100%;min-height:56px;display:flex;align-items:center;gap:12px;padding:12px 16px;text-align:left;
+}
+.dc-num{
+  flex-shrink:0;width:44px;height:44px;border-radius:14px;background:var(--grad);color:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;font-size:15px;line-height:1.1;
+}
+.dc-num small{font-size:9px;font-weight:700;opacity:.9}
+.dc-title{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dc-title .dc-theme{font-size:12px;font-weight:700;color:var(--green-d);background:var(--green-l);border-radius:8px;padding:3px 9px}
+.dc-badge{margin-left:auto;flex-shrink:0}
+.today-badge{font-size:11px;font-weight:800;color:#fff;background:var(--green);border-radius:8px;padding:4px 9px}
+.dc-arrow{color:var(--muted);transition:transform .3s;display:flex}
+.dc-arrow .ic{width:16px;height:16px}
+.day-card.open .dc-arrow{transform:rotate(180deg)}
+.dc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease}
+.day-card.open .dc-body{grid-template-rows:1fr}
+.dc-body-inner{overflow:hidden}
+.tl-row{display:flex;gap:12px;padding:11px 16px 11px 22px;border-top:1px solid var(--line);position:relative}
+.tl-row::before{
+  content:'';position:absolute;left:8px;top:20px;bottom:20px;width:2px;background:var(--line);
+}
+.tl-dot{position:absolute;left:3.5px;top:16px;width:11px;height:11px;border-radius:50%;background:var(--td,var(--green));border:2.5px solid #fff;box-shadow:0 0 0 1px var(--line);z-index:1}
+.tl-time{flex-shrink:0;width:52px;font-size:12.5px;font-weight:800;color:var(--green-d);padding-top:2px}
+.tl-main{flex:1;min-width:0}
+.tl-title{font-weight:700;font-size:14.5px}
+.tl-sub{font-size:12.5px;color:var(--muted)}
+.tl-detail{
+  font-size:12.5px;color:var(--muted);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.tl-row.dopen .tl-detail{display:block}
+.tl-row .tl-tip{font-size:10.5px;color:var(--blue-d);font-weight:700;margin-top:2px}
+
+/* ============ 地图 ============ */
+.map-tabs{display:flex;gap:8px;margin-bottom:12px}
+#map{height:clamp(380px,58vh,620px);border-radius:var(--radius);z-index:1;box-shadow:var(--shadow);border:1px solid var(--line)}
+.legend-row{display:flex;gap:8px;overflow-x:auto;margin-top:12px;padding-bottom:4px;scrollbar-width:none}
+.legend-row::-webkit-scrollbar{display:none}
+.legend-chip{flex-shrink:0;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:5px}
+.legend-chip i{width:7px;height:7px;border-radius:50%;background:var(--lc)}
+.spot-pill{
+  display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:#fff;
+  background:var(--c,var(--green));padding:5px 10px 5px 7px;border-radius:999px;
+  box-shadow:0 2px 8px rgba(0,0,0,.28);white-space:nowrap;border:1.5px solid rgba(255,255,255,.9);
+}
+.spot-pill .sp-dot{width:8px;height:8px;border-radius:50%;background:#fff;flex-shrink:0}
+.leaflet-popup-content{font-size:14px;line-height:1.5}
+.leaflet-popup-content p{color:var(--muted);font-size:12.5px;margin:4px 0 8px}
+.lp-links{display:flex;gap:8px;flex-wrap:wrap}
+.lp-links a,.lp-links button{font-size:12px;font-weight:700;padding:7px 11px;border-radius:9px;background:var(--blue-l);color:var(--blue-d);min-height:34px}
+.lp-links button.copy-c{background:var(--green-l);color:var(--green-d)}
+
+/* ============ 交通 ============ */
+.board-card{padding:18px;display:flex;flex-direction:column;gap:6px}
+.bc-route{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
+.bc-route .bc-plane{color:var(--green);display:flex}
+.bc-route .bc-plane .ic{width:20px;height:20px}
+.bc-date{font-size:13px;font-weight:800;color:var(--green-d)}
+.bc-meta{font-size:12.5px;color:var(--muted);font-weight:600}
+.bc-note{font-size:12px;color:var(--blue-d);background:var(--blue-l);border-radius:10px;padding:8px 12px;margin-top:8px;line-height:1.5}
+.bc-tbd{font-size:11px;font-weight:800;color:var(--warn);background:var(--warn-l);border-radius:8px;padding:3px 9px;align-self:flex-start}
+.info-card{padding:16px;font-size:13.5px;line-height:1.6}
+.info-card b{color:var(--green-d)}
+.info-card .ic-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.info-card .ic-links a{font-size:12.5px;font-weight:700;padding:8px 13px;border-radius:10px;background:var(--green-l);color:var(--green-d);min-height:38px;display:inline-flex;align-items:center}
+.tip-line{padding:14px 16px;display:flex;gap:10px;align-items:flex-start}
+.tip-line .ti{flex-shrink:0;margin-top:2px}
+.tip-line .tl-txt{font-size:13px;line-height:1.55}
+.tip-line .tl-txt b{color:var(--green-d)}
+
+/* ============ 待办 / 行李 行式清单 ============ */
+.list-card{overflow:hidden}
+.l-row{
+  width:100%;min-height:58px;display:flex;align-items:center;gap:12px;padding:11px 16px;
+  border-bottom:1px solid var(--line);text-align:left;background:var(--card);
+}
+.l-row:last-child{border-bottom:none}
+.l-check{
+  flex-shrink:0;width:28px;height:28px;border-radius:9px;border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent;transition:all .2s;
+}
+.l-row.done .l-check{background:var(--ok);border-color:var(--ok);color:#fff}
+.l-main{flex:1;min-width:0}
+.l-text{font-weight:700;font-size:14.5px}
+.l-row.done .l-text{color:var(--muted);text-decoration:line-through}
+.l-note{font-size:12px;color:var(--muted);margin-top:1px}
+.l-ic{color:var(--green);flex-shrink:0;display:flex}
+.l-row.done .l-ic{opacity:.55}
+.l-tag{flex-shrink:0;font-size:10.5px;font-weight:700;color:var(--muted);background:var(--bg);border-radius:8px;padding:4px 8px}
+.progress-strip{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;background:var(--grad-soft);
+  border-radius:var(--radius);margin-bottom:14px;
+}
+.progress-strip .ps-num{font-weight:900;font-size:20px;white-space:nowrap}
+.progress-strip .ps-track{flex:1;height:8px;border-radius:4px;background:#fff;overflow:hidden}
+.progress-strip .ps-track i{display:block;height:100%;width:0%;background:var(--grad);border-radius:4px;transition:width .4s}
+.progress-strip .ps-ic{color:var(--green);display:flex}
+.progress-strip .ps-ic .ic{width:22px;height:22px}
+.cl-hint{margin-top:12px;padding:12px 16px;border-radius:var(--radius-s);background:var(--blue-l);color:var(--blue-d);font-size:12.5px;line-height:1.55;border:1px dashed var(--blue)}
+
+/* ============ 打卡清单 ============ */
+.bl-card{padding:14px 16px;display:flex;align-items:center;gap:12px;min-height:56px;width:100%;text-align:left}
+.bl-check{
+  flex-shrink:0;width:30px;height:30px;border-radius:50%;border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:15px;color:transparent;
+  transition:all .25s;
+}
+.bl-card.done .bl-check{background:var(--ok);border-color:var(--ok);color:#fff}
+.bl-main{flex:1;min-width:0}
+.bl-title{font-weight:700;font-size:14.5px;transition:color .25s}
+.bl-note{font-size:12px;color:var(--muted);margin-top:2px}
+.bl-card.done .bl-title{color:var(--muted);text-decoration:line-through}
+.bl-ic{color:var(--green);flex-shrink:0;display:flex}
+.bl-card.done .bl-ic{opacity:.55}
+
+/* ============ 记账 ============ */
+.exp-summary{padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.exp-summary .es-item{display:flex;flex-direction:column;gap:3px}
+.exp-summary .es-label{font-size:12px;color:var(--muted);font-weight:700}
+.exp-summary .es-num{font-size:clamp(20px,5vw,26px);font-weight:900}
+.exp-summary .es-num small{font-size:12px;color:var(--muted);font-weight:600}
+.es-progress{margin-top:10px;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.es-progress i{display:block;height:100%;background:var(--grad);border-radius:4px;transition:width .6s}
+.es-status{margin-top:8px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.es-status.over{color:var(--pink)}
+.es-status.saved{color:var(--ok)}
+.donut-card{padding:20px;display:flex;align-items:center;gap:22px;margin-bottom:14px;flex-wrap:wrap}
+.donut{width:150px;height:150px;border-radius:50%;position:relative;flex-shrink:0;background:#EDF2EE;margin:0 auto}
+.donut::after{content:'';position:absolute;inset:28px;background:#fff;border-radius:50%}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1}
+#donutTotal{font-weight:900;font-size:20px;line-height:1.2}
+#donutTotal small{display:block;font-size:10.5px;color:var(--muted);font-weight:600}
+.donut-legend{flex:1;min-width:170px;display:flex;flex-direction:column;gap:8px}
+.dl-row{display:flex;align-items:center;gap:8px;font-size:13px}
+.dl-dot{width:9px;height:9px;border-radius:50%;background:var(--dc);flex-shrink:0}
+.dl-name{font-weight:700}
+.dl-amt{margin-left:auto;color:var(--muted);font-weight:600;font-size:12.5px}
+.dl-empty{font-size:12.5px;color:var(--muted);padding:8px 0}
+.exp-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.exp-row:last-child{border-bottom:none}
+.exp-ic{
+  flex-shrink:0;width:38px;height:38px;border-radius:12px;background:var(--eic,var(--green-xl));
+  color:var(--eic-c,var(--green-d));display:flex;align-items:center;justify-content:center;
+}
+.exp-ic .ic{width:20px;height:20px}
+.exp-main{flex:1;min-width:0}
+.exp-desc{font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.exp-meta{font-size:11.5px;color:var(--muted);margin-top:1px}
+.exp-cat{display:inline-block;font-size:10px;font-weight:800;color:var(--cc);background:var(--cc-l);border-radius:7px;padding:2px 7px;margin-left:6px}
+.exp-amt{text-align:right;flex-shrink:0}
+.exp-amt .ea-main{font-weight:900;font-size:14.5px}
+.exp-amt .ea-sub{font-size:11px;color:var(--muted)}
+.exp-del{flex-shrink:0;width:38px;height:38px;border-radius:10px;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.exp-del .ic{width:16px;height:16px}
+.exp-del:active{background:var(--bg);color:var(--pink)}
+
+/* ============ 记账底部弹层 ============ */
+#sheetBackdrop{
+  position:fixed;inset:0;background:rgba(24,38,31,.45);z-index:1000;opacity:0;pointer-events:none;transition:opacity .28s;
+}
+#sheetBackdrop.open{opacity:1;pointer-events:auto}
+#expSheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:1001;background:var(--card);
+  border-radius:24px 24px 0 0;padding:10px 20px calc(26px + env(safe-area-inset-bottom));
+  transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.28,1);
+  max-width:560px;margin:0 auto;box-shadow:var(--shadow-lg);
+}
+#expSheet.open{transform:translateY(0)}
+.sheet-handle{width:44px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 14px}
+#expSheet h3{font-size:17px;margin-bottom:14px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:6px}
+.field input{
+  width:100%;height:50px;border-radius:var(--radius-s);border:1.5px solid var(--line);
+  padding:0 14px;background:var(--bg);outline:none;transition:border-color .2s;
+}
+.field input:focus{border-color:var(--green)}
+.seg{display:flex;flex-wrap:wrap;background:var(--bg);border-radius:var(--radius-s);padding:4px;gap:4px}
+.seg button{
+  flex:1 1 30%;height:44px;border-radius:10px;font-weight:800;font-size:13px;color:var(--muted);
+}
+.seg button.active{background:var(--card);color:var(--green-d);box-shadow:var(--shadow)}
+#expSave{
+  width:100%;height:52px;border-radius:14px;background:var(--grad);color:#fff;font-weight:900;font-size:16px;
+}
+#expSave:active{opacity:.85}
+
+/* ============ FAB ============ */
+#expFAB{
+  position:fixed;right:calc(50% - min(46vw,520px)/2 + 10px);
+  bottom:calc(96px + env(safe-area-inset-bottom));
+  width:58px;height:58px;border-radius:50%;background:var(--grad);color:#fff;
+  box-shadow:var(--shadow-lg);z-index:940;display:none;align-items:center;justify-content:center;
+}
+#expFAB .ic{width:26px;height:26px}
+#expFAB:active{transform:scale(.94)}
+@media(min-width:768px){#expFAB{right:34px;bottom:108px}}
+
+/* ============ 文件 ============ */
+.doc-card{padding:16px;display:flex;flex-direction:column;gap:10px}
+.doc-top{display:flex;align-items:flex-start;gap:10px}
+.doc-ic{
+  flex-shrink:0;width:40px;height:40px;border-radius:13px;background:var(--green-xl);color:var(--green-d);
+  display:flex;align-items:center;justify-content:center;
+}
+.doc-title{font-weight:800;font-size:14.5px}
+.doc-hint{font-size:12px;color:var(--muted);margin-top:2px}
+.doc-status{
+  margin-left:auto;flex-shrink:0;font-size:11px;font-weight:800;color:var(--sc,#B07A2E);
+  background:var(--sc-l,#F7EFE1);border-radius:999px;padding:5px 11px;
+}
+.doc-note{font-size:12.5px;color:var(--muted);background:var(--bg);border-radius:10px;padding:8px 12px;line-height:1.5;min-height:20px}
+.doc-actions{display:flex;gap:8px;flex-wrap:wrap}
+.doc-btn{
+  flex:1;min-height:44px;border-radius:11px;background:var(--bg);font-weight:800;font-size:12.5px;
+  border:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.doc-btn .ic{width:16px;height:16px}
+.doc-btn:active{background:var(--line)}
+.doc-thumb{position:relative;margin-top:2px}
+.doc-thumb img{width:100%;max-height:150px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
+.doc-thumb .dt-del{
+  position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(24,38,31,.65);
+  color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;
+}
+.docs-hint{margin-top:14px;padding:12px 16px;border-radius:var(--radius-s);background:var(--green-xl);color:var(--green-d);font-size:12.5px;line-height:1.55;border:1px dashed var(--green)}
+
+/* ============ 锦囊：美食 / 短语 / 贴士 ============ */
+.food-group{margin-bottom:16px}
+.fg-head{
+  width:100%;min-height:52px;display:flex;align-items:center;gap:10px;padding:10px 4px;font-weight:800;font-size:15px;text-align:left;
+}
+.fg-head .fg-arrow{color:var(--muted);transition:transform .3s;margin-left:auto;display:flex}
+.fg-head .fg-arrow .ic{width:16px;height:16px}
+.food-group.open .fg-arrow{transform:rotate(180deg)}
+.fg-collapse{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease}
+.food-group.open .fg-collapse{grid-template-rows:1fr}
+.fg-inner{overflow:hidden}
+.resto-card{padding:15px;display:flex;flex-direction:column;gap:6px;position:relative}
+.resto-card .rc-top{display:flex;align-items:flex-start;gap:10px}
+.resto-card .rc-ic{
+  flex-shrink:0;width:40px;height:40px;border-radius:13px;background:var(--green-xl);color:var(--green-d);
+  display:flex;align-items:center;justify-content:center;
+}
+.resto-card h3{font-size:14.5px;line-height:1.35}
+.resto-card .rc-ko{font-size:12px;color:var(--muted);font-weight:600}
+.resto-card .rc-note{font-size:12.5px;color:var(--muted);line-height:1.5}
+.resto-card .rc-map{font-size:12px;font-weight:700;color:var(--green-d);background:var(--green-l);border-radius:9px;padding:7px 11px;align-self:flex-start;min-height:34px}
+.table-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--line);-webkit-overflow-scrolling:touch}
+table.phrases{width:100%;min-width:560px;border-collapse:collapse;background:var(--card)}
+.phrases th{font-size:12px;color:var(--muted);text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);font-weight:700}
+.phrases td{padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px}
+.phrases tr:last-child td{border-bottom:none}
+.phrases td:first-child{font-weight:800;color:var(--green-d);white-space:nowrap}
+.phrases td:nth-child(2){color:var(--muted);font-size:13px;white-space:nowrap}
+.tip-card{width:min(78vw,300px);padding:16px;display:flex;flex-direction:column;gap:7px}
+.tip-card .tip-top{display:flex;align-items:center;gap:8px}
+.tip-card h3{font-size:14.5px}
+.tip-card p{font-size:12.5px;color:var(--muted);line-height:1.55}
+
+/* ============ 页脚 ============ */
+footer{padding:26px 0 12px;text-align:center;color:var(--muted);font-size:12.5px}
+footer .f-heart{color:var(--pink)}
+footer .f-brand{margin-top:6px;font-size:11.5px}
+
+/* ============ 动画 ============ */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ iPad / 桌面增强 ============ */
+@media(min-width:768px){
+  .wrap{padding:0 28px}
+  .panel{padding:24px 0 12px}
+  .wx-day{width:108px}
+  .tip-card{width:300px}
+  .ring-row{gap:14px}
+  .doc-thumb img{max-height:190px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- 顶部 App 头 -->
+<header id="appHeader">
+  <div class="header-row">
+    <span class="brand"><i class="ti" data-ic="leaf"></i>Korea<span class="ba">Trip</span></span>
+    <span id="tb-phase">…</span>
+    <span id="tb-time"></span>
+  </div>
+</header>
+
+<main>
+<!-- ============ 首页 ============ -->
+<section class="panel active" id="tab-home">
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-layer" id="heroA"></div>
+      <div class="hero-layer" id="heroB"></div>
+      <div class="hero-shade"></div>
+      <div class="hero-inner">
+        <div class="hero-badge">KOREA · WINTER 2026</div>
+        <h1>韩国旅行计划</h1>
+        <div class="hero-sub">遇见首尔的浪漫时光</div>
+        <div class="hero-meta">可乐 &amp; 金鹿 · 12.26 – 1.3 · 首尔 × 釜山</div>
+        <div class="hero-countdown" id="heroCountdown">…</div>
+      </div>
+      <div class="hero-progress"><i id="heroProgress"></i></div>
+    </div>
+
+    <button id="ctaPlan"><i class="ti" data-ic="map"></i>开始规划旅程</button>
+
+    <div class="qcards">
+      <button class="card qcard qcard-btn" data-goto="todos"><span class="qc-ic"><i class="ti" data-ic="todo"></i></span>行程清单<span class="qc-sub">机票 · 酒店 · 签证</span></button>
+      <button class="card qcard qcard-btn" data-goto="docs"><span class="qc-ic"><i class="ti" data-ic="file"></i></span>备忘记录<span class="qc-sub">证件 · 订单 · 照片</span></button>
+      <button class="card qcard qcard-btn" data-goto="guide"><span class="qc-ic"><i class="ti" data-ic="heart"></i></span>我的收藏<span class="qc-sub">美食 · 短语 · 贴士</span></button>
+    </div>
+
+    <div class="nu-card card" id="nextUp"></div>
+
+    <!-- 天气 -->
+    <h2 class="sec-title"><i class="ti" data-ic="sun"></i>天气 <span class="st-sub" id="wxAutoHint">按行程自动切换城市</span></h2>
+    <div class="city-tabs" id="cityTabs">
+      <button class="city-tab active" data-city="busan"><i class="ti" data-ic="wave"></i>釜山</button>
+      <button class="city-tab" data-city="seoul"><i class="ti" data-ic="temple"></i>首尔</button>
+    </div>
+    <div class="card wx-now">
+      <div class="wx-big-ic" id="wxEmoji"></div>
+      <div>
+        <div class="wx-temp" id="wxTemp">--°</div>
+        <div class="wx-info">
+          <span class="wx-desc" id="wxDesc">加载中…</span>
+          <span class="wx-sub" id="wxSub"></span>
+        </div>
+      </div>
+      <div class="wx-city-tag">
+        <div class="wct-name" id="wxCityName">—</div>
+        <div class="wct-upd" id="wxUpdated"></div>
+      </div>
+    </div>
+    <div class="hscroll" id="wxDays"></div>
+    <button id="wxHourlyBtn" class="tap"><i class="ti" data-ic="clock"></i>逐小时预报</button>
+    <div id="wxHourlyWrap"><div class="hscroll" id="wxHourly"></div></div>
+
+    <!-- 倒计时 -->
+    <h2 class="sec-title" style="margin-top:24px"><i class="ti" data-ic="hourglass"></i>倒计时</h2>
+    <div class="ring-row" id="ringRow">
+      <div class="card ring-card reveal">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4FBE93"/><stop offset="1" stop-color="#2FA36E"/></linearGradient></defs>
+          <circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="ring1" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+          <div class="ring-center"><span class="rc-num" id="ring1Num">—</span><span class="rc-unit" id="ring1Unit">天</span></div>
+        </div>
+        <div class="ring-label">出发 · 12/26</div>
+        <div class="ring-detail" id="ring1Detail"></div>
+      </div>
+      <div class="card ring-card reveal">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="ring2" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+          <div class="ring-center"><span class="rc-num" id="ring2Num">—</span><span class="rc-unit" id="ring2Unit">天</span></div>
+        </div>
+        <div class="ring-label">跨年 · 12/31</div>
+        <div class="ring-detail" id="ring2Detail"></div>
+      </div>
+      <div class="card ring-card reveal">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="ring3" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
+          <div class="ring-center"><span class="rc-num" id="ring3Num">—</span><span class="rc-unit" id="ring3Unit">天</span></div>
+        </div>
+        <div class="ring-label">回家 · 1/4</div>
+        <div class="ring-detail" id="ring3Detail"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 行程 ============ -->
+<section class="panel" id="tab-itinerary">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="calendar"></i>9 天行程 <span class="st-sub">点日历直达当天</span></h2>
+
+    <div class="card cal-card">
+      <div class="cal-head">
+        <button class="cal-nav" id="calPrev" aria-label="上个月">‹</button>
+        <span id="calTitle">2026年12月</span>
+        <button class="cal-nav" id="calNext" aria-label="下个月">›</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-wd">一</div><div class="cal-wd">二</div><div class="cal-wd">三</div><div class="cal-wd">四</div><div class="cal-wd">五</div><div class="cal-wd">六</div><div class="cal-wd">日</div>
+        <div id="calGrid" style="display:contents"></div>
+      </div>
+      <div class="cal-legend">
+        <span class="cal-lg"><i style="--lc:#5B8DEF"></i>景点</span>
+        <span class="cal-lg"><i style="--lc:#F2A65A"></i>美食</span>
+        <span class="cal-lg"><i style="--lc:#94A7B8"></i>交通</span>
+      </div>
+    </div>
+
+    <div id="dayChips"></div>
+    <div id="itineraryList"></div>
+  </div>
+</section>
+
+<!-- ============ 地图 ============ -->
+<section class="panel" id="tab-map">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="pin"></i>双城地图 <span class="st-sub">点标记看详情</span></h2>
+    <div class="map-tabs" id="mapTabs">
+      <button class="city-tab active" data-city="busan" style="max-width:none"><i class="ti" data-ic="wave"></i>釜山</button>
+      <button class="city-tab" data-city="seoul" style="max-width:none"><i class="ti" data-ic="temple"></i>首尔</button>
+    </div>
+    <div id="map"></div>
+    <div class="legend-row" id="mapLegend"></div>
+  </div>
+</section>
+
+<!-- ============ 交通 ============ -->
+<section class="panel" id="tab-transport">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="bus"></i>交通 <span class="st-sub">深圳 ⇄ 首尔 ⇄ 釜山</span></h2>
+
+    <div class="block-title"><i class="ti" data-ic="plane"></i>航班</div>
+    <div class="grid g2">
+      <div class="card board-card">
+        <div class="bc-route">SZX <span class="bc-plane"><i class="ti" data-ic="plane"></i></span> ICN</div>
+        <div class="bc-date">去程 · 12/26 凌晨</div>
+        <div class="bc-meta">深圳宝安 → 首尔仁川 · 落地后 KTX 南下釜山</div>
+        <div class="bc-note">国际航班提前 2.5–3h 到机场值机；凌晨航班注意 12/25 晚出发去机场。</div>
+        <span class="bc-tbd">航班号待定</span>
+      </div>
+      <div class="card board-card">
+        <div class="bc-route">ICN <span class="bc-plane"><i class="ti" data-ic="plane"></i></span> SZX</div>
+        <div class="bc-date">回程 · 1/3 深夜</div>
+        <div class="bc-meta">首尔仁川 → 深圳宝安 · 1/4 凌晨落地</div>
+        <div class="bc-note">仁川机场提前 3h 到，留足退税（自助机扫描 + 登机口取现）时间。</div>
+        <span class="bc-tbd">航班号待定</span>
+      </div>
+    </div>
+
+    <div class="block-title"><i class="ti" data-ic="train"></i>城际铁路 KTX</div>
+    <div class="card info-card">
+      <b>12/29（周二）釜山站 → 首尔站</b> · 约 16:00 出发，19:00 前后抵达 · 车程 2.5–3h<br>
+      二等座约 <b>₩59,800</b>（约 ¥315），非节假日提前 2–3 天购票即可；座位带充电口，车上补觉刚好。
+      <div class="ic-links">
+        <a href="https://www.letskorail.com/ebizbf/EbizbfForeign_pr16100.do?gubun=1" target="_blank" rel="noopener">KORAIL 官网购票</a>
+        <a href="https://play.google.com/store/apps/details?id=com.korail.talk" target="_blank" rel="noopener">KORAILTALK App</a>
+      </div>
+    </div>
+
+    <div class="block-title"><i class="ti" data-ic="train"></i>机场快线 AREX（仁川 ⇄ 首尔站）</div>
+    <div class="card info-card">
+      直达列车 <b>43 分钟</b> · ₩11,000（2025 年价格，以实际为准）｜普通列车约 60 分钟 · ₩4,150 起<br>
+      T-money 可刷普通列车；直达列车需单独购票，出机场先买 T-money 更省事。
+    </div>
+
+    <div class="block-title"><i class="ti" data-ic="card"></i>T-money 交通卡</div>
+    <div class="card info-card">
+      地铁 / 公交 / 出租车 / 便利店通用；机场或地铁站便利店 <b>₩4,000</b> 购卡，现金充值。<br>
+      釜山地铁同样通用；刷卡进出站，换乘地铁↔公交 30 分钟内免费。余额离境前可在便利店退回。
+    </div>
+
+    <div class="block-title"><i class="ti" data-ic="taxi"></i>出租车</div>
+    <div class="card info-card">
+      起步价约 <b>₩4,800</b>（首尔/釜山相近，以实际为准）；深夜 22:00–04:00 加收 20%。<br>
+      常用 App：<b>Kakao T</b>（可绑国际信用卡）。短途 2 人打车比地铁贵不多，累的时候别省。
+    </div>
+
+    <div class="block-title"><i class="ti" data-ic="warning"></i>交通贴士</div>
+    <div class="card list-card">
+      <div class="tip-line"><i class="ti" data-ic="subway"></i><span class="tl-txt"><b>地铁</b>：爱心座（粉色/黄色）别坐；扶梯靠右，左侧留给赶时间的人。</span></div>
+      <div class="tip-line"><i class="ti" data-ic="map"></i><span class="tl-txt"><b>导航</b>：用 Naver Map / KakaoMap（Google 在韩国不准），支持中文界面，出发前注册登录。</span></div>
+      <div class="tip-line"><i class="ti" data-ic="train"></i><span class="tl-txt"><b>KTX</b>：开车前 20 分钟到站即可，无安检；电子票截图存手机。</span></div>
+      <div class="tip-line"><i class="ti" data-ic="plane"></i><span class="tl-txt"><b>离境</b>：退税 + 免税店提货都在安检后，登机口附近取现金，别忘记。</span></div>
+      <div class="tip-line"><i class="ti" data-ic="bag"></i><span class="tl-txt"><b>行李</b>：机场 ⇄ 首尔站有大件行李寄存柜；釜山站有行李寄存（一日 ₩4,000 起）。</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 待办（预订 + 打卡） ============ -->
+<section class="panel" id="tab-todos">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="todo"></i>待办 · 预订 <span class="st-sub" id="todosCount"></span></h2>
+    <div class="progress-strip" id="todosStrip">
+      <span class="ps-ic"><i class="ti" data-ic="target"></i></span>
+      <span class="ps-num" id="todosNum">0/0</span>
+      <div class="ps-track"><i id="todosBar"></i></div>
+    </div>
+    <div class="card list-card" id="todosList"></div>
+
+    <h2 class="sec-title" style="margin-top:28px"><i class="ti" data-ic="check"></i>打卡清单 <span class="st-sub" id="bucketCount"></span></h2>
+    <div class="grid g2 g3" id="bucketList" style="gap:10px"></div>
+  </div>
+</section>
+
+<!-- ============ 行李清单 ============ -->
+<section class="panel" id="tab-packing">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="bag"></i>行李清单 <span class="st-sub" id="clCount"></span></h2>
+    <div class="progress-strip">
+      <span class="ps-ic"><i class="ti" data-ic="bag"></i></span>
+      <span class="ps-num" id="clNum">0/0</span>
+      <div class="ps-track"><i id="clBar"></i></div>
+    </div>
+    <div class="card list-card" id="checklistList"></div>
+    <div class="cl-hint">入境提示：护照有效期 6 个月以上，签证/K-ETA 按最新政策准备；出发前把行程单和酒店订单存手机相册，没网也能查。</div>
+  </div>
+</section>
+
+<!-- ============ 支出 ============ -->
+<section class="panel" id="tab-expenses">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="wallet"></i>行程总支出 <span class="st-sub">多币种 → 人均 RMB</span></h2>
+    <div class="card exp-summary">
+      <div class="es-item"><span class="es-label">人均花费</span><span class="es-num" id="esPer">¥0</span></div>
+      <div class="es-item"><span class="es-label">总额 / 预算</span><span class="es-num" id="esTotal">¥0 <small>/ ¥10000</small></span></div>
+      <div style="grid-column:1/-1">
+        <div class="es-progress"><i id="esBar" style="width:0%"></i></div>
+        <div class="es-status" id="esStatus">还没有记账，点右下角 ＋ 添加第一笔</div>
+      </div>
+    </div>
+    <div class="card donut-card">
+      <div class="donut" id="donut">
+        <div class="donut-center"><span id="donutTotal">¥0<small>人均</small></span></div>
+      </div>
+      <div class="donut-legend" id="donutLegend"><div class="dl-empty">记一笔后自动生成分类占比</div></div>
+    </div>
+    <div class="card" id="expenseList"></div>
+  </div>
+</section>
+
+<!-- ============ 文件 ============ -->
+<section class="panel" id="tab-docs">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">状态打卡 · 照片存本机</span></h2>
+    <div class="grid g2 g3" id="docsGrid" style="gap:12px"></div>
+    <div class="docs-hint">隐私说明：文件照片<b>只存在你手机/平板的本地存储里，不会上传服务器</b>——护照这类敏感信息留在自己设备上更安全。两人生成的内容目前各存各的设备（跨设备同步列入 v2）。</div>
+  </div>
+</section>
+
+<!-- ============ 锦囊（美食 / 短语 / 贴士） ============ -->
+<section class="panel" id="tab-guide">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="book"></i>旅行锦囊</h2>
+
+    <div class="food-group open" id="fg-busan">
+      <button class="fg-head tap" onclick="toggleFood('fg-busan')"><i class="ti" data-ic="wave"></i>釜山美食 <span class="fg-arrow"><i class="ti" data-ic="chevron"></i></span></button>
+      <div class="fg-collapse"><div class="fg-inner"><div class="grid g2 g3 resto-grid" id="restoBusan"></div></div></div>
+    </div>
+    <div class="food-group open" id="fg-seoul">
+      <button class="fg-head tap" onclick="toggleFood('fg-seoul')"><i class="ti" data-ic="temple"></i>首尔美食 <span class="fg-arrow"><i class="ti" data-ic="chevron"></i></span></button>
+      <div class="fg-collapse"><div class="fg-inner"><div class="grid g2 g3 resto-grid" id="restoSeoul"></div></div></div>
+    </div>
+
+    <div class="block-title"><i class="ti" data-ic="chat"></i>韩语短语 <span style="color:var(--muted);font-weight:600;font-size:12px">左右滑动表格</span></div>
+    <div class="table-wrap">
+      <table class="phrases">
+        <thead><tr><th>韩语</th><th>罗马音</th><th>意思</th></tr></thead>
+        <tbody id="phraseBody"></tbody>
+      </table>
+    </div>
+
+    <div class="block-title"><i class="ti" data-ic="snowflake"></i>冬季出行贴士 <span style="color:var(--muted);font-weight:600;font-size:12px">左右滑动</span></div>
+    <div class="hscroll" id="tipsRow"></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div>可乐 <span class="f-heart">♥</span> 金鹿 · KOREA WINTER 2026</div>
+  <div style="margin-top:4px">서울 × 부산 · 새해 복 많이 받으세요</div>
+  <div class="f-brand">Powered by CloudBase 腾讯云开发 &amp; Vercel</div>
+</footer>
+
+<!-- 记账弹层 -->
+<div id="sheetBackdrop" onclick="closeSheet()"></div>
+<div id="expSheet">
+  <div class="sheet-handle"></div>
+  <h3>记一笔</h3>
+  <div class="field"><label>描述</label><input id="expDesc" placeholder="如：KTX 釜山→首尔 / 炸鸡啤酒"></div>
+  <div class="field"><label>金额</label><input id="expAmount" type="number" inputmode="decimal" placeholder="0.00"></div>
+  <div class="field"><label>分类</label>
+    <div class="seg" id="expCatSeg">
+      <button data-v="交通">交通</button>
+      <button class="active" data-v="餐饮">餐饮</button>
+      <button data-v="住宿">住宿</button>
+      <button data-v="门票">门票</button>
+      <button data-v="购物">购物</button>
+      <button data-v="其他">其他</button>
+    </div>
+  </div>
+  <div class="field"><label>币种</label>
+    <div class="seg" id="expCurSeg">
+      <button class="active" data-v="KRW">₩ 韩元</button>
+      <button data-v="CNY">¥ 人民币</button>
+      <button data-v="USD">$ 美元</button>
+    </div>
+  </div>
+  <div class="field"><label>分摊方式</label>
+    <div class="seg" id="expSplitSeg">
+      <button class="active" data-v="perPerson">人均（每人该金额）</button>
+      <button data-v="total">总额（两人平摊）</button>
+    </div>
+  </div>
+  <div class="field"><label>谁付的</label>
+    <div class="seg" id="expPayerSeg">
+      <button class="active" data-v="共同">共同</button>
+      <button data-v="可乐">可乐</button>
+      <button data-v="金鹿">金鹿</button>
+    </div>
+  </div>
+  <button id="expSave" class="tap">保存</button>
+</div>
+<button id="expFAB" aria-label="记一笔" onclick="openSheet()"><i class="ti" data-ic="plus"></i></button>
+
+<script>
+/* ================= 常量 ================= */
+const API_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api';
+const FX_RATES = { CNY: 1, USD: 6.80, KRW: 1 / 190 };
+const BUDGET_TOTAL = 10000;                 // 两人总额预算（占位，可改）
+const PEOPLE = ['可乐', '金鹿'];
+
+const D1 = new Date('2026-12-26T00:05:00+08:00');       // 出发去机场
+const BUSAN_END = new Date('2026-12-29T16:00:00+09:00'); // 釜山 → 首尔
+const TRIP_END = new Date('2027-01-04T00:30:00+08:00');  // 到家
+const NEWYEAR = new Date('2026-12-31T23:59:00+09:00');   // 普信阁跨年
+
+const CITIES = {
+  busan: { name: '釜山', lat: 35.1796, lon: 129.0756 },
+  seoul: { name: '首尔', lat: 37.5665, lon: 126.9780 }
+};
+
+const HERO_IMAGES = [
+  'assets/photos/hero-bg-1.svg',
+  'assets/photos/hero-bg-2.svg',
+  'assets/photos/hero-bg-3.svg',
+  'assets/photos/hero-bg-4.svg'
+];
+const PHOTO_FALLBACK = 'linear-gradient(135deg,#D7F0E3,#F9E3D2)';
+
+/* ================= 工具 ================= */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtKR = (fmt) => new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Seoul', ...fmt });
+const pad = (n) => String(n).padStart(2, '0');
+function dl(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+}
+function tripPhase() {
+  const now = Date.now();
+  if (now < D1) return 'prep';
+  if (now < BUSAN_END) return 'busan';
+  if (now <= TRIP_END) return 'seoul';
+  return 'done';
+}
+function dayIndex() { return Math.min(9, Math.max(1, Math.floor((Date.now() - D1) / 86400000) + 1)); }
+const cache = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
+};
+async function apiGet(path, cacheKey, fallback) {
+  try {
+    const res = await fetch(API_BASE + path);
+    const json = await res.json();
+    if (json.success && Array.isArray(json.data)) {
+      cache.set(cacheKey, json.data);
+      return json.data;
+    }
+    throw new Error(json.error || 'bad response');
+  } catch (err) {
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
+    return fallback || [];
+  }
+}
+
+/* ================= 手绘线条图标 ================= */
+const IC = {
+  home: '<path d="M3 10.5L12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9.5 21v-6h5v6"/>',
+  calendar: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  pin: '<path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11z"/><circle cx="12" cy="10" r="2.6"/>',
+  bus: '<rect x="4" y="4" width="16" height="13" rx="2.5"/><path d="M4 10.5h16M8.5 20l-1 2M15.5 20l1 2"/><circle cx="8.5" cy="17.5" r="1.4"/><circle cx="15.5" cy="17.5" r="1.4"/>',
+  todo: '<path d="M4 5.5l1.6 1.6L8 4.5"/><path d="M11.5 5H21"/><path d="M4 12.5l1.6 1.6 2.4-2.6"/><path d="M11.5 12H21"/><path d="M4 19.5l1.6 1.6 2.4-2.6"/><path d="M11.5 19H21"/>',
+  bag: '<path d="M6 8h12l1.2 12H4.8L6 8z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/>',
+  wallet: '<rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18"/><path d="M16 15h2.5"/>',
+  file: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9.5 13h5M9.5 17h5"/>',
+  book: '<path d="M4 19.5V5.5a2.5 2.5 0 0 1 2.5-2.5H20v17H6.5A2.5 2.5 0 0 0 4 19.5z"/><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>',
+  plane: '<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+  train: '<rect x="5" y="3" width="14" height="15" rx="3"/><path d="M5 11h14M8 21l-1.5 2M16 21l1.5 2"/><circle cx="9" cy="14.5" r="1.3"/><circle cx="15" cy="14.5" r="1.3"/>',
+  subway: '<rect x="4.5" y="4" width="15" height="14" rx="2.5"/><path d="M4.5 14h15M7.5 21l-1.5 2M16.5 21l1.5 2M12 4v10"/>',
+  taxi: '<path d="M4 15.5l1.6-6A2 2 0 0 1 7.5 8h9a2 2 0 0 1 1.9 1.5l1.6 6V18h-2v-1H6v1H4v-2.5z"/><circle cx="7.8" cy="16.5" r="1.4"/><circle cx="16.2" cy="16.5" r="1.4"/><path d="M12 4.5L13 6h-2l1-1.5z"/>',
+  card: '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  hourglass: '<path d="M6.5 3h11M6.5 21h11"/><path d="M8 3c0 5 3.5 6 4 9s-4 4-4 9M16 3c0 5-3.5 6-4 9s4 4 4 9"/>',
+  sun: '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"/>',
+  cloud: '<path d="M17.5 18.5a4.5 4.5 0 0 0-.8-8.9 6 6 0 0 0-11.7 1.8A3.6 3.6 0 0 0 6.5 18.5h11z"/>',
+  'sun-cloud': '<path d="M17.5 18.5a4.5 4.5 0 0 0-.8-8.9 6 6 0 0 0-11.7 1.8A3.6 3.6 0 0 0 6.5 18.5h11z"/><path d="M17 5.5v2M17 9.5V11.5M12.8 6.8l1.4 1.4M21.2 6.8l-1.4 1.4"/>',
+  'cloud-sun': '<path d="M17.5 18.5a4.5 4.5 0 0 0-.8-8.9 6 6 0 0 0-11.7 1.8A3.6 3.6 0 0 0 6.5 18.5h11z"/><path d="M16.5 6a3.2 3.2 0 0 0-2-3.2"/>',
+  rain: '<path d="M17.5 14.5a4.5 4.5 0 0 0-.8-8.9 6 6 0 0 0-11.7 1.8A3.6 3.6 0 0 0 6.5 14.5h11z"/><path d="M8.5 18.5l-1.2 2.2M12.5 18.5l-1.2 2.2M16.5 18.5l-1.2 2.2"/>',
+  drizzle: '<path d="M17.5 14.5a4.5 4.5 0 0 0-.8-8.9 6 6 0 0 0-11.7 1.8A3.6 3.6 0 0 0 6.5 14.5h11z"/><path d="M9 18.5l-.8 1.5M13 18.5l-.8 1.5"/>',
+  snow: '<path d="M17.5 14.5a4.5 4.5 0 0 0-.8-8.9 6 6 0 0 0-11.7 1.8A3.6 3.6 0 0 0 6.5 14.5h11z"/><path d="M9 18.5v.01M12.5 17.8v.01M16 18.5v.01"/>',
+  storm: '<path d="M17.5 14a4.5 4.5 0 0 0-.8-8.9 6 6 0 0 0-11.7 1.8A3.6 3.6 0 0 0 6.5 14h11z"/><path d="M13 14.5l-2.2 4h3l-1.6 3"/>',
+  fog: '<path d="M4 14.5h16M6 18.5h12"/>',
+  snowflake: '<path d="M12 3v18M3.5 7.5l17 9M20.5 7.5l-17 9"/><path d="M12 3l1.8 1.5L12 6l-1.8-1.5z"/><path d="M12 18l1.8 1.5L12 21l-1.8-1.5z"/>',
+  heart: '<path d="M19 13.5c1.5-1.4 2.7-3 2.7-5.2A5 5 0 0 0 16.7 3.4c-1.7 0-2.9.5-4.7 1.9C10.2 3.9 9 3.4 7.3 3.4A5 5 0 0 0 2.3 8.3c0 2.2 1.2 3.8 2.7 5.2l7 6.8 7-6.8z"/>',
+  leaf: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3.5 2-6 4.5-7"/>',
+  users: '<circle cx="9" cy="8.5" r="3.4"/><path d="M2.7 20c.5-3.5 3-5.5 6.3-5.5s5.8 2 6.3 5.5"/><path d="M16 5.6a3.4 3.4 0 0 1 0 5.8"/><path d="M18.5 15c2 .8 3.2 2.5 3.4 5"/>',
+  user: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20.5c.6-4 3.2-6.2 7-6.2s6.4 2.2 7 6.2"/>',
+  camera: '<rect x="3" y="7" width="18" height="13" rx="2.5"/><circle cx="12" cy="13.5" r="3.6"/><path d="M8.5 7l1.4-2.5h4.2L15.5 7"/>',
+  shield: '<path d="M12 3l7 2.8v5.4c0 4.8-2.9 8.2-7 9.8-4.1-1.6-7-5-7-9.8V5.8L12 3z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
+  wifi: '<path d="M4.5 9.5a11 11 0 0 1 15 0M7.5 13a6.5 6.5 0 0 1 9 0M12 17.2v.01"/>',
+  globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17"/><path d="M12 3.5c2.8 2.6 3.2 14.4 0 17-3.2-2.6-2.8-14.4 0-17z"/>',
+  coin: '<circle cx="12" cy="12" r="8.5"/><path d="M8 9h8M8 12.5h8M8 16h8M12 9v7"/>',
+  receipt: '<path d="M5 3h14v18l-2.3-1.8L14.4 21l-2.4-1.8L9.6 21l-2.3-1.8L5 21V3z"/><path d="M9 8h6M9 12h6"/>',
+  hotel: '<path d="M3 20v-8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8"/><path d="M3 20h18"/><path d="M5.5 10V6.5A1.5 1.5 0 0 1 7 5h2.5a1.5 1.5 0 0 1 1.5 1.5V10"/><circle cx="7.5" cy="14.5" r="1"/>',
+  passport: '<rect x="7" y="3" width="10" height="18" rx="2"/><circle cx="12" cy="9.5" r="2.3"/><path d="M9.6 14.5c.7-1.7 1.5-2.2 2.4-2.2s1.7.5 2.4 2.2"/>',
+  tower: '<path d="M5 21h14M7 21V9l2-6h6l2 6v12"/><path d="M9.5 9h5M12 21v-7"/>',
+  wave: '<path d="M2.5 12c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/><path d="M2.5 17c2-3 4-3 6 0s4 3 6 0 4-3 6 0"/>',
+  temple: '<path d="M3 21h18M4.5 21V11M19.5 21V11M2.5 11h19"/><path d="M4.5 11l2-4.5h11l2 4.5"/><path d="M9.5 21v-6h5v6"/>',
+  mountain: '<path d="M3 20L9 8.5l3.2 5.4L14.5 11l6.5 9z"/>',
+  bridge: '<path d="M3.5 15.5h17M5 15.5v-5c0-2 1.8-2.8 3-1.8 1.6 1.3 2.4 3.3 4 3.3s2.4-2 4-3.3c1.2-1 3-.2 3 1.8v5"/>',
+  palette: '<path d="M12 3a9 9 0 1 0 0 18h1.8a2.2 2.2 0 0 0 0-4.4h-1a1.6 1.6 0 0 1 0-3.2h1.9A5.3 5.3 0 0 0 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7.5" r="1"/><circle cx="15" cy="7.5" r="1"/>',
+  film: '<rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7.5 4v16M16.5 4v16M3 8.5h4.5M3 12h4.5M3 15.5h4.5M16.5 8.5H21M16.5 12H21M16.5 15.5H21"/>',
+  music: '<path d="M9 18.5V6.5l10-2v12"/><circle cx="6.5" cy="18.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/>',
+  clothes: '<path d="M12 3a2.5 2.5 0 0 1 2.5 2.5c0 1.5-1.5 1.8-1.5 3.5h-2c0-1.7-1.5-2-1.5-3.5A2.5 2.5 0 0 1 12 3z"/><path d="M7.5 20.5l4.5-3.5 4.5 3.5"/>',
+  target: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/>',
+  check: '<path d="M4.5 12.5l5 5L19.5 7"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  chevron: '<path d="M6 9.5l6 6 6-6"/>',
+  edit: '<path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 6.5l3 3"/>',
+  attach: '<path d="M21 11.5l-8.3 8.3a5.5 5.5 0 0 1-7.8-7.8L13.2 3.7a3.8 3.8 0 0 1 5.4 5.4L10 17.8a2.1 2.1 0 0 1-3-3l7.8-7.8"/>',
+  refresh: '<path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/>',
+  image: '<rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15.5l-5-5L5.5 20"/>',
+  chat: '<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.4 0-2.7-.3-3.9-.9L3.5 20l.9-5.1A8.5 8.5 0 1 1 21 11.5z"/><path d="M8.5 11.5v.01M12 11.5v.01M15.5 11.5v.01"/>',
+  alert: '<path d="M12 3L22 20H2z"/><path d="M12 10v4.5M12 17.5v.01"/>',
+  warning: '<path d="M12 3L22 20H2z"/><path d="M12 10v4.5M12 17.5v.01"/>',
+  lock: '<rect x="5" y="11" width="14" height="9.5" rx="2.5"/><path d="M8 11V7.5a4 4 0 0 1 8 0V11"/>',
+  gift: '<path d="M20 12.5v8H4v-8M2.5 7.5h19V12h-19zM12 7.5V20.5"/><path d="M12 7.5c-2.5 0-4.5-1.2-4.5-3.5C7.5 2 10.5 2.2 12 7.5c1.5-5.3 4.5-5.5 4.5-3.5 0 2.3-2 3.5-4.5 3.5z"/>',
+  bowl: '<path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M4 11c0-4.5 3.5-7.5 8-7.5s8 3 8 7.5"/><path d="M9.5 2.5l-.8 1.2M13 2l-.8 1.5"/>',
+  cup: '<path d="M5 3h10.5v7A4.5 4.5 0 0 1 11 14.5h-1.5A4.5 4.5 0 0 1 5 10V3z"/><path d="M17.5 5h1.5a2 2 0 0 1 0 4h-2"/>',
+  coffee: '<path d="M4 8h13v5.5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V8z"/><path d="M17 9h2.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3.5V5.5M12 3.5V5.5"/>',
+  food: '<path d="M7 3v8a2.2 2.2 0 0 1-4.5 0V3M7 3v18"/><path d="M7 4.5a2.2 2.2 0 0 1 4.5 0V11c0 1.2-1 2.2-2.2 2.2M17.5 3c-1.6 0-2.8 1-2.8 2.6V10h2.8v11"/>',
+  spa: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M7 16c-2.5.5-4 2.5-4.5 4.5"/><path d="M6 13c-2 .5-3.3 2-3.8 3.8"/>',
+  cablecar: '<path d="M3 21h18M5 21v-7a7 7 0 0 1 14 0v7M5 14h14"/><path d="M12 3L6.5 8M12 3l5.5 5M12 3v5"/>',
+  bottle: '<path d="M10 2.5h4v3h-4z"/><path d="M11 5.5L10 9v9a2.5 2.5 0 0 0 5 0V9l-1-3.5"/>',
+  star: '<path d="M12 3.5l2.5 5.1 5.6.8-4 3.9.9 5.5-5-2.6-5 2.6.9-5.5-4-3.9 5.6-.8z"/>',
+  sparkle: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 16l.9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9z"/>',
+  bell: '<path d="M6 8.5a6 6 0 0 1 12 0c0 6.5 2.5 8 2.5 8h-17s2.5-1.5 2.5-8"/><path d="M10.3 20.5a1.9 1.9 0 0 0 3.4 0"/>',
+  thermometer: '<path d="M14 14.8V5a2 2 0 1 0-4 0v9.8a4 4 0 1 0 4 0z"/><path d="M12 9v6"/>',
+  wind: '<path d="M3 8.5h11a2.5 2.5 0 1 0-2.4-3.2"/><path d="M3 12.5h15a2.5 2.5 0 1 1-2.4 3.2"/><path d="M3 16.5h7a2 2 0 1 1-1.9 2.2"/>',
+  umbrella: '<path d="M12 3a9 9 0 0 1 9 9H3a9 9 0 0 1 9-9z"/><path d="M12 12v6.5a2 2 0 0 0 4 0"/><path d="M12 3V2.5"/>',
+  map: '<path d="M9 4.5L3 7v13l6-2.5 6 2.5 6-2.5V4.5l-6 2.5-6-2.5z"/><path d="M9 4.5V17M15 7v13"/>',
+  arrow: '<path d="M4 12h15M13.5 6l5.5 6-5.5 6"/>',
+  dot: '<circle cx="12" cy="12" r="3.5"/>'
+};
+function ic(name) {
+  return `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[name] || IC.dot}</svg>`;
+}
+const EMOJI_ICON = {
+  '✈':'plane','🛂':'passport','🛃':'passport','🏨':'hotel','🚄':'train','🚝':'train','📶':'wifi','💱':'coin','🛡':'shield','🗺':'map','📄':'file',
+  '🧳':'bag','🏠':'home','🐙':'food','🚡':'cablecar','🌅':'sun','🏘':'temple','👘':'clothes','🎉':'sparkle','🔒':'lock','🍜':'bowl','🧖':'spa',
+  '🍗':'food','🥛':'cup','📸':'camera','🥞':'food','☕':'coffee','🛍':'gift','⛸':'snowflake','🎒':'bag','🧴':'bottle','💙':'heart','📍':'pin',
+  '🌊':'wave','🏯':'temple','🎯':'target','✅':'check','💬':'chat','💰':'wallet','📋':'todo','📖':'book','🎨':'palette','🎬':'film','⛰':'mountain',
+  '🌉':'bridge','🎎':'clothes','🥢':'food','🗼':'tower','🎤':'music','🥶':'snowflake','🧣':'clothes','🚇':'subway','🚕':'taxi','💳':'card',
+  '⚠':'warning','🙇':'user','🧾':'receipt','🆘':'alert','🗣':'chat','🔄':'refresh','✏':'edit','📎':'attach','🕐':'clock','⏳':'hourglass',
+  '☀':'sun','⛅':'cloud-sun','🌤':'sun-cloud','☁':'cloud','🌧':'rain','🌦':'drizzle','🌨':'snow','❄':'snowflake','🌫':'fog','⛈':'storm',
+  '🌡':'thermometer','🐟':'food','🥠':'food','🍢':'food','🍲':'bowl','🥟':'food','🍻':'cup','🌉':'bridge','🍺':'cup','🚢':'wave','🎆':'sparkle','🦌':'heart'
+};
+function iconFor(emoji) {
+  const key = String(emoji).replace(/️/g, '');
+  return ic(EMOJI_ICON[key] || 'dot');
+}
+// 静态占位图标填充
+document.querySelectorAll('[data-ic]').forEach((el) => { el.innerHTML = ic(el.dataset.ic); });
+
+/* ================= 内置兜底数据（API 不可用时也能看） ================= */
+const EMBEDDED_ITINERARY = [
+  { day: 1, sortOrder: 1, time: '00:05', title: '出发去深圳宝安机场', subtitle: 'SZX → 首尔仁川 ICN', detail: '凌晨航班，提前 2.5 小时到机场值机。航班号待定。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Shenzhen+Baoan+Airport' },
+  { day: 1, sortOrder: 2, time: '06:30', title: '落地首尔仁川机场', subtitle: '入境 + 换汇 + 买 T-money', detail: '出关后到机场便利店买 T-money 卡并充值，坐地铁/机场快线都能用。' },
+  { day: 1, sortOrder: 3, time: '09:00', title: '仁川机场 → 首尔站 → 釜山', subtitle: 'AREX + KTX 直达南下', detail: '机场快线到首尔站，换乘 KTX 去釜山，车程约 2.5–3h。' },
+  { day: 1, sortOrder: 4, time: '14:00', title: '抵达釜山，入住海云台酒店', subtitle: '放行李 · 海边散步', detail: '冬天海云台人少安静，适合拍照。' },
+  { day: 1, sortOrder: 5, time: '18:00', title: '晚餐：猪肉汤饭', subtitle: '돼지국밥 · 海云台传统市场附近', detail: '落地第一顿吃热汤饭暖胃。', mapUrl: 'https://map.naver.com/p/search/해운대돼지국밥' },
+  { day: 2, sortOrder: 1, time: '09:00', title: '海云台海水浴场', subtitle: '海边散步 · 冬天人少的海', detail: '拍空景大片的好机会，海边风大注意保暖。', mapUrl: 'https://map.naver.com/p/search/해운대해수욕장' },
+  { day: 2, sortOrder: 2, time: '10:30', title: '胶囊小火车', subtitle: '海云台 Blueline Park · 天空舱', detail: '青沙浦站出发，沿海行驶的海上小火车，超适合拍照。', mapUrl: 'https://map.naver.com/p/search/해운대블루라인파크' },
+  { day: 2, sortOrder: 3, time: '13:00', title: '午餐', subtitle: '烤五花肉 / 古来思鱼糕', detail: '海云台美食街，오뎅(鱼糕)是釜山特产。', mapUrl: 'https://map.naver.com/p/search/고래사어묵' },
+  { day: 2, sortOrder: 4, time: '15:00', title: '甘川文化村', subtitle: '彩色房子 + 小王子合影', detail: '打卡小王子合影点，傍晚光线最好，穿浅色衣服出片。', mapUrl: 'https://map.naver.com/p/search/감천문화마을' },
+  { day: 2, sortOrder: 5, time: '19:00', title: '札嘎其海鲜市场晚餐', subtitle: '生鱼片 · 挑战活章鱼', detail: '釜山最大海鲜市场，一楼买二楼加工。', mapUrl: 'https://map.naver.com/p/search/자갈치시장' },
+  { day: 3, sortOrder: 1, time: '09:30', title: '白浅滩文化村', subtitle: '흰여울문화마을 · 海岸步道', detail: '白色村庄 + 海岸步道，沿途都是咖啡厅。', mapUrl: 'https://map.naver.com/p/search/흰여울문화마을' },
+  { day: 3, sortOrder: 2, time: '12:00', title: '南浦洞 BIFF 广场', subtitle: '街头小吃', detail: '호떡(糖饼)、鱼饼串、炒年糕，边逛边吃。', mapUrl: 'https://map.naver.com/p/search/BIFF광장' },
+  { day: 3, sortOrder: 3, time: '14:30', title: '富平罐头市场', subtitle: '부평깡통시장', detail: '釜山老牌传统市场，小吃种类比札嘎其更local。', mapUrl: 'https://map.naver.com/p/search/부평깡통시장' },
+  { day: 3, sortOrder: 4, time: '17:00', title: '广安里大桥夜景', subtitle: '广安里海水浴场', detail: '韩国最长大桥灯光夜景，海边咖啡厅看桥。', mapUrl: 'https://map.naver.com/p/search/광안대교' },
+  { day: 4, sortOrder: 1, time: '10:00', title: '太宗台', subtitle: '灯塔 + 悬崖海景', detail: '观光小火车代步，天气好能看到对马岛。', mapUrl: 'https://map.naver.com/p/search/태종대' },
+  { day: 4, sortOrder: 2, time: '14:00', title: '酒店退房 → 釜山站', subtitle: '取行李出发', detail: '买点釜山特产带上车吃。' },
+  { day: 4, sortOrder: 3, time: '16:00', title: 'KTX 釜山 → 首尔', subtitle: '车程约 2.5–3h', detail: '车上补觉，19 点前后到首尔站。' },
+  { day: 4, sortOrder: 4, time: '19:30', title: '入住首尔酒店', subtitle: '明洞附近 · 放下行李', detail: '酒店待定，位置在明洞/弘大区域。' },
+  { day: 4, sortOrder: 5, time: '20:30', title: '明洞夜市初逛', subtitle: '小吃 + 踩点', detail: '明洞饺子或街头小吃解决晚餐。', mapUrl: 'https://map.naver.com/p/search/명동교자' },
+  { day: 5, sortOrder: 1, time: '09:00', title: '景福宫', subtitle: '穿韩服进宫免门票', detail: '光化门附近韩服租赁店，穿上韩服穿越古宫。', mapUrl: 'https://map.naver.com/p/search/경복궁' },
+  { day: 5, sortOrder: 2, time: '11:00', title: '北村韩屋村', subtitle: '韩屋小巷', detail: '坡上拍照经典机位，注意居民区保持安静。', mapUrl: 'https://map.naver.com/p/search/북촌한옥마을' },
+  { day: 5, sortOrder: 3, time: '13:00', title: '午餐：土俗村参鸡汤', subtitle: '토속촌', detail: '景福宫步行可达的排队名店，参鸡汤+人参酒。', mapUrl: 'https://map.naver.com/p/search/토속촌삼계탕' },
+  { day: 5, sortOrder: 4, time: '15:00', title: '仁寺洞', subtitle: '传统手信', detail: 'Ssamziegil 商场，买扇子、陶瓷等伴手礼。', mapUrl: 'https://map.naver.com/p/search/인사동' },
+  { day: 5, sortOrder: 5, time: '18:30', title: '清溪川夜景', subtitle: '灯光步道散步', detail: '跨年前的灯饰很漂亮，饭后消食。', mapUrl: 'https://map.naver.com/p/search/청계천' },
+  { day: 6, sortOrder: 1, time: '10:00', title: '明洞购物', subtitle: '化妆品 + Olive Young', detail: '单笔满 3 万韩元记得拿退税单。', mapUrl: 'https://map.naver.com/p/search/명동' },
+  { day: 6, sortOrder: 2, time: '13:00', title: '广藏市场午餐', subtitle: '绿豆煎饼 + 麻药紫菜包饭', detail: '跑男同款市场，绿豆煎饼(녹두빈대떡)必吃。', mapUrl: 'https://map.naver.com/p/search/광장시장' },
+  { day: 6, sortOrder: 3, time: '16:00', title: '首尔广场滑冰场', subtitle: '冬季限定', detail: '市政厅前露天滑冰场，视当天安排。', mapUrl: 'https://map.naver.com/p/search/서울광장스케이트장' },
+  { day: 6, sortOrder: 4, time: '20:00', title: '钟路 · 普信阁占位', subtitle: '跨年敲钟准备', detail: '跨年敲钟人非常多，早点去占位。' },
+  { day: 6, sortOrder: 5, time: '23:59', title: '普信阁跨年敲钟', subtitle: '2027 새해 복 많이 받으세요', detail: '韩国跨年传统：普信阁钟声敲响 33 下，迎接新年！', mapUrl: 'https://map.naver.com/p/search/보신각' },
+  { day: 7, sortOrder: 1, time: '自然醒', title: '新年第一天', subtitle: '喝杯香蕉牛奶', detail: '睡到自然醒，便利店早餐。' },
+  { day: 7, sortOrder: 2, time: '12:00', title: 'N 首尔塔', subtitle: '南山缆车 + 爱情锁', detail: '挂一把 2027 的爱情锁，俯瞰首尔全景。', mapUrl: 'https://map.naver.com/p/search/N서울타워' },
+  { day: 7, sortOrder: 3, time: '15:00', title: '弘大逛街', subtitle: '新村/弘大商圈', detail: '街头表演、潮牌、文创。', mapUrl: 'https://map.naver.com/p/search/홍대' },
+  { day: 7, sortOrder: 4, time: '18:30', title: '晚餐：弘大辣炒鸡排', subtitle: '芝士鸡排 닭갈비', detail: '围炉吃辣炒鸡排，冬天标配。', mapUrl: 'https://map.naver.com/p/search/홍대닭갈비' },
+  { day: 7, sortOrder: 5, time: '21:00', title: '炸鸡啤酒', subtitle: '치맥 · 新年第一顿', detail: '校村/BHC 酱油炸鸡，配啤酒跨年余温。', mapUrl: 'https://map.naver.com/p/search/교촌치킨' },
+  { day: 8, sortOrder: 1, time: '10:00', title: '圣水洞', subtitle: '咖啡 + 文创', detail: '旧工厂改造区，面包名店和买手店。', mapUrl: 'https://map.naver.com/p/search/성수동' },
+  { day: 8, sortOrder: 2, time: '13:00', title: '汉江公园拉面野餐', subtitle: '便利店拉面机', detail: '汝矣岛汉江公园：便利店买拉面，用拉面机煮，配汉江view。', mapUrl: 'https://map.naver.com/p/search/여의도한강공원' },
+  { day: 8, sortOrder: 3, time: '16:00', title: '现代百货 The Hyundai', subtitle: '汝矣岛 · 冬季装饰', detail: '室内超漂亮，冬季限定装饰出片。', mapUrl: 'https://map.naver.com/p/search/더현대서울' },
+  { day: 8, sortOrder: 4, time: '19:00', title: '龙山汗蒸幕', subtitle: '찜질방 体验', detail: '甜米露(식혜) + 烤鸡蛋，泡澡消除疲惫。', mapUrl: 'https://map.naver.com/p/search/드래곤힐스파' },
+  { day: 9, sortOrder: 1, time: '10:00', title: '免税店补货', subtitle: '乐天/新罗免税店', detail: '可提前在 APP 下单，机场提货。' },
+  { day: 9, sortOrder: 2, time: '13:00', title: '首尔最后一餐', subtitle: '烤肉 or 参鸡汤二刷', detail: '把想念的那一口补上。' },
+  { day: 9, sortOrder: 3, time: '15:00', title: '出发去机场', subtitle: 'AREX 直达仁川', detail: '国际航班提前 3–4 小时到机场，留足退税时间。' },
+  { day: 9, sortOrder: 4, time: '深夜', title: 'ICN → SZX 深夜航班', subtitle: '首尔仁川 → 深圳宝安', detail: '航班号待定。' },
+  { day: 9, sortOrder: 5, time: '1/4 凌晨', title: '落地深圳 · 回家', subtitle: '旅程结束', detail: '到家补觉，倒时差 1 小时（韩国比中国快 1 小时）。' }
+];
+const DAY_THEMES = {
+  1: '落地即南下', 2: '海云台 · 甘川', 3: '白浅滩 · 南浦洞', 4: 'KTX 北上回首尔',
+  5: '景福宫 · 韩屋村', 6: '明洞 · 跨年敲钟', 7: '元旦 · N首尔塔 · 弘大', 8: '圣水洞 · 汉江', 9: '免税店 · 回国'
+};
+const EMBEDDED_TODOS = [
+  { id: 1, emoji: '✈️', title: '订深圳 ⇄ 首尔机票', note: '12/26 凌晨去 · 1/3 深夜回' },
+  { id: 2, emoji: '🛂', title: '办签证 / K-ETA', note: '按最新政策，出发前 2 周完成' },
+  { id: 3, emoji: '🏨', title: '订釜山酒店（3 晚）', note: '海云台区域 · 12/26–29' },
+  { id: 4, emoji: '🏨', title: '订首尔酒店（5 晚）', note: '明洞 / 弘大 · 12/29–1/3' },
+  { id: 5, emoji: '🚄', title: '买 KTX 釜山→首尔车票', note: 'KORAIL · 12/29 下午' },
+  { id: 6, emoji: '📶', title: '买 eSIM / 开漫游', note: 'LG U+ / SKT 对比后定' },
+  { id: 7, emoji: '💱', title: '换韩元现金', note: '国内银行换一部分 + 首尔明洞汇率好' },
+  { id: 8, emoji: '🛡️', title: '买旅行保险', note: '含医疗 + 航班延误' },
+  { id: 9, emoji: '🗺️', title: '下载 Naver Map + Papago', note: '提前注册登录，下离线包' },
+  { id: 10, emoji: '📄', title: '打印行程单 / 酒店订单', note: '打印 + 存手机相册各一份' },
+  { id: 11, emoji: '🧳', title: '按行李清单打包', note: '出发前 2 天开始收' },
+  { id: 12, emoji: '🏠', title: '预约机场交通 / 送机', note: '12/25 深夜出发去机场' }
+];
+const EMBEDDED_BUCKET = [
+  { id: 1, emoji: '🐙', title: '活章鱼挑战', note: '札嘎其市场' },
+  { id: 2, emoji: '🚡', title: '胶囊小火车', note: '海云台 Blueline' },
+  { id: 3, emoji: '🌅', title: '海云台看海', note: '冬天人少的海' },
+  { id: 4, emoji: '🏘️', title: '甘川文化村小王子合影', note: '傍晚光线最好' },
+  { id: 5, emoji: '👘', title: '景福宫韩服穿越', note: '穿韩服免门票' },
+  { id: 6, emoji: '🎉', title: '普信阁跨年敲钟', note: '2027 새해!' },
+  { id: 7, emoji: '🔒', title: 'N首尔塔挂爱情锁', note: '南山' },
+  { id: 8, emoji: '🍜', title: '汉江公园煮拉面', note: '便利店拉面机' },
+  { id: 9, emoji: '🧖', title: '龙山汗蒸幕', note: '甜米露+鸡蛋' },
+  { id: 10, emoji: '🍗', title: '炸鸡啤酒之夜', note: '치맥' },
+  { id: 11, emoji: '🥛', title: '便利店香蕉牛奶', note: '바나나우유' },
+  { id: 12, emoji: '📸', title: '人生四格大头贴', note: '인생네컷' },
+  { id: 13, emoji: '🥞', title: '广藏市场绿豆煎饼', note: '녹두빈대떡' },
+  { id: 14, emoji: '☕', title: '圣水洞咖啡面包', note: '旧工厂改造区' },
+  { id: 15, emoji: '🛍️', title: 'Olive Young 囤货', note: '退税记得' },
+  { id: 16, emoji: '⛸️', title: '首尔广场滑冰', note: '冬季限定' }
+];
+const EMBEDDED_CHECKLIST = [
+  { id: 1, text: '护照', note: '有效期 6 个月以上' },
+  { id: 2, text: '韩国签证', note: '按最新政策办理' },
+  { id: 3, text: '机票行程单', note: '打印 + 手机存图' },
+  { id: 4, text: '酒店订单确认', note: '存图离线可看' },
+  { id: 5, text: '韩元现金', note: '国内换一部分' },
+  { id: 6, text: 'T-money 交通卡', note: '落地机场买' },
+  { id: 7, text: 'eSIM / 国际漫游', note: 'LG U+ / SKT' },
+  { id: 8, text: 'Naver Map + Papago', note: 'APP 提前下好' },
+  { id: 9, text: '德标转换插头', note: '220V 双圆孔' },
+  { id: 10, text: '充电宝', note: '随身不托运' },
+  { id: 11, text: '羽绒服/围巾/手套', note: '首尔 1 月 -6~2°C' },
+  { id: 12, text: '暖宝宝', note: '多带几片' },
+  { id: 13, text: '药品', note: '感冒/肠胃/创可贴' },
+  { id: 14, text: '一次性拖鞋', note: '长途飞行用' },
+  { id: 15, text: '相机/稳定器', note: '充电' },
+  { id: 16, text: 'VISA/Master 信用卡', note: '大额刷卡' }
+];
+const STATIC_CHECKLIST = [
+  { id: 'st-power', text: '备用充电宝', note: '本地项', done: false },
+  { id: 'st-cream', text: '护手霜 + 润唇膏', note: '本地项', done: false }
+];
+const PHRASES = [
+  ['안녕하세요', 'an-nyeong-ha-se-yo', '你好'],
+  ['감사합니다', 'gam-sa-ham-ni-da', '谢谢'],
+  ['이거 얼마예요?', 'i-geo eol-ma-ye-yo', '这个多少钱？'],
+  ['화장실 어디예요?', 'hwa-jang-sil eo-di-ye-yo', '洗手间在哪里？'],
+  ['메뉴판 주세요', 'me-nyu-pan ju-se-yo', '请给我菜单'],
+  ['카드 돼요?', 'ka-deu dwae-yo', '可以刷卡吗？'],
+  ['계산해주세요', 'gye-san-hae-ju-se-yo', '请结账'],
+  ['맛있어요!', 'ma-si-sseo-yo', '好吃！'],
+  ['와이파이 있어요?', 'wa-i-pa-i i-sseo-yo', '有 WiFi 吗？'],
+  ['도와주세요', 'do-wa-ju-se-yo', '请帮帮我'],
+  ['한국어 못해요', 'han-gu-geo mo-tae-yo', '我不会韩语'],
+  ['천천히 말해주세요', 'cheon-cheon-hi mal-hae-ju-se-yo', '请说慢一点'],
+  ['지하철역 어디예요?', 'ji-ha-cheol-yeok eo-di-ye-yo', '地铁站在哪？'],
+  ['맥주 한 잔 주세요', 'maek-ju han jan ju-se-yo', '来一杯啤酒']
+];
+const TIPS = [
+  ['🧣', '保暖穿搭', '首尔 1 月均温 -6~2°C：羽绒服 + 围巾 + 手套 + 暖宝宝。室内暖气足，内搭别太厚。'],
+  ['🚇', '地铁交通', '地铁最方便，T-money 卡地铁/公交/出租车/便利店通用，进出站各刷一次。'],
+  ['🚄', 'KTX 购票', '用 KORAIL App 或 korail.com 买票，釜山→首尔约 2.5–3h，座位宽可充电。'],
+  ['🗺️', '地图导航', '用 Naver Map / KakaoMap（Google Map 在韩国不准），支持中文界面。'],
+  ['💳', '支付', '大额刷 VISA/Master，小额现金；部分商户支持 Alipay/微信，Olive Young 基本可支付宝。'],
+  ['📶', '通信', 'eSIM（LG U+/SKT）落地即用；或机场租 WiFi 蛋。Papago 翻译记得下好离线包。'],
+  ['🎉', '跨年活动', '普信阁敲钟是韩国跨年传统（钟路，人超多早点占位）；汉江和首尔塔也有烟花。'],
+  ['🙇', '礼仪', '地铁爱心座不坐、扶梯靠右、餐厅不大声喧哗、递东西用双手。'],
+  ['🧾', '退税', '单笔满 30,000 韩元可退税；拿好退税单，机场自助机扫描 + 登机口取现金。'],
+  ['🆘', '紧急求助', '报警 112 / 急救 119；必要时联系中国驻韩大使馆。'],
+  ['🗣️', '语言', 'Papago 拍照翻译神器；年轻人多少会点英语，说慢一点 + 手势就够用。'],
+  ['🥶', '冬天限定', '首尔广场滑冰场、汉江雪景、热乎乎的鱼饼汤(오뎅국) —— 冬天的韩国别有味道。']
+];
+const RESTOS = {
+  busan: [
+    { emoji: '🍲', name: '密阳血肠猪肉汤饭', ko: '밀양순대돼지국밥', area: '海云台', note: '汤饭暖胃，落地第一顿', lat: 35.1587, lon: 129.1580 },
+    { emoji: '🐟', name: '札嘎其市场', ko: '자갈치시장', area: '南浦', note: '生鱼片 / 活章鱼，一楼买二楼加工', lat: 35.0965, lon: 129.0304 },
+    { emoji: '🥠', name: '富平罐头市场', ko: '부평깡통시장', area: '南浦', note: 'local 小吃，糖饼鱼饼串', lat: 35.1016, lon: 129.0283 },
+    { emoji: '🍢', name: '古来思鱼糕', ko: '고래사어묵', area: '海云台', note: '釜山特产鱼糕，当伴手礼也合适', lat: 35.1590, lon: 129.1610 }
+  ],
+  seoul: [
+    { emoji: '🥞', name: '广藏市场', ko: '광장시장', area: '钟路', note: '绿豆煎饼 + 麻药紫菜包饭', lat: 37.5704, lon: 127.0077 },
+    { emoji: '🥟', name: '明洞饺子', ko: '명동교자', area: '明洞', note: '刀削面 + 饺子，老字号', lat: 37.5628, lon: 126.9866 },
+    { emoji: '🍗', name: '土俗村参鸡汤', ko: '토속촌', area: '景福宫', note: '排队名店，参鸡汤 + 人参酒', lat: 37.5768, lon: 126.9727 },
+    { emoji: '🍗', name: '校村炸鸡', ko: '교촌치킨', area: '弘大/明洞', note: '酱油炸鸡，치맥 必备', lat: 37.5570, lon: 126.9230 },
+    { emoji: '🍲', name: '弘大辣炒鸡排', ko: '홍대닭갈비', area: '弘大', note: '芝士鸡排，围炉暖冬', lat: 37.5573, lon: 126.9256 },
+    { emoji: '☕', name: '圣水洞面包咖啡', ko: '성수 베이커리', area: '圣水洞', note: '旧工厂改造区，面包名店', lat: 37.5446, lon: 127.0560 },
+    { emoji: '🍜', name: '汉江便利店拉面', ko: '한강 편의점', area: '汝矣岛', note: '拉面机 + 汉江 view', lat: 37.5286, lon: 126.9334 },
+    { emoji: '🧖', name: '龙山汗蒸幕', ko: '용산 드래곤힐스파', area: '龙山', note: '甜米露 + 烤鸡蛋', lat: 37.5300, lon: 126.9650 }
+  ]
+};
+const SPOTS = {
+  busan: [
+    { lat: 35.1587, lon: 129.1604, label: '海云台海水浴场', emoji: '🌊', color: '#5B8DEF', desc: '冬天人少的海，适合散步拍照' },
+    { lat: 35.1548, lon: 129.1920, label: '胶囊小火车·青沙浦', emoji: '🚡', color: '#F08BA6', desc: 'Blueline Park 天空舱' },
+    { lat: 35.0974, lon: 129.0106, label: '甘川文化村', emoji: '🏘️', color: '#5B8DEF', desc: '彩色房子 + 小王子' },
+    { lat: 35.0965, lon: 129.0304, label: '札嘎其市场', emoji: '🐟', color: '#F2A65A', desc: '海鲜市场 · 活章鱼' },
+    { lat: 35.0985, lon: 129.0287, label: 'BIFF广场', emoji: '🎬', color: '#F2A65A', desc: '街头小吃' },
+    { lat: 35.0729, lon: 129.0162, label: '白浅滩文化村', emoji: '🎨', color: '#5B8DEF', desc: '海岸步道 + 咖啡厅' },
+    { lat: 35.0557, lon: 129.0867, label: '太宗台', emoji: '⛰️', color: '#5B8DEF', desc: '灯塔 + 悬崖海景' },
+    { lat: 35.1534, lon: 129.1188, label: '广安里大桥', emoji: '🌉', color: '#5B8DEF', desc: '灯光桥夜景' },
+    { lat: 35.1154, lon: 129.0417, label: '釜山站', emoji: '🚄', color: '#94A7B8', desc: 'KTX 出发/到达' },
+    { lat: 35.1796, lon: 128.9382, label: '金海机场', emoji: '✈️', color: '#94A7B8', desc: '釜山机场（备选交通）' },
+    { lat: 35.1590, lon: 129.1600, label: '酒店·海云台(待定)', emoji: '🏨', color: '#7C8A83', desc: '12/26–12/29 住宿' }
+  ],
+  seoul: [
+    { lat: 37.5796, lon: 126.9770, label: '景福宫', emoji: '🏯', color: '#5B8DEF', desc: '韩服体验 · 免门票' },
+    { lat: 37.5815, lon: 126.9849, label: '北村韩屋村', emoji: '🏘️', color: '#5B8DEF', desc: '韩屋小巷' },
+    { lat: 37.5745, lon: 126.9859, label: '仁寺洞', emoji: '🎎', color: '#F2A65A', desc: '传统手信' },
+    { lat: 37.5636, lon: 126.9860, label: '明洞', emoji: '🛍️', color: '#F2A65A', desc: '购物 + 夜市' },
+    { lat: 37.5704, lon: 127.0077, label: '广藏市场', emoji: '🥢', color: '#F2A65A', desc: '绿豆煎饼' },
+    { lat: 37.5710, lon: 126.9833, label: '普信阁', emoji: '🎉', color: '#F08BA6', desc: '12/31 跨年敲钟' },
+    { lat: 37.5512, lon: 126.9882, label: 'N首尔塔', emoji: '🗼', color: '#F08BA6', desc: '南山 · 爱情锁' },
+    { lat: 37.5573, lon: 126.9256, label: '弘大', emoji: '🎤', color: '#F2A65A', desc: '街头表演 + 商圈' },
+    { lat: 37.5446, lon: 127.0560, label: '圣水洞', emoji: '☕', color: '#F2A65A', desc: '咖啡 + 文创' },
+    { lat: 37.5286, lon: 126.9334, label: '汉江公园·汝矣岛', emoji: '🌉', color: '#5B8DEF', desc: '拉面野餐' },
+    { lat: 37.5547, lon: 126.9707, label: '首尔站', emoji: '🚄', color: '#94A7B8', desc: 'KTX / AREX 枢纽' },
+    { lat: 37.4602, lon: 126.4407, label: '仁川机场', emoji: '✈️', color: '#94A7B8', desc: 'ICN · 进出韩国' },
+    { lat: 37.5640, lon: 126.9830, label: '酒店·明洞(待定)', emoji: '🏨', color: '#7C8A83', desc: '12/29–1/3 住宿' }
+  ]
+};
+
+/* ================= Tab 切换 ================= */
+const TABS = ['home', 'itinerary', 'map', 'transport', 'todos', 'packing', 'expenses', 'docs', 'guide'];
+let mapInited = false;
+function showTab(name, pushHash = true) {
+  if (!TABS.includes(name)) name = 'home';
+  document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + name));
+  document.querySelectorAll('.bn-btn').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
+  $('#expFAB').style.display = (name === 'expenses') ? 'flex' : 'none';
+  window.scrollTo(0, 0);
+  // 面板内元素入场动画
+  document.querySelectorAll('#tab-' + name + ' .reveal:not(.in)').forEach((el) => el.classList.add('in'));
+  if (name === 'map') {
+    if (!mapInited) { initMap(); mapInited = true; }
+    else if (map) setTimeout(() => map.invalidateSize(), 80);
+  }
+  // 底部导航：激活项滚动到可见位置
+  const act = document.querySelector('.bn-btn.active');
+  if (act && act.scrollIntoView) act.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  if (pushHash && location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+}
+document.querySelectorAll('.bn-btn').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+document.querySelectorAll('.qcard-btn').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.goto)));
+$('#ctaPlan').addEventListener('click', () => showTab('itinerary'));
+window.addEventListener('hashchange', () => showTab(location.hash.slice(1) || 'home', false));
+
+/* ================= 头部状态 ================= */
+function updateHeader() {
+  const phase = tripPhase();
+  let phaseText = '';
+  if (phase === 'prep') phaseText = `准备期 · D-${Math.ceil((D1 - Date.now()) / 86400000)}`;
+  else if (phase === 'busan') phaseText = `DAY ${dayIndex()} · 釜山`;
+  else if (phase === 'seoul') phaseText = `DAY ${dayIndex()} · 首尔`;
+  else phaseText = '旅程已结束';
+  $('#tb-phase').textContent = phaseText;
+  $('#tb-time').textContent = '韩国时间 ' + fmtKR({ hour: '2-digit', minute: '2-digit', hour12: false });
+  const pct = Math.min(100, Math.max(0, (Date.now() - D1) / (TRIP_END - D1) * 100));
+  $('#heroProgress').style.width = pct + '%';
+}
+
+/* ================= 倒计时 ================= */
+const RINGS = [
+  { id: 1, target: D1, label: '出发', doneText: '已出发' },
+  { id: 2, target: NEWYEAR, label: '跨年', doneText: '已跨年' },
+  { id: 3, target: TRIP_END, label: '回家', doneText: '已到家' }
+];
+function updateRings() {
+  RINGS.forEach((r) => {
+    const el = $('#ring' + r.id);
+    const num = $('#ring' + r.id + 'Num');
+    const unit = $('#ring' + r.id + 'Unit');
+    const detail = $('#ring' + r.id + 'Detail');
+    const ms = r.target - Date.now();
+    if (ms <= 0) {
+      el.closest('.ring-card').classList.add('done');
+      num.textContent = '✓'; unit.textContent = '';
+      detail.textContent = r.doneText;
+      el.style.strokeDashoffset = 0;
+      return;
+    }
+    const t = dl(ms);
+    const totalSpan = TRIP_END - D1;
+    const doneFrac = Math.min(1, Math.max(0, (Date.now() - D1) / totalSpan));
+    el.style.strokeDashoffset = 326.7 * (1 - doneFrac);
+    if (t.d > 0) { num.textContent = t.d; unit.textContent = '天'; detail.textContent = `${pad(t.h)}:${pad(t.m)}:${pad(t.s)}`; }
+    else { num.textContent = pad(t.h); unit.textContent = '小时'; detail.textContent = `${pad(t.m)}:${pad(t.s)}`; }
+  });
+}
+
+/* ================= Hero ================= */
+let heroIdx = 0, heroLayer = 0;
+function rotateHero() {
+  heroIdx = (heroIdx + 1) % HERO_IMAGES.length;
+  const layer = heroLayer === 0 ? $('#heroA') : $('#heroB');
+  layer.style.backgroundImage = `url('${HERO_IMAGES[heroIdx]}'), ${PHOTO_FALLBACK}`;
+  layer.classList.add('active');
+  ($('#heroA') === layer ? $('#heroB') : $('#heroA')).classList.remove('active');
+  heroLayer = 1 - heroLayer;
+}
+function initHero() {
+  $('#heroA').style.backgroundImage = `url('${HERO_IMAGES[0]}'), ${PHOTO_FALLBACK}`;
+  $('#heroA').classList.add('active');
+  setInterval(rotateHero, 5000);
+}
+function updateHeroCountdown() {
+  const phase = tripPhase();
+  const el = $('#heroCountdown');
+  if (phase === 'prep') {
+    const t = dl(D1 - Date.now());
+    el.textContent = `距出发还有 ${t.d} 天 ${pad(t.h)} 小时 ${pad(t.m)} 分`;
+  } else if (phase === 'busan') {
+    const t = dl(NEWYEAR - Date.now());
+    el.textContent = `釜山段 DAY ${dayIndex()} · 距跨年 ${t.d} 天 ${pad(t.h)} 小时`;
+  } else if (phase === 'seoul') {
+    const t = dl(NEWYEAR - Date.now());
+    el.textContent = t.d > 0 ? `首尔段 DAY ${dayIndex()} · 距跨年 ${t.d} 天` : `首尔段 DAY ${dayIndex()} · 新年快乐！`;
+  } else {
+    el.textContent = '旅程已结束，下一站再见';
+  }
+}
+
+/* ================= 首页 · 接下来 ================= */
+const t2min = (t) => { const m = String(t).match(/(\d{1,2}):(\d{2})/); return m ? (+m[1] * 60 + +m[2]) : Infinity; };
+function renderNextUp() {
+  const el = $('#nextUp');
+  const phase = tripPhase();
+  if (phase === 'prep') {
+    el.innerHTML = `<div class="nu-ic">${ic('bag')}</div><div><div class="nu-title">准备期 · 距出发还有 ${Math.ceil((D1 - Date.now()) / 86400000)} 天</div>
+      <div class="nu-sub">先去「待办」把机票、酒店、签证一件件打勾</div></div>`;
+    return;
+  }
+  if (phase === 'done') {
+    el.innerHTML = `<div class="nu-ic">${ic('heart')}</div><div><div class="nu-title">旅程已结束</div><div class="nu-sub">谢谢一路同行，下一站见</div></div>`;
+    return;
+  }
+  const list = currentItinerary || EMBEDDED_ITINERARY;
+  const today = list.filter((i) => i.day === dayIndex()).sort((a, b) => a.sortOrder - b.sortOrder);
+  const nowKr = fmtKR({ hour: '2-digit', minute: '2-digit', hour12: false });
+  const nowMin = +nowKr.slice(0, 2) * 60 + +nowKr.slice(3, 5);
+  const next = today.find((i) => t2min(i.time) > nowMin) || today[today.length - 1];
+  if (!next) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="nu-ic">${ic('pin')}</div><div><div class="nu-title">接下来 · D${dayIndex()} ${esc(next.time)} ${esc(next.title)}</div>
+    <div class="nu-sub">${esc(next.subtitle || '')}</div></div>`;
+}
+
+/* ================= 天气 ================= */
+const WMO_ICON = {
+  0: 'sun', 1: 'sun-cloud', 2: 'cloud-sun', 3: 'cloud',
+  45: 'fog', 48: 'fog',
+  51: 'drizzle', 53: 'drizzle', 55: 'rain',
+  61: 'rain', 63: 'rain', 65: 'rain', 66: 'rain', 67: 'rain',
+  71: 'snow', 73: 'snow', 75: 'snow', 77: 'snow',
+  80: 'rain', 81: 'rain', 82: 'rain', 85: 'snow', 86: 'snow',
+  95: 'storm', 96: 'storm', 99: 'storm'
+};
+const WMO_TXT = {
+  0: '晴朗', 1: '大部晴朗', 2: '多云', 3: '阴',
+  45: '雾', 48: '雾凇',
+  51: '小毛毛雨', 53: '毛毛雨', 55: '浓毛毛雨',
+  61: '小雨', 63: '中雨', 65: '大雨', 66: '冻雨', 67: '强冻雨',
+  71: '小雪', 73: '中雪', 75: '大雪', 77: '雪粒',
+  80: '阵雨', 81: '强阵雨', 82: '暴雨', 85: '阵雪', 86: '强阵雪',
+  95: '雷雨', 96: '雷雨冰雹', 99: '强雷雨冰雹'
+};
+const wmo = (code) => [WMO_ICON[code] || 'thermometer', WMO_TXT[code] || '—'];
+let wxCity = 'busan', wxAuto = true;
+const wxCache = { busan: null, seoul: null };
+
+function autoCity() {
+  const phase = tripPhase();
+  if (phase === 'busan') return 'busan';
+  return 'seoul';
+}
+async function fetchWeather(city) {
+  const c = CITIES[city];
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}` +
+    `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m` +
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min` +
+    `&hourly=temperature_2m,weather_code&timezone=Asia%2FSeoul&forecast_days=5`;
+  try {
+    const res = await fetch(url);
+    const json = await res.json();
+    wxCache[city] = json;
+    return json;
+  } catch { return wxCache[city]; }
+}
+function renderWeather() {
+  const data = wxCache[wxCity];
+  if (!data) return;
+  const c = CITIES[wxCity];
+  const cur = data.current;
+  const [icName, desc] = wmo(cur.weather_code);
+  $('#wxEmoji').innerHTML = ic(icName);
+  $('#wxTemp').textContent = Math.round(cur.temperature_2m) + '°';
+  $('#wxDesc').textContent = desc;
+  $('#wxSub').textContent = `体感 ${Math.round(cur.apparent_temperature)}° · 风速 ${Math.round(cur.wind_speed_10m)} km/h`;
+  $('#wxCityName').textContent = c.name;
+  $('#wxUpdated').textContent = 'Open-Meteo · ' + fmtKR({ hour: '2-digit', minute: '2-digit', hour12: false }) + ' 更新';
+  $('#wxAutoHint').textContent = wxAuto ? '已按行程自动切换城市' : '手动选择城市';
+
+  const days = data.daily;
+  $('#wxDays').innerHTML = days.time.slice(0, 5).map((date, i) => {
+    const [e] = wmo(days.weather_code[i]);
+    const wd = new Date(date + 'T12:00:00+09:00').toLocaleDateString('zh-CN', { timeZone: 'Asia/Seoul', weekday: 'short', month: 'numeric', day: 'numeric' });
+    const today = i === 0;
+    return `<div class="card wx-day"${today ? ' style="border:2px solid var(--green)"' : ''}>
+      <div class="wd-name">${today ? '今天' : wd}</div>
+      <div class="wd-ic">${ic(e)}</div>
+      <div class="wd-temp">${Math.round(days.temperature_2m_max[i])}° <span>${Math.round(days.temperature_2m_min[i])}°</span></div>
+      <div class="wd-name" style="font-weight:600">${wmo(days.weather_code[i])[1]}</div>
+    </div>`;
+  }).join('');
+
+  const hours = data.hourly;
+  const nowStr = fmtKR({ year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false });
+  const nowIso = nowStr.replace(/\//g, '-').replace(/(\d{4})-(\d{2})-(\d{2}) (\d{2}).*/, '$1-$2-$3T$4:00');
+  const start = hours.time.findIndex((t) => t >= nowIso);
+  const from = start >= 0 ? start : 0;
+  $('#wxHourly').innerHTML = hours.time.slice(from, from + 24).map((t, i) => {
+    const [e] = wmo(hours.weather_code[from + i]);
+    const hh = t.slice(11, 13);
+    return `<div class="card wx-hour"><div class="wh-t">${hh}时</div><div class="wh-ic">${ic(e)}</div><div class="wh-temp">${Math.round(hours.temperature_2m[from + i])}°</div></div>`;
+  }).join('');
+}
+async function initWeather() {
+  await Promise.all([fetchWeather('busan'), fetchWeather('seoul')]);
+  wxCity = wxAuto ? autoCity() : wxCity;
+  document.querySelectorAll('#cityTabs .city-tab').forEach((b) => b.classList.toggle('active', b.dataset.city === wxCity));
+  renderWeather();
+  setInterval(() => {
+    if (wxAuto) {
+      const auto = autoCity();
+      if (auto !== wxCity) {
+        wxCity = auto;
+        document.querySelectorAll('#cityTabs .city-tab').forEach((b) => b.classList.toggle('active', b.dataset.city === wxCity));
+      }
+    }
+    renderWeather();
+  }, 15 * 60 * 1000);
+  setInterval(() => { fetchWeather('busan'); fetchWeather('seoul'); }, 30 * 60 * 1000);
+}
+document.querySelectorAll('#cityTabs .city-tab').forEach((b) => b.addEventListener('click', () => {
+  wxCity = b.dataset.city; wxAuto = false;
+  document.querySelectorAll('#cityTabs .city-tab').forEach((x) => x.classList.toggle('active', x === b));
+  renderWeather();
+}));
+$('#wxHourlyBtn').addEventListener('click', function () {
+  this.classList.toggle('active');
+  $('#wxHourlyWrap').classList.toggle('open');
+});
+
+/* ================= 地图 ================= */
+let map = null, markerLayer = null;
+const CITY_CENTER = { busan: [35.15, 129.05], seoul: [37.55, 126.98] };
+function initMap() {
+  if (typeof L === 'undefined') {
+    $('#map').innerHTML = '<div style="padding:48px 20px;text-align:center;color:var(--muted);font-size:13.5px">地图库加载失败，请检查网络后刷新页面</div>';
+    return;
+  }
+  map = L.map('map', {
+    center: CITY_CENTER.busan, zoom: 11,
+    zoomControl: true,
+    dragging: !window.matchMedia('(pointer: coarse)').matches, // 触屏不拦截页面滚动
+    scrollWheelZoom: false
+  });
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18, attribution: '© OpenStreetMap'
+  }).addTo(map);
+  markerLayer = L.layerGroup().addTo(map);
+  renderMapCity('busan');
+}
+function popupHTML(s) {
+  return `<b>${esc(s.label)}</b>
+    <p>${esc(s.desc || '')}<br>坐标 ${s.lat.toFixed(4)}, ${s.lon.toFixed(4)}</p>
+    <div class="lp-links">
+      <a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}" target="_blank" rel="noopener">Google 导航</a>
+      <a href="https://map.naver.com/p/search/${encodeURIComponent(s.label.replace(/·.*/, ''))}" target="_blank" rel="noopener">Naver 地图</a>
+      <button class="copy-c" data-coord="${s.lat},${s.lon}">复制坐标</button>
+    </div>`;
+}
+const LEGEND_COLOR_NAME = {
+  '#5B8DEF': '景点', '#F08BA6': '打卡点', '#F2A65A': '美食购物', '#94A7B8': '交通', '#7C8A83': '住宿'
+};
+function renderMapCity(city) {
+  if (!map) return;
+  document.querySelectorAll('#mapTabs .city-tab').forEach((b) => b.classList.toggle('active', b.dataset.city === city));
+  markerLayer.clearLayers();
+  SPOTS[city].forEach((s) => {
+    const icon = L.divIcon({
+      className: '',
+      html: `<div class="spot-pill" style="--c:${s.color}"><span class="sp-dot" style="background:${s.color}"></span>${esc(s.label)}</div>`,
+      iconSize: null, iconAnchor: [14, 16]
+    });
+    L.marker([s.lat, s.lon], { icon }).addTo(markerLayer).bindPopup(popupHTML(s));
+  });
+  map.flyTo(CITY_CENTER[city], city === 'busan' ? 11 : 11.5, { duration: 0.8 });
+  map.on('popupopen', (e) => {
+    e.popup.getElement().querySelectorAll('.copy-c').forEach((btn) => {
+      btn.onclick = () => {
+        const txt = btn.dataset.coord;
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject())
+          .then(() => { btn.textContent = '已复制'; })
+          .catch(() => { prompt('复制坐标：', txt); });
+      };
+    });
+  });
+  const legend = [...new Set(SPOTS[city].map((s) => s.color))];
+  $('#mapLegend').innerHTML = legend.map((c) => `<span class="legend-chip"><i style="--lc:${c}"></i> ${LEGEND_COLOR_NAME[c] || '地点'}</span>`).join('');
+  setTimeout(() => map.invalidateSize(), 260);
+}
+document.querySelectorAll('#mapTabs .city-tab').forEach((b) => b.addEventListener('click', () => renderMapCity(b.dataset.city)));
+
+/* ================= 行程 · 分类 ================= */
+const CAT_COLOR = { spot: '#5B8DEF', food: '#F2A65A', transport: '#94A7B8' };
+const CAT_NAME = { spot: '景点', food: '美食', transport: '交通' };
+function catOf(it) {
+  const t = it.title || '';
+  if (/机场|航班|落地|登机|AREX|KTX|地铁|大巴|车站|出发|回家|退房/.test(t)) return 'transport';
+  if (/汤饭|市场|炸鸡|咖啡|参鸡汤|拉面|饺子|鸡排|烤肉|餐厅|小吃|啤酒|面包|绿豆|便利店|免税|购物|午餐|晚餐|夜市|最后一餐/.test(t)) return 'food';
+  return 'spot';
+}
+
+/* ================= 行程 · 日历条 ================= */
+let calView = { y: 2026, m: 11 };
+function dayNumOf(y, m, d) { return y === 2027 ? d + 31 : d; } // 12/26=D1 … 1/3=D9
+function isTripDayNum(day) { return day >= 26 && day <= 34; }
+function renderCalendar() {
+  const { y, m } = calView;
+  $('#calTitle').textContent = y + '年' + (m + 1) + '月';
+  $('#calPrev').disabled = (m === 11);
+  $('#calNext').disabled = (m === 0);
+  const items = currentItinerary || EMBEDDED_ITINERARY;
+  const byDay = {};
+  items.forEach((it) => { (byDay[it.day] = byDay[it.day] || []).push(it); });
+  const offset = (new Date(y, m, 1).getDay() + 6) % 7; // 周一开头
+  const daysIn = new Date(y, m + 1, 0).getDate();
+  const todayStr = fmtKR({ year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '');
+  let html = '';
+  for (let i = 0; i < offset; i++) html += '<div class="cal-cell" style="pointer-events:none"></div>';
+  for (let d = 1; d <= daysIn; d++) {
+    const day = dayNumOf(y, m, d);
+    const tdy = (y + pad(m + 1) + pad(d)) === todayStr;
+    const trip = isTripDayNum(day);
+    let dots = '';
+    let cls = 'cal-cell';
+    if (trip) {
+      const cats = [...new Set((byDay[day] || []).map(catOf))];
+      const order = ['spot', 'food', 'transport'];
+      cats.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+      dots = `<span class="cal-dots">${cats.map((c) => `<span class="cal-dot" style="--cd:${CAT_COLOR[c]}"></span>`).join('')}</span>`;
+      cls += ' trip';
+    }
+    if (tdy) cls += ' today';
+    html += `<div class="${cls}"${trip ? ` data-day="${day}" role="button"` : ''}>${d}${dots}</div>`;
+  }
+  $('#calGrid').innerHTML = html;
+}
+$('#calPrev').addEventListener('click', () => { if (calView.m === 0) { calView = { y: 2026, m: 11 }; renderCalendar(); } });
+$('#calNext').addEventListener('click', () => { if (calView.m === 11) { calView = { y: 2027, m: 0 }; renderCalendar(); } });
+$('#calGrid').addEventListener('click', (e) => {
+  const cell = e.target.closest('.cal-cell.trip');
+  if (!cell) return;
+  const day = Number(cell.dataset.day);
+  const card = document.querySelector(`.day-card[data-day="${day}"]`);
+  if (card) {
+    card.classList.add('open');
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+/* ================= 行程 · 日卡片 ================= */
+let currentItinerary = null;
+function renderDayChips() {
+  $('#dayChips').innerHTML = Array.from({ length: 9 }, (_, i) => i + 1).map((d) => {
+    const today = (tripPhase() === 'busan' || tripPhase() === 'seoul') && dayIndex() === d;
+    const date = new Date(Date.UTC(2026, 11, 25 + d));
+    const ds = date.toLocaleDateString('zh-CN', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric' });
+    return `<button class="day-chip${today ? ' today' : ''}" data-day="${d}">D${d} · ${ds}${today ? ' · 今天' : ''}</button>`;
+  }).join('');
+  document.querySelectorAll('.day-chip').forEach((c) => c.addEventListener('click', () => {
+    const card = document.querySelector(`.day-card[data-day="${c.dataset.day}"]`);
+    if (card) {
+      card.classList.add('open');
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }));
+}
+function renderItinerary(list) {
+  const todayIdx = (tripPhase() === 'busan' || tripPhase() === 'seoul') ? dayIndex() : -1;
+  const openDay = todayIdx > 0 ? todayIdx : (list.length ? list[0].day : 1);
+  const byDay = {};
+  list.forEach((item) => { (byDay[item.day] = byDay[item.day] || []).push(item); });
+  $('#itineraryList').innerHTML = Object.keys(byDay).map((d) => {
+    const day = Number(d);
+    const items = byDay[d].sort((a, b) => a.sortOrder - b.sortOrder);
+    const date = new Date(Date.UTC(2026, 11, 25 + day));
+    const dateStr = date.toLocaleDateString('zh-CN', { timeZone: 'Asia/Seoul', month: 'long', day: 'numeric', weekday: 'short' });
+    const today = day === todayIdx;
+    const dayLabel = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+    return `<div class="card day-card${day === openDay ? ' open' : ''}" data-day="${day}">
+      <button class="dc-head" onclick="this.parentElement.classList.toggle('open')">
+        <div class="dc-num">D${day}<small>${dayLabel}</small></div>
+        <div class="dc-title">${dateStr}
+          <span class="dc-theme">${DAY_THEMES[day] || ''}</span>
+          ${today ? '<span class="today-badge">今天</span>' : ''}
+        </div>
+        <span class="dc-badge"><span class="dc-arrow">${ic('chevron')}</span></span>
+      </button>
+      <div class="dc-body"><div class="dc-body-inner">
+        ${items.map((it) => `
+        <div class="tl-row" onclick="this.classList.toggle('dopen')">
+          <span class="tl-dot" style="--td:${CAT_COLOR[catOf(it)]}"></span>
+          <div class="tl-time">${esc(it.time)}</div>
+          <div class="tl-main">
+            <div class="tl-title">${esc(it.title)}</div>
+            ${it.subtitle ? `<div class="tl-sub">${esc(it.subtitle)}</div>` : ''}
+            ${it.detail ? `<div class="tl-detail">${esc(it.detail)}</div><div class="tl-tip">点此行展开/收起</div>` : ''}
+          </div>
+        </div>`).join('')}
+      </div></div>
+    </div>`;
+  }).join('');
+}
+async function initItinerary() {
+  const list = await apiGet('/itinerary', 'kr_cache_itinerary', EMBEDDED_ITINERARY);
+  currentItinerary = list;
+  renderItinerary(list);
+  renderDayChips();
+  renderCalendar();
+}
+
+/* ================= 待办（预订） ================= */
+let todoItems = [], todoTimer = null;
+function renderTodos() {
+  const done = todoItems.filter((t) => t.done).length;
+  $('#todosCount').textContent = `${done}/${todoItems.length}`;
+  $('#todosNum').textContent = `${done}/${todoItems.length}`;
+  $('#todosBar').style.width = (todoItems.length ? done / todoItems.length * 100 : 0) + '%';
+  $('#todosList').innerHTML = todoItems.map((t) => `
+    <div class="l-row${t.done ? ' done' : ''}" data-id="${esc(t._id || t.id)}" onclick="toggleTodo(this)">
+      <span class="l-ic">${iconFor(t.emoji)}</span>
+      <span class="l-main"><span class="l-text">${esc(t.title)}</span>
+        ${t.note ? `<div class="l-note">${esc(t.note)}</div>` : ''}</span>
+      <span class="l-check">✓</span>
+    </div>`).join('');
+}
+window.toggleTodo = async function (el) {
+  const id = el.dataset.id;
+  const item = todoItems.find((t) => (t._id || t.id) == id);
+  if (!item) return;
+  const prev = item.done;
+  item.done = !item.done;
+  renderTodos();
+  try {
+    if (String(id).length > 20) {
+      await fetch(`${API_BASE}/todos/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ done: item.done }) });
+    }
+  } catch {
+    item.done = prev; renderTodos();
+  }
+};
+async function initTodos() {
+  todoItems = await apiGet('/todos', 'kr_cache_todos', EMBEDDED_TODOS);
+  renderTodos();
+  todoTimer = setInterval(async () => {
+    const fresh = await apiGet('/todos', 'kr_cache_todos', EMBEDDED_TODOS);
+    todoItems = fresh; renderTodos();
+  }, 10000);
+}
+
+/* ================= 打卡清单 ================= */
+let bucketItems = [], bucketTimer = null;
+function renderBucket() {
+  const done = bucketItems.filter((b) => b.done).length;
+  $('#bucketCount').textContent = `${done}/${bucketItems.length}`;
+  $('#bucketList').innerHTML = bucketItems.map((b) => `
+    <button class="card bl-card${b.done ? ' done' : ''}" data-id="${esc(b._id || b.id)}" onclick="toggleBucket(this)" style="text-align:left">
+      <span class="bl-ic">${iconFor(b.emoji)}</span>
+      <span class="bl-main"><span class="bl-title">${esc(b.title)}</span>
+        ${b.note ? `<div class="bl-note">${esc(b.note)}</div>` : ''}</span>
+      <span class="bl-check">✓</span>
+    </button>`).join('');
+}
+window.toggleBucket = async function (el) {
+  const id = el.dataset.id;
+  const item = bucketItems.find((b) => (b._id || b.id) == id);
+  if (!item) return;
+  const prev = item.done;
+  item.done = !item.done;
+  renderBucket();
+  try {
+    if (String(id).length > 20) {
+      await fetch(`${API_BASE}/bucket-list/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ done: item.done }) });
+    }
+  } catch {
+    item.done = prev; renderBucket();
+  }
+};
+async function initBucket() {
+  bucketItems = await apiGet('/bucket-list', 'kr_cache_bucketlist', EMBEDDED_BUCKET);
+  renderBucket();
+  bucketTimer = setInterval(async () => {
+    const fresh = await apiGet('/bucket-list', 'kr_cache_bucketlist', EMBEDDED_BUCKET);
+    bucketItems = fresh; renderBucket();
+  }, 10000);
+}
+
+/* ================= 行李清单 ================= */
+let checklistItems = [], checklistTimer = null;
+function staticItems() {
+  const saved = cache.get('kr_static_cl');
+  if (saved) return saved;
+  return STATIC_CHECKLIST.map((s) => ({ ...s }));
+}
+function renderChecklist() {
+  const statics = staticItems();
+  const all = [...checklistItems, ...statics];
+  const done = all.filter((i) => i.done).length;
+  $('#clCount').textContent = `${done}/${all.length}`;
+  $('#clNum').textContent = `${done}/${all.length}`;
+  $('#clBar').style.width = (all.length ? done / all.length * 100 : 0) + '%';
+  $('#checklistList').innerHTML = all.map((i) => `
+    <div class="l-row${i.done ? ' done' : ''}" data-id="${esc(i._id || i.id)}" data-static="${i.id && String(i.id).startsWith('st-') ? 1 : 0}" onclick="toggleChecklist(this)">
+      <span class="l-ic">${iconFor(String(i.id).startsWith('st-') ? '🧴' : '🎒')}</span>
+      <span class="l-main"><span class="l-text">${esc(i.text)}</span>
+        ${i.note ? `<div class="l-note">${esc(i.note)}</div>` : ''}</span>
+      <span class="l-tag">${String(i.id).startsWith('st-') ? '本地' : '云端'}</span>
+      <span class="l-check">✓</span>
+    </div>`).join('');
+}
+window.toggleChecklist = async function (el) {
+  const id = el.dataset.id;
+  const isStatic = el.dataset.static === '1';
+  if (isStatic) {
+    const statics = staticItems();
+    const item = statics.find((i) => i.id == id);
+    if (item) { item.done = !item.done; cache.set('kr_static_cl', statics); }
+    renderChecklist();
+    return;
+  }
+  const item = checklistItems.find((i) => (i._id || i.id) == id);
+  if (!item) return;
+  const prev = item.done;
+  item.done = !item.done;
+  renderChecklist();
+  try {
+    await fetch(`${API_BASE}/checklist/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ done: item.done }) });
+  } catch {
+    item.done = prev; renderChecklist();
+  }
+};
+async function initChecklist() {
+  checklistItems = await apiGet('/checklist', 'kr_cache_checklist', EMBEDDED_CHECKLIST);
+  renderChecklist();
+  checklistTimer = setInterval(async () => {
+    const fresh = await apiGet('/checklist', 'kr_cache_checklist', EMBEDDED_CHECKLIST);
+    checklistItems = fresh; renderChecklist();
+  }, 10000);
+}
+
+/* ================= 记账 ================= */
+let expenses = [], expensesTimer = null;
+const CATS = ['交通', '住宿', '餐饮', '门票', '购物', '其他'];
+const CAT_COLORS = { '交通': '#5B8DEF', '住宿': '#46B98A', '餐饮': '#F2A65A', '门票': '#F08BA6', '购物': '#9C8CE8', '其他': '#B9C4BD' };
+const CAT_ICONS = { '交通': 'train', '住宿': 'hotel', '餐饮': 'food', '门票': 'star', '购物': 'gift', '其他': 'receipt' };
+const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' };
+function itemPerPersonRMB(it) {
+  const rate = FX_RATES[it.currency] || 1;
+  if (it.splitType === 'perPerson') return it.amount * rate;
+  return (it.amount * rate) / 2;
+}
+function expCatOf(it) { return CATS.includes(it.category) ? it.category : '其他'; }
+function renderDonut() {
+  const sums = {}; CATS.forEach((c) => { sums[c] = 0; });
+  expenses.forEach((it) => { sums[expCatOf(it)] += itemPerPersonRMB(it); });
+  const totalSum = CATS.reduce((s, c) => s + sums[c], 0);
+  const donut = $('#donut');
+  const legend = $('#donutLegend');
+  const center = $('#donutTotal');
+  if (totalSum <= 0) {
+    donut.style.background = '#EDF2EE';
+    center.innerHTML = '¥0<small>人均</small>';
+    legend.innerHTML = '<div class="dl-empty">记一笔后自动生成分类占比</div>';
+    return;
+  }
+  let acc = 0;
+  const stops = [];
+  CATS.forEach((c) => {
+    if (sums[c] <= 0) return;
+    const from = acc / totalSum * 360;
+    acc += sums[c];
+    const to = acc / totalSum * 360;
+    stops.push(`${CAT_COLORS[c]} ${from}deg ${to}deg`);
+  });
+  donut.style.background = `conic-gradient(${stops.join(',')})`;
+  center.innerHTML = `¥${Math.round(totalSum)}<small>人均</small>`;
+  legend.innerHTML = CATS.filter((c) => sums[c] > 0).map((c) => `
+    <div class="dl-row"><span class="dl-dot" style="--dc:${CAT_COLORS[c]}"></span>
+    <span class="dl-name">${c}</span>
+    <span class="dl-amt">¥${Math.round(sums[c])} · ${(sums[c] / totalSum * 100).toFixed(0)}%</span></div>`).join('');
+}
+function renderExpenses() {
+  const per = expenses.reduce((s, it) => s + itemPerPersonRMB(it), 0);
+  const total = expenses.reduce((s, it) => {
+    const rate = FX_RATES[it.currency] || 1;
+    return s + (it.splitType === 'perPerson' ? it.amount * rate * 2 : it.amount * rate);
+  }, 0);
+  $('#esPer').textContent = '¥' + per.toFixed(0);
+  $('#esTotal').innerHTML = `¥${total.toFixed(0)} <small>/ ¥${BUDGET_TOTAL}</small>`;
+  $('#esBar').style.width = Math.min(100, total / BUDGET_TOTAL * 100) + '%';
+  const st = $('#esStatus');
+  if (!expenses.length) { st.className = 'es-status'; st.textContent = '还没有记账，点右下角 ＋ 添加第一笔'; }
+  else {
+    const diff = BUDGET_TOTAL - total;
+    st.className = 'es-status ' + (diff >= 0 ? 'saved' : 'over');
+    st.textContent = diff >= 0 ? `预算内，还剩 ¥${diff.toFixed(0)} · 人均 ¥${per.toFixed(0)}` : `超支 ¥${(-diff).toFixed(0)} · 人均 ¥${per.toFixed(0)}`;
+  }
+  renderDonut();
+  $('#expenseList').innerHTML = expenses.map((it) => {
+    const curSym = it.currency === 'KRW' ? '₩' : it.currency === 'USD' ? '$' : '¥';
+    const isTotal = it.splitType === 'total';
+    const cat = expCatOf(it);
+    const col = CAT_COLORS[cat];
+    return `<div class="exp-row" data-id="${esc(it._id || it.clientId)}">
+      <span class="exp-ic" style="--eic-c:${col};--eic:${col}1f">${ic(CAT_ICONS[cat])}</span>
+      <span class="exp-main"><span class="exp-desc">${esc(it.desc)}<span class="exp-cat" style="--cc:${col};--cc-l:${col}1f">${cat}</span></span>
+        <div class="exp-meta">${isTotal ? '总额平摊' : '人均'} · ${esc((it.people && it.people[0]) || '')}${it.people && it.people.length > 1 ? ' & ' + esc(it.people[1]) : ''} · ¥${itemPerPersonRMB(it).toFixed(0)}/人</div></span>
+      <span class="exp-amt"><span class="ea-main">${curSym}${Number(it.amount).toLocaleString()}</span>
+        <div class="ea-sub">¥${(it.amount * (FX_RATES[it.currency] || 1)).toFixed(0)}${isTotal ? ' 总额' : '/人'}</div></span>
+      <button class="exp-del" onclick="delExpense('${esc(it._id || it.clientId)}')">${ic('x')}</button>
+    </div>`;
+  }).join('') || '<div style="padding:22px;text-align:center;color:var(--muted);font-size:13px">暂无记录</div>';
+}
+window.delExpense = async function (id) {
+  expenses = expenses.filter((e) => (e._id || e.clientId) != id);
+  renderExpenses();
+  await persistExpenses();
+};
+async function persistExpenses() {
+  const payload = expenses.map((e) => ({
+    desc: e.desc, amount: e.amount, currency: e.currency,
+    splitType: e.splitType, people: e.people, category: e.category || '其他', createdAt: e.createdAt
+  }));
+  try {
+    await fetch(API_BASE + '/expenses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: payload }) });
+  } catch { /* 下次同步会再试 */ }
+}
+async function initExpenses() {
+  const list = await apiGet('/expenses', 'kr_cache_expenses', []);
+  expenses = list;
+  renderExpenses();
+  expensesTimer = setInterval(async () => {
+    const fresh = await apiGet('/expenses', 'kr_cache_expenses', []);
+    expenses = fresh; renderExpenses();
+  }, 15000);
+}
+function bindSeg(id, seg) {
+  document.querySelectorAll(`#${id} button`).forEach((b) => b.addEventListener('click', () => {
+    seg.v = b.dataset.v;
+    document.querySelectorAll(`#${id} button`).forEach((x) => x.classList.toggle('active', x === b));
+  }));
+}
+window.openSheet = function () {
+  $('#sheetBackdrop').classList.add('open');
+  $('#expSheet').classList.add('open');
+  setTimeout(() => $('#expDesc').focus(), 320);
+};
+window.closeSheet = function () {
+  $('#sheetBackdrop').classList.remove('open');
+  $('#expSheet').classList.remove('open');
+};
+function initSheet() {
+  bindSeg('expCurSeg', curSeg);
+  bindSeg('expSplitSeg', splitSeg);
+  bindSeg('expPayerSeg', payerSeg);
+  bindSeg('expCatSeg', catSeg);
+  $('#expSave').addEventListener('click', async () => {
+    const desc = $('#expDesc').value.trim();
+    const amount = parseFloat($('#expAmount').value);
+    if (!desc || !amount || amount <= 0) { alert('请填写描述和金额'); return; }
+    const people = payerSeg.v === '共同' ? ['可乐', '金鹿'] : [payerSeg.v];
+    expenses.unshift({ clientId: 'c' + Date.now(), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, createdAt: Date.now() });
+    $('#expDesc').value = ''; $('#expAmount').value = '';
+    renderExpenses();
+    closeSheet();
+    await persistExpenses();
+  });
+}
+
+/* ================= 文件（本地存储） ================= */
+const DOC_STATUSES = ['待准备', '已办理', '已拍照', '已打印', '电子版'];
+const DOC_STYLE = {
+  '待准备': ['#7C8A83', '#EFF3F0'],
+  '已办理': ['#3D6FC8', '#E7F0F8'],
+  '已拍照': ['#B07A2E', '#F7EFE1'],
+  '已打印': ['#23855A', '#E4F4EC'],
+  '电子版': ['#7A5FBF', '#F0EBFA']
+};
+const DOC_TEMPLATES = [
+  { id: 'passport-kl', emoji: '🛂', title: '护照 · 可乐', hint: '有效期 ≥ 6 个月' },
+  { id: 'passport-jl', emoji: '🛂', title: '护照 · 金鹿', hint: '有效期 ≥ 6 个月' },
+  { id: 'visa', emoji: '🛃', title: '签证 / K-ETA', hint: '批准页截图存这里' },
+  { id: 'flights', emoji: '✈️', title: '机票行程单', hint: '往返两张' },
+  { id: 'hotel-b', emoji: '🏨', title: '釜山酒店订单', hint: '入住凭证' },
+  { id: 'hotel-s', emoji: '🏨', title: '首尔酒店订单', hint: '入住凭证' },
+  { id: 'ktx', emoji: '🚄', title: 'KTX 车票', hint: '电子票截图' },
+  { id: 'esim', emoji: '📶', title: 'eSIM 二维码', hint: '激活前先截图' },
+  { id: 'insurance', emoji: '🛡️', title: '旅行保险单', hint: '保单号' },
+  { id: 'emergency', emoji: '🆘', title: '紧急联系方式', hint: '大使馆 · 报警112 · 急救119' }
+];
+let docsData = null;
+function loadDocs() {
+  docsData = cache.get('kr_docs');
+  if (!docsData) docsData = DOC_TEMPLATES.map((d) => ({ ...d, status: '待准备', note: '', photo: null }));
+}
+function saveDocs() {
+  if (!cache.set('kr_docs', docsData)) alert('本地存储已满：照片压缩后仍放不下，请删掉几张或换设备。');
+}
+function renderDocs() {
+  $('#docsGrid').innerHTML = docsData.map((d) => {
+    const [fc, bc] = DOC_STYLE[d.status] || ['#7C8A83', '#EFF3F0'];
+    return `<div class="card doc-card" data-id="${esc(d.id)}">
+      <div class="doc-top">
+        <span class="doc-ic">${iconFor(d.emoji)}</span>
+        <div><div class="doc-title">${esc(d.title)}</div><div class="doc-hint">${esc(d.hint)}</div></div>
+        <span class="doc-status" style="--sc:${fc};--sc-l:${bc}">${esc(d.status)}</span>
+      </div>
+      <div class="doc-note">${esc(d.note) || '暂无备注'}</div>
+      <div class="doc-actions">
+        <button class="doc-btn" data-act="cycle">${ic('refresh')}状态</button>
+        <button class="doc-btn" data-act="attach">${ic('camera')}${d.photo ? '换照片' : '拍照/上传'}</button>
+        <button class="doc-btn" data-act="note">${ic('edit')}备注</button>
+      </div>
+      ${d.photo ? `<div class="doc-thumb"><img src="${d.photo}" alt=""><button class="dt-del" data-act="delphoto">✕</button></div>` : ''}
+    </div>`;
+  }).join('');
+}
+function compressImage(file, cb) {
+  const img = new Image();
+  img.onload = () => {
+    const MAX = 900;
+    const r = Math.min(1, MAX / Math.max(img.width, img.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    cb(c.toDataURL('image/jpeg', 0.72));
+  };
+  img.onerror = () => alert('图片读取失败，换一张试试');
+  img.src = URL.createObjectURL(file);
+}
+function attachPhoto(doc) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) { alert('图片太大（>8MB），先压缩或换一张'); return; }
+    compressImage(file, (dataUrl) => {
+      doc.photo = dataUrl;
+      saveDocs(); renderDocs();
+    });
+  };
+  input.click();
+}
+function initDocs() {
+  loadDocs();
+  renderDocs();
+  $('#docsGrid').addEventListener('click', (e) => {
+    const btn = e.target.closest('.doc-btn, .dt-del');
+    if (!btn) return;
+    const card = e.target.closest('.doc-card');
+    const doc = docsData.find((d) => d.id == card.dataset.id);
+    if (!doc) return;
+    const act = btn.dataset.act;
+    if (act === 'cycle') {
+      doc.status = DOC_STATUSES[(DOC_STATUSES.indexOf(doc.status) + 1) % DOC_STATUSES.length];
+      saveDocs(); renderDocs();
+    } else if (act === 'attach') {
+      attachPhoto(doc);
+    } else if (act === 'note') {
+      const v = prompt('备注：', doc.note || '');
+      if (v !== null) { doc.note = v.trim(); saveDocs(); renderDocs(); }
+    } else if (act === 'delphoto') {
+      if (confirm('删除这张照片？')) { doc.photo = null; saveDocs(); renderDocs(); }
+    }
+  });
+}
+
+/* ================= 锦囊：美食 / 短语 / 贴士 ================= */
+window.toggleFood = function (id) { document.getElementById(id).classList.toggle('open'); };
+function renderRestos() {
+  const cardHTML = (r) => `
+    <div class="card resto-card">
+      <div class="rc-top"><span class="rc-ic">${iconFor(r.emoji)}</span>
+        <div><h3>${esc(r.name)}</h3><div class="rc-ko">${r.ko} · ${r.area}</div></div>
+      </div>
+      <div class="rc-note">${esc(r.note)}</div>
+      <a class="rc-map" href="https://map.naver.com/p/search/${encodeURIComponent(r.ko.split(' ')[0])}" target="_blank" rel="noopener">Naver 地图</a>
+    </div>`;
+  $('#restoBusan').innerHTML = RESTOS.busan.map(cardHTML).join('');
+  $('#restoSeoul').innerHTML = RESTOS.seoul.map(cardHTML).join('');
+}
+function renderPhrases() {
+  $('#phraseBody').innerHTML = PHRASES.map((p) => `<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td></tr>`).join('');
+}
+function renderTips() {
+  $('#tipsRow').innerHTML = TIPS.map((t) => `
+    <div class="card tip-card"><div class="tip-top"><i class="ti" data-ic="${EMOJI_ICON[String(t[0]).replace(/️/g, '')] || 'dot'}"></i><h3>${t[1]}</h3></div><p>${t[2]}</p></div>`).join('');
+  document.querySelectorAll('#tipsRow [data-ic]').forEach((el) => { el.innerHTML = ic(el.dataset.ic); });
+}
+// 手机上默认收起美食分组，减少滚动；iPad/桌面默认展开
+if (window.innerWidth < 768) {
+  ['fg-busan', 'fg-seoul'].forEach((id) => document.getElementById(id).classList.remove('open'));
+}
+
+/* ================= SW ================= */
+function initSW() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+}
+
+/* ================= 启动 ================= */
+(function boot() {
+  updateHeader();
+  updateRings();
+  updateHeroCountdown();
+  renderNextUp();
+  setInterval(() => { updateHeader(); updateHeroCountdown(); renderNextUp(); }, 1000);
+  setInterval(updateRings, 1000);
+  initHero();
+  initWeather();
+  initItinerary();
+  initTodos();
+  initBucket();
+  initChecklist();
+  initExpenses();
+  initDocs();
+  renderRestos();
+  renderPhrases();
+  renderTips();
+  initSheet();
+  initSW();
+  // 初始 Tab（支持分享链接直达：/#itinerary 等）
+  const initial = location.hash.slice(1) || 'home';
+  showTab(initial, false);
+})();
+</script>
+</body>
+</html>
