@@ -1020,7 +1020,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="block-title"><i class="ti" data-ic="warning"></i>交通贴士</div>
     <div class="card list-card">
       <div class="tip-line"><i class="ti" data-ic="subway"></i><span class="tl-txt"><b>地铁</b>：爱心座（粉色/黄色）别坐；扶梯靠右，左侧留给赶时间的人。</span></div>
-      <div class="tip-line"><i class="ti" data-ic="map"></i><span class="tl-txt"><b>导航</b>：用 Naver Map / KakaoMap（Google 在韩国不准），支持中文界面，出发前注册登录。</span></div>
+      <div class="tip-line"><i class="ti" data-ic="map"></i><span class="tl-txt"><b>导航</b>：用 Naver / Kakao / Amap / Apple，尽量走多入口 + 坐标兜底，出发前注册登录更稳。</span></div>
       <div class="tip-line"><i class="ti" data-ic="train"></i><span class="tl-txt"><b>KTX</b>：开车前 20 分钟到站即可，无安检；电子票截图存手机。</span></div>
       <div class="tip-line"><i class="ti" data-ic="plane"></i><span class="tl-txt"><b>离境</b>：退税 + 免税店提货都在安检后，登机口附近取现金，别忘记。</span></div>
       <div class="tip-line"><i class="ti" data-ic="bag"></i><span class="tl-txt"><b>行李</b>：机场 ⇄ 首尔站有大件行李寄存柜；釜山站有行李寄存（一日 ₩4,000 起）。</span></div>
@@ -1388,7 +1388,7 @@ document.querySelectorAll('[data-ic]').forEach((el) => { el.innerHTML = ic(el.da
 
 /* ================= 内置兜底数据（API 不可用时也能看） ================= */
 const EMBEDDED_ITINERARY = [
-  { day: 1, sortOrder: 1, time: '02:25', title: '深圳宝安 T3 起飞', subtitle: 'SZX → 首尔仁川 T2 · OZ372', detail: '凌晨深夜出发，提前 2.5–3 小时到机场值机。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Shenzhen+Baoan+Airport' },
+  { day: 1, sortOrder: 1, time: '02:25', title: '深圳宝安 T3 起飞', subtitle: 'SZX → 首尔仁川 T2 · OZ372', detail: '凌晨深夜出发，提前 2.5–3 小时到机场值机。', mapUrl: 'https://uri.amap.com/search?keyword=%E6%B7%B1%E5%9C%B3%E5%AE%9D%E5%AE%89%E6%9C%BA%E5%9C%BA&city=%E6%B7%B1%E5%9C%B3&view=map&src=mypage&coordinate=gaode&callnative=0' },
   { day: 1, sortOrder: 2, time: '06:50', title: '落地首尔仁川机场', subtitle: '入境 + 换汇 + 买 T-money', detail: '出关后到机场便利店买 T-money 卡并充值，坐地铁/机场快线都能用。' },
   { day: 1, sortOrder: 3, time: '09:00', title: '仁川机场 → 首尔站 → 釜山', subtitle: 'AREX + KTX 直达南下', detail: '机场快线到首尔站，换乘 KTX 去釜山，车程约 2.5–3h。' },
   { day: 1, sortOrder: 4, time: '14:00', title: '抵达釜山，入住 ASTI 酒店', subtitle: '釜山站旁 · 转车更方便', detail: 'Asti Hotel Busan Station 方便后面 12/29 晚上直接坐 KTX 去首尔，也方便当天到站后休整。' },
@@ -1558,7 +1558,7 @@ const TIPS = [
   ['🧣', '保暖穿搭', '首尔 1 月均温 -6~2°C：羽绒服 + 围巾 + 手套 + 暖宝宝。室内暖气足，内搭别太厚。'],
   ['🚇', '地铁交通', '地铁最方便，T-money 卡地铁/公交/出租车/便利店通用，进出站各刷一次。'],
   ['🚄', 'KTX 购票', '用 KORAIL App 或 korail.com 买票，釜山→首尔约 2.5–3h，座位宽可充电。'],
-  ['🗺️', '地图导航', '用 Naver Map / KakaoMap（Google Map 在韩国不准），支持中文界面。'],
+  ['🗺️', '地图导航', '用 Naver / Kakao / Amap / Apple，多入口加坐标兜底，尽量不依赖单一平台。'],
   ['💳', '支付', '大额刷 VISA/Master，小额现金；部分商户支持 Alipay/微信，Olive Young 基本可支付宝。'],
   ['📶', '通信', 'eSIM（LG U+/SKT）落地即用；或机场租 WiFi 蛋。Papago 翻译记得下好离线包。'],
   ['🎉', '跨年活动', '普信阁敲钟是韩国跨年传统（钟路，人超多早点占位）；汉江和首尔塔也有烟花。'],
@@ -1864,6 +1864,13 @@ function kakaoUrl(s) {
 function naverUrl(s) {
   return `https://map.naver.com/p/search/${encodeURIComponent(s.label.replace(/·.*/, ''))}`;
 }
+function amapUrl(s) {
+  const name = encodeURIComponent(s.label.replace(/·.*/, ''));
+  return `https://uri.amap.com/search?keyword=${name}&city=${encodeURIComponent('韩国')}&view=map&src=mypage&coordinate=gaode&callnative=0`;
+}
+function appleMapUrl(s) {
+  return `https://maps.apple.com/?ll=${s.lat},${s.lon}&q=${encodeURIComponent(s.label.replace(/·.*/, ''))}`;
+}
 function initMap() {
   renderMapCity('busan');
 }
@@ -1959,7 +1966,8 @@ function selectedMapHTML(city, s) {
     <div class="map-actions">
       <a href="${naverUrl(s)}" target="_blank" rel="noopener">Naver</a>
       <a href="${kakaoUrl(s)}" target="_blank" rel="noopener">Kakao</a>
-      <a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lon}" target="_blank" rel="noopener">Google</a>
+      <a href="${amapUrl(s)}" target="_blank" rel="noopener">Amap</a>
+      <a href="${appleMapUrl(s)}" target="_blank" rel="noopener">Apple</a>
       <button onclick="copyCoord('${s.lat},${s.lon}', this)">复制坐标</button>
     </div>`;
 }

@@ -84,6 +84,14 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 备案通过后的绑定步骤（按顺序）：1) manageGateway bindCustomDomain（域名归属 TXT _cloudbase-challenge 已验证通过，保留即可）→ 2) 证书自动签发 → 3) DNSPod 撤掉 Vercel 的 A/CNAME，指向网关 OriginDomain hanoi-d4gj8vd2q1e7a3dc0.tcbaccess-in.tencentcloudbase.com → 4) 路由：MCP createRoute 无 pathRewrite 字段，用 CLI `tcb routes add -e hanoi-d4gj8vd2q1e7a3dc0 --data '{"domain":"jinlu.cloud","routes":[{"path":"/","upstreamResourceType":"STATIC_STORE","upstreamResourceName":"staticstore","pathRewrite":{"prefix":"/korea"}}]}'`（需先 `! tcb login`）
 - 备选：korea.hankzhang.cloud（hankzhang.cloud 已备案，子域名可直接绑 CloudBase，几分钟上线）
 
+## 2026-09-04 追加：跨地区可用性红线（本段也很重要）
+
+- 这个站不是只服务一个地区；必须同时保证中国大陆、美国和韩国都能正常打开。
+- 页面里的图片、封面、图标、地图跳转、按钮外链、天气接口、服务工作线程缓存资源都要优先选择三地可稳定访问的路径。
+- 尽量减少对 Google、单一海外 CDN、脆弱跳转或容易被墙的外链依赖；如果必须保留外链，必须同时提供坐标、Naver / Kakao / Amap / Apple 这类备用入口。
+- 如果用户反馈“某张照片加载不出来”，优先检查：是否外链资源、是否缺文件、是否只在某个地区/网络能访问，而不是先假设手机有问题。
+- 日后新增图片时优先放本地 `assets/photos/`，并同步进 Service Worker 缓存与文档索引，避免某个地区首访时图片断档。
+
 ### 安全红线（不变）
 🚫 hanoi 的 .env.local VERCEL_OIDC_TOKEN 绝不能复制到本项目；Desktop 下 签证文件/ 目录及 .env.local、.git、.vercel、截图、cloudfunctions 绝不能上传部署。
 
