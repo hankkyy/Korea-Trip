@@ -109,7 +109,7 @@ korea-vercel/
 cd ~/Desktop/korea-vercel && vercel --prod
 
 # 前端 → CloudBase 国内直连入口（每次改前端/图片都要额外同步）
-# 先准备只含 index.html / manifest.json / sw.js / vercel.json / assets/ 的干净 dist，再上传到 /korea
+# 先准备只含 index.html / manifest.json / sw.js / vercel.json / assets/ / 签证文件/ 的干净 dist，再上传到 /korea
 tcb hosting deploy /tmp/korea-cloudbase-static-XXXXXX/dist /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json
 
 # 后端 → CloudBase 云函数（在 ~/Desktop 目录执行，函数目录为 cloudfunctions/korea-api）

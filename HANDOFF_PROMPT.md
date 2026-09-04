@@ -71,7 +71,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 
 ### CloudApp 部署方法（下次更新国内站必读）
 - **重要：只推 GitHub/Vercel 不会更新 CloudApp。** 每次前端或图片变更后，都要额外把静态包发布到 CloudBase 的 `/korea` 前缀，否则中国大陆直连入口会继续显示旧版本或缺图。
-- 推荐当前稳定做法：在本机打一个干净静态包，只包含 `index.html / manifest.json / sw.js / vercel.json / assets/`，不要包含 `.env.local / .git / .vercel / 签证文件 / 截图`，然后执行：
+- 推荐当前稳定做法：在本机打一个干净静态包，只包含 `index.html / manifest.json / sw.js / vercel.json / assets/ / 签证文件/`，不要包含 `.env.local / .git / .vercel / 截图`，然后执行：
   ```bash
   tcb hosting deploy /tmp/korea-cloudbase-static-XXXXXX/dist /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json
   ```
@@ -102,7 +102,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 日后新增图片时优先放本地 `assets/photos/`，并同步进 Service Worker 缓存与文档索引，避免某个地区首访时图片断档。
 
 ### 安全红线（不变）
-🚫 hanoi 的 .env.local VERCEL_OIDC_TOKEN 绝不能复制到本项目；Desktop 下 签证文件/ 目录及 .env.local、.git、.vercel、截图、cloudfunctions 绝不能上传部署。
+🚫 hanoi 的 .env.local VERCEL_OIDC_TOKEN 绝不能复制到本项目；Desktop 下 `.env.local`、`.git`、`.vercel`、截图、cloudfunctions 绝不能上传部署；`签证文件/` 要保留在本项目静态资源里，供文件卡片直接引用。
 
 ## 待办清单
 - [x] 釜山酒店已确认并补进住宿卡和行程卡（Asti Hotel Busan Station，12/26–12/29）
