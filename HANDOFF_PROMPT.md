@@ -8,7 +8,7 @@
 
 ## 项目背景
 可乐 & 金鹿的韩国冬季旅行计划站（PWA，手机/iPad 优先）：
-2026-12-26 02:25 深圳飞首尔 → 当日 AREX+KTX 南下釜山（12/26–12/29）→ 12/29 傍晚 KTX 北上首尔
+2026-12-26 02:25 深圳飞首尔 → 当日 AREX+KTX 南下釜山（12/26–12/29 住 Asti Hotel Busan Station）→ 12/29 傍晚 KTX 北上首尔
 → 首尔酒店已定为 Courtyard by Marriott Seoul Myeongdong → 12/31 普信阁跨年敲钟 → 2027-01-03 22:10 回深圳，01-04 01:15 落地。
 参考项目 ~/Desktop/hanoi-vercel（架构规范）；后端复用其 CloudBase 环境 hanoi-d4gj8vd2q1e7a3dc0，
 NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
@@ -52,7 +52,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 先发云函数，再确认前端能读到 `kr_` 集合数据
 
 ## 待办清单
-- [ ] 釜山酒店最终确认后补进住宿卡和行程卡（当前先按“釜山站附近酒店”占位，方便 12/29 晚饭前后直接从釜山站去首尔）
+- [x] 釜山酒店已确认并补进住宿卡和行程卡（Asti Hotel Busan Station，12/26–12/29）
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
 - [x] 文件区跨设备同步（状态 / 备注 / 压缩照片）
