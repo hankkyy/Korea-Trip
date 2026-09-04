@@ -1,0 +1,9 @@
+{
+  "name": "korea-api",
+  "version": "1.0.0",
+  "description": "Korea trip HTTP API (CloudBase web function)",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.0.0"
+  }
+}
