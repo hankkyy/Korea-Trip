@@ -198,7 +198,7 @@ const server = http.createServer(async (req, res) => {
     if (route === '/docs' && req.method === 'GET') {
       const result = await db.collection(COL.docs)
         .orderBy('sortOrder', 'asc')
-        .limit(50)
+        .limit(200)
         .get();
       return json(res, { success: true, data: result.data });
     }

@@ -182,6 +182,8 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 #tab-itinerary{--page-art:url('assets/photos/palace-watercolor.webp')}
 #tab-map{--page-art:url('assets/photos/busan-watercolor.webp')}
 #tab-transport{--page-art:url('assets/photos/seoul-watercolor.webp')}
+#tab-food{--page-art:url('assets/photos/busan-editorial.webp')}
+#tab-essay{--page-art:url('assets/photos/seoul-night-editorial.png')}
 #tab-todos{--page-art:url('assets/photos/busan-watercolor.webp')}
 #tab-packing{--page-art:url('assets/photos/palace-watercolor.webp')}
 #tab-expenses{--page-art:url('assets/photos/seoul-watercolor.webp')}
@@ -319,7 +321,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 }
 .cal-nav:disabled{opacity:.3}
 .cal-nav:active{background:var(--line)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;width:100%;overflow:hidden}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;width:100%;max-width:300px;margin-left:auto;margin-right:auto;overflow:hidden}
 .cal-wd{font-size:11px;color:var(--muted);text-align:center;font-weight:700;padding:2px 0 6px}
 .cal-cell{
   min-width:0;height:42px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
@@ -337,7 +339,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 @media(max-width:430px){
   .wrap{padding-left:14px;padding-right:14px;max-width:100vw;overflow-x:clip}
   .cal-card{padding:14px 7px 12px;width:100%;max-width:calc(100vw - 28px)}
-  .cal-grid{grid-template-columns:repeat(7,calc((100% - 6px)/7));gap:1px;min-width:0;width:min(100%,322px);margin-left:auto;margin-right:auto}
+  .cal-grid{grid-template-columns:repeat(7,calc((100% - 6px)/7));gap:1px;min-width:0;width:min(100%,300px);margin-left:auto;margin-right:auto}
   .cal-cell{height:38px;border-radius:9px;font-size:12px;min-width:0;max-width:100%;overflow:hidden}
   .cal-wd{font-size:10px}
   .cal-legend{gap:8px}
@@ -773,6 +775,107 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 #listSave{flex:1;background:var(--grad);color:#fff}
 
 /* ============ 文件 ============ */
+.food-note-card{
+  padding:16px;margin-bottom:12px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,251,.96),rgba(243,248,244,.92));
+  border:1px solid rgba(118,169,138,.14);box-shadow:var(--shadow)
+}
+.food-note-title{font-size:15px;font-weight:900;color:var(--green-d);margin-bottom:4px}
+.food-note-text{font-size:12.5px;color:var(--muted);line-height:1.6}
+.food-memory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.food-memory-item{
+  padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)
+}
+.food-memory-item h4{font-size:14px;font-weight:900;color:var(--text);margin-bottom:4px}
+.food-memory-item p{font-size:12px;line-height:1.5;color:var(--muted)}
+.food-memory-item .fm-tag{display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:5px 10px;border-radius:999px;background:var(--green-l);color:var(--green-d);font-size:11px;font-weight:800}
+.essay-lock{
+  padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,251,.97),rgba(246,250,246,.92));
+  border:1px solid rgba(118,169,138,.14);box-shadow:var(--shadow)
+}
+.essay-lock-ic{
+  width:48px;height:48px;border-radius:16px;background:var(--green-xl);color:var(--green-d);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.essay-lock-body{flex:1;min-width:0}
+.essay-lock-title{font-size:15px;font-weight:900;color:var(--green-d)}
+.essay-lock-text{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:3px}
+.essay-lock-row{display:flex;gap:8px;margin-top:10px}
+.essay-lock-row input{
+  flex:1;min-width:0;height:44px;border-radius:14px;border:1px solid var(--line);background:var(--bg);padding:0 12px;font-size:15px
+}
+.essay-lock-row button{
+  min-width:84px;border-radius:14px;background:var(--grad);color:#fff;font-weight:900;padding:0 14px
+}
+.essay-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.essay-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.essay-tabs::-webkit-scrollbar{display:none}
+.essay-tabs button{
+  min-height:38px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:12.5px;font-weight:800;color:var(--muted)
+}
+.essay-tabs button.active{background:var(--green);border-color:var(--green);color:#fff}
+.essay-grid{display:grid;gap:12px}
+.essay-card{
+  padding:16px;border-radius:18px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden
+}
+.essay-card-top{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.essay-card-title{font-size:15px;font-weight:900;color:var(--text)}
+.essay-card-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.essay-card-meta{font-size:12px;color:var(--green-d);margin-top:6px;line-height:1.6}
+.essay-card-body{font-size:13px;line-height:1.65;color:var(--text);white-space:pre-wrap;margin-top:10px}
+.essay-photo-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.essay-photo-row img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;border:1px solid var(--line)}
+.essay-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.essay-actions button{min-height:38px;border-radius:12px;padding:0 12px;font-weight:800;font-size:12.5px;border:1px solid var(--line);background:var(--bg)}
+.essay-actions button.primary{background:var(--green-l);border-color:rgba(118,169,138,.18);color:var(--green-d)}
+.essay-actions button.danger{background:#F8ECEC;border-color:#EBCFD1;color:#9B6468}
+.essay-mini-btn{
+  min-height:34px;padding:0 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
+  font-size:12px;font-weight:800;color:var(--green-d);display:inline-flex;align-items:center;gap:4px;flex:0 0 auto
+}
+.essay-sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.essay-photo-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.essay-photo-item{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+.essay-photo-item img{width:100%;height:100%;aspect-ratio:1/1;object-fit:cover}
+.essay-photo-item button{
+  position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(24,38,31,.62);color:#fff;
+}
+.essay-photo-empty{
+  padding:14px;border-radius:14px;border:1px dashed var(--line);background:var(--bg);color:var(--muted);font-size:12.5px;line-height:1.6
+}
+#essayBackdrop{
+  position:fixed;inset:0;background:rgba(24,38,31,.45);z-index:1006;opacity:0;pointer-events:none;transition:opacity .28s;
+}
+#essayBackdrop.open{opacity:1;pointer-events:auto}
+#essaySheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:1007;background:var(--card);
+  border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));
+  transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.28,1);
+  max-width:560px;margin:0 auto;box-shadow:var(--shadow-lg);
+}
+#essaySheet.open{transform:translateY(0)}
+#essaySheet h3{font-size:17px;margin:0 0 12px}
+#essaySheet textarea,#essaySheet input,#essaySheet select{
+  width:100%;border-radius:var(--radius-s);border:1.5px solid var(--line);padding:12px 14px;background:var(--bg);
+  outline:none;resize:vertical;line-height:1.55
+}
+#essaySheet textarea:focus,#essaySheet input:focus,#essaySheet select:focus{border-color:var(--green)}
+.doc-note-input{
+  flex:1;min-width:130px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
+  padding:0 12px;font-size:13px;color:var(--text)
+}
+.doc-file-chip{
+  display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:var(--green-xl);
+  border:1px solid rgba(118,169,138,.16);color:var(--green-d);font-size:12.5px;font-weight:800
+}
+.doc-file-chip .ic{width:18px;height:18px}
+.doc-thumb{position:relative;margin-top:2px}
+.doc-thumb img{width:100%;max-height:150px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
+@media(max-width:430px){
+  .food-memory-grid{grid-template-columns:1fr}
+  .essay-lock{padding:14px}
+  .essay-sheet-grid{grid-template-columns:1fr}
+  .essay-photo-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 .doc-card{padding:16px;display:flex;flex-direction:column;gap:10px}
 .doc-add-card{
   padding:18px 16px;min-height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
@@ -819,8 +922,6 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .doc-btn .ic{width:16px;height:16px}
 .doc-btn:active{background:var(--line)}
 .doc-btn.danger{flex:.72;color:#9B6468;background:#F8ECEC;border-color:#EBCFD1}
-.doc-thumb{position:relative;margin-top:2px}
-.doc-thumb img{width:100%;max-height:150px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
 .doc-done-wrap{
   margin-top:2px;border-radius:18px;border:1px solid rgba(224,232,226,.95);background:rgba(252,253,251,.8);overflow:hidden
 }
@@ -1180,6 +1281,57 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   </div>
 </section>
 
+<!-- ============ 美食 ============ -->
+<section class="panel" id="tab-food">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="food"></i>美食收藏 <span class="st-sub">小红书/攻略收藏都可以收进来</span></h2>
+    <div class="card food-note-card">
+      <div class="food-note-title">把想吃的店先攒起来</div>
+      <div class="food-note-text">你们以后在外面看到的吃饭攻略，都可以放到这里。釜山和首尔分开收，出门前直接点开就能找。</div>
+    </div>
+    <div class="food-group open" id="fg-busan-food">
+      <button class="fg-head tap" onclick="toggleFood('fg-busan-food')"><i class="ti" data-ic="wave"></i>釜山必吃 <span class="fg-arrow"><i class="ti" data-ic="chevron"></i></span></button>
+      <div class="fg-collapse"><div class="fg-inner"><div class="grid g2 g3 resto-grid" id="restoBusanFood"></div></div></div>
+    </div>
+    <div class="food-group open" id="fg-seoul-food">
+      <button class="fg-head tap" onclick="toggleFood('fg-seoul-food')"><i class="ti" data-ic="temple"></i>首尔必吃 <span class="fg-arrow"><i class="ti" data-ic="chevron"></i></span></button>
+      <div class="fg-collapse"><div class="fg-inner"><div class="grid g2 g3 resto-grid" id="restoSeoulFood"></div></div></div>
+    </div>
+    <div class="block-title"><i class="ti" data-ic="book"></i>吃饭备忘</div>
+    <div class="food-memory-grid" id="foodMemory"></div>
+  </div>
+</section>
+
+<!-- ============ 随笔 ============ -->
+<section class="panel" id="tab-essay">
+  <div class="wrap">
+    <h2 class="sec-title"><i class="ti" data-ic="book"></i>随笔 <span class="st-sub">照片、地点、文字，自己上锁</span></h2>
+    <div class="essay-lock card" id="essayLockCard">
+      <div class="essay-lock-ic"><i class="ti" data-ic="lock"></i></div>
+      <div class="essay-lock-body">
+        <div class="essay-lock-title">这本随笔先上锁了</div>
+        <div class="essay-lock-text">输入密码后才会显示内容。你可以把旅行日记、攻略摘录、想法碎片都放进来。</div>
+        <div class="essay-lock-row">
+          <input id="essayPasswordInput" type="password" placeholder="输入随笔密码">
+          <button id="essayUnlockBtn" type="button">打开</button>
+        </div>
+      </div>
+    </div>
+    <div id="essayUnlockedWrap" style="display:none">
+      <div class="essay-toolbar">
+        <button class="list-add-btn" id="essayAddBtn" type="button"><i class="ti" data-ic="plus"></i>新建随笔</button>
+        <div class="essay-tabs" id="essayTabs">
+          <button class="active" data-kind="all">全部</button>
+          <button data-kind="diary">日记</button>
+          <button data-kind="guide">攻略</button>
+          <button data-kind="food">美食</button>
+        </div>
+      </div>
+      <div class="essay-grid" id="essayGrid"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 待办（预订 + 打卡） ============ -->
 <section class="panel" id="tab-todos">
   <div class="wrap">
@@ -1237,26 +1389,16 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 文件 ============ -->
 <section class="panel" id="tab-docs">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">自定义上传 · 云端共享 · 多设备同步</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">自定义上传 · 多设备同步</span></h2>
     <div class="grid g2 g3" id="docsGrid" style="gap:12px"></div>
-    <div class="docs-hint">同步说明：文件状态、备注和压缩后的照片会<b>云端持久化共享</b>，你们任意设备修改后都能同步。这里不预设具体文件，你们只需要自己填写名称并选择类型；护照等敏感证件建议只记状态/备注，确实需要再上传照片。</div>
+    <div class="docs-hint">同步说明：文件状态、备注和上传内容会在你们的设备之间自动更新。这里不预设具体文件，你们只需要自己填写名称；护照等敏感证件建议先只记状态/备注，确实需要再上传内容。</div>
   </div>
 </section>
 
-<!-- ============ 锦囊（美食 / 短语 / 贴士） ============ -->
+<!-- ============ 锦囊（短语 / 贴士） ============ -->
 <section class="panel" id="tab-guide">
   <div class="wrap">
     <h2 class="sec-title"><i class="ti" data-ic="book"></i>旅行锦囊</h2>
-
-    <div class="food-group open" id="fg-busan">
-      <button class="fg-head tap" onclick="toggleFood('fg-busan')"><i class="ti" data-ic="wave"></i>釜山美食 <span class="fg-arrow"><i class="ti" data-ic="chevron"></i></span></button>
-      <div class="fg-collapse"><div class="fg-inner"><div class="grid g2 g3 resto-grid" id="restoBusan"></div></div></div>
-    </div>
-    <div class="food-group open" id="fg-seoul">
-      <button class="fg-head tap" onclick="toggleFood('fg-seoul')"><i class="ti" data-ic="temple"></i>首尔美食 <span class="fg-arrow"><i class="ti" data-ic="chevron"></i></span></button>
-      <div class="fg-collapse"><div class="fg-inner"><div class="grid g2 g3 resto-grid" id="restoSeoul"></div></div></div>
-    </div>
-
     <div class="block-title"><i class="ti" data-ic="chat"></i>韩语短语 <span style="color:var(--muted);font-weight:600;font-size:12px">左右滑动表格</span></div>
     <div class="table-wrap">
       <table class="phrases">
@@ -1274,12 +1416,14 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <nav id="bnav" aria-label="底部导航">
   <button class="bn-btn active" data-tab="home"><i class="ti" data-ic="home"></i><span>首页</span></button>
   <button class="bn-btn" data-tab="itinerary"><i class="ti" data-ic="calendar"></i><span>行程</span></button>
-  <button class="bn-btn" data-tab="map"><i class="ti" data-ic="pin"></i><span>地图</span></button>
   <button class="bn-btn" data-tab="transport"><i class="ti" data-ic="bus"></i><span>交通</span></button>
+  <button class="bn-btn" data-tab="map"><i class="ti" data-ic="pin"></i><span>地图</span></button>
+  <button class="bn-btn" data-tab="food"><i class="ti" data-ic="food"></i><span>美食</span></button>
+  <button class="bn-btn" data-tab="essay"><i class="ti" data-ic="book"></i><span>随笔</span></button>
   <button class="bn-btn" data-tab="todos"><i class="ti" data-ic="todo"></i><span>待办</span></button>
   <button class="bn-btn" data-tab="packing"><i class="ti" data-ic="bag"></i><span>行李</span></button>
-  <button class="bn-btn" data-tab="expenses"><i class="ti" data-ic="wallet"></i><span>支出</span></button>
   <button class="bn-btn" data-tab="docs"><i class="ti" data-ic="file"></i><span>文件</span></button>
+  <button class="bn-btn" data-tab="expenses"><i class="ti" data-ic="wallet"></i><span>支出</span></button>
   <button class="bn-btn" data-tab="guide"><i class="ti" data-ic="book"></i><span>锦囊</span></button>
 </nav>
 
@@ -1335,7 +1479,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <div id="itSheet">
   <div class="sheet-handle"></div>
   <h3 id="itSheetTitle">编辑行程</h3>
-  <div class="sheet-sub">支持手动改时间、标题、补充说明，也能给当天换一个更贴近内容的封面图。保存后会同步到云端。</div>
+  <div class="sheet-sub">支持手动改时间、标题、补充说明，也能给当天换一个更贴近内容的封面图。保存后会自动更新。</div>
   <div class="it-topbar">
     <div class="field">
       <label>编辑哪一天</label>
@@ -1363,7 +1507,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   </div>
 <div class="it-actions">
     <button id="itCancel" type="button">取消</button>
-    <button id="itSave" type="button">保存到云端</button>
+    <button id="itSave" type="button">保存</button>
   </div>
 </div>
 
@@ -1384,6 +1528,52 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <button id="listDelete" type="button">删除</button>
     <button id="listCancel" type="button">取消</button>
     <button id="listSave" type="button">保存</button>
+  </div>
+</div>
+
+<!-- 随笔编辑弹层 -->
+<div id="essayBackdrop" onclick="closeEssaySheet()"></div>
+<div id="essaySheet">
+  <div class="sheet-handle"></div>
+  <h3 id="essaySheetTitle">新建随笔</h3>
+  <div class="sheet-sub">可以写点日记、收集攻略摘录、贴照片和地点。内容会先按密码锁起来，只有你们输入密码后才能看。</div>
+  <div class="field">
+    <label>标题</label>
+    <input id="essayTitleInput" placeholder="比如：釜山海边的晚餐">
+  </div>
+  <div class="essay-sheet-grid">
+    <div class="field">
+      <label>分类</label>
+      <select id="essayKindInput">
+        <option value="diary">日记</option>
+        <option value="guide">攻略摘录</option>
+        <option value="food">美食</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>日期</label>
+      <input id="essayDateInput" type="date">
+    </div>
+  </div>
+  <div class="field">
+    <label>地点</label>
+    <input id="essayPlaceInput" placeholder="比如：海云台 / 明洞 / 某家咖啡馆">
+  </div>
+  <div class="field">
+    <label>正文</label>
+    <textarea id="essayContentInput" rows="6" placeholder="写下你想留住的那一刻。"></textarea>
+  </div>
+  <div class="field">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+      <label style="margin:0">照片</label>
+      <button id="essayPhotoAdd" class="tap" type="button">+ 添加照片</button>
+    </div>
+    <div class="essay-photo-row" id="essayPhotoRow"></div>
+  </div>
+  <div class="list-sheet-actions">
+    <button id="essayDelete" type="button">删除</button>
+    <button id="essayCancel" type="button">取消</button>
+    <button id="essaySave" type="button">保存</button>
   </div>
 </div>
 
@@ -1619,7 +1809,7 @@ const DAY_ART = {
   1: 'assets/photos/busan-asti-hotel-editorial.png',
   2: 'assets/photos/busan-harbor-editorial.png',
   3: 'assets/photos/busan-village-editorial.png',
-  4: 'assets/photos/seoul-night-editorial.png',
+  4: 'assets/photos/seoul-marriott-myeongdong-editorial.png',
   5: 'assets/photos/seoul-palace-editorial.png',
   6: 'assets/photos/seoul-night-editorial.png',
   7: 'assets/photos/seoul-night-editorial.png',
@@ -1629,22 +1819,32 @@ const DAY_ART = {
 const PHOTO_LIBRARY = [
   { value: '', label: '自动匹配（按内容）', preview: 'assets/photos/palace-watercolor.webp' },
   { value: 'assets/photos/busan-asti-hotel-editorial.png', label: '釜山 ASTI 酒店 / 釜山站', preview: 'assets/photos/busan-asti-hotel-editorial.png' },
+  { value: 'assets/photos/busan-asti-hotel-editorial.svg', label: '釜山 ASTI 酒店 / 手帐线稿', preview: 'assets/photos/busan-asti-hotel-editorial.svg' },
   { value: 'assets/photos/busan-harbor-editorial.png', label: '釜山海云台 / 胶囊列车', preview: 'assets/photos/busan-harbor-editorial.png' },
   { value: 'assets/photos/busan-village-editorial.png', label: '釜山甘川 / 山坡彩屋', preview: 'assets/photos/busan-village-editorial.png' },
+  { value: 'assets/photos/busan-editorial.png', label: '釜山文艺 / 岸边散步', preview: 'assets/photos/busan-editorial.png' },
+  { value: 'assets/photos/busan-editorial.webp', label: '釜山文艺 / 轻海岸', preview: 'assets/photos/busan-editorial.webp' },
+  { value: 'assets/photos/busan-watercolor.png', label: '釜山水彩 / 海风', preview: 'assets/photos/busan-watercolor.png' },
   { value: 'assets/photos/seoul-palace-editorial.png', label: '首尔景福宫 / 古宫水墨', preview: 'assets/photos/seoul-palace-editorial.png' },
   { value: 'assets/photos/seoul-night-editorial.png', label: '首尔夜色 / 明洞塔影', preview: 'assets/photos/seoul-night-editorial.png' },
   { value: 'assets/photos/seoul-airport-editorial.png', label: '返程机场 / 行李与落日', preview: 'assets/photos/seoul-airport-editorial.png' },
+  { value: 'assets/photos/seoul-marriott-myeongdong-editorial.png', label: '首尔明洞万怡 / 酒店与夜色', preview: 'assets/photos/seoul-marriott-myeongdong-editorial.png' },
+  { value: 'assets/photos/seoul-watercolor.png', label: '首尔清晨 / 汉江水彩', preview: 'assets/photos/seoul-watercolor.png' },
   { value: 'assets/photos/seoul-watercolor.webp', label: '首尔清晨 / 汉江', preview: 'assets/photos/seoul-watercolor.webp' },
-  { value: 'assets/photos/busan-watercolor.webp', label: '釜山清晨 / 海风', preview: 'assets/photos/busan-watercolor.webp' },
-  { value: 'assets/photos/busan-editorial.webp', label: '釜山文艺 / 轻海岸', preview: 'assets/photos/busan-editorial.webp' },
+  { value: 'assets/photos/seoul-editorial.png', label: '首尔文艺 / 城市散步', preview: 'assets/photos/seoul-editorial.png' },
+  { value: 'assets/photos/seoul-editorial.webp', label: '首尔文艺 / 暖色街景', preview: 'assets/photos/seoul-editorial.webp' },
   { value: 'assets/photos/palace-watercolor.webp', label: '景福宫 / 传统水彩', preview: 'assets/photos/palace-watercolor.webp' }
 ];
 const PHOTO_MATCHERS = [
   { re: /(Asti|ASTI|釜山站.*酒店|酒店.*釜山站|Busan Station)/, src: 'assets/photos/busan-asti-hotel-editorial.png' },
+  { re: /(Marriott|Courtyard|Myeongdong|明洞万怡|首尔酒店|Myeongdong Hotel)/, src: 'assets/photos/seoul-marriott-myeongdong-editorial.png' },
   { re: /(景福宫|北村|韩屋|仁寺洞|普信阁|韩服|参鸡汤|古宫)/, src: 'assets/photos/seoul-palace-editorial.png' },
   { re: /(海云台|胶囊|青沙浦|广安里|太宗台|KTX|釜山站|港口|海鲜|札嘎其|胶囊小火车)/, src: 'assets/photos/busan-harbor-editorial.png' },
   { re: /(甘川|白浅滩|文化村|小王子|南浦|BIFF|富平|村|山坡)/, src: 'assets/photos/busan-village-editorial.png' },
+  { re: /(釜山|海边|海风|岸边|海岸|散步|港湾|海景)/, src: 'assets/photos/busan-editorial.webp' },
   { re: /(明洞|弘大|汉江|圣水洞|N首尔塔|夜景|跨年|炸鸡|购物|滑冰|广藏市场)/, src: 'assets/photos/seoul-night-editorial.png' },
+  { re: /(首尔站|仁川|机场|AREX|回程|行李|航站楼|退税)/, src: 'assets/photos/seoul-airport-editorial.png' },
+  { re: /(汉江|汝矣岛|清晨|晨光|水彩|河岸)/, src: 'assets/photos/seoul-watercolor.webp' },
   { re: /(机场|落地|出发|回国|免税店|换汇|T-money|行李|返程|航站楼)/, src: 'assets/photos/seoul-airport-editorial.png' }
 ];
 function defaultDayArt(day) {
@@ -1795,7 +1995,7 @@ const SPOTS = {
 };
 
 /* ================= Tab 切换 ================= */
-const TABS = ['home', 'itinerary', 'map', 'transport', 'todos', 'packing', 'expenses', 'docs', 'guide'];
+const TABS = ['home', 'itinerary', 'transport', 'map', 'food', 'essay', 'todos', 'packing', 'docs', 'expenses', 'guide'];
 let mapInited = false;
 function showTab(name, pushHash = true) {
   if (!TABS.includes(name)) name = 'home';
@@ -3107,7 +3307,7 @@ function initSheet() {
   });
 }
 
-/* ================= 文件（云端同步 + 本地兜底） ================= */
+/* ================= 文件 / 随笔（同步 + 本地兜底） ================= */
 const DOC_STATUSES = ['待准备', '已上传', '已确认', '已归档'];
 const DOC_STYLE = {
   '待准备': ['#87938C', '#EFF3F0'],
@@ -3115,98 +3315,227 @@ const DOC_STYLE = {
   '已确认': ['#A98245', '#FCF3E1'],
   '已归档': ['#7F789F', '#F0EBFA']
 };
-const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
-const DOC_TYPES = [
-  ['document', '普通文件', 'file'],
-  ['identity', '证件资料', 'passport'],
-  ['booking', '住宿订单', 'hotel'],
-  ['transport', '交通票据', 'train'],
-  ['receipt', '付款凭证', 'receipt'],
-  ['note', '备注资料', 'book'],
-  ['emergency', '紧急信息', 'shield']
+const DOC_SEEDS = [
+  { id: 'seed-trip-zh', kind: 'file', sortOrder: 1, title: '携程中文版机票行程单', attachmentUrl: '/签证文件/携程中文版机票行程单.pdf', attachmentName: '携程中文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '去程航班信息' },
+  { id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: '/签证文件/携程英文版机票行程单.pdf', attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '英文版行程单' },
+  { id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: '/签证文件/张子豪的韩亚航空官方行程单.pdf', attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
+  { id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金鹿的韩亚航空官方行程单', attachmentUrl: '/签证文件/仇金鹿的韩亚航空官方行程单.pdf', attachmentName: '仇金鹿的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
+  { id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证', attachmentUrl: '/签证文件/釜山ASTI酒店入住凭证.pdf', attachmentName: '釜山ASTI酒店入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
+  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 6, title: '首尔酒店确认单', attachmentUrl: '/签证文件/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', status: '已确认', note: 'Courtyard by Marriott Seoul Myeongdong' }
 ];
-const DOC_TYPE_MAP = Object.fromEntries(DOC_TYPES.map(([value, label, icon]) => [value, { label, icon }]));
-let docsData = null;
-function inferDocType(doc) {
-  if (doc.type && DOC_TYPE_MAP[doc.type]) return doc.type;
-  const text = `${doc.title || ''} ${doc.hint || ''}`;
-  if (/护照|证件|签证|K-ETA/i.test(text)) return 'identity';
-  if (/酒店|住宿|Hotel|Marriott|Asti/i.test(text)) return 'booking';
-  if (/机票|航班|KTX|车票|AREX|交通/i.test(text)) return 'transport';
-  if (/发票|收据|付款|费用|保险/i.test(text)) return 'receipt';
-  if (/紧急|联系/i.test(text)) return 'emergency';
-  return 'document';
+const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
+const ESSAY_KIND_LABELS = { diary: '日记', guide: '攻略摘录', food: '美食' };
+let docsData = [];
+let essayVault = [];
+let essayItems = [];
+let essayMeta = null;
+let essayUnlocked = false;
+let essayPassword = '';
+let essayEditingId = null;
+let essayDraftPhotos = [];
+let essayFilter = 'all';
+
+function base64FromBytes(bytes) {
+  let bin = '';
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) bin += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  return btoa(bin);
 }
-function shouldKeepDoc(doc) {
-  const title = String(doc.title || '').trim();
-  const hasUserContent = Boolean(String(doc.note || '').trim() || doc.photo);
-  if (!hasUserContent && DOC_LEGACY_TITLES.has(title)) return false;
-  if (!hasUserContent && !title) return false;
-  return true;
+function bytesFromBase64(str) {
+  const bin = atob(str || '');
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) out[i] = bin.charCodeAt(i);
+  return out;
 }
-function cleanDocForCloud(doc, idx) {
-  const title = String(doc.title || '').trim();
-  const type = inferDocType(doc);
+function textFromBytes(bytes) {
+  return new TextDecoder().decode(bytes);
+}
+function bytesFromText(text) {
+  return new TextEncoder().encode(text);
+}
+function randomB64(len = 16) {
+  const arr = new Uint8Array(len);
+  crypto.getRandomValues(arr);
+  return base64FromBytes(arr);
+}
+async function sha256B64(text) {
+  const digest = await crypto.subtle.digest('SHA-256', bytesFromText(text));
+  return base64FromBytes(new Uint8Array(digest));
+}
+async function deriveEssayKey(password, saltB64) {
+  const material = await crypto.subtle.importKey('raw', bytesFromText(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: bytesFromBase64(saltB64), iterations: 100000, hash: 'SHA-256' },
+    material,
+    { name: 'AES-GCM', length: 256 },
+    false,
+    ['encrypt', 'decrypt']
+  );
+}
+async function essayEncrypt(payload) {
+  if (!essayMeta || !essayPassword) throw new Error('essay password missing');
+  const key = await deriveEssayKey(essayPassword, essayMeta.salt);
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, bytesFromText(JSON.stringify(payload)));
   return {
-    id: doc.id || `doc-${idx + 1}`,
-    sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
-    type,
-    title,
-    hint: DOC_TYPE_MAP[type].label,
-    status: DOC_STATUSES.includes(doc.status) ? doc.status : '待准备',
-    note: doc.note || '',
-    photo: doc.photo || null
+    iv: base64FromBytes(iv),
+    data: base64FromBytes(new Uint8Array(encrypted))
   };
 }
-function newDocCard(idx = 0) {
-  return cleanDocForCloud({ id: `doc-${Date.now()}-${idx}`, type: 'document', title: '', status: '待准备', note: '', photo: null, sortOrder: idx + 1 }, idx);
+async function essayDecrypt(record) {
+  if (!essayMeta || !essayPassword || !record?.payloadIv || !record?.payloadEnc) return null;
+  try {
+    const key = await deriveEssayKey(essayPassword, essayMeta.salt);
+    const plain = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: bytesFromBase64(record.payloadIv) },
+      key,
+      bytesFromBase64(record.payloadEnc)
+    );
+    return JSON.parse(textFromBytes(new Uint8Array(plain)));
+  } catch {
+    return null;
+  }
+}
+function fileNameFromPath(path) {
+  return decodeURIComponent(String(path || '').split('?')[0].split('#')[0].split('/').pop() || '');
+}
+function isImagePath(path = '', mime = '') {
+  return /^data:image\//.test(path) || /\.(png|jpe?g|webp|gif|bmp|svg)$/i.test(fileNameFromPath(path)) || /^image\//.test(mime);
+}
+function guessDocIcon(doc = {}) {
+  const text = `${doc.title || ''} ${doc.note || ''} ${doc.attachmentName || ''} ${doc.attachmentUrl || ''}`.toLowerCase();
+  if (/护照|passport/.test(text)) return 'passport';
+  if (/酒店|住宿|hotel|marriott|asti/.test(text)) return 'hotel';
+  if (/机票|行程单|航班|flight|ktx|arex|车票|ticket/.test(text)) return 'train';
+  if (/签证|visa|k-eta|sevis|ds-160|ds160/.test(text)) return 'shield';
+  if (/付款|收据|receipt|payment|财务|预约|confirmation/.test(text)) return 'receipt';
+  if (isImagePath(doc.attachmentUrl || '', doc.attachmentMime || '')) return 'image';
+  return 'file';
+}
+function guessAttachmentType(file) {
+  const name = fileNameFromPath(file?.name || '');
+  if (/\.pdf$/i.test(name)) return 'pdf';
+  if (/\.(docx?|rtf)$/i.test(name)) return 'doc';
+  if (/\.(png|jpe?g|webp|gif|bmp)$/i.test(name)) return 'image';
+  if (/\.(txt|md)$/i.test(name)) return 'text';
+  return file?.type || 'file';
+}
+function normalizeFileDoc(doc, idx) {
+  const title = String(doc.title || '').trim();
+  const attachmentUrl = doc.attachmentUrl || doc.fileUrl || doc.photo || '';
+  const attachmentName = String(doc.attachmentName || fileNameFromPath(attachmentUrl) || title || '文件').trim();
+  const status = DOC_STATUSES.includes(doc.status) ? doc.status : '待准备';
+  return {
+    id: doc.id || doc._id || `doc-${idx + 1}`,
+    kind: 'file',
+    sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
+    title: title || attachmentName.replace(/\.[^.]+$/, ''),
+    status,
+    note: doc.note || '',
+    attachmentUrl,
+    attachmentName,
+    attachmentType: doc.attachmentType || (isImagePath(attachmentUrl, doc.attachmentMime || '') ? 'image' : 'pdf'),
+    attachmentMime: doc.attachmentMime || '',
+    sourceKey: doc.sourceKey || attachmentUrl || title || `doc-${idx + 1}`
+  };
+}
+function normalizeEssayVault(doc, idx) {
+  return {
+    id: doc.id || doc._id || `essay-${idx + 1}`,
+    kind: 'essay',
+    sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
+    payloadEnc: doc.payloadEnc || doc.contentEnc || '',
+    payloadIv: doc.payloadIv || doc.contentIv || '',
+    updatedAt: Number(doc.updatedAt) || Date.now()
+  };
+}
+function shouldKeepFileDoc(doc) {
+  const title = String(doc.title || '').trim();
+  const note = String(doc.note || '').trim();
+  const attachment = String(doc.attachmentUrl || '').trim();
+  if (!attachment && !note && DOC_LEGACY_TITLES.has(title)) return false;
+  return Boolean(doc.id || title || note || attachment);
+}
+function seedDocs(payload) {
+  const ids = new Set(payload.map((d) => d.id || d.sourceKey || d.attachmentUrl || d.title));
+  DOC_SEEDS.forEach((seed) => {
+    const key = seed.id;
+    if (!ids.has(key)) payload.push({ ...seed });
+  });
+  return payload;
 }
 async function loadDocs() {
   const cached = Array.isArray(cache.get('kr_docs')) ? cache.get('kr_docs') : [];
   const cloudDocs = await apiGet('/docs', 'kr_docs', cached);
   const source = Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : cached;
-  const cleaned = (source || [])
-    .map((d, idx) => cleanDocForCloud(d, idx))
-    .filter(shouldKeepDoc)
-    .map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
-  docsData = cleaned;
-  cache.set('kr_docs', docsData);
-  if ((source || []).length !== docsData.length) {
-    apiPost('/docs', { items: docsData }).catch(() => {});
+  const fileSource = (source || []).filter((d) => !d || d.kind === 'file' || !d.kind);
+  const essaySource = (source || []).filter((d) => d && d.kind === 'essay');
+  essayMeta = (source || []).find((d) => d && d.kind === 'essay-meta') || null;
+  docsData = seedDocs(fileSource.map(normalizeFileDoc).filter(shouldKeepFileDoc).sort((a, b) => a.sortOrder - b.sortOrder));
+  essayVault = essaySource.map(normalizeEssayVault).sort((a, b) => a.sortOrder - b.sortOrder);
+  cache.set('kr_docs', [...docsData, ...(essayMeta ? [essayMeta] : []), ...essayVault]);
+  const needSeedSync = docsData.length !== fileSource.length || seedDocs(fileSource.map(normalizeFileDoc)).length !== docsData.length;
+  if (needSeedSync || (source || []).length !== docsData.length + essayVault.length + (essayMeta ? 1 : 0)) {
+    apiPost('/docs', { items: [...docsData, ...(essayMeta ? [essayMeta] : []), ...essayVault] }).catch(() => {});
   }
 }
 async function persistDocs() {
-  const payload = docsData.map(cleanDocForCloud).filter(shouldKeepDoc);
-  if (!cache.set('kr_docs', payload)) alert('本地缓存已满：照片压缩后仍放不下，请删掉几张或换设备。');
+  const payload = [...docsData.map(normalizeFileDoc).filter(shouldKeepFileDoc)];
+  if (essayMeta) {
+    payload.push(essayMeta);
+    if (essayUnlocked && essayPassword) {
+      essayVault = [];
+      for (let i = 0; i < essayItems.length; i += 1) {
+        const item = essayItems[i];
+        const encrypted = await essayEncrypt(item);
+        essayVault.push({
+          id: item.id || `essay-${Date.now()}-${i}`,
+          kind: 'essay',
+          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : i + 1,
+          payloadEnc: encrypted.data,
+          payloadIv: encrypted.iv,
+          updatedAt: Date.now()
+        });
+      }
+    }
+  }
+  payload.push(...essayVault);
+  if (!cache.set('kr_docs', payload)) alert('本地缓存已满：请删掉几条记录后再试。');
   try {
     await apiPost('/docs', { items: payload });
-  } catch (err) {
-    alert('文件资料已先保存在本机，云端同步暂时失败；网络恢复后再改一次即可同步。');
+  } catch {
+    alert('内容已先保存到本机，稍后网络恢复再打开一次就会继续同步。');
   }
+}
+function fileCardIcon(doc) {
+  return ic(guessDocIcon(doc));
 }
 function renderDocs() {
   const renderOne = (d, compact = false) => {
     const [fc, bc] = DOC_STYLE[d.status] || ['#87938C', '#EFF3F0'];
-    const typeMeta = DOC_TYPE_MAP[d.type] || DOC_TYPE_MAP.document;
+    const isImage = isImagePath(d.attachmentUrl, d.attachmentMime);
     return `<div class="card doc-card${compact ? ' done' : ''}" data-id="${esc(d.id)}">
       <div class="doc-top">
-        <span class="doc-ic">${ic(typeMeta.icon)}</span>
+        <span class="doc-ic">${fileCardIcon(d)}</span>
         <div class="doc-head-fields">
           <input class="doc-title-input" data-act="title" value="${esc(d.title)}" placeholder="文件名称">
-          <select class="doc-type-select" data-act="type" aria-label="文件类型">${DOC_TYPES.map(([value, label]) => `<option value="${esc(value)}"${value === d.type ? ' selected' : ''}>${esc(label)}</option>`).join('')}</select>
+          <input class="doc-note-input" data-act="noteinline" value="${esc(d.note || '')}" placeholder="备注（可选）">
         </div>
         <select class="doc-status-select" data-act="status" aria-label="修改状态" style="color:${fc};background:${bc}">
           ${DOC_STATUSES.map((s) => `<option value="${esc(s)}"${s === d.status ? ' selected' : ''}>${esc(s)}</option>`).join('')}
         </select>
       </div>
-      <div class="doc-hint">${esc(typeMeta.label)} · 云端同步</div>
-      <div class="doc-note">${esc(d.note) || '暂无备注'}</div>
+      <div class="doc-hint">${esc(d.attachmentName || '未添加附件')}</div>
+      <div class="doc-note">${esc(d.note) || '点击“备注”补充说明；附件上传后也能直接打开。'}</div>
+      ${d.attachmentUrl ? (isImage
+        ? `<div class="doc-thumb"><img src="${esc(d.attachmentUrl)}" alt="${esc(d.title)}"></div>`
+        : `<div class="doc-file-chip">${ic(isImage ? 'image' : 'file')}<span>${esc(d.attachmentName || '附件')}</span></div>`) : ''}
       <div class="doc-actions">
-        <button class="doc-btn" data-act="attach">${ic('camera')}${d.photo ? '换照片' : '拍照/上传'}</button>
+        <button class="doc-btn" data-act="attach">${ic('attach')}${d.attachmentUrl ? '换附件' : '添加附件'}</button>
+        <button class="doc-btn" data-act="open"${d.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
         <button class="doc-btn" data-act="note">${ic('edit')}备注</button>
         <button class="doc-btn danger" data-act="delete">${ic('x')}删除</button>
       </div>
-      ${d.photo ? `<div class="doc-thumb"><img src="${d.photo}" alt=""><button class="dt-del" data-act="delphoto">✕</button></div>` : ''}
     </div>`;
   };
   const pending = docsData.filter((d) => d.status === '待准备');
@@ -3214,7 +3543,7 @@ function renderDocs() {
   const addCard = `<button class="card doc-card doc-add-card" data-act="newdoc">
     <div class="doc-add-ic">+</div>
     <div class="doc-add-title">新增文件</div>
-    <div class="doc-add-sub">自己填写名称、类型、状态和备注；不再预设任何文件模板</div>
+    <div class="doc-add-sub">自己填名称、备注，上传图片或文件即可；不要的模板都不预设。</div>
   </button>`;
   const pendingHTML = pending.length
     ? `<div class="doc-pending">${pending.map((d) => renderOne(d, false)).join('')}</div>`
@@ -3227,29 +3556,41 @@ function renderDocs() {
     : '';
   $('#docsGrid').innerHTML = addCard + pendingHTML + doneHTML;
 }
-function compressImage(file, cb) {
-  const img = new Image();
-  img.onload = () => {
-    const MAX = 720;
-    const r = Math.min(1, MAX / Math.max(img.width, img.height));
-    const c = document.createElement('canvas');
-    c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
-    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    cb(c.toDataURL('image/jpeg', 0.64));
-  };
-  img.onerror = () => alert('图片读取失败，换一张试试');
-  img.src = URL.createObjectURL(file);
+function readAttachment(file, cb) {
+  if (file.type.startsWith('image/')) {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 1280;
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(img.width * scale));
+      canvas.height = Math.max(1, Math.round(img.height * scale));
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      cb(canvas.toDataURL('image/jpeg', 0.82), 'image/jpeg');
+    };
+    img.onerror = () => alert('图片读取失败，换一张试试');
+    img.src = URL.createObjectURL(file);
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => cb(reader.result, file.type || 'application/octet-stream');
+  reader.onerror = () => alert('文件读取失败，换一个试试');
+  reader.readAsDataURL(file);
 }
-function attachPhoto(doc) {
+function attachFile(doc) {
   const input = document.createElement('input');
   input.type = 'file';
-  input.accept = 'image/*';
+  input.accept = 'image/*,.pdf,.doc,.docx,.txt,.md';
   input.onchange = () => {
     const file = input.files && input.files[0];
     if (!file) return;
-    if (file.size > 8 * 1024 * 1024) { alert('图片太大（>8MB），先压缩或换一张'); return; }
-    compressImage(file, (dataUrl) => {
-      doc.photo = dataUrl;
+    if (file.size > 12 * 1024 * 1024) { alert('文件太大（>12MB），先压缩或换一份'); return; }
+    readAttachment(file, (dataUrl, mime) => {
+      doc.attachmentUrl = dataUrl;
+      doc.attachmentMime = mime;
+      doc.attachmentType = guessAttachmentType(file);
+      doc.attachmentName = file.name;
+      if (!doc.title) doc.title = file.name.replace(/\.[^.]+$/, '');
       doc.status = '已上传';
       renderDocs();
       persistDocs();
@@ -3257,35 +3598,39 @@ function attachPhoto(doc) {
   };
   input.click();
 }
+function docById(id) { return docsData.find((d) => d.id == id); }
 async function initDocs() {
   await loadDocs();
   renderDocs();
   $('#docsGrid').addEventListener('click', async (e) => {
-    const btn = e.target.closest('.doc-btn, .dt-del');
-    const add = e.target.closest('[data-act="newdoc"]');
-    if (add) {
-      docsData.unshift(newDocCard(docsData.length));
+    const btn = e.target.closest('.doc-btn, .dt-del, [data-act="newdoc"]');
+    if (!btn) return;
+    if (btn.dataset.act === 'newdoc') {
+      docsData.unshift(normalizeFileDoc({ id: `doc-${Date.now()}`, kind: 'file', title: '', status: '待准备', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1 }, 0));
+      docsData = docsData.map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
       renderDocs();
       const firstInput = $('#docsGrid .doc-title-input');
       if (firstInput) firstInput.focus();
       await persistDocs();
       return;
     }
-    if (!btn) return;
     const card = e.target.closest('.doc-card');
-    const doc = docsData.find((d) => d.id == card.dataset.id);
+    const doc = card ? docById(card.dataset.id) : null;
     if (!doc) return;
     const act = btn.dataset.act;
     if (act === 'attach') {
-      attachPhoto(doc);
+      attachFile(doc);
+    } else if (act === 'open') {
+      if (!doc.attachmentUrl) return;
+      const url = String(doc.attachmentUrl).startsWith('data:') ? doc.attachmentUrl : encodeURI(doc.attachmentUrl);
+      window.open(url, '_blank', 'noopener');
     } else if (act === 'note') {
       const v = prompt('备注：', doc.note || '');
       if (v !== null) { doc.note = v.trim(); renderDocs(); await persistDocs(); }
-    } else if (act === 'delphoto') {
-      if (confirm('删除这张照片？')) { doc.photo = null; renderDocs(); await persistDocs(); }
     } else if (act === 'delete') {
       if (confirm('删除这个文件记录？')) {
         docsData = docsData.filter((d) => d.id !== doc.id);
+        docsData = docsData.map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
         renderDocs();
         await persistDocs();
       }
@@ -3293,44 +3638,253 @@ async function initDocs() {
   });
   $('#docsGrid').addEventListener('change', async (e) => {
     const sel = e.target.closest('.doc-status-select');
-    const typeSel = e.target.closest('.doc-type-select');
-    if (!sel && !typeSel) return;
+    const title = e.target.closest('.doc-title-input');
+    const note = e.target.closest('.doc-note-input');
+    if (!sel && !title && !note) return;
     const card = e.target.closest('.doc-card');
-    const doc = docsData.find((d) => d.id == card.dataset.id);
+    const doc = card ? docById(card.dataset.id) : null;
     if (!doc) return;
     if (sel) doc.status = sel.value;
-    if (typeSel) {
-      doc.type = typeSel.value;
-      doc.hint = (DOC_TYPE_MAP[doc.type] || DOC_TYPE_MAP.document).label;
-    }
-    renderDocs();
-    await persistDocs();
-  });
-  $('#docsGrid').addEventListener('change', async (e) => {
-    const input = e.target.closest('.doc-title-input');
-    if (!input) return;
-    const card = e.target.closest('.doc-card');
-    const doc = docsData.find((d) => d.id == card.dataset.id);
-    if (!doc) return;
-    doc.title = input.value.trim();
+    if (title) doc.title = title.value.trim();
+    if (note) doc.note = note.value.trim();
     renderDocs();
     await persistDocs();
   });
 }
 
-/* ================= 锦囊：美食 / 短语 / 贴士 ================= */
-window.toggleFood = function (id) { document.getElementById(id).classList.toggle('open'); };
-function renderRestos() {
+function essaySortKey(item) {
+  return Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : Date.now();
+}
+function essayPayloadPreview(item) {
+  const place = item.place ? ` · ${item.place}` : '';
+  const date = item.date ? ` · ${item.date}` : '';
+  return `${ESSAY_KIND_LABELS[item.category] || '随笔'}${date}${place}`;
+}
+function renderEssayPhotos(photos = []) {
+  if (!photos.length) return '';
+  return photos.map((src, idx) => `<div class="essay-photo-item"><img src="${esc(src)}" alt=""><button type="button" data-act="remove-photo" data-idx="${idx}">✕</button></div>`).join('');
+}
+async function unlockEssayVault(password) {
+  const pwd = String(password || '').trim();
+  if (!pwd) return false;
+  if (!essayMeta) {
+    essayMeta = { kind: 'essay-meta', id: 'essay-meta', salt: randomB64(16), verifier: '', updatedAt: Date.now() };
+    essayMeta.verifier = await sha256B64(`${essayMeta.salt}:${pwd}`);
+    essayPassword = pwd;
+    essayUnlocked = true;
+    essayItems = [];
+    essayVault = [];
+    await persistDocs();
+    renderEssay();
+    return true;
+  }
+  const verifier = await sha256B64(`${essayMeta.salt}:${pwd}`);
+  if (verifier !== essayMeta.verifier) return false;
+  essayPassword = pwd;
+  const decrypted = [];
+  for (const rec of essayVault) {
+    const payload = await essayDecrypt(rec);
+    if (payload) decrypted.push({ ...payload, id: rec.id, sortOrder: rec.sortOrder });
+  }
+  essayItems = decrypted.sort((a, b) => essaySortKey(a) - essaySortKey(b));
+  essayUnlocked = true;
+  renderEssay();
+  return true;
+}
+function renderEssay() {
+  const lock = $('#essayLockCard');
+  const body = $('#essayUnlockedWrap');
+  const title = $('#essayLockCard .essay-lock-title');
+  const text = $('#essayLockCard .essay-lock-text');
+  if (!essayUnlocked) {
+    lock.style.display = 'flex';
+    body.style.display = 'none';
+    title.textContent = essayMeta ? '这本随笔先上锁了' : '先给随笔设一个密码';
+    text.textContent = essayMeta
+      ? '输入密码后才会显示内容。你可以把旅行日记、攻略摘录、想法碎片都放进来。'
+      : '第一次使用时先设置一个密码，之后两台设备都可以用它打开这本随笔。';
+    return;
+  }
+  lock.style.display = 'none';
+  body.style.display = 'block';
+  $('#essayTabs').querySelectorAll('button').forEach((btn) => btn.classList.toggle('active', btn.dataset.kind === essayFilter));
+  const list = essayItems
+    .filter((item) => essayFilter === 'all' ? true : item.category === essayFilter)
+    .sort((a, b) => essaySortKey(a) - essaySortKey(b));
+  $('#essayGrid').innerHTML = list.length
+    ? list.map((item) => {
+        const photos = Array.isArray(item.photos) ? item.photos : [];
+        return `<article class="card essay-card" data-id="${esc(item.id)}">
+          <div class="essay-card-top">
+            <div>
+              <div class="essay-card-title">${esc(item.title || '未命名随笔')}</div>
+              <div class="essay-card-sub">${esc(ESSAY_KIND_LABELS[item.category] || '随笔')}</div>
+            </div>
+            <button class="essay-mini-btn" data-act="edit">${ic('edit')}编辑</button>
+          </div>
+          <div class="essay-card-meta">${esc((item.date || '').replace(/-/g, ' / '))}${item.place ? ` · ${esc(item.place)}` : ''}</div>
+          <div class="essay-card-body">${esc(item.content || '')}</div>
+          ${photos.length ? `<div class="essay-photo-row">${photos.map((src) => `<img src="${esc(src)}" alt="">`).join('')}</div>` : ''}
+          <div class="essay-actions">
+            <button class="primary" data-act="edit">编辑</button>
+            <button class="danger" data-act="delete">删除</button>
+          </div>
+        </article>`;
+      }).join('')
+    : `<div class="card" style="padding:18px;color:var(--muted);font-size:13px">还没有随笔，点“新建随笔”就可以开始记。</div>`;
+}
+function openEssaySheet(entry = null) {
+  essayEditingId = entry ? entry.id : null;
+  essayDraftPhotos = entry && Array.isArray(entry.photos) ? [...entry.photos] : [];
+  $('#essaySheetTitle').textContent = entry ? '编辑随笔' : '新建随笔';
+  $('#essayTitleInput').value = entry?.title || '';
+  $('#essayKindInput').value = entry?.category || 'diary';
+  $('#essayDateInput').value = entry?.date || '';
+  $('#essayPlaceInput').value = entry?.place || '';
+  $('#essayContentInput').value = entry?.content || '';
+  renderEssayDraftPhotos();
+  $('#essayBackdrop').classList.add('open');
+  $('#essaySheet').classList.add('open');
+  setTimeout(() => $('#essayTitleInput').focus(), 180);
+}
+function closeEssaySheet() {
+  $('#essayBackdrop').classList.remove('open');
+  $('#essaySheet').classList.remove('open');
+}
+function renderEssayDraftPhotos() {
+  $('#essayPhotoRow').innerHTML = essayDraftPhotos.length
+    ? essayDraftPhotos.map((src, idx) => `<div class="essay-photo-item"><img src="${esc(src)}" alt=""><button type="button" data-act="remove-photo" data-idx="${idx}">✕</button></div>`).join('')
+    : `<div class="essay-photo-empty">还没有照片，点上面的“添加照片”就行。</div>`;
+}
+function addEssayPhoto() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) { alert('图片太大（>8MB），先压缩或换一张'); return; }
+    readAttachment(file, (dataUrl) => {
+      essayDraftPhotos.push(dataUrl);
+      renderEssayDraftPhotos();
+    });
+  };
+  input.click();
+}
+async function saveEssaySheet() {
+  if (!essayUnlocked) {
+    alert('请先设置或输入随笔密码。');
+    return;
+  }
+  const title = $('#essayTitleInput').value.trim() || '未命名随笔';
+  const category = $('#essayKindInput').value;
+  const date = $('#essayDateInput').value;
+  const place = $('#essayPlaceInput').value.trim();
+  const content = $('#essayContentInput').value.trim();
+  const base = {
+    id: essayEditingId || `essay-${Date.now()}`,
+    category: ESSAY_KIND_LABELS[category] ? category : 'diary',
+    title,
+    date,
+    place,
+    content,
+    photos: [...essayDraftPhotos],
+    sortOrder: essayEditingId ? (essayItems.find((it) => it.id === essayEditingId)?.sortOrder || Date.now()) : Date.now()
+  };
+  const idx = essayItems.findIndex((it) => it.id === essayEditingId);
+  if (idx >= 0) essayItems[idx] = base;
+  else essayItems.unshift(base);
+  essayItems = essayItems.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+  closeEssaySheet();
+  renderEssay();
+  await persistDocs();
+}
+function initEssay() {
+  const unlockAndRender = async () => {
+    const pwd = $('#essayPasswordInput').value.trim();
+    if (!pwd) return;
+    const ok = await unlockEssayVault(pwd);
+    if (!ok) alert('密码不对，再试一次。');
+  };
+  $('#essayUnlockBtn').addEventListener('click', unlockAndRender);
+  $('#essayPasswordInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') unlockAndRender();
+  });
+  $('#essayAddBtn').addEventListener('click', () => {
+    if (!essayUnlocked) { alert('先打开随笔再新建。'); return; }
+    openEssaySheet();
+  });
+  $('#essayTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-kind]');
+    if (!btn) return;
+    essayFilter = btn.dataset.kind;
+    renderEssay();
+  });
+  $('#essayPhotoAdd').addEventListener('click', addEssayPhoto);
+  $('#essayPhotoRow').addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act="remove-photo"]');
+    if (!btn) return;
+    const idx = Number(btn.dataset.idx);
+    if (Number.isFinite(idx)) {
+      essayDraftPhotos.splice(idx, 1);
+      renderEssayDraftPhotos();
+    }
+  });
+  $('#essaySave').addEventListener('click', saveEssaySheet);
+  $('#essayCancel').addEventListener('click', closeEssaySheet);
+  $('#essayDelete').addEventListener('click', async () => {
+    if (!essayEditingId) {
+      closeEssaySheet();
+      return;
+    }
+    if (!confirm('删除这篇随笔？')) return;
+    essayItems = essayItems.filter((item) => item.id !== essayEditingId);
+    essayItems = essayItems.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+    essayEditingId = null;
+    closeEssaySheet();
+    renderEssay();
+    await persistDocs();
+  });
+  $('#essayGrid').addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const card = e.target.closest('.essay-card');
+    if (!card) return;
+    const item = essayItems.find((it) => it.id === card.dataset.id);
+    if (!item) return;
+    if (btn.dataset.act === 'edit') openEssaySheet(item);
+    if (btn.dataset.act === 'delete') {
+      if (!confirm('删除这篇随笔？')) return;
+      essayItems = essayItems.filter((it) => it.id !== item.id);
+      essayItems = essayItems.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+      renderEssay();
+      await persistDocs();
+    }
+  });
+}
+function renderFood() {
   const cardHTML = (r) => `
     <div class="card resto-card">
       <div class="rc-top"><span class="rc-ic">${iconFor(r.emoji)}</span>
-        <div><h3>${esc(r.name)}</h3><div class="rc-ko">${r.ko} · ${r.area}</div></div>
+        <div><h3>${esc(r.name)}</h3><div class="rc-ko">${esc(r.ko)} · ${esc(r.area)}</div></div>
       </div>
       <div class="rc-note">${esc(r.note)}</div>
       <a class="rc-map" href="https://map.naver.com/p/search/${encodeURIComponent(r.ko.split(' ')[0])}" target="_blank" rel="noopener">Naver 地图</a>
     </div>`;
-  $('#restoBusan').innerHTML = RESTOS.busan.map(cardHTML).join('');
-  $('#restoSeoul').innerHTML = RESTOS.seoul.map(cardHTML).join('');
+  const memory = [
+    { emoji: '🍲', title: '落地第一顿', text: '密阳血肠猪肉汤饭，釜山海风里先来一碗热汤。', tag: '釜山' },
+    { emoji: '🥞', title: '市场边小吃', text: '广藏市场的绿豆煎饼和鱼饼串，边走边吃。', tag: '首尔' },
+    { emoji: '🍗', title: '夜宵组合', text: '炸鸡 + 啤酒，冬天晚上最稳的快乐。', tag: '宵夜' },
+    { emoji: '☕', title: '咖啡休息', text: '圣水洞找一家窗边咖啡馆坐一会儿。', tag: '随手记' }
+  ];
+  $('#restoBusanFood').innerHTML = RESTOS.busan.map(cardHTML).join('');
+  $('#restoSeoulFood').innerHTML = RESTOS.seoul.map(cardHTML).join('');
+  $('#foodMemory').innerHTML = memory.map((m) => `
+    <div class="card food-memory-item">
+      <div class="rc-top"><span class="rc-ic">${iconFor(m.emoji)}</span><div><h4>${esc(m.title)}</h4></div></div>
+      <p>${esc(m.text)}</p>
+      <span class="fm-tag">${esc(m.tag)}</span>
+    </div>`).join('');
 }
 function renderPhrases() {
   $('#phraseBody').innerHTML = PHRASES.map((p) => `<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td></tr>`).join('');
@@ -3340,9 +3894,11 @@ function renderTips() {
     <div class="card tip-card"><div class="tip-top"><i class="ti" data-ic="${EMOJI_ICON[String(t[0]).replace(/️/g, '')] || 'dot'}"></i><h3>${t[1]}</h3></div><p>${t[2]}</p></div>`).join('');
   document.querySelectorAll('#tipsRow [data-ic]').forEach((el) => { el.innerHTML = ic(el.dataset.ic); });
 }
-// 手机上默认收起美食分组，减少滚动；iPad/桌面默认展开
 if (window.innerWidth < 768) {
-  ['fg-busan', 'fg-seoul'].forEach((id) => document.getElementById(id).classList.remove('open'));
+  ['fg-busan-food', 'fg-seoul-food'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('open');
+  });
 }
 
 /* ================= SW ================= */
@@ -3368,7 +3924,9 @@ function initSW() {
   initChecklist();
   initExpenses();
   initDocs();
-  renderRestos();
+  initEssay();
+  renderFood();
+  renderEssay();
   renderPhrases();
   renderTips();
   initSheet();

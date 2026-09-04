@@ -16,10 +16,10 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 
 ## 用户核心要求（不可偏离）
 1. 手机/iPad 优先（用户女朋友金鹿基本不用电脑），支持 Add to Home Screen（standalone 原生 App 体验）。
-2. 9 Tab 多视图 + 底部悬浮胶囊导航（首页/行程/地图/交通/待办/行李/支出/文件/锦囊），不要长页下滑。
+2. 11 Tab 多视图 + 底部悬浮胶囊导航（首页/行程/交通/地图/美食/随笔/待办/行李/文件/支出/锦囊），不要长页下滑。
 3. 视觉去 AI 化：薄荷绿清爽风（bg #F4F8F5、主色 #2FA36E、白卡片 16-20px 圆角），
    全站 60+ 手绘线条 SVG 图标替换 emoji——界面不能出现满屏 emoji。参考设计稿 ~/Downloads/IMG_3900~3904.PNG。
-4. 文件区状态、备注、压缩照片需要 CloudBase 云端持久化共享；文件卡片只支持用户自定义名称 / 类型 / 状态 / 备注 / 照片，不再预设签证、K-ETA、机票行程单等模板，也不让用户手动选择 emoji/logo；图标由文件类型自动映射为统一线条 SVG；敏感证件照片要保留“谨慎上传”的隐私提示。
+4. 文件区状态、备注、附件需要 CloudBase 云端持久化共享；文件卡片只支持用户自定义名称 / 状态 / 备注 / 附件，不再预设签证、K-ETA、机票行程单等模板，也不让用户手动选择 emoji/logo；图标由附件类型自动映射为统一线条 SVG；敏感证件照片要保留“谨慎上传”的隐私提示。
 5. 改完代码必须本地零报错（node --check + 无头 Chrome 验证 9 个面板全渲染）。
 
 ## 当前状态
@@ -27,11 +27,11 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 部署：Vercel 项目已链接到本仓库，`.vercel/project.json` 里记录的 projectId 是
   `prj_m9oqrYcJj3jTcrkgpXSakIwZ616Y`，生产域名是 `https://korea-vercel.vercel.app`。
 - 线上前端已经包含最新的薄荷绿重设计、可编辑行程、更新后的航班/酒店信息和新 app 图标。
-- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.png` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v12`。
+- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.png` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v17`。
 - 2026-09-04：CloudBase 正式部署源 `/Users/hankzhang/Desktop/cloudfunctions/korea-api` 已同步仓库云函数代码并重新部署；线上 `POST /itinerary` 已恢复，`kr_itinerary` 已刷新为 43 条新版行程，旧“海云台酒店”数据已清掉。
 - 后端已上线：CloudBase HTTP 云函数 `korea-api`，API_BASE = `https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
 - 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses` / `kr_docs`。
-- 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步自定义文件卡片的名称 / 类型 / 状态 / 备注 / 压缩照片；localStorage 仅作弱网兜底。旧模板空壳已清理，新增文件按钮必须可用。
+- 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步自定义文件卡片的名称 / 状态 / 备注 / 附件；localStorage 仅作弱网兜底。旧模板空壳已清理，新增文件按钮必须可用。
 - 2026-09-04：待办与行李已改成可编辑清单：勾选、新增、编辑、删除、拖动重排序；`POST /todos` 与 `POST /checklist` 全量替换保存，旧的 `/:docId` done 接口保留兼容。行李行内不要显示“云端/本地”标签。
 - 2026-09-04：地图页已明确改为“页内可读的手帐攻略地图 + Apple Maps 主跳转”。不要接入 Google/Naver/Kakao SDK 或 iframe 底图；页内地图本身必须能看懂区域、住宿、景点和大致动线，且支持拖动浏览 / 放大缩小。每个地点保留坐标、Apple 主按钮、Naver/Kakao/Google/Amap 备用按钮。
 - 2026-09-04：完成 9 项交互修复：日历点击直达当天；清理产品说明式提示词；待办/行李拖动排序；待办/行李统一底部编辑面板并保存后即时刷新；日程图片去掉“当天封面/图2/图3”标签；行程行点击展开/收起；页面文案尽量中文化；PWA 名称改“在璐上”；地图改固定比例可拖动可缩放。
@@ -48,7 +48,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
   1. 本地更新 `index.html / manifest.json / sw.js / vercel.json / assets/`
   2. `git add` → `git commit` → `git push origin main`
   3. 等 Vercel 自动出 production build，或用 CLI / MCP 触发
-  4. 验证首页标题、9 个 Tab、行程编辑、图标、移动端适配
+  4. 验证首页标题、11 个 Tab、行程编辑、图标、移动端适配
 
 ### 后端（CloudBase）
 - HTTP 云函数：`korea-api`
@@ -78,7 +78,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - 发布后必须用 cache-busting URL 验证：
   ```bash
   curl -I "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/assets/photos/busan-asti-hotel-editorial.png?v=$(date +%s)"
-  curl -Ls "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/?v=$(date +%s)" | rg "korea-trip-v12|busan-asti-hotel-editorial.png|新增文件"
+  curl -Ls "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/?v=$(date +%s)" | rg "korea-trip-v17|busan-asti-hotel-editorial.png|新增文件"
   ```
 - 旧方案备用：MCP manageApps 有类型 bug（deployApp 的 CosTimestamp schema 是 integer 但后端要 string；getBuildLog 的 BuildId 要求 int64）→ **绕 MCP，用 callCloudApi**：
   - 上传：queryApps getUploadUrl 拿预签名 COS URL → `curl PUT zip`（**大文件会衰减卡死，1.4MB 小包 22-115s 正常，28MB 包 420s+ 卡死**）
@@ -109,7 +109,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - [x] 现金与保险决策已更新：不提前大量换韩元现金；到韩国用 Fidelity 卡 ATM 无手续费取现，旅行保险不单独购买
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
-- [x] 文件区跨设备同步（自定义名称 / 类型 / 状态 / 备注 / 压缩照片；无预设模板、无 emoji 选择）
+- [x] 文件区跨设备同步（自定义名称 / 状态 / 备注 / 附件；无预设模板、无 emoji 选择）
 - [x] 待办 / 行李支持新增、编辑、删除、拖动重排序
 - [x] 自定义域名 jinlu.cloud 已上线（Vercel，用户控制台操作；备案通过后换绑 CloudBase）
 - [ ] 补传剩余 4 张 editorial PNG（seoul-airport / seoul-marriott-myeongdong / seoul-night / seoul-palace）到托管 korea/assets/photos/，单文件逐个传 + findFiles 验证
@@ -118,7 +118,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 ## 关键文件与细节
 - index.html：单文件应用（~122KB / 2059 行），顶部常量区 FX_RATES（1 RMB≈190 KRW、USD 6.80）、
   BUDGET_TOTAL=10000、D1/BUSAN_END/TRIP_END/NEWYEAR 时间常量、HERO_IMAGES。
-- sw.js 缓存版本已更新到 `korea-trip-v15`；manifest.json theme_color #78AA8B，Add to Home Screen 名称为“在璐上”。
+- sw.js 缓存版本已更新到 `korea-trip-v17`；manifest.json theme_color #78AA8B，Add to Home Screen 名称为“在璐上”。
 - 完整文档：README.md（含交接状态）与 REQUIREMENTS.md，在项目根目录和 /tmp/kr_split/ 均有。
 - 会话记忆：~/.claude/projects/-Users-hankzhang/memory/korea-vercel-project.md。
 ```
