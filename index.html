@@ -611,22 +611,23 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 
 /* ============ 文件 ============ */
 .doc-card{padding:16px;display:flex;flex-direction:column;gap:10px}
-.doc-top{display:flex;align-items:flex-start;gap:10px}
+.doc-card.done{padding:12px 14px;gap:8px;background:linear-gradient(180deg,rgba(246,250,247,.98),rgba(255,255,251,.98))}
+.doc-card.done .doc-note,.doc-card.done .doc-actions,.doc-card.done .doc-thumb{display:none}
+.doc-card.done .doc-top{align-items:center}
+.doc-top{display:flex;align-items:center;gap:10px}
+.doc-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
 .doc-ic{
   flex-shrink:0;width:40px;height:40px;border-radius:13px;background:var(--green-xl);color:var(--green-d);
   display:flex;align-items:center;justify-content:center;
 }
 .doc-title{font-weight:800;font-size:14.5px}
 .doc-hint{font-size:12px;color:var(--muted);margin-top:2px}
-.doc-status{
-  margin-left:auto;flex-shrink:0;font-size:11px;font-weight:800;color:var(--sc,#A98245);
-  background:var(--sc-l,#FBF3E3);border-radius:999px;padding:5px 11px;
-}
 .doc-status-select{
-  margin-left:auto;flex-shrink:0;min-height:38px;min-width:96px;border-radius:999px;
-  padding:0 10px;font-size:11.5px;font-weight:800;color:var(--green-d);background:var(--green-xl);
-  border:1px solid rgba(118,169,138,.18);appearance:none;-webkit-appearance:none;
+  margin-left:auto;flex-shrink:0;min-height:38px;min-width:104px;border-radius:999px;
+  padding:0 12px 0 10px;font-size:11.5px;font-weight:800;color:var(--green-d);background:var(--green-xl);
+  border:1px solid rgba(118,169,138,.18);appearance:none;-webkit-appearance:none;text-align:center;text-align-last:center;
 }
+.doc-status-select option{text-align:center}
 .doc-note{font-size:12.5px;color:var(--muted);background:var(--bg);border-radius:10px;padding:8px 12px;line-height:1.5;min-height:20px}
 .doc-actions{display:flex;gap:8px;flex-wrap:wrap}
 .doc-btn{
@@ -637,6 +638,22 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .doc-btn:active{background:var(--line)}
 .doc-thumb{position:relative;margin-top:2px}
 .doc-thumb img{width:100%;max-height:150px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
+.doc-done-wrap{
+  margin-top:2px;border-radius:18px;border:1px solid rgba(224,232,226,.95);background:rgba(252,253,251,.8);overflow:hidden
+}
+.doc-done-wrap[open]{background:rgba(249,252,249,.96)}
+.doc-done-summary{
+  list-style:none;cursor:pointer;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:12.5px;font-weight:800;color:var(--green-d);background:linear-gradient(180deg,rgba(233,243,236,.8),rgba(255,255,251,.9))
+}
+.doc-done-summary::-webkit-details-marker{display:none}
+.doc-done-summary span{font-weight:700;color:var(--muted)}
+.doc-done-summary i{width:16px;height:16px;flex-shrink:0;color:var(--green)}
+.doc-done-list{display:grid;gap:8px;padding:0 0 10px}
+.doc-card.done .doc-ic{width:34px;height:34px;border-radius:11px}
+.doc-card.done .doc-title{font-size:13.5px}
+.doc-card.done .doc-status-select{min-width:92px;min-height:34px;font-size:11px}
+.doc-card.done .doc-main{gap:1px}
 .doc-thumb .dt-del{
   position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(24,38,31,.65);
   color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;
@@ -2584,12 +2601,12 @@ async function persistDocs() {
   }
 }
 function renderDocs() {
-  $('#docsGrid').innerHTML = docsData.map((d) => {
+  const renderOne = (d, compact = false) => {
     const [fc, bc] = DOC_STYLE[d.status] || ['#87938C', '#EFF3F0'];
-    return `<div class="card doc-card" data-id="${esc(d.id)}">
+    return `<div class="card doc-card${compact ? ' done' : ''}" data-id="${esc(d.id)}">
       <div class="doc-top">
         <span class="doc-ic">${iconFor(d.emoji)}</span>
-        <div><div class="doc-title">${esc(d.title)}</div><div class="doc-hint">${esc(d.hint)}</div></div>
+        <div class="doc-main"><div class="doc-title">${esc(d.title)}</div><div class="doc-hint">${esc(d.hint)}</div></div>
         <select class="doc-status-select" data-act="status" aria-label="修改状态" style="color:${fc};background:${bc}">
           ${DOC_STATUSES.map((s) => `<option value="${esc(s)}"${s === d.status ? ' selected' : ''}>${esc(s)}</option>`).join('')}
         </select>
@@ -2601,7 +2618,19 @@ function renderDocs() {
       </div>
       ${d.photo ? `<div class="doc-thumb"><img src="${d.photo}" alt=""><button class="dt-del" data-act="delphoto">✕</button></div>` : ''}
     </div>`;
-  }).join('');
+  };
+  const pending = docsData.filter((d) => d.status === '待准备');
+  const done = docsData.filter((d) => d.status !== '待准备');
+  const pendingHTML = pending.length
+    ? `<div class="doc-pending">${pending.map((d) => renderOne(d, false)).join('')}</div>`
+    : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">所有文件都已准备好啦。</div>`;
+  const doneHTML = done.length
+    ? `<details class="doc-done-wrap">
+        <summary class="doc-done-summary">${ic('chevron')}已准备 ${done.length} 项 <span>已办理 / 已拍照 / 已打印 / 电子版会先收起来</span></summary>
+        <div class="doc-done-list">${done.map((d) => renderOne(d, true)).join('')}</div>
+      </details>`
+    : '';
+  $('#docsGrid').innerHTML = pendingHTML + doneHTML;
 }
 function compressImage(file, cb) {
   const img = new Image();
