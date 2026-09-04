@@ -152,10 +152,21 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .hero-sub{font-size:clamp(13.5px,3.8vw,16px);font-weight:600;opacity:.96}
 .hero-meta{font-size:12px;font-weight:600;opacity:.85}
 .hero-countdown{
-  margin-top:8px;font-size:13.5px;font-weight:800;color:var(--green-d);
+  margin-top:8px;min-width:min(100%,320px);
+  display:grid;gap:2px;
+  font-size:13.5px;font-weight:800;color:var(--green-d);
   background:rgba(255,254,251,.82);border:1px solid rgba(118,169,138,.24);
   border-radius:999px;padding:8px 18px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
+.hero-countdown .hc-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.hero-countdown .hc-main{font-size:15px;font-weight:900;letter-spacing:.01em}
+.hero-countdown .hc-chip{
+  font-size:10px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--pink);background:rgba(255,255,255,.82);border:1px solid rgba(219,176,181,.22);
+  border-radius:999px;padding:3px 8px
+}
+.hero-countdown .hc-sub{font-size:11px;color:var(--muted);font-weight:700}
+.hero-countdown .hc-mini{font-size:11px;color:var(--green-d);font-weight:800}
 .hero-progress{
   position:absolute;left:0;right:0;bottom:0;z-index:2;height:4px;background:rgba(255,255,255,.24);
 }
@@ -337,7 +348,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 }
 .dc-art{
   flex-shrink:0;width:72px;height:48px;border-radius:14px;overflow:hidden;border:1px solid rgba(118,169,138,.16);
-  background:var(--green-xl);display:none;box-shadow:0 3px 10px rgba(63,96,78,.07);
+  background:var(--green-xl);display:block;box-shadow:0 3px 10px rgba(63,96,78,.07);
 }
 .dc-art img{width:100%;height:100%;object-fit:cover}
 .dc-num{
@@ -355,12 +366,12 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .dc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease}
 .day-card.open .dc-body{grid-template-rows:1fr}
 .dc-body-inner{overflow:hidden}
-.tl-row{display:flex;gap:14px;padding:11px 16px 11px 28px;border-top:1px solid var(--line);position:relative}
+.tl-row{display:flex;gap:14px;padding:11px 16px 11px 36px;border-top:1px solid var(--line);position:relative}
 .tl-row::before{
-  content:'';position:absolute;left:14px;top:20px;bottom:20px;width:2px;background:var(--line);
+  content:'';position:absolute;left:22px;top:20px;bottom:20px;width:2px;background:var(--line);
 }
-.tl-dot{position:absolute;left:9px;top:16px;width:11px;height:11px;border-radius:50%;background:var(--td,var(--green));border:2.5px solid #fff;box-shadow:0 0 0 1px var(--line);z-index:1}
-.tl-time{flex-shrink:0;width:60px;font-size:12.5px;font-weight:800;color:var(--green-d);padding-top:2px}
+.tl-dot{position:absolute;left:17px;top:16px;width:11px;height:11px;border-radius:50%;background:var(--td,var(--green));border:2.5px solid #fff;box-shadow:0 0 0 1px var(--line);z-index:1}
+.tl-time{flex-shrink:0;width:72px;font-size:12.5px;font-weight:800;color:var(--green-d);padding-top:2px}
 .tl-main{flex:1;min-width:0}
 .tl-title{font-weight:700;font-size:14.5px}
 .tl-sub{font-size:12.5px;color:var(--muted)}
@@ -383,7 +394,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 }
 .dc-tool.primary{background:var(--grad);color:#fff;border-color:transparent}
 .dc-gallery{
-  display:grid;grid-template-columns:1.12fr .88fr .88fr;gap:8px;padding:0 16px 10px
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:0 16px 10px
 }
 .dc-gimg{
   position:relative;overflow:hidden;border-radius:14px;aspect-ratio:4/3;border:1px solid rgba(118,169,138,.14);
@@ -641,10 +652,20 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 
 /* ============ 文件 ============ */
 .doc-card{padding:16px;display:flex;flex-direction:column;gap:10px}
+.doc-add-card{
+  padding:18px 16px;min-height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  border:1px dashed rgba(118,169,138,.24);background:linear-gradient(180deg,rgba(250,253,250,.98),rgba(241,249,245,.92));
+}
+.doc-add-card .doc-add-ic{
+  width:54px;height:54px;border-radius:18px;background:var(--grad);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;box-shadow:var(--shadow);
+}
+.doc-add-card .doc-add-title{font-size:15px;font-weight:900;color:var(--green-d)}
+.doc-add-card .doc-add-sub{font-size:12px;color:var(--muted);text-align:center;line-height:1.45}
 .doc-card.done{padding:12px 14px;gap:8px;background:linear-gradient(180deg,rgba(246,250,247,.98),rgba(255,255,251,.98))}
 .doc-card.done .doc-note,.doc-card.done .doc-actions,.doc-card.done .doc-thumb{display:none}
 .doc-card.done .doc-top{align-items:center}
-.doc-top{display:flex;align-items:center;gap:10px}
+.doc-top{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
 .doc-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
 .doc-ic{
   flex-shrink:0;width:40px;height:40px;border-radius:13px;background:var(--green-xl);color:var(--green-d);
@@ -652,6 +673,15 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 }
 .doc-title{font-weight:800;font-size:14.5px}
 .doc-hint{font-size:12px;color:var(--muted);margin-top:2px}
+.doc-head-fields{flex:1;min-width:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.doc-title-input{
+  flex:1;min-width:130px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
+  padding:0 12px;font-weight:800;font-size:14px;color:var(--text)
+}
+.doc-icon-select{
+  flex-shrink:0;min-width:90px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--green-xl);
+  color:var(--green-d);font-weight:800;font-size:12.5px;text-align:center;text-align-last:center;padding:0 10px
+}
 .doc-status-select{
   margin-left:auto;flex-shrink:0;min-height:38px;min-width:104px;border-radius:999px;
   padding:0 12px 0 10px;font-size:11.5px;font-weight:800;color:var(--green-d);background:var(--green-xl);
@@ -783,7 +813,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
     <div class="qcards">
       <button class="card qcard qcard-btn" data-goto="todos"><span class="qc-ic"><i class="ti" data-ic="todo"></i></span>行程清单<span class="qc-sub">机票 · 酒店 · 签证</span></button>
-      <button class="card qcard qcard-btn" data-goto="docs"><span class="qc-ic"><i class="ti" data-ic="file"></i></span>备忘记录<span class="qc-sub">证件 · 订单 · 照片</span></button>
+      <button class="card qcard qcard-btn" data-goto="docs"><span class="qc-ic"><i class="ti" data-ic="file"></i></span>备忘记录<span class="qc-sub">自定义文件 · 照片</span></button>
       <button class="card qcard qcard-btn" data-goto="guide"><span class="qc-ic"><i class="ti" data-ic="heart"></i></span>我的收藏<span class="qc-sub">美食 · 短语 · 贴士</span></button>
     </div>
 
@@ -820,6 +850,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
     <div class="grid g2">
       <div class="card board-card">
+        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.svg" alt="Asti Hotel Busan Station 手绘外观">
         <div class="bc-route">Asti Hotel Busan Station</div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
         <div class="bc-meta">釜山站步行级别 / 方便 12/29 晚上直接坐 KTX 去首尔</div>
@@ -932,6 +963,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="block-title"><i class="ti" data-ic="hotel"></i>住宿</div>
     <div class="grid g2">
       <div class="card board-card">
+        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.svg" alt="Asti Hotel Busan Station 手绘外观">
         <div class="bc-route">Asti Hotel Busan Station</div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
         <div class="bc-meta">釜山站步行级别 / 方便 12/29 晚上直接坐 KTX 去首尔</div>
@@ -1083,9 +1115,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 文件 ============ -->
 <section class="panel" id="tab-docs">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">云端共享 · 多设备同步</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">自定义上传 · 云端共享 · 多设备同步</span></h2>
     <div class="grid g2 g3" id="docsGrid" style="gap:12px"></div>
-    <div class="docs-hint">同步说明：文件状态、备注和压缩后的照片会<b>云端持久化共享</b>，你们任意设备修改后都能同步。护照等敏感证件建议只记状态/备注，确实需要再上传照片。</div>
+    <div class="docs-hint">同步说明：文件状态、备注和压缩后的照片会<b>云端持久化共享</b>，你们任意设备修改后都能同步。这里不预设文件类型，你们可以自己命名、自己选图标；护照等敏感证件建议只记状态/备注，确实需要再上传照片。</div>
   </div>
 </section>
 
@@ -1376,6 +1408,7 @@ const EMOJI_ICON = {
   '🌊':'wave','🏯':'temple','🎯':'target','✅':'check','💬':'chat','💰':'wallet','📋':'todo','📖':'book','🎨':'palette','🎬':'film','⛰':'mountain',
   '🌉':'bridge','🎎':'clothes','🥢':'food','🗼':'tower','🎤':'music','🥶':'snowflake','🧣':'clothes','🚇':'subway','🚕':'taxi','💳':'card',
   '⚠':'warning','🙇':'user','🧾':'receipt','🆘':'alert','🗣':'chat','🔄':'refresh','✏':'edit','📎':'attach','🕐':'clock','⏳':'hourglass',
+  '✈':'plane','✈️':'plane','🏨':'hotel','🚄':'train','🗺':'map','🗺️':'map','🧳':'bag','🎫':'ticket','🗂':'file','🗂️':'file','🔖':'bookmark',
   '☀':'sun','⛅':'cloud-sun','🌤':'sun-cloud','☁':'cloud','🌧':'rain','🌦':'drizzle','🌨':'snow','❄':'snowflake','🌫':'fog','⛈':'storm',
   '🌡':'thermometer','🐟':'food','🥠':'food','🍢':'food','🍲':'bowl','🥟':'food','🍻':'cup','🌉':'bridge','🍺':'cup','🚢':'wave','🎆':'sparkle','🦌':'heart'
 };
@@ -1437,7 +1470,7 @@ const DAY_THEMES = {
   5: '景福宫 · 韩屋村', 6: '明洞 · 跨年敲钟', 7: '元旦 · N首尔塔 · 弘大', 8: '圣水洞 · 汉江', 9: '免税店 · 回国'
 };
 const DAY_ART = {
-  1: 'assets/photos/busan-watercolor.webp',
+  1: 'assets/photos/busan-asti-hotel-editorial.svg',
   2: 'assets/photos/busan-harbor-editorial.png',
   3: 'assets/photos/busan-village-editorial.png',
   4: 'assets/photos/seoul-night-editorial.png',
@@ -1449,6 +1482,7 @@ const DAY_ART = {
 };
 const PHOTO_LIBRARY = [
   { value: '', label: '自动匹配（按内容）', preview: 'assets/photos/palace-watercolor.webp' },
+  { value: 'assets/photos/busan-asti-hotel-editorial.svg', label: '釜山 ASTI 酒店 / 釜山站', preview: 'assets/photos/busan-asti-hotel-editorial.svg' },
   { value: 'assets/photos/busan-harbor-editorial.png', label: '釜山海云台 / 胶囊列车', preview: 'assets/photos/busan-harbor-editorial.png' },
   { value: 'assets/photos/busan-village-editorial.png', label: '釜山甘川 / 山坡彩屋', preview: 'assets/photos/busan-village-editorial.png' },
   { value: 'assets/photos/seoul-palace-editorial.png', label: '首尔景福宫 / 古宫水墨', preview: 'assets/photos/seoul-palace-editorial.png' },
@@ -1460,6 +1494,7 @@ const PHOTO_LIBRARY = [
   { value: 'assets/photos/palace-watercolor.webp', label: '景福宫 / 传统水彩', preview: 'assets/photos/palace-watercolor.webp' }
 ];
 const PHOTO_MATCHERS = [
+  { re: /(Asti|ASTI|釜山站.*酒店|酒店.*釜山站|Busan Station)/, src: 'assets/photos/busan-asti-hotel-editorial.svg' },
   { re: /(景福宫|北村|韩屋|仁寺洞|普信阁|韩服|参鸡汤|古宫)/, src: 'assets/photos/seoul-palace-editorial.png' },
   { re: /(海云台|胶囊|青沙浦|广安里|太宗台|KTX|釜山站|港口|海鲜|札嘎其|胶囊小火车)/, src: 'assets/photos/busan-harbor-editorial.png' },
   { re: /(甘川|白浅滩|文化村|小王子|南浦|BIFF|富平|村|山坡)/, src: 'assets/photos/busan-village-editorial.png' },
@@ -1712,15 +1747,17 @@ function updateHeroCountdown() {
   const el = $('#heroCountdown');
   if (phase === 'prep') {
     const t = dl(D1 - Date.now());
-    el.textContent = `距 ${DEPART_LABEL} 出发还有 ${t.d} 天 ${pad(t.h)} 小时 ${pad(t.m)} 分`;
+    el.innerHTML = `<div class="hc-top"><span class="hc-chip">PREP</span><span class="hc-main">距 ${DEPART_LABEL} 出发还有 ${t.d} 天 ${pad(t.h)} 小时 ${pad(t.m)} 分</span></div><div class="hc-sub">12/26 02:25 · 深圳起飞，先把行李、证件、钱包都放进同一张旅程里</div>`;
   } else if (phase === 'busan') {
     const t = dl(NEWYEAR - Date.now());
-    el.textContent = `釜山段 DAY ${dayIndex()} · 距跨年 ${t.d} 天 ${pad(t.h)} 小时`;
+    el.innerHTML = `<div class="hc-top"><span class="hc-chip">BUSAN</span><span class="hc-main">釜山段 DAY ${dayIndex()} · 距跨年 ${t.d} 天 ${pad(t.h)} 小时</span></div><div class="hc-sub">12/26–12/29 · Asti Hotel Busan Station</div>`;
   } else if (phase === 'seoul') {
     const t = dl(NEWYEAR - Date.now());
-    el.textContent = t.d > 0 ? `首尔段 DAY ${dayIndex()} · 距跨年 ${t.d} 天` : `首尔段 DAY ${dayIndex()} · 新年快乐！`;
+    el.innerHTML = t.d > 0
+      ? `<div class="hc-top"><span class="hc-chip">SEOUL</span><span class="hc-main">首尔段 DAY ${dayIndex()} · 距跨年 ${t.d} 天</span></div><div class="hc-sub">12/29 晚上 KTX 北上，住进明洞附近的首尔酒店</div>`
+      : `<div class="hc-top"><span class="hc-chip">NEW YEAR</span><span class="hc-main">首尔段 DAY ${dayIndex()} · 新年快乐！</span></div><div class="hc-sub">跨年钟声之后，继续在首尔慢慢走</div>`;
   } else {
-    el.textContent = '旅程已结束，下一站再见';
+    el.innerHTML = `<div class="hc-top"><span class="hc-chip">DONE</span><span class="hc-main">旅程已结束，下一站再见</span></div><div class="hc-sub">行程、地图、文件和支出都会继续保留在同一份旅程里</div>`;
   }
 }
 
@@ -2653,50 +2690,37 @@ function initSheet() {
 }
 
 /* ================= 文件（云端同步 + 本地兜底） ================= */
-const DOC_STATUSES = ['待准备', '已办理', '已拍照', '已打印', '电子版'];
+const DOC_STATUSES = ['待准备', '已上传', '已确认', '已归档'];
 const DOC_STYLE = {
   '待准备': ['#87938C', '#EFF3F0'],
-  '已办理': ['#6F98A5', '#E7F0F8'],
-  '已拍照': ['#A98245', '#FBF3E3'],
-  '已打印': ['#3F6B55', '#EDF6EF'],
-  '电子版': ['#7F789F', '#F0EBFA']
+  '已上传': ['#6A99A4', '#E8F4F8'],
+  '已确认': ['#A98245', '#FCF3E1'],
+  '已归档': ['#7F789F', '#F0EBFA']
 };
-const DOC_TEMPLATES = [
-  { id: 'passport-kl', emoji: '🛂', title: '护照 · 可乐', hint: '有效期 ≥ 6 个月' },
-  { id: 'passport-jl', emoji: '🛂', title: '护照 · 金鹿', hint: '有效期 ≥ 6 个月' },
-  { id: 'visa', emoji: '🛃', title: '签证 / K-ETA', hint: '批准页截图存这里' },
-  { id: 'flights', emoji: '✈️', title: '机票行程单', hint: '往返两张' },
-  { id: 'hotel-b', emoji: '🏨', title: '釜山酒店订单', hint: 'Asti Hotel Busan Station · 入住凭证' },
-  { id: 'hotel-s', emoji: '🏨', title: '首尔酒店订单', hint: '入住凭证' },
-  { id: 'ktx', emoji: '🚄', title: 'KTX 车票', hint: '电子票截图' },
-  { id: 'esim', emoji: '📶', title: 'eSIM 二维码', hint: '激活前先截图' },
-  { id: 'emergency', emoji: '🆘', title: '紧急联系方式', hint: '大使馆 · 报警112 · 急救119' }
-];
+const DOC_LEGACY_TITLES = new Set(['护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式']);
+const DOC_ICON_OPTIONS = ['📋', '🧾', '📎', '✈️', '🏨', '🚄', '💳', '📍', '💬', '🕐', '⏳', '📖', '✏️', '📸', '🎒', '✅', '🆘', '🗺️'];
 let docsData = null;
 function cleanDocForCloud(doc, idx) {
+  const legacy = DOC_LEGACY_TITLES.has(doc.title);
   return {
-    id: doc.id,
+    id: doc.id || `doc-${idx + 1}`,
     sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
-    emoji: doc.emoji,
-    title: doc.title,
-    hint: doc.hint,
+    emoji: doc.emoji || '📋',
+    title: legacy ? '新文件' : (doc.title || '新文件'),
+    hint: legacy ? '自己命名 · 自己选图标 · 自己上传照片' : (doc.hint || '自己命名 · 自己选图标 · 自己上传照片'),
     status: DOC_STATUSES.includes(doc.status) ? doc.status : '待准备',
     note: doc.note || '',
     photo: doc.photo || null
   };
 }
-function mergeDocTemplates(list) {
-  const byId = new Map((Array.isArray(list) ? list : []).map((d) => [d.id, d]));
-  return DOC_TEMPLATES.map((tpl, idx) => {
-    const saved = byId.get(tpl.id) || {};
-    return cleanDocForCloud({ ...tpl, ...saved, sortOrder: idx + 1 }, idx);
-  });
+function newDocCard(idx = 0) {
+  return cleanDocForCloud({ id: `doc-${Date.now()}-${idx}`, emoji: '📋', title: '新文件', hint: '自己命名 · 自己选图标 · 自己上传照片', status: '待准备', note: '', photo: null, sortOrder: idx + 1 }, idx);
 }
 async function loadDocs() {
-  const empty = DOC_TEMPLATES.map((d, idx) => cleanDocForCloud({ ...d, status: '待准备', note: '', photo: null }, idx));
-  const cached = cache.get('kr_docs') || empty;
+  const cached = Array.isArray(cache.get('kr_docs')) ? cache.get('kr_docs') : [];
   const cloudDocs = await apiGet('/docs', 'kr_docs', cached);
-  docsData = mergeDocTemplates(cloudDocs && cloudDocs.length ? cloudDocs : cached);
+  const source = Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : cached;
+  docsData = (source || []).map((d, idx) => cleanDocForCloud(d, idx));
   cache.set('kr_docs', docsData);
 }
 async function persistDocs() {
@@ -2714,11 +2738,15 @@ function renderDocs() {
     return `<div class="card doc-card${compact ? ' done' : ''}" data-id="${esc(d.id)}">
       <div class="doc-top">
         <span class="doc-ic">${iconFor(d.emoji)}</span>
-        <div class="doc-main"><div class="doc-title">${esc(d.title)}</div><div class="doc-hint">${esc(d.hint)}</div></div>
+        <div class="doc-head-fields">
+          <input class="doc-title-input" data-act="title" value="${esc(d.title)}" placeholder="文件名称">
+          <select class="doc-icon-select" data-act="emoji" aria-label="选择图标">${DOC_ICON_OPTIONS.map((s) => `<option value="${esc(s)}"${s === d.emoji ? ' selected' : ''}>${esc(s)}</option>`).join('')}</select>
+        </div>
         <select class="doc-status-select" data-act="status" aria-label="修改状态" style="color:${fc};background:${bc}">
           ${DOC_STATUSES.map((s) => `<option value="${esc(s)}"${s === d.status ? ' selected' : ''}>${esc(s)}</option>`).join('')}
         </select>
       </div>
+      <div class="doc-hint">${esc(d.hint)}</div>
       <div class="doc-note">${esc(d.note) || '暂无备注'}</div>
       <div class="doc-actions">
         <button class="doc-btn" data-act="attach">${ic('camera')}${d.photo ? '换照片' : '拍照/上传'}</button>
@@ -2729,16 +2757,21 @@ function renderDocs() {
   };
   const pending = docsData.filter((d) => d.status === '待准备');
   const done = docsData.filter((d) => d.status !== '待准备');
+  const addCard = `<button class="card doc-card doc-add-card" data-act="newdoc">
+    <div class="doc-add-ic">+</div>
+    <div class="doc-add-title">新增一个自定义文件</div>
+    <div class="doc-add-sub">文件名、图标、状态都自己选，不再预设签证 / K-ETA / 行程单模板</div>
+  </button>`;
   const pendingHTML = pending.length
     ? `<div class="doc-pending">${pending.map((d) => renderOne(d, false)).join('')}</div>`
-    : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">所有文件都已准备好啦。</div>`;
+    : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">还没有待准备文件，先点上面的“新增一个自定义文件”。</div>`;
   const doneHTML = done.length
     ? `<details class="doc-done-wrap">
-        <summary class="doc-done-summary">${ic('chevron')}已准备 ${done.length} 项 <span>已办理 / 已拍照 / 已打印 / 电子版会先收起来</span></summary>
+        <summary class="doc-done-summary">${ic('chevron')}已整理 ${done.length} 项 <span>已上传 / 已确认 / 已归档会先收起来</span></summary>
         <div class="doc-done-list">${done.map((d) => renderOne(d, true)).join('')}</div>
       </details>`
     : '';
-  $('#docsGrid').innerHTML = pendingHTML + doneHTML;
+  $('#docsGrid').innerHTML = addCard + pendingHTML + doneHTML;
 }
 function compressImage(file, cb) {
   const img = new Image();
@@ -2763,7 +2796,7 @@ function attachPhoto(doc) {
     if (file.size > 8 * 1024 * 1024) { alert('图片太大（>8MB），先压缩或换一张'); return; }
     compressImage(file, (dataUrl) => {
       doc.photo = dataUrl;
-      doc.status = '已拍照';
+      doc.status = '已上传';
       renderDocs();
       persistDocs();
     });
@@ -2775,6 +2808,13 @@ async function initDocs() {
   renderDocs();
   $('#docsGrid').addEventListener('click', async (e) => {
     const btn = e.target.closest('.doc-btn, .dt-del');
+    const add = e.target.closest('[data-act="newdoc"]');
+    if (add) {
+      docsData.unshift(newDocCard(docsData.length));
+      renderDocs();
+      await persistDocs();
+      return;
+    }
     if (!btn) return;
     const card = e.target.closest('.doc-card');
     const doc = docsData.find((d) => d.id == card.dataset.id);
@@ -2791,11 +2831,23 @@ async function initDocs() {
   });
   $('#docsGrid').addEventListener('change', async (e) => {
     const sel = e.target.closest('.doc-status-select');
-    if (!sel) return;
+    const iconSel = e.target.closest('.doc-icon-select');
+    if (!sel && !iconSel) return;
     const card = e.target.closest('.doc-card');
     const doc = docsData.find((d) => d.id == card.dataset.id);
     if (!doc) return;
-    doc.status = sel.value;
+    if (sel) doc.status = sel.value;
+    if (iconSel) doc.emoji = iconSel.value;
+    renderDocs();
+    await persistDocs();
+  });
+  $('#docsGrid').addEventListener('change', async (e) => {
+    const input = e.target.closest('.doc-title-input');
+    if (!input) return;
+    const card = e.target.closest('.doc-card');
+    const doc = docsData.find((d) => d.id == card.dataset.id);
+    if (!doc) return;
+    doc.title = input.value.trim() || '新文件';
     renderDocs();
     await persistDocs();
   });

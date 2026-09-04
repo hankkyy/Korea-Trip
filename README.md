@@ -27,7 +27,7 @@
 - 待办专区：预订待办（9 项）+ 打卡清单（云端同步 + 本地缓存）
 - 行李清单（云端同步 + 本地缓存）
 - 多币种记账（KRW/CNY/USD → 人均 RMB，预算进度条 + **分类占比环形图**，底部弹层表单）
-- 文件专区：证件状态打卡 + 备注 + 压缩照片云端共享（弱网时 localStorage 兜底；隐私提示见 REQUIREMENTS.md §3.4）
+- 文件专区：自定义文件卡片（标题 / 图标 / 状态 / 备注 / 压缩照片）云端共享（弱网时 localStorage 兜底；隐私提示见 REQUIREMENTS.md §3.4）
 - 锦囊：美食（釜山/首尔分组）/ 韩语短语 / 冬季贴士
 - PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v9`）
 
@@ -134,6 +134,7 @@ cd ~/Desktop/korea-vercel && vercel domains add hankzhang.cloud
 
 1. 把照片放进 `assets/photos/`；
 2. 英雄区：替换 `seoul-watercolor.webp` / `busan-watercolor.webp` / `palace-watercolor.webp`，或改 `index.html` 里 `HERO_IMAGES` / `DAY_ART` 数组。
+3. 住宿封面已经加入 `assets/photos/busan-asti-hotel-editorial.svg`，后续如要换成真实照片，直接改 `HERO_IMAGES` / `DAY_ART` / `PHOTO_LIBRARY` 即可。
 
 ## 部署说明（Vercel MCP）
 

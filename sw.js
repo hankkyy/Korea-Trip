@@ -8,6 +8,7 @@ const PRECACHE = [
   '/assets/icons/icon-512.png',
   '/assets/photos/seoul-watercolor.webp',
   '/assets/photos/busan-watercolor.webp',
+  '/assets/photos/busan-asti-hotel-editorial.svg',
   '/assets/photos/palace-watercolor.webp',
   '/assets/photos/seoul-editorial.webp',
   '/assets/photos/busan-editorial.webp',
