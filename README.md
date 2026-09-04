@@ -2,7 +2,7 @@
 
 **可乐 & 金鹿** 的韩国冬季之旅可视化计划站。
 
-- 行程：深圳 ⇄ 首尔 · **2026.12.26 – 2027.1.3**（12/26 凌晨飞首尔 → 当日南下釜山 → 12/29 晚 KTX 回首尔 → 普信阁跨年 → 1/3 晚班机回深圳，1/4 凌晨落地）
+- 行程：深圳 ⇄ 首尔 · **2026.12.26 – 2027.1.3**（12/26 02:25 由深圳飞首尔 → 当日南下釜山 → 12/29 傍晚 KTX 回首尔 → 首尔酒店已定为 Courtyard by Marriott Seoul Myeongdong → 普信阁跨年 → 1/3 22:10 回深圳，1/4 01:15 落地）
 - 域名：当前 `https://korea-vercel.vercel.app`（默认域名；上线稳定后可换绑 `hankzhang.cloud`）
 - **本项目核心目标：手机 / iPad 优先的浏览体验**（金鹿不用电脑），并支持 Add to Home Screen 当原生 App 用。详见 [REQUIREMENTS.md](./REQUIREMENTS.md)
 
@@ -28,7 +28,7 @@
 - 多币种记账（KRW/CNY/USD → 人均 RMB，预算进度条 + **分类占比环形图**，底部弹层表单）
 - 文件专区：证件状态打卡 + 照片存本机（隐私设计，见 REQUIREMENTS.md §3.4）
 - 锦囊：美食（釜山/首尔分组）/ 韩语短语 / 冬季贴士
-- PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v4`）
+- PWA：Add to Home Screen（standalone 模式）+ Service Worker 离线壳（缓存版本 `korea-trip-v5`）
 
 ## 技术栈
 
@@ -64,6 +64,7 @@ korea-vercel/
 | 方法 | 路径 | 说明 |
 |---|---|---|
 | GET | `/itinerary` | 行程（按 day, sortOrder 排序） |
+| POST | `/itinerary` | 全量替换保存行程 `{items:[...]}` |
 | GET | `/checklist` | 出行清单（按 id 排序） |
 | POST | `/checklist/:docId` | 更新清单项 `{done}` |
 | GET | `/bucket-list` | 打卡清单 |
@@ -109,13 +110,20 @@ cd ~/Desktop/korea-vercel && vercel domains add hankzhang.cloud
 
 1. **CloudBase 控制台** → 数据库 → 对应 `kr_` 集合，直接增删改文档。
 2. **Claude Code + CloudBase MCP**（推荐）：`readNoSqlDatabaseContent` / `writeNoSqlDatabaseContent` 工具操作 `kr_` 集合。
-3. 记账 / 打卡 / 清单在网页上直接操作（自动同步云端）。
+3. 记账 / 打卡 / 清单在网页上直接操作（自动同步云端）；行程页也支持直接编辑并整页同步保存到云端。
 
 ### 行程文档字段
 
 ```
-{ day: 1, sortOrder: 1, time: "06:30", title: "...", subtitle: "...", detail: "...", mapUrl: "https://..." }
+{ day: 1, sortOrder: 1, time: "06:50", title: "...", subtitle: "...", detail: "...", mapUrl: "https://..." }
 ```
+
+### 已确认的旅行信息
+
+- 去程航班：Asiana OZ372，2026-12-26 02:25 从深圳宝安 T3 起飞，06:50 落地仁川 T2。
+- 回程航班：Asiana OZ371，2027-01-03 22:10 从仁川 T2 起飞，2027-01-04 01:15 落地深圳宝安 T3。
+- 首尔酒店：Courtyard by Marriott Seoul Myeongdong，Check-in 2026-12-29 15:00，Check-out 2027-01-03 11:00，Confirmation #93241473。
+- 12/29 釜山 → 首尔：计划晚一点再北上，KTX 预计傍晚出发，晚上到首尔后入住酒店。
 
 ## 替换旅行图片
 

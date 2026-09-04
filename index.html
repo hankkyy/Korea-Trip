@@ -46,7 +46,7 @@ body::before{
     linear-gradient(180deg,#F3FAFA 0%,#F7FBF8 48%,#F9FCF8 100%);
 }
 button{font-family:inherit;font-size:inherit;cursor:pointer;touch-action:manipulation;border:none;background:none;color:inherit}
-input,select{font-family:inherit;font-size:16px} /* ≥16px 防 iOS 聚焦放大 */
+input,select,textarea{font-family:inherit;font-size:16px} /* ≥16px 防 iOS 聚焦放大 */
 img{max-width:100%;display:block}
 a{color:var(--blue-d);text-decoration:none}
 a:active{opacity:.7}
@@ -339,6 +339,31 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 }
 .tl-row.dopen .tl-detail{display:block}
 .tl-row .tl-tip{font-size:10.5px;color:var(--blue-d);font-weight:700;margin-top:2px}
+.tl-tools{flex-shrink:0;display:flex;align-items:flex-start;gap:6px;margin-left:auto;padding-top:1px}
+.tl-edit{
+  min-height:28px;padding:0 9px;border-radius:999px;background:rgba(118,169,138,.11);
+  color:var(--green-d);border:1px solid rgba(118,169,138,.16);font-size:11px;font-weight:800
+}
+.dc-tools{
+  display:flex;gap:8px;flex-wrap:wrap;padding:0 16px 8px;margin-top:-2px
+}
+.dc-tool{
+  min-height:34px;padding:0 12px;border-radius:999px;background:var(--green-xl);
+  border:1px solid rgba(118,169,138,.18);color:var(--green-d);font-size:12px;font-weight:800;
+}
+.dc-tool.primary{background:var(--grad);color:#fff;border-color:transparent}
+.dc-gallery{
+  display:grid;grid-template-columns:1.12fr .88fr .88fr;gap:8px;padding:0 16px 10px
+}
+.dc-gimg{
+  position:relative;overflow:hidden;border-radius:14px;aspect-ratio:4/3;border:1px solid rgba(118,169,138,.14);
+  background:var(--green-xl);box-shadow:0 3px 10px rgba(63,96,78,.06)
+}
+.dc-gimg img{width:100%;height:100%;object-fit:cover}
+.dc-gimg .gcap{
+  position:absolute;left:8px;bottom:8px;padding:3px 8px;border-radius:999px;background:rgba(255,255,251,.88);
+  color:var(--green-d);font-size:10.5px;font-weight:800;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)
+}
 
 /* ============ 地图 ============ */
 .map-tabs{display:flex;gap:8px;margin-bottom:12px}
@@ -525,6 +550,63 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 #expFAB .fab-plus{font-size:30px;font-weight:900;line-height:1;transform:translateY(-1px)}
 #expFAB:active{transform:scale(.94)}
 @media(min-width:768px){#expFAB{right:34px;bottom:108px}}
+
+/* ============ 行程编辑底板 ============ */
+#itBackdrop{
+  position:fixed;inset:0;background:rgba(24,38,31,.45);z-index:1002;opacity:0;pointer-events:none;transition:opacity .28s;
+}
+#itBackdrop.open{opacity:1;pointer-events:auto}
+#itSheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:1003;background:var(--card);
+  border-radius:24px 24px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));
+  transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.28,1);
+  max-width:860px;margin:0 auto;box-shadow:var(--shadow-lg);max-height:min(88vh,860px);overflow:auto;
+}
+#itSheet.open{transform:translateY(0)}
+#itSheet h3{font-size:17px;margin:0 0 6px}
+#itSheet .sheet-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
+.it-topbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.it-topbar .field{flex:1 1 180px;margin-bottom:0}
+.it-topbar input,.it-topbar select{height:48px}
+.it-preview{
+  margin-top:10px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px
+}
+.it-preview .dc-gimg{aspect-ratio:1.35/1}
+.it-list{display:flex;flex-direction:column;gap:12px}
+.it-row{
+  padding:12px;border-radius:18px;border:1px solid rgba(231,238,231,.95);background:rgba(255,255,251,.96);
+  box-shadow:0 4px 12px rgba(63,96,78,.05)
+}
+.it-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.it-row-title{font-size:13px;font-weight:900;color:var(--green-d)}
+.it-row-remove{
+  min-height:30px;padding:0 10px;border-radius:999px;border:1px solid rgba(221,176,179,.45);
+  color:#A66E72;background:rgba(221,176,179,.11);font-size:12px;font-weight:800
+}
+.it-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.it-grid .field{margin-bottom:0}
+.it-grid label{margin-bottom:5px}
+.it-grid input,.it-grid select,.it-grid textarea{
+  width:100%;border-radius:12px;border:1.5px solid var(--line);padding:12px 12px;background:var(--bg);outline:none;
+}
+.it-grid textarea{min-height:84px;resize:vertical;line-height:1.55}
+.it-grid input:focus,.it-grid select:focus,.it-grid textarea:focus{border-color:var(--green)}
+.it-grid .it-photo-row{display:grid;grid-template-columns:1fr 116px;gap:8px;align-items:start}
+.it-grid .it-photo-row .it-photo-preview{width:116px;height:88px;border-radius:14px;overflow:hidden;background:var(--green-xl);border:1px solid rgba(118,169,138,.14)}
+.it-grid .it-photo-row .it-photo-preview img{width:100%;height:100%;object-fit:cover}
+.it-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.it-actions button{
+  min-height:50px;border-radius:14px;padding:0 16px;font-weight:900;font-size:15px
+}
+#itAddRow{background:var(--green-xl);color:var(--green-d);border:1px solid rgba(118,169,138,.18)}
+#itSave{flex:1;background:var(--grad);color:#fff}
+#itCancel{background:var(--card);border:1px solid var(--line);color:var(--muted)}
+@media(min-width:720px){
+  .it-grid{grid-template-columns:1fr 1fr}
+  .it-grid .it-wide{grid-column:1 / -1}
+  .it-grid .it-photo-row{grid-column:1 / -1;grid-template-columns:1fr 180px}
+  .it-grid .it-photo-row .it-photo-preview{width:180px;height:124px}
+}
 
 /* ============ 文件 ============ */
 .doc-card{padding:16px;display:flex;flex-direction:column;gap:10px}
@@ -758,15 +840,15 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <div class="bc-route">釜山 · 海云台酒店</div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
         <div class="bc-meta">靠海边 / 方便去胶囊小火车和海云台海水浴场</div>
-        <div class="bc-note">当前先放海云台区域，方便海边线和甘川回程后落脚。</div>
+        <div class="bc-note">目前还没最终定，先按海云台区域占位，后面再手动替换具体酒店。</div>
         <span class="bc-tbd">待定</span>
       </div>
       <div class="card board-card">
-        <div class="bc-route">首尔 · 明洞或弘大酒店</div>
+        <div class="bc-route">Courtyard by Marriott Seoul Myeongdong</div>
         <div class="bc-date">12/29 - 1/3 · 5 晚</div>
-        <div class="bc-meta">靠地铁 / 方便景福宫、明洞、弘大、首尔站</div>
-        <div class="bc-note">跨年夜回酒店方便，白天去古宫和市场都比较顺。</div>
-        <span class="bc-tbd">待定</span>
+        <div class="bc-meta">Check-in 12/29 15:00 · Check-out 1/3 11:00</div>
+        <div class="bc-note">Confirmation #93241473 · 原名 Seoul Namdaemun，现已更名为 Myeongdong。</div>
+        <span class="bc-tbd">已确认</span>
       </div>
     </div>
 
@@ -797,23 +879,23 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="grid g2">
       <div class="card board-card">
         <div class="bc-route">SZX <span class="bc-plane"><i class="ti" data-ic="plane"></i></span> ICN</div>
-        <div class="bc-date">去程 · 12/26 凌晨</div>
-        <div class="bc-meta">深圳宝安 → 首尔仁川 · 落地后 KTX 南下釜山</div>
-        <div class="bc-note">国际航班提前 2.5–3h 到机场值机；凌晨航班注意 12/25 晚出发去机场。</div>
-        <span class="bc-tbd">航班号待定</span>
+        <div class="bc-date">去程 · 12/26 02:25 起飞</div>
+        <div class="bc-meta">深圳宝安 T3 → 首尔仁川 T2 · OZ372</div>
+        <div class="bc-note">06:50 落地，入境后直接 AREX / KTX 南下釜山；提前 2.5–3h 到机场值机。</div>
+        <span class="bc-tbd">OZ372</span>
       </div>
       <div class="card board-card">
         <div class="bc-route">ICN <span class="bc-plane"><i class="ti" data-ic="plane"></i></span> SZX</div>
-        <div class="bc-date">回程 · 1/3 深夜</div>
-        <div class="bc-meta">首尔仁川 → 深圳宝安 · 1/4 凌晨落地</div>
-        <div class="bc-note">仁川机场提前 3h 到，留足退税（自助机扫描 + 登机口取现）时间。</div>
-        <span class="bc-tbd">航班号待定</span>
+        <div class="bc-date">回程 · 1/3 22:10 起飞</div>
+        <div class="bc-meta">首尔仁川 T2 → 深圳宝安 T3 · OZ371</div>
+        <div class="bc-note">1/4 01:15 落地；仁川机场提前 3h 到，留足退税和免税店提货时间。</div>
+        <span class="bc-tbd">OZ371</span>
       </div>
     </div>
 
     <div class="block-title"><i class="ti" data-ic="train"></i>城际铁路 KTX</div>
     <div class="card info-card">
-      <b>12/29（周二）釜山站 → 首尔站</b> · 约 16:00 出发，19:00 前后抵达 · 车程 2.5–3h<br>
+      <b>12/29（周二）釜山站 → 首尔站</b> · 约 18:00–19:00 出发，21:00 左右抵达 · 车程 2.5–3h<br>
       二等座约 <b>₩59,800</b>（约 ¥315），非节假日提前 2–3 天购票即可；座位带充电口，车上补觉刚好。
       <div class="ic-links">
         <a href="https://www.letskorail.com/ebizbf/EbizbfForeign_pr16100.do?gubun=1" target="_blank" rel="noopener">KORAIL 官网购票</a>
@@ -998,6 +1080,43 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 </div>
 <button id="expFAB" aria-label="记一笔" onclick="openSheet()"><span class="fab-plus">+</span></button>
 
+<!-- 行程编辑弹层 -->
+<div id="itBackdrop" onclick="closeItSheet()"></div>
+<div id="itSheet">
+  <div class="sheet-handle"></div>
+  <h3 id="itSheetTitle">编辑行程</h3>
+  <div class="sheet-sub">支持手动改时间、标题、补充说明，也能给当天换一个更贴近内容的封面图。保存后会同步到云端。</div>
+  <div class="it-topbar">
+    <div class="field">
+      <label>编辑哪一天</label>
+      <select id="itDaySelect"></select>
+    </div>
+    <div class="field">
+      <label>当天主题</label>
+      <input id="itThemeInput" placeholder="比如：海云台 · 甘川">
+    </div>
+    <div class="field">
+      <label>当天封面</label>
+      <select id="itCoverSelect"></select>
+    </div>
+  </div>
+  <div class="field">
+    <label>当天封面预览</label>
+    <div class="it-preview" id="itPreview"></div>
+  </div>
+  <div class="field">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+      <label style="margin:0">行程条目</label>
+      <button id="itAddRow" class="tap" type="button">+ 添加一条</button>
+    </div>
+    <div class="it-list" id="itEditorList"></div>
+  </div>
+  <div class="it-actions">
+    <button id="itCancel" type="button">取消</button>
+    <button id="itSave" type="button">保存到云端</button>
+  </div>
+</div>
+
 <script>
 /* ================= 常量 ================= */
 const API_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api';
@@ -1005,9 +1124,9 @@ const FX_RATES = { CNY: 1, USD: 6.80, KRW: 1 / 190 };
 const BUDGET_TOTAL = 10000;                 // 两人总额预算（占位，可改）
 const PEOPLE = ['可乐', '金鹿'];
 
-const D1 = new Date('2026-12-26T00:05:00+08:00');       // 出发去机场
-const BUSAN_END = new Date('2026-12-29T16:00:00+09:00'); // 釜山 → 首尔
-const TRIP_END = new Date('2027-01-04T00:30:00+08:00');  // 到家
+const D1 = new Date('2026-12-26T02:25:00+08:00');       // 深圳飞首尔
+const BUSAN_END = new Date('2026-12-29T21:00:00+09:00'); // 釜山 → 首尔（晚些北上）
+const TRIP_END = new Date('2027-01-04T01:15:00+08:00');  // 到家
 const NEWYEAR = new Date('2026-12-31T23:59:00+09:00');   // 普信阁跨年
 
 const CITIES = {
@@ -1057,6 +1176,16 @@ async function apiGet(path, cacheKey, fallback) {
     if (cached) return cached;
     return fallback || [];
   }
+}
+async function apiPost(path, body) {
+  const res = await fetch(API_BASE + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body || {})
+  });
+  const json = await res.json();
+  if (!json.success) throw new Error(json.error || 'bad response');
+  return json;
 }
 
 /* ================= 手绘线条图标 ================= */
@@ -1161,8 +1290,8 @@ document.querySelectorAll('[data-ic]').forEach((el) => { el.innerHTML = ic(el.da
 
 /* ================= 内置兜底数据（API 不可用时也能看） ================= */
 const EMBEDDED_ITINERARY = [
-  { day: 1, sortOrder: 1, time: '00:05', title: '出发去深圳宝安机场', subtitle: 'SZX → 首尔仁川 ICN', detail: '凌晨航班，提前 2.5 小时到机场值机。航班号待定。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Shenzhen+Baoan+Airport' },
-  { day: 1, sortOrder: 2, time: '06:30', title: '落地首尔仁川机场', subtitle: '入境 + 换汇 + 买 T-money', detail: '出关后到机场便利店买 T-money 卡并充值，坐地铁/机场快线都能用。' },
+  { day: 1, sortOrder: 1, time: '02:25', title: '深圳宝安 T3 起飞', subtitle: 'SZX → 首尔仁川 T2 · OZ372', detail: '凌晨深夜出发，提前 2.5–3 小时到机场值机。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Shenzhen+Baoan+Airport' },
+  { day: 1, sortOrder: 2, time: '06:50', title: '落地首尔仁川机场', subtitle: '入境 + 换汇 + 买 T-money', detail: '出关后到机场便利店买 T-money 卡并充值，坐地铁/机场快线都能用。' },
   { day: 1, sortOrder: 3, time: '09:00', title: '仁川机场 → 首尔站 → 釜山', subtitle: 'AREX + KTX 直达南下', detail: '机场快线到首尔站，换乘 KTX 去釜山，车程约 2.5–3h。' },
   { day: 1, sortOrder: 4, time: '14:00', title: '抵达釜山，入住海云台酒店', subtitle: '放行李 · 海边散步', detail: '冬天海云台人少安静，适合拍照。' },
   { day: 1, sortOrder: 5, time: '18:00', title: '晚餐：猪肉汤饭', subtitle: '돼지국밥 · 海云台传统市场附近', detail: '落地第一顿吃热汤饭暖胃。', mapUrl: 'https://map.naver.com/p/search/해운대돼지국밥' },
@@ -1177,9 +1306,9 @@ const EMBEDDED_ITINERARY = [
   { day: 3, sortOrder: 4, time: '17:00', title: '广安里大桥夜景', subtitle: '广安里海水浴场', detail: '韩国最长大桥灯光夜景，海边咖啡厅看桥。', mapUrl: 'https://map.naver.com/p/search/광안대교' },
   { day: 4, sortOrder: 1, time: '10:00', title: '太宗台', subtitle: '灯塔 + 悬崖海景', detail: '观光小火车代步，天气好能看到对马岛。', mapUrl: 'https://map.naver.com/p/search/태종대' },
   { day: 4, sortOrder: 2, time: '14:00', title: '酒店退房 → 釜山站', subtitle: '取行李出发', detail: '买点釜山特产带上车吃。' },
-  { day: 4, sortOrder: 3, time: '16:00', title: 'KTX 釜山 → 首尔', subtitle: '车程约 2.5–3h', detail: '车上补觉，19 点前后到首尔站。' },
-  { day: 4, sortOrder: 4, time: '19:30', title: '入住首尔酒店', subtitle: '明洞附近 · 放下行李', detail: '酒店待定，位置在明洞/弘大区域。' },
-  { day: 4, sortOrder: 5, time: '20:30', title: '明洞夜市初逛', subtitle: '小吃 + 踩点', detail: '明洞饺子或街头小吃解决晚餐。', mapUrl: 'https://map.naver.com/p/search/명동교자' },
+  { day: 4, sortOrder: 3, time: '18:30', title: 'KTX 釜山 → 首尔', subtitle: '车程约 2.5–3h', detail: '按现在的节奏晚一点北上；车上补觉，21 点前后到首尔站。' },
+  { day: 4, sortOrder: 4, time: '21:30', title: '入住 Courtyard by Marriott Seoul Myeongdong', subtitle: '明洞 · 官方 15:00 可入住', detail: 'Confirmation #93241473；如果晚到就直接办理入住，离明洞和首尔站都比较顺。' },
+  { day: 4, sortOrder: 5, time: '22:00', title: '明洞夜宵 / 踩点', subtitle: '小吃 + 便利店', detail: '如果体力够就浅逛一下，别把第二天古宫行程拖太晚。', mapUrl: 'https://map.naver.com/p/search/명동교자' },
   { day: 5, sortOrder: 1, time: '09:00', title: '景福宫', subtitle: '穿韩服进宫免门票', detail: '光化门附近韩服租赁店，穿上韩服穿越古宫。', mapUrl: 'https://map.naver.com/p/search/경복궁' },
   { day: 5, sortOrder: 2, time: '11:00', title: '北村韩屋村', subtitle: '韩屋小巷', detail: '坡上拍照经典机位，注意居民区保持安静。', mapUrl: 'https://map.naver.com/p/search/북촌한옥마을' },
   { day: 5, sortOrder: 3, time: '13:00', title: '午餐：土俗村参鸡汤', subtitle: '토속촌', detail: '景福宫步行可达的排队名店，参鸡汤+人参酒。', mapUrl: 'https://map.naver.com/p/search/토속촌삼계탕' },
@@ -1202,30 +1331,69 @@ const EMBEDDED_ITINERARY = [
   { day: 9, sortOrder: 1, time: '10:00', title: '免税店补货', subtitle: '乐天/新罗免税店', detail: '可提前在 APP 下单，机场提货。' },
   { day: 9, sortOrder: 2, time: '13:00', title: '首尔最后一餐', subtitle: '烤肉 or 参鸡汤二刷', detail: '把想念的那一口补上。' },
   { day: 9, sortOrder: 3, time: '15:00', title: '出发去机场', subtitle: 'AREX 直达仁川', detail: '国际航班提前 3–4 小时到机场，留足退税时间。' },
-  { day: 9, sortOrder: 4, time: '深夜', title: 'ICN → SZX 深夜航班', subtitle: '首尔仁川 → 深圳宝安', detail: '航班号待定。' },
-  { day: 9, sortOrder: 5, time: '1/4 凌晨', title: '落地深圳 · 回家', subtitle: '旅程结束', detail: '到家补觉，倒时差 1 小时（韩国比中国快 1 小时）。' }
+  { day: 9, sortOrder: 4, time: '22:10', title: 'ICN → SZX 回程航班', subtitle: '首尔仁川 T2 → 深圳宝安 T3 · OZ371', detail: '深夜返程，留足退税和免税店提货时间。' },
+  { day: 9, sortOrder: 5, time: '1/4 01:15', title: '落地深圳 · 回家', subtitle: '旅程结束', detail: '到家补觉，倒时差 1 小时（韩国比中国快 1 小时）。' }
 ];
 const DAY_THEMES = {
-  1: '落地即南下', 2: '海云台 · 甘川', 3: '白浅滩 · 南浦洞', 4: 'KTX 北上回首尔',
+  1: '凌晨起飞 · 南下釜山', 2: '海云台 · 甘川', 3: '白浅滩 · 南浦洞', 4: 'KTX 晚些回首尔',
   5: '景福宫 · 韩屋村', 6: '明洞 · 跨年敲钟', 7: '元旦 · N首尔塔 · 弘大', 8: '圣水洞 · 汉江', 9: '免税店 · 回国'
 };
 const DAY_ART = {
-  1: 'assets/photos/busan-watercolor.webp',
-  2: 'assets/photos/busan-editorial.webp',
-  3: 'assets/photos/busan-watercolor.webp',
-  4: 'assets/photos/seoul-watercolor.webp',
+  1: 'assets/photos/seoul-palace-editorial.png',
+  2: 'assets/photos/busan-harbor-editorial.png',
+  3: 'assets/photos/busan-village-editorial.png',
+  4: 'assets/photos/seoul-night-editorial.png',
   5: 'assets/photos/palace-watercolor.webp',
-  6: 'assets/photos/seoul-editorial.webp',
-  7: 'assets/photos/seoul-watercolor.webp',
-  8: 'assets/photos/busan-editorial.webp',
-  9: 'assets/photos/palace-watercolor.webp'
+  6: 'assets/photos/seoul-night-editorial.png',
+  7: 'assets/photos/seoul-night-editorial.png',
+  8: 'assets/photos/seoul-watercolor.webp',
+  9: 'assets/photos/seoul-palace-editorial.png'
 };
+const PHOTO_LIBRARY = [
+  { value: '', label: '自动匹配（按内容）', preview: 'assets/photos/palace-watercolor.webp' },
+  { value: 'assets/photos/seoul-palace-editorial.png', label: '首尔古宫 / Hanok', preview: 'assets/photos/seoul-palace-editorial.png' },
+  { value: 'assets/photos/busan-harbor-editorial.png', label: '釜山海港 / 缆车', preview: 'assets/photos/busan-harbor-editorial.png' },
+  { value: 'assets/photos/busan-village-editorial.png', label: '釜山山坡 / 村落', preview: 'assets/photos/busan-village-editorial.png' },
+  { value: 'assets/photos/seoul-night-editorial.png', label: '首尔夜景 / 城市灯火', preview: 'assets/photos/seoul-night-editorial.png' },
+  { value: 'assets/photos/seoul-watercolor.webp', label: '首尔清晨 / 汉江', preview: 'assets/photos/seoul-watercolor.webp' },
+  { value: 'assets/photos/busan-watercolor.webp', label: '釜山清晨 / 海风', preview: 'assets/photos/busan-watercolor.webp' },
+  { value: 'assets/photos/busan-editorial.webp', label: '釜山文艺 / 轻海岸', preview: 'assets/photos/busan-editorial.webp' },
+  { value: 'assets/photos/palace-watercolor.webp', label: '景福宫 / 传统水彩', preview: 'assets/photos/palace-watercolor.webp' }
+];
+const PHOTO_MATCHERS = [
+  { re: /(景福宫|北村|韩屋|仁寺洞|普信阁|韩服|参鸡汤|古宫)/, src: 'assets/photos/seoul-palace-editorial.png' },
+  { re: /(海云台|胶囊|青沙浦|广安里|太宗台|KTX|釜山站|港口|海鲜|札嘎其|胶囊小火车)/, src: 'assets/photos/busan-harbor-editorial.png' },
+  { re: /(甘川|白浅滩|文化村|小王子|南浦|BIFF|富平|村|山坡)/, src: 'assets/photos/busan-village-editorial.png' },
+  { re: /(明洞|弘大|汉江|圣水洞|N首尔塔|夜景|跨年|炸鸡|购物|滑冰|广藏市场)/, src: 'assets/photos/seoul-night-editorial.png' },
+  { re: /(机场|落地|出发|回国|免税店|酒店|换汇|T-money)/, src: 'assets/photos/seoul-watercolor.webp' }
+];
+function defaultDayArt(day) {
+  return DAY_ART[day] || 'assets/photos/palace-watercolor.webp';
+}
+function dayThemeFor(items, day) {
+  const item = items.find((it) => Number(it.day) === Number(day) && it.dayTheme);
+  return item?.dayTheme || DAY_THEMES[day] || '';
+}
+function dayCoverFor(items, day) {
+  const item = items.find((it) => Number(it.day) === Number(day) && it.dayCover);
+  return item?.dayCover || defaultDayArt(day);
+}
+function itemPhotoFor(item, day) {
+  if (item && item.photo) return item.photo;
+  const text = [item?.title, item?.subtitle, item?.detail].filter(Boolean).join(' ');
+  const match = PHOTO_MATCHERS.find((p) => p.re.test(text));
+  return match?.src || dayCoverFor([item].filter(Boolean), day) || defaultDayArt(day);
+}
+function dayGalleryFor(items, day) {
+  const ordered = [dayCoverFor(items, day), ...items.map((it) => itemPhotoFor(it, day))];
+  return [...new Set(ordered)].filter(Boolean).slice(0, 3);
+}
 const EMBEDDED_TODOS = [
-  { id: 1, emoji: '✈️', title: '订深圳 ⇄ 首尔机票', note: '12/26 凌晨去 · 1/3 深夜回' },
+  { id: 1, emoji: '✈️', title: '订深圳 ⇄ 首尔机票', note: '12/26 02:25 去 · 1/3 22:10 回' },
   { id: 2, emoji: '🛂', title: '办签证 / K-ETA', note: '按最新政策，出发前 2 周完成' },
-  { id: 3, emoji: '🏨', title: '订釜山酒店（3 晚）', note: '海云台区域 · 12/26–29' },
-  { id: 4, emoji: '🏨', title: '订首尔酒店（5 晚）', note: '明洞 / 弘大 · 12/29–1/3' },
-  { id: 5, emoji: '🚄', title: '买 KTX 釜山→首尔车票', note: 'KORAIL · 12/29 下午' },
+  { id: 3, emoji: '🏨', title: '订釜山酒店（3 晚）', note: '海云台区域 · 12/26–29（待定）' },
+  { id: 4, emoji: '🏨', title: '订首尔酒店（5 晚）', note: 'Courtyard by Marriott Seoul Myeongdong · 12/29–1/3' },
+  { id: 5, emoji: '🚄', title: '买 KTX 釜山→首尔车票', note: 'KORAIL · 12/29 晚些时候' },
   { id: 6, emoji: '📶', title: '买 eSIM / 开漫游', note: 'LG U+ / SKT 对比后定' },
   { id: 7, emoji: '💱', title: '换韩元现金', note: '国内银行换一部分 + 首尔明洞汇率好' },
   { id: 8, emoji: '🛡️', title: '买旅行保险', note: '含医疗 + 航班延误' },
@@ -1349,7 +1517,7 @@ const SPOTS = {
     { lat: 37.5286, lon: 126.9334, label: '汉江公园·汝矣岛', emoji: '🌉', color: '#A7C8CF', desc: '拉面野餐' },
     { lat: 37.5547, lon: 126.9707, label: '首尔站', emoji: '🚄', color: '#94A7B8', desc: 'KTX / AREX 枢纽' },
     { lat: 37.4602, lon: 126.4407, label: '仁川机场', emoji: '✈️', color: '#94A7B8', desc: 'ICN · 进出韩国' },
-    { lat: 37.5640, lon: 126.9830, label: '酒店·明洞(待定)', emoji: '🏨', color: '#87938C', desc: '12/29–1/3 住宿' }
+    { lat: 37.5617, lon: 126.9863, label: 'Courtyard by Marriott Seoul Myeongdong', emoji: '🏨', color: '#87938C', desc: '12/29–1/3 住宿 · 15:00 可入住' }
   ]
 };
 
@@ -1617,7 +1785,7 @@ function mapLabel(s) {
     .replace('汉江公园·汝矣岛', '汉江公园')
     .replace('北村韩屋村', '北村')
     .replace('酒店·海云台(待定)', '海云台酒店')
-    .replace('酒店·明洞(待定)', '明洞酒店');
+    .replace('Courtyard by Marriott Seoul Myeongdong', '首尔酒店');
 }
 function visibleSpots(city) {
   const names = MAP_VISIBLE[city] || [];
@@ -1698,6 +1866,193 @@ function catOf(it) {
   if (/汤饭|市场|炸鸡|咖啡|参鸡汤|拉面|饺子|鸡排|烤肉|餐厅|小吃|啤酒|面包|绿豆|便利店|免税|购物|午餐|晚餐|夜市|最后一餐/.test(t)) return 'food';
   return 'spot';
 }
+function sanitizeItineraryItem(item, fallbackDay = 1, fallbackSort = 1) {
+  return {
+    day: Number(item.day || fallbackDay),
+    sortOrder: Number(item.sortOrder || fallbackSort),
+    time: String(item.time || '').trim(),
+    title: String(item.title || '').trim(),
+    subtitle: String(item.subtitle || '').trim(),
+    detail: String(item.detail || '').trim(),
+    mapUrl: String(item.mapUrl || '').trim(),
+    photo: String(item.photo || '').trim(),
+    dayTheme: String(item.dayTheme || '').trim(),
+    dayCover: String(item.dayCover || '').trim()
+  };
+}
+function normalizeItinerary(list) {
+  const grouped = new Map();
+  list.forEach((item, idx) => {
+    const safe = sanitizeItineraryItem(item, item.day || 1, item.sortOrder || idx + 1);
+    if (!grouped.has(safe.day)) grouped.set(safe.day, []);
+    grouped.get(safe.day).push(safe);
+  });
+  return [...grouped.keys()].sort((a, b) => a - b).flatMap((day) => grouped.get(day)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map((item, idx) => ({ ...item, day, sortOrder: idx + 1 })));
+}
+async function saveItinerary(list) {
+  const normalized = normalizeItinerary(list);
+  cache.set('kr_cache_itinerary', normalized);
+  try {
+    await apiPost('/itinerary', { items: normalized });
+  } catch (err) {
+    console.warn('save itinerary failed', err);
+  }
+  currentItinerary = normalized;
+  renderItinerary(currentItinerary);
+  renderDayChips();
+  renderCalendar();
+  renderNextUp();
+  return normalized;
+}
+function dayItems(list, day) {
+  return (list || []).filter((item) => Number(item.day) === Number(day)).sort((a, b) => a.sortOrder - b.sortOrder);
+}
+function editorPhotoPreview(src) {
+  const safeSrc = src || '';
+  return `<div class="dc-gimg"><img src="${esc(safeSrc || defaultDayArt(1))}" alt=""><span class="gcap">${esc(PHOTO_LIBRARY.find((p) => p.value === safeSrc)?.label || '自动匹配')}</span></div>`;
+}
+let itineraryEditorDay = 1;
+let itineraryEditorRows = [];
+function renderItineraryEditorRows() {
+  const list = itineraryEditorRows.length ? itineraryEditorRows : [{ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' }];
+  $('#itEditorList').innerHTML = list.map((row, idx) => {
+    const photo = row.photo || '';
+    return `<div class="it-row" data-idx="${idx}">
+      <div class="it-row-top">
+        <div class="it-row-title">条目 ${idx + 1}</div>
+        <button class="it-row-remove" type="button" data-act="remove-row">删除</button>
+      </div>
+      <div class="it-grid">
+        <div class="field"><label>时间</label><input data-k="time" value="${esc(row.time || '')}" placeholder="09:00"></div>
+        <div class="field"><label>标题</label><input data-k="title" value="${esc(row.title || '')}" placeholder="景福宫 / 胶囊小火车"></div>
+        <div class="field"><label>副标题</label><input data-k="subtitle" value="${esc(row.subtitle || '')}" placeholder="简短说明"></div>
+        <div class="field"><label>地图 / 参考链接</label><input data-k="mapUrl" value="${esc(row.mapUrl || '')}" placeholder="https://..."></div>
+        <div class="field it-wide"><label>补充说明</label><textarea data-k="detail" placeholder="可以写交通、餐厅、注意事项">${esc(row.detail || '')}</textarea></div>
+        <div class="field it-photo-row it-wide">
+          <div>
+            <label>图片风格</label>
+            <select data-k="photo">${PHOTO_LIBRARY.map((opt) => `<option value="${esc(opt.value)}"${opt.value === photo ? ' selected' : ''}>${esc(opt.label)}</option>`).join('')}</select>
+          </div>
+          <div>
+            <label>预览</label>
+            <div class="it-photo-preview">${editorPhotoPreview(photo || dayCoverFor(currentItinerary || [], itineraryEditorDay))}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function openItSheet(day, focusRow = null) {
+  itineraryEditorDay = Number(day || 1);
+  const list = currentItinerary || EMBEDDED_ITINERARY;
+  itineraryEditorRows = dayItems(list, itineraryEditorDay).map((item) => ({ ...item }));
+  if (!itineraryEditorRows.length) itineraryEditorRows = [{ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' }];
+  const days = Array.from({ length: 9 }, (_, i) => i + 1);
+  $('#itSheetTitle').textContent = `编辑 D${itineraryEditorDay} 行程`;
+  $('#itDaySelect').innerHTML = days.map((d) => `<option value="${d}"${d === itineraryEditorDay ? ' selected' : ''}>D${d} · ${dayThemeFor(list, d) || ''}</option>`).join('');
+  $('#itThemeInput').value = dayThemeFor(list, itineraryEditorDay);
+  $('#itCoverSelect').innerHTML = PHOTO_LIBRARY.map((opt) => `<option value="${esc(opt.value)}"${opt.value === dayCoverFor(list, itineraryEditorDay) ? ' selected' : ''}>${esc(opt.label)}</option>`).join('');
+  renderItineraryEditorRows();
+  refreshItineraryPreview();
+  $('#itBackdrop').classList.add('open');
+  $('#itSheet').classList.add('open');
+  if (focusRow != null) {
+    setTimeout(() => {
+      const row = document.querySelector(`#itEditorList .it-row[data-idx="${focusRow}"] input, #itEditorList .it-row[data-idx="${focusRow}"] textarea`);
+      row && row.focus();
+    }, 60);
+  }
+}
+function closeItSheet() {
+  $('#itBackdrop').classList.remove('open');
+  $('#itSheet').classList.remove('open');
+}
+function addItineraryRow() {
+  itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
+  renderItineraryEditorRows();
+}
+function readItineraryRow(rowEl) {
+  const get = (k) => rowEl.querySelector(`[data-k="${k}"]`)?.value || '';
+  return {
+    time: get('time').trim(),
+    title: get('title').trim(),
+    subtitle: get('subtitle').trim(),
+    detail: get('detail').trim(),
+    mapUrl: get('mapUrl').trim(),
+    photo: get('photo').trim()
+  };
+}
+async function commitItinerarySheet() {
+  const day = Number($('#itDaySelect').value || itineraryEditorDay);
+  const dayTheme = $('#itThemeInput').value.trim();
+  const dayCover = $('#itCoverSelect').value.trim();
+  const rows = [...document.querySelectorAll('#itEditorList .it-row')].map(readItineraryRow)
+    .filter((row) => row.time || row.title || row.subtitle || row.detail || row.mapUrl || row.photo);
+  const base = (currentItinerary || EMBEDDED_ITINERARY).filter((item) => Number(item.day) !== day);
+  const next = rows.length ? rows.map((row, idx) => ({
+    ...row,
+    day,
+    sortOrder: idx + 1,
+    dayTheme: dayTheme || DAY_THEMES[day] || '',
+    dayCover: dayCover || defaultDayArt(day)
+  })) : [{
+    day,
+    sortOrder: 1,
+    time: '',
+    title: '',
+    subtitle: '',
+    detail: '',
+    mapUrl: '',
+    photo: '',
+    dayTheme: dayTheme || DAY_THEMES[day] || '',
+    dayCover: dayCover || defaultDayArt(day)
+  }];
+  await saveItinerary([...base, ...next]);
+  closeItSheet();
+}
+function refreshItineraryPreview() {
+  const list = currentItinerary || EMBEDDED_ITINERARY;
+  const day = Number($('#itDaySelect').value || itineraryEditorDay);
+  const cover = $('#itCoverSelect').value.trim() || dayCoverFor(list, day);
+  const rows = dayGalleryFor([
+    { photo: cover },
+    ...itineraryEditorRows.map((r) => ({ photo: r.photo, title: r.title, subtitle: r.subtitle, detail: r.detail }))
+  ], day);
+  $('#itPreview').innerHTML = rows.map((src, idx) => `<div class="dc-gimg"><img src="${esc(src)}" alt=""><span class="gcap">${idx === 0 ? '当天封面' : `图 ${idx + 1}`}</span></div>`).join('');
+  document.querySelectorAll('#itEditorList .it-row').forEach((rowEl, idx) => {
+    const select = rowEl.querySelector('[data-k="photo"]');
+    const preview = rowEl.querySelector('.it-photo-preview');
+    if (!select || !preview) return;
+    const photo = select.value || '';
+    preview.innerHTML = editorPhotoPreview(photo || cover);
+  });
+}
+$('#itAddRow').addEventListener('click', () => {
+  itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
+  renderItineraryEditorRows();
+  refreshItineraryPreview();
+});
+$('#itSave').addEventListener('click', commitItinerarySheet);
+$('#itCancel').addEventListener('click', closeItSheet);
+$('#itDaySelect').addEventListener('change', (e) => openItSheet(Number(e.target.value || 1)));
+$('#itCoverSelect').addEventListener('change', refreshItineraryPreview);
+$('#itEditorList').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-act="remove-row"]');
+  if (!btn) return;
+  const rowEl = e.target.closest('.it-row');
+  if (!rowEl) return;
+  const idx = Number(rowEl.dataset.idx);
+  itineraryEditorRows.splice(idx, 1);
+  if (!itineraryEditorRows.length) itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
+  renderItineraryEditorRows();
+  refreshItineraryPreview();
+});
+$('#itEditorList').addEventListener('change', (e) => {
+  if (!e.target.matches('[data-k="photo"]')) return;
+  refreshItineraryPreview();
+});
 
 /* ================= 行程 · 日历条 ================= */
 let calView = { y: 2026, m: 11 };
@@ -1776,18 +2131,29 @@ function renderItinerary(list) {
     const dateStr = date.toLocaleDateString('zh-CN', { timeZone: 'Asia/Seoul', month: 'long', day: 'numeric', weekday: 'short' });
     const today = day === todayIdx;
     const dayLabel = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
+    const cover = dayCoverFor(items, day);
+    const theme = dayThemeFor(items, day);
+    const gallery = dayGalleryFor(items, day);
     return `<div class="card day-card${day === openDay ? ' open' : ''}" data-day="${day}">
       <button class="dc-head" onclick="this.parentElement.classList.toggle('open')">
         <div class="dc-num">D${day}<small>${dayLabel}</small></div>
-        <span class="dc-art"><img src="${DAY_ART[day] || 'assets/photos/palace-watercolor.webp'}" alt=""></span>
+        <span class="dc-art"><img src="${esc(cover)}" alt=""></span>
         <div class="dc-title">${dateStr}
-          <span class="dc-theme">${DAY_THEMES[day] || ''}</span>
+          <span class="dc-theme">${esc(theme || DAY_THEMES[day] || '')}</span>
           ${today ? '<span class="today-badge">今天</span>' : ''}
         </div>
         <span class="dc-badge"><span class="dc-arrow">${ic('chevron')}</span></span>
       </button>
       <div class="dc-body"><div class="dc-body-inner">
-        ${items.map((it) => `
+        <div class="dc-tools">
+          <button class="dc-tool primary" type="button" data-act="edit-day">编辑本日</button>
+          <button class="dc-tool" type="button" data-act="add-item">新增行程</button>
+          <button class="dc-tool" type="button" data-act="switch-cover">换封面</button>
+        </div>
+        <div class="dc-gallery">
+          ${gallery.map((src, idx) => `<div class="dc-gimg"><img src="${esc(src)}" alt=""><span class="gcap">${idx === 0 ? '当天封面' : `图 ${idx + 1}`}</span></div>`).join('')}
+        </div>
+        ${items.map((it, idx) => `
         <div class="tl-row" onclick="this.classList.toggle('dopen')">
           <span class="tl-dot" style="--td:${CAT_COLOR[catOf(it)]}"></span>
           <div class="tl-time">${esc(it.time)}</div>
@@ -1796,15 +2162,42 @@ function renderItinerary(list) {
             ${it.subtitle ? `<div class="tl-sub">${esc(it.subtitle)}</div>` : ''}
             ${it.detail ? `<div class="tl-detail">${esc(it.detail)}</div><div class="tl-tip">点此行展开/收起</div>` : ''}
           </div>
+          <div class="tl-tools">
+            <button class="tl-edit" type="button" data-act="edit-row" data-row="${idx}">编辑</button>
+          </div>
         </div>`).join('')}
       </div></div>
     </div>`;
   }).join('');
 }
+$('#itineraryList').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-act]');
+  if (!btn) return;
+  e.stopPropagation();
+  const card = e.target.closest('.day-card');
+  if (!card) return;
+  const day = Number(card.dataset.day);
+  const act = btn.dataset.act;
+  if (act === 'edit-day') {
+    openItSheet(day);
+  } else if (act === 'add-item') {
+    openItSheet(day);
+    itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
+    renderItineraryEditorRows();
+    refreshItineraryPreview();
+    $('#itBackdrop').classList.add('open');
+    $('#itSheet').classList.add('open');
+  } else if (act === 'switch-cover') {
+    openItSheet(day);
+    setTimeout(() => $('#itCoverSelect').focus(), 80);
+  } else if (act === 'edit-row') {
+    openItSheet(day, Number(btn.dataset.row || 0));
+  }
+});
 async function initItinerary() {
   const list = await apiGet('/itinerary', 'kr_cache_itinerary', EMBEDDED_ITINERARY);
-  currentItinerary = list;
-  renderItinerary(list);
+  currentItinerary = normalizeItinerary(list);
+  renderItinerary(currentItinerary);
   renderDayChips();
   renderCalendar();
 }

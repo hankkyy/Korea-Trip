@@ -67,6 +67,25 @@ const server = http.createServer(async (req, res) => {
       return json(res, { success: true, data: result.data });
     }
 
+    // POST /itinerary (batch save: replace all)
+    if (route === '/itinerary' && req.method === 'POST') {
+      const { items } = await readBody(req);
+      if (!Array.isArray(items)) {
+        return json(res, { success: false, error: 'items must be an array' }, 400);
+      }
+
+      const existing = await db.collection(COL.itinerary).get();
+      const removeTasks = existing.data.map(doc => db.collection(COL.itinerary).doc(doc._id).remove());
+      await Promise.all(removeTasks);
+
+      if (items.length > 0) {
+        const addTasks = items.map(item => db.collection(COL.itinerary).add({ ...item, updatedAt: Date.now() }));
+        await Promise.all(addTasks);
+      }
+
+      return json(res, { success: true, count: items.length });
+    }
+
     // GET /bucket-list
     if (route === '/bucket-list' && req.method === 'GET') {
       const result = await db.collection(COL.bucketList)
