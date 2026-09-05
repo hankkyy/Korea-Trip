@@ -3582,7 +3582,7 @@ function renderWeather() {
   $('#wxEmoji').innerHTML = ic(icName);
   $('#wxTemp').textContent = Math.round(cur.temperature_2m) + '°';
   $('#wxDesc').textContent = desc;
-  $('#wxSub').textContent = `风速 ${Math.round(cur.wind_speed_10m)} km/h · 实时天气`;
+  $('#wxSub').textContent = `体感 ${Math.round(cur.apparent_temperature)}° · 风速 ${Math.round(cur.wind_speed_10m)} km/h`;
   $('#wxRange').textContent = `${Math.round(data.daily.temperature_2m_max[0])}° / ${Math.round(data.daily.temperature_2m_min[0])}°`;
   $('#wxRain').textContent = `${todayRain}%`;
   $('#wxUv').textContent = `${uvText} · ${todayUv}`;
