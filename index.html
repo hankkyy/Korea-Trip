@@ -5142,7 +5142,13 @@ function fileCardIcon(doc) {
 }
 let activeDocViewer = null;
 function docAttachmentUrl(doc) {
-  const rawUrl = String(doc?.attachmentUrl || '');
+  let rawUrl = String(doc?.attachmentUrl || '');
+  if (/^(file:|\/Users\/|\/private\/)/.test(rawUrl)) {
+    let fileName = rawUrl.split('/').pop() || '';
+    try { fileName = decodeURIComponent(fileName); } catch {}
+    const bundled = DOC_SEEDS.find((seed) => seed.attachmentName === fileName);
+    if (bundled) rawUrl = bundled.attachmentUrl;
+  }
   return rawUrl.startsWith('data:') ? rawUrl : encodeURI(rawUrl);
 }
 function openDocViewer(doc) {
