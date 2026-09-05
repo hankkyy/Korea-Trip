@@ -5192,7 +5192,13 @@ async function initDocs() {
     docsData.unshift(normalizeFileDoc({ id: `doc-${Date.now()}`, kind: 'file', title: '', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1 }, 0));
     docsData = docsData.map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
     renderDocs();
-    const firstInput = $('#docsGrid .doc-title-input');
+    const firstCard = $('#docsGrid .doc-card');
+    const firstEditButton = firstCard?.querySelector('[data-act="edit"]');
+    if (firstCard && firstEditButton) {
+      firstCard.classList.add('editing');
+      firstEditButton.innerHTML = `${ic('check')}完成`;
+    }
+    const firstInput = firstCard?.querySelector('.doc-title-input');
     if (firstInput) firstInput.focus();
     await persistDocs();
   });
