@@ -375,7 +375,6 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 #imageViewerImg{display:block;width:auto;max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;box-shadow:0 14px 45px rgba(0,0,0,.28);background:#F6F1E5}
 .image-viewer-bottom{padding:8px 4px 0;text-align:center}
 .image-viewer-title{font-size:14px;font-weight:900;line-height:1.35}
-.image-viewer-hint{margin-top:4px;font-size:11px;color:rgba(255,255,255,.66);line-height:1.4}
 .image-viewer-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
 .image-viewer-action{min-height:38px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.11);color:#fff;font-size:11.5px;font-weight:800;padding:0 12px}
 .image-viewer-action:active{background:rgba(255,255,255,.22);transform:scale(.98)}
@@ -2192,17 +2191,14 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <div id="imageViewer" role="dialog" aria-modal="true" aria-labelledby="imageViewerTitle">
   <div class="image-viewer-top">
     <button class="image-viewer-back" id="imageViewerBack" type="button"><span aria-hidden="true">‹</span>返回画册</button>
-    <button class="image-viewer-close" id="imageViewerClose" type="button" aria-label="关闭原图">×</button>
   </div>
   <div class="image-viewer-stage" id="imageViewerStage">
     <img id="imageViewerImg" alt="">
   </div>
   <div class="image-viewer-bottom">
     <div class="image-viewer-title" id="imageViewerTitle">手帐原图</div>
-    <div class="image-viewer-hint">原图完整展示 · 上下滑动查看 · 点击右上角返回</div>
     <div class="image-viewer-actions">
-      <button class="image-viewer-action" id="imageViewerDownload" type="button">下载原图</button>
-      <button class="image-viewer-action" id="imageViewerNewWindow" type="button">新窗口打开</button>
+      <button class="image-viewer-action" id="imageViewerDownload" type="button">保存到相册</button>
     </div>
   </div>
 </div>
@@ -3346,7 +3342,7 @@ function openImageViewer(src, title, alt = '') {
   backdrop.classList.add('open');
   viewer.classList.add('open');
   document.body.classList.add('viewer-open');
-  $('#imageViewerClose')?.focus();
+  $('#imageViewerBack')?.focus();
 }
 function closeImageViewer() {
   $('#imageViewerBackdrop')?.classList.remove('open');
@@ -3356,18 +3352,26 @@ function closeImageViewer() {
   if (image) image.removeAttribute('src');
   activeImageViewer = null;
 }
-function downloadImageViewer() {
+async function downloadImageViewer() {
   if (!activeImageViewer?.src) return;
+  const filename = `${activeImageViewer.title || '手帐原图'}.jpg`;
+  try {
+    const response = await fetch(activeImageViewer.src);
+    const blob = await response.blob();
+    const file = new File([blob], filename, { type: blob.type || 'image/jpeg' });
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], title: activeImageViewer.title || '手帐原图' });
+      return;
+    }
+  } catch (error) {
+    if (error?.name === 'AbortError') return;
+  }
   const link = document.createElement('a');
   link.href = activeImageViewer.src;
-  link.download = `${activeImageViewer.title || '手帐原图'}.jpg`;
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
   link.remove();
-}
-function openImageViewerInNewWindow() {
-  if (!activeImageViewer?.src) return;
-  window.open(activeImageViewer.src, '_blank', 'noopener');
 }
 function initImageViewer() {
   document.addEventListener('click', (event) => {
@@ -3381,9 +3385,7 @@ function initImageViewer() {
   });
   $('#imageViewerBackdrop')?.addEventListener('click', closeImageViewer);
   $('#imageViewerBack')?.addEventListener('click', closeImageViewer);
-  $('#imageViewerClose')?.addEventListener('click', closeImageViewer);
   $('#imageViewerDownload')?.addEventListener('click', downloadImageViewer);
-  $('#imageViewerNewWindow')?.addEventListener('click', openImageViewerInNewWindow);
   $('#imageViewer')?.addEventListener('click', (event) => event.stopPropagation());
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && $('#imageViewer')?.classList.contains('open')) closeImageViewer();
