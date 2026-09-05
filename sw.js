@@ -1,6 +1,6 @@
 // 在璐上 — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'korea-trip-v17';
+const CACHE = 'korea-trip-v22';
 const PRECACHE = [
   '/',
   '/manifest.json',
@@ -17,7 +17,25 @@ const PRECACHE = [
   '/assets/photos/busan-village-editorial.png',
   '/assets/photos/seoul-night-editorial.png',
   '/assets/photos/seoul-airport-editorial.png',
-  '/assets/photos/seoul-marriott-myeongdong-editorial.png'
+  '/assets/photos/seoul-marriott-myeongdong-editorial.png',
+  '/assets/photos/busan-haeundae-winter-shore.png',
+  '/assets/photos/busan-gamcheon-hillside-colors.png',
+  '/assets/photos/busan-gwangalli-bridge-glow.png',
+  '/assets/photos/seoul-bukchon-quiet-roofs.png',
+  '/assets/photos/seoul-myeongdong-lantern-street.png',
+  '/assets/photos/seoul-seongsu-factory-cafe.png',
+  '/assets/photos/seoul-gwangjang-warm-stalls.png',
+  '/assets/maps/busan-hand-drawn-map.jpg',
+  '/assets/maps/seoul-area-guide.jpg',
+  '/assets/maps/seoul-slow-travel-map.jpg',
+  '/assets/maps/seoul-full-map.jpg',
+  '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf',
+  '/assets/docs/visa/张子豪的韩亚航空官方行程单.pdf',
+  '/assets/docs/visa/携程中文版机票行程单.pdf',
+  '/assets/docs/visa/携程英文版机票行程单.pdf',
+  '/assets/docs/visa/釜山ASTI酒店中文版入住凭证.pdf',
+  '/assets/docs/visa/釜山ASTI酒店英文版入住凭证.pdf',
+  '/assets/docs/visa/首尔酒店确认单.pdf'
 ];
 
 self.addEventListener('install', (e) => {

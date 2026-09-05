@@ -1,125 +1,67 @@
-# 交接提示词（整段复制给下一个 Agent 会话）
+# Agent 交接说明
 
+你正在接手 `/Users/hankzhang/Desktop/korea-vercel` 的「在璐上」多旅行管理 App。先阅读：
+
+1. `PROJECT_CONTEXT.md`：所有要求、决策、旅行资料和接手上下文的唯一事实源。
+2. `README.md`：项目入口和技术结构。
+3. `REQUIREMENTS.md`：用户不可妥协的需求和设计红线。
+4. `PROJECT_STATUS.md`：当前真正完成、部分完成和未完成的工作。
+
+## 产品背景
+
+用户可乐与金鹿共同旅行。金鹿主要使用 iPhone/iPad，旅行中主要使用手机，因此移动端、触控、可读性、无网可用和低误触优先于桌面端。App 桌面名称必须是“在璐上”，网页标题按当前旅程显示。
+
+当前旅程：
+
+- 韩国：2026-12-26 至 2027-01-03，深圳 → 首尔 → 釜山 → 首尔 → 深圳，9 天跨年深度游，绿色主题。
+- 香港：2026-12-18 至 2026-12-20，周末下班出发，迪士尼和市区，紫色主题。
+- 厦门：2027-01-08 至 2027-01-10，周末短途，内容待定，蓝色主题。
+
+## 不可违反的规则
+
+- 不要把韩国数据复制到香港或厦门；所有动态资料必须按 `tripId` 隔离。
+- 不要用满屏 emoji、AI 味提示语、技术状态文案或过度绿色；保持低饱和浅色手帐风。
+- 所有打开/原图/文件预览优先使用站内 viewer，并提供返回和关闭；不能只打开裸 PDF/图片页面。
+- 所有删除必须二次确认；低频修改和删除默认收进“编辑”入口，减少误触。
+- 文件区只存文件资料，不显示“待准备/已准备/已上传”；待办区才记录待完成事项。
+- 支出统一换算成人民币，并显示“仅用于统计分析目的”，不能做情侣分摊语气。
+- 待办/行李排序必须保持 iOS 风格的长按拖动、占位和自动滚动手感。
+- 不引入网页内 AI 手帐转换或第三方模型依赖；手帐图片使用现有静态素材。
+- 不依赖单个 Google/Naver/Kakao 外链；为中国大陆、韩国和美国准备本地资源或备用入口。
+- 没有真实设备覆盖时，不得声称“全站无 bug”。
+
+## 当前技术事实
+
+- 前端是单文件 `index.html`，原生 HTML/CSS/JavaScript。
+- 后端是 CloudBase HTTP 云函数 `cloudfunctions/korea-api/index.js`。
+- CloudBase 环境：`hanoi-d4gj8vd2q1e7a3dc0`，函数：`korea-api`，集合以 `kr_` 开头。
+- API 地址：`https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
+- Vercel 生产地址：`https://korea-vercel.vercel.app/`。
+- 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`；前端或图片修改后必须额外部署 CloudBase 静态包。
+- Service Worker 当前缓存版本：`korea-trip-v22`；改资源后必须递增并验证旧缓存清理。
+- 多数数据接口当前是整批替换，存在双设备覆盖风险，这是已知架构缺口。
+- 旅程选择层已有 JSON 导出/导入恢复；后端已提供 `/records/:collection/:docId` 单条更新/删除和 `baseUpdatedAt` 冲突检测，但前端尚未全部接入。
+- 旅程设置已支持成员、时区、城市、封面和从已有旅程复制框架；不要把这误写成完整资料 CRUD。
+
+## 开发顺序
+
+优先完成 V1.4 旅程设置和 V1.5 资料 CRUD，再做 V1.6 离线同步，最后做 V1.7 质量保障。每次只做可验证的小批次，先查看现有代码和脏工作区，不要覆盖用户已有修改。
+
+## 每次修改后必须检查
+
+```bash
+cd /Users/hankzhang/Desktop/korea-vercel
+node scripts/verify.mjs
+node --check cloudfunctions/korea-api/index.js
+git diff --check
 ```
-你是接手「可乐 & 金鹿 韩国之旅」项目（~/Desktop/korea-vercel）的工程师。
-代码已托管在 GitHub：git clone git@github.com:hankkyy/Korea-Trip.git
-（如果要推送，优先走 SSH；不要把任何 token 写进仓库）
-若 macOS TCC 阻止读取 Desktop 目录（EPERM），改用备份目录 /tmp/kr_split/，内容与源码一致。
 
-## 项目背景
-可乐 & 金鹿的韩国冬季旅行计划站（PWA，手机/iPad 优先）：
-2026-12-26 02:25 深圳飞首尔 → 当日 AREX+KTX 南下釜山（12/26–12/29 住 釜山站ASTI酒店 / ASTI Hotel Busan Station）→ 12/29 傍晚 KTX 北上首尔
-→ 首尔酒店已定为 首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong → 12/31 普信阁跨年敲钟 → 2027-01-03 22:10 回深圳，01-04 01:15 落地。
-参考项目 ~/Desktop/hanoi-vercel（架构规范）；后端复用其 CloudBase 环境 hanoi-d4gj8vd2q1e7a3dc0，
-NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
-🚫 红色安全线：~/Desktop/hanoi-vercel/.env.local 里的 VERCEL_OIDC_TOKEN 绝不能复制进本项目或任何输出。
+`scripts/verify.mjs` 当前会检查 3 个线上入口、Service Worker、所有缓存资源、4 个 API、天气接口和关键页面标记。它只能证明网络层和静态资源基本可达，不能替代真实中国大陆/韩国网络及 iPhone/iPad 真机点击验收。还要检查 11 个 Tab、旅程切换、Safe Area、弹层、输入、滚动、拖动、键盘、横竖屏、删除确认、站内 viewer 返回、断网编辑、恢复同步，以及 Vercel/CloudBase 国内入口版本一致性。
 
-## 用户核心要求（不可偏离）
-1. 手机/iPad 优先（用户女朋友金鹿基本不用电脑），支持 Add to Home Screen（standalone 原生 App 体验）。
-2. 11 Tab 多视图 + 底部悬浮胶囊导航（首页/行程/交通/地图/美食/随笔/待办/行李/文件/支出/锦囊），不要长页下滑；网页内品牌名保持 `Korea Trip`，只有 Add to Home Screen 后桌面名称才显示 `在璐上`。
-3. 视觉去 AI 化：薄荷绿清爽风（bg #F4F8F5、主色 #2FA36E、白卡片 16-20px 圆角），
-   全站 60+ 手绘线条 SVG 图标替换 emoji——界面不能出现满屏 emoji。参考设计稿 ~/Downloads/IMG_3900~3904.PNG。
-4. 文件区状态、备注、附件需要 CloudBase 云端持久化共享；文件卡片只支持用户自定义名称 / 状态 / 备注 / 附件，不再预设签证、K-ETA、机票行程单等模板，也不让用户手动选择 emoji/logo；图标由附件类型自动映射为统一线条 SVG；敏感证件照片要保留“谨慎上传”的隐私提示。
-5. 随笔区要做成“每篇独立密码”的私密日记：默认只显示加密卡片壳，正文、照片、地点只有输入对应文章密码后才能看到；不要做全局随笔密码，也不要让未解锁内容在页面里预览出来。
-6. 改完代码必须本地零报错（node --check + 无头 Chrome 验证 9 个面板全渲染）。
+## 安全红线
 
-## 当前状态
-- v1.2 薄荷绿重设计已完成并本地验证通过。
-- 部署：Vercel 项目已链接到本仓库，`.vercel/project.json` 里记录的 projectId 是
-  `prj_m9oqrYcJj3jTcrkgpXSakIwZ616Y`，生产域名是 `https://korea-vercel.vercel.app`。
-- 线上前端已经包含最新的薄荷绿重设计、可编辑行程、更新后的航班/酒店信息和新 app 图标。
-- 2026-09-04：又补了更贴近小红书手帐封面的韩国景点图，当前封面资产已细化为釜山海云台/胶囊列车、釜山甘川、首尔景福宫、首尔夜景、首尔返程机场，并新增 `assets/photos/busan-asti-hotel-editorial.png` 与首尔 Marriott 酒店水彩图；`sw.js` 缓存版本已提升到 `korea-trip-v17`。
-- 2026-09-04：CloudBase 正式部署源 `/Users/hankzhang/Desktop/cloudfunctions/korea-api` 已同步仓库云函数代码并重新部署；线上 `POST /itinerary` 已恢复，`kr_itinerary` 已刷新为 43 条新版行程，旧“海云台酒店”数据已清掉。
-- 后端已上线：CloudBase HTTP 云函数 `korea-api`，API_BASE = `https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
-- 云端数据集合前缀为 `kr_`：`kr_itinerary` / `kr_todos` / `kr_checklist` / `kr_bucketlist` / `kr_expenses` / `kr_docs`。
-- 2026-09-04：文件区已从本机-only 改为云端共享，`GET/POST /docs` 负责同步自定义文件卡片的名称 / 状态 / 备注 / 附件；localStorage 仅作弱网兜底。旧模板空壳已清理，新增文件按钮必须可用。
-- 2026-09-04：随笔区已改为“每篇独立密码”的私密日记模式；未解锁时只展示私密卡片壳，不显示正文/照片/地点；新建时必须输入该篇密码，编辑时可沿用原密码。
-- 2026-09-04：待办与行李已改成可编辑清单：勾选、新增、编辑、删除、拖动重排序；`POST /todos` 与 `POST /checklist` 全量替换保存，旧的 `/:docId` done 接口保留兼容。行李行内不要显示“云端/本地”标签。
-- 2026-09-04：地图页已明确改为“页内可读的手帐攻略地图 + Apple Maps 主跳转”。不要接入 Google/Naver/Kakao SDK 或 iframe 底图；页内地图本身必须能看懂区域、住宿、景点和大致动线，且支持拖动浏览 / 放大缩小。每个地点保留坐标、Apple 主按钮、Naver/Kakao/Google/Amap 备用按钮。
-- 2026-09-04：完成 9 项交互修复：日历点击直达当天；清理产品说明式提示词；待办/行李拖动排序；待办/行李统一底部编辑面板并保存后即时刷新；日程图片去掉“当天封面/图2/图3”标签；行程行点击展开/收起；页面文案尽量中文化；PWA 名称改“在璐上”；地图改固定比例可拖动可缩放。
-- 2026-09-04：补充弱网策略：行程、待办、行李、打卡必须先用 localStorage / 内置数据渲染，再异步拉 CloudBase 覆盖；不要让 CloudBase、天气或外部地图网络拖空首屏。
-- 代码仓库：https://github.com/hankkyy/Korea-Trip（main 分支，前端全部源码 + cloudfunctions/korea-api + 三份文档 + 本文件）。
+绝不能提交或输出任何 `.env.local`、`VERCEL_OIDC_TOKEN`、CloudBase 密钥、`.git`、`.vercel` 或用户私密资料。证件和机票 PDF 属于敏感文件，只能按现有静态资源和隐私规则处理。
 
-## 部署方法
+## 文档更新要求
 
-### 前端（Vercel）
-- 项目名：`korea-vercel`
-- teamId：`team_wHIZB9oM0g4eyRlzun2xSPfo`
-- 生产域名：`https://korea-vercel.vercel.app`
-- 最稳妥流程：
-  1. 本地更新 `index.html / manifest.json / sw.js / vercel.json / assets/`
-  2. `git add` → `git commit` → `git push origin main`
-  3. 等 Vercel 自动出 production build，或用 CLI / MCP 触发
-  4. 验证首页标题、11 个 Tab、行程编辑、图标、移动端适配
-
-### 后端（CloudBase）
-- HTTP 云函数：`korea-api`
-- API_BASE：`https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`
-- 先发云函数，再确认前端能读到 `kr_` 集合数据
-
-## 2026-09-04 下午追加：国内访问与 jinlu.cloud（本段最重要，先读）
-
-### 背景
-- GFW 屏蔽 *.vercel.app（DNS 污染 + SNI 阻断），中国大陆直连打不开 korea-vercel.vercel.app / korea-trip.vercel.app。
-- 自定义域名指向 Vercel 不受影响（SNI 是自己的域名）；CloudBase 国内环境不受影响。
-
-### 已上线的两个入口（2026-09-04 从深圳宽带实测通过）
-1. **CloudApp webapps（国内直连，无密码）**：https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/
-   - 环境 hanoi-d4gj8vd2q1e7a3dc0（ap-shanghai），服务名 korea，静态文件位于托管桶 `korea/` 前缀
-   - 2026-09-04 16:29 EDT 已用 `tcb hosting deploy <dist> /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json` 补齐最新前端与全部图片；16:45 EDT 再次同步文件区修复；实测釜山 ASTI 酒店 PNG、`sw.js` v11、自定义文件区均已在 CloudApp 生效。
-2. **jinlu.cloud（Vercel 自定义域名，2026-09-04 用户自己在 Vercel 控制台完成）**：https://jinlu.cloud（308 → www.jinlu.cloud，Vercel 设 www 为主域，正常现象）
-   - DNS：jinlu.cloud CNAME cname.vercel-dns.com（A 216.198.79.1）
-   - 页面 / sw.js / manifest / 照片全 200，可直接发给女朋友
-
-### CloudApp 部署方法（下次更新国内站必读）
-- **重要：只推 GitHub/Vercel 不会更新 CloudApp。** 每次前端或图片变更后，都要额外把静态包发布到 CloudBase 的 `/korea` 前缀，否则中国大陆直连入口会继续显示旧版本或缺图。
-- 推荐当前稳定做法：在本机打一个干净静态包，只包含 `index.html / manifest.json / sw.js / vercel.json / assets/`，不要包含 `.env.local / .git / .vercel / 截图`，然后执行：
-  ```bash
-  tcb hosting deploy /tmp/korea-cloudbase-static-XXXXXX/dist /korea --env-id hanoi-d4gj8vd2q1e7a3dc0 --json
-  ```
-- 发布后必须用 cache-busting URL 验证：
-  ```bash
-  curl -I "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/assets/photos/busan-asti-hotel-editorial.png?v=$(date +%s)"
-  curl -Ls "https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/?v=$(date +%s)" | rg "korea-trip-v17|busan-asti-hotel-editorial.png|新增文件"
-  ```
-- 旧方案备用：MCP manageApps 有类型 bug（deployApp 的 CosTimestamp schema 是 integer 但后端要 string；getBuildLog 的 BuildId 要求 int64）→ **绕 MCP，用 callCloudApi**：
-  - 上传：queryApps getUploadUrl 拿预签名 COS URL → `curl PUT zip`（**大文件会衰减卡死，1.4MB 小包 22-115s 正常，28MB 包 420s+ 卡死**）
-  - 触发构建：callCloudApi（service=tcb, action=CreateCloudApp, region=ap-shanghai），params：EnvId、ServiceName="korea"、DeployType="static-hosting"、BuildType="ZIP"、StaticConfig{Framework, AppPath:"/korea", BuildPath:"dist", CosTimestamp:"<字符串>", StaticCmd{DeployCmd:"tcb hosting deploy . /korea" **必须显式传**，否则管线 cd 进 dist 后还找 dist/dist 报 Path does not exist}}
-  - 每次部署同 ServiceName 生成新版本 korea-00N 递增；构建日志：callCloudApi tcb/DescribeCloudBaseRunBuildLog，BuildId 传数字
-- **AppPath 只是共享托管挂载点；webapps 域名在根路径提供应用** → 包内全部根路径引用（/assets/、/manifest.json、register('/sw.js')、sw scope "/"）；托管桶文件在 korea/ 前缀下（hanoi 根目录勿动）
-- 已废弃的旧包路径：/tmp/korea-root/dist、/tmp/korea-cn/dist。不要继续相信旧文档里的“照片补传还剩 4 张”状态；当前已整包补齐。
-
-### jinlu.cloud 备案（未开始，等用户操作）
-- jinlu.cloud 未备案；CloudBase 国内绑域名硬性要求 ICP 备案。用户需在腾讯云备案控制台提「新增网站」备案（已有 hankzhang.cloud 主体，约 7-20 工作日）
-- ⚠️ 提交备案前，jinlu.cloud 解析必须临时指回腾讯云（管局查解析与接入商一致，指 Vercel 会被打回）；期间用 webapps 链接顶上
-- 备案通过后的绑定步骤（按顺序）：1) manageGateway bindCustomDomain（域名归属 TXT _cloudbase-challenge 已验证通过，保留即可）→ 2) 证书自动签发 → 3) DNSPod 撤掉 Vercel 的 A/CNAME，指向网关 OriginDomain hanoi-d4gj8vd2q1e7a3dc0.tcbaccess-in.tencentcloudbase.com → 4) 路由：MCP createRoute 无 pathRewrite 字段，用 CLI `tcb routes add -e hanoi-d4gj8vd2q1e7a3dc0 --data '{"domain":"jinlu.cloud","routes":[{"path":"/","upstreamResourceType":"STATIC_STORE","upstreamResourceName":"staticstore","pathRewrite":{"prefix":"/korea"}}]}'`（需先 `! tcb login`）
-- 备选：korea.hankzhang.cloud（hankzhang.cloud 已备案，子域名可直接绑 CloudBase，几分钟上线）
-
-## 2026-09-04 追加：跨地区可用性红线（本段也很重要）
-
-- 这个站不是只服务一个地区；必须同时保证中国大陆、美国和韩国都能正常打开。
-- 页面里的图片、封面、图标、地图跳转、按钮外链、天气接口、服务工作线程缓存资源都要优先选择三地可稳定访问的路径。
-- Google / Naver 可以保留，但不能只留单一入口；如果有外链，必须同时提供坐标、Apple 主入口、Naver / Kakao / Google / Amap 备用入口，避免某个地区打不开就断路。
-- 如果用户反馈“某张照片加载不出来”，优先检查：是否外链资源、是否缺文件、是否只在某个地区/网络能访问，而不是先假设手机有问题。
-- 日后新增图片时优先放本地 `assets/photos/`，并同步进 Service Worker 缓存与文档索引，避免某个地区首访时图片断档。
-
-### 安全红线（不变）
-🚫 hanoi 的 .env.local VERCEL_OIDC_TOKEN 绝不能复制到本项目；Desktop 下 `.env.local`、`.git`、`.vercel`、截图、cloudfunctions 绝不能上传部署；`assets/docs/visa/` 要保留在本项目静态资源里，供文件卡片直接引用。
-
-## 待办清单
-- [x] 釜山酒店已确认并补进住宿卡和行程卡（釜山站ASTI酒店 / ASTI Hotel Busan Station，12/26–12/29）
-- [x] 现金与保险决策已更新：不提前大量换韩元现金；到韩国用 Fidelity 卡 ATM 无手续费取现，旅行保险不单独购买
-- [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
-- [x] 文件区跨设备同步（自定义名称 / 状态 / 备注 / 附件；无预设模板、无 emoji 选择）
-- [x] 待办 / 行李支持新增、编辑、删除、拖动重排序
-- [x] 自定义域名 jinlu.cloud 已上线（Vercel，用户控制台操作；备案通过后换绑 CloudBase）
-- [ ] 补传剩余 4 张 editorial PNG（seoul-airport / seoul-marriott-myeongdong / seoul-night / seoul-palace）到托管 korea/assets/photos/，单文件逐个传 + findFiles 验证
-- [ ] jinlu.cloud 提交「新增网站」备案（用户操作）→ 通过后按上文步骤绑 CloudBase
-
-## 关键文件与细节
-- index.html：单文件应用（~122KB / 2059 行），顶部常量区 FX_RATES（1 RMB≈190 KRW、USD 6.80）、
-  D1/BUSAN_END/TRIP_END/NEWYEAR 时间常量、HERO_IMAGES。
-- sw.js 缓存版本已更新到 `korea-trip-v17`；manifest.json theme_color #78AA8B，Add to Home Screen 名称为“在璐上”。
-- 完整文档：README.md（含交接状态）与 REQUIREMENTS.md，在项目根目录和 /tmp/kr_split/ 均有。
-- 会话记忆：~/.claude/projects/-Users-hankzhang/memory/korea-vercel-project.md。
-```
+完成代码后必须更新 `PROJECT_STATUS.md`，必要时更新 `README.md`、`REQUIREMENTS.md` 和本文件。明确写出做了什么、验证了什么、没有验证什么、剩余风险和下一步，不得只留下模糊的“已完成”。

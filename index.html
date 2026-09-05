@@ -28,8 +28,16 @@
   --grad:linear-gradient(120deg,#86B59A,#6EA381);
   --grad-soft:linear-gradient(135deg,#FCFDF9 0%,#EEF8F4 60%,#FFF7EB 100%);
 }
+body[data-trip-id="hong-kong"]{--green:#9C8CC4;--green-d:#66558E;--green-l:#F1ECFA;--green-xl:#FAF8FE;--ink:#5D4B86;--line:#E8E0F2;--grad:linear-gradient(120deg,#B8A8D8,#8D7AB8)}
+body[data-trip-id="xiamen"]{--green:#6FA7C2;--green-d:#47758D;--green-l:#EAF5FA;--green-xl:#F7FCFE;--ink:#416D82;--line:#DDECF2;--grad:linear-gradient(120deg,#8EC2D8,#649AB6)}
+body.short-trip #tab-home .memo-strip,body.short-trip #tab-home .newyear-board,body.short-trip #tab-home .journal-head,body.short-trip #tab-home .journal-grid,body.short-trip #tab-home #ringRow,body.short-trip #tab-home h2.sec-title[style]{display:none}
+body.short-trip #tab-home .journal-toggle{display:none!important}
+body.short-trip #tab-transport .wrap>*:not(.sec-title),body.short-trip #tab-map .map-board{display:none}
+body.short-trip #tab-map .map-reference-note,body.short-trip #tab-map .map-reference-groups,body.short-trip #tab-map .map-reference-grid{display:none}
+body.short-trip .short-trip-banner{display:block!important}
+.short-trip-banner{display:none;margin:16px 0;padding:18px;border:1px dashed var(--accent-line,var(--line));border-radius:var(--radius);background:var(--green-l);color:var(--green-d);font-weight:700}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;width:100%;overflow-x:hidden}
+html{scroll-behavior:auto;width:100%;overflow-x:hidden}
 body{
   font-family:"PingFang SC","Hiragino Sans GB","Songti SC","STSong","Apple SD Gothic Neo",serif;
   background:var(--bg);color:var(--text);
@@ -41,16 +49,18 @@ body{
 body::before{
   content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(circle at 18% 8%,rgba(158,203,213,.14),transparent 28%),
-    radial-gradient(circle at 92% 18%,rgba(231,198,128,.10),transparent 26%),
-    radial-gradient(circle at 50% 100%,rgba(221,176,179,.06),transparent 30%),
-    linear-gradient(180deg,#F3FAFA 0%,#F7FBF8 48%,#F9FCF8 100%);
+    radial-gradient(circle at 10% 6%,rgba(158,203,213,.19),transparent 25%),
+    radial-gradient(circle at 94% 15%,rgba(231,198,128,.16),transparent 24%),
+    radial-gradient(circle at 84% 74%,rgba(196,181,215,.10),transparent 25%),
+    radial-gradient(circle at 18% 92%,rgba(239,185,191,.10),transparent 23%),
+    linear-gradient(180deg,#F3FAFA 0%,#F8FBF8 48%,#FCF9F7 100%);
 }
 button{font-family:inherit;font-size:inherit;cursor:pointer;touch-action:manipulation;border:none;background:none;color:inherit}
 input,select,textarea{font-family:inherit;font-size:16px} /* ≥16px 防 iOS 聚焦放大 */
 img{max-width:100%;display:block}
 a{color:var(--blue-d);text-decoration:none}
 a:active{opacity:.7}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(106,153,164,.42);outline-offset:2px}
 .wrap{max-width:1120px;width:100%;margin:0 auto;padding:0 16px}
 .panel{display:none;padding:16px 0 8px}
 .panel.active{display:block;animation:rise .35s ease}
@@ -182,13 +192,30 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 #tab-itinerary{--page-art:url('assets/photos/palace-watercolor.webp')}
 #tab-map{--page-art:url('assets/photos/busan-watercolor.webp')}
 #tab-transport{--page-art:url('assets/photos/seoul-watercolor.webp')}
-#tab-food{--page-art:url('assets/photos/busan-editorial.webp')}
+#tab-food{--page-art:url('assets/photos/seoul-gwangjang-warm-stalls.png')}
 #tab-essay{--page-art:url('assets/photos/seoul-night-editorial.png')}
 #tab-todos{--page-art:url('assets/photos/busan-watercolor.webp')}
 #tab-packing{--page-art:url('assets/photos/palace-watercolor.webp')}
 #tab-expenses{--page-art:url('assets/photos/seoul-watercolor.webp')}
 #tab-docs{--page-art:url('assets/photos/palace-watercolor.webp')}
 #tab-guide{--page-art:url('assets/photos/busan-watercolor.webp')}
+.panel:not(#tab-home){--accent:var(--green);--accent-d:var(--green-d);--accent-l:var(--green-l);--accent-line:rgba(118,169,138,.22)}
+#tab-itinerary{--accent:var(--blue);--accent-d:var(--blue-d);--accent-l:var(--blue-l);--accent-line:rgba(106,153,164,.24)}
+#tab-map{--accent:#D5B36B;--accent-d:#8A6E36;--accent-l:#FFF7E6;--accent-line:rgba(213,179,107,.28)}
+#tab-transport{--accent:#D7A9AF;--accent-d:#A96873;--accent-l:#FFF2F3;--accent-line:rgba(215,169,175,.25)}
+#tab-food{--accent:#E3B86F;--accent-d:#9A7335;--accent-l:#FFF7E8;--accent-line:rgba(227,184,111,.28)}
+#tab-essay{--accent:#B9A4D0;--accent-d:#76618E;--accent-l:#F7F1FC;--accent-line:rgba(185,164,208,.28)}
+#tab-expenses{--accent:#C89AA4;--accent-d:#925C68;--accent-l:#FFF2F3;--accent-line:rgba(200,154,164,.25)}
+#tab-docs{--accent:#8EAFC2;--accent-d:#587E94;--accent-l:#F0F7FB;--accent-line:rgba(142,175,194,.28)}
+#tab-guide{--accent:#D8A37D;--accent-d:#986545;--accent-l:#FFF4EC;--accent-line:rgba(216,163,125,.28)}
+.panel:not(#tab-home)>.wrap::before{border-color:var(--accent-line);background-image:linear-gradient(90deg,rgba(255,254,251,.90),rgba(255,254,251,.34)),var(--page-art)}
+.panel:not(#tab-home) .block-title .ti,.panel:not(#tab-home) h2.sec-title .ti{color:var(--accent-d)}
+.panel:not(#tab-home) .block-title{color:var(--accent-d)}
+.panel:not(#tab-home) .block-title::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,var(--accent-line),transparent);margin-left:4px}
+.panel:not(#tab-home) .card{border-color:var(--accent-line);background-image:radial-gradient(circle at 100% 0,var(--accent-l),transparent 34%)}
+.panel:not(#tab-home) .info-card b,.panel:not(#tab-home) .tip-line .tl-txt b{color:var(--accent-d)}
+.panel:not(#tab-home) .info-card .ic-links a,.panel:not(#tab-home) .map-actions a,.panel:not(#tab-home) .map-actions button{background:var(--accent-l);color:var(--accent-d);border-color:var(--accent-line)}
+.panel:not(#tab-home) .list-add-btn,.panel:not(#tab-home) .doc-btn:not(.danger){background:var(--accent-l);color:var(--accent-d);border-color:var(--accent-line)}
 
 /* ============ 首页 · CTA + 快捷卡片 ============ */
 #ctaPlan{
@@ -203,6 +230,9 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   font-size:12.5px;font-weight:800;color:var(--text);border-radius:var(--radius);min-height:96px;
 }
 .qcard .qc-ic{width:42px;height:42px;border-radius:15px;background:linear-gradient(145deg,#EEF7EF,#FFF9EA);color:var(--green-d);display:flex;align-items:center;justify-content:center;border:1px solid rgba(118,169,138,.16)}
+.qcard:nth-child(1) .qc-ic{background:linear-gradient(145deg,#EEF8F9,#EAF3FA);color:var(--blue-d);border-color:rgba(106,153,164,.18)}
+.qcard:nth-child(2) .qc-ic{background:linear-gradient(145deg,#FFF4F0,#FBEAF0);color:#B66F78;border-color:rgba(219,176,181,.22)}
+.qcard:nth-child(3) .qc-ic{background:linear-gradient(145deg,#F4F0FA,#FDF5E9);color:#83729D;border-color:rgba(180,162,204,.22)}
 .qcard .qc-sub{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:-4px}
 .qcard:active{transform:scale(.97)}
 
@@ -233,27 +263,165 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   width:30px;height:30px;border-radius:11px;background:linear-gradient(145deg,#F3FAF2,#FFF6E8);
   display:flex;align-items:center;justify-content:center;color:var(--green-d);border:1px solid rgba(118,169,138,.12)
 }
+.memo-pill:nth-child(2){background:#FFF7F5;border-color:rgba(219,176,181,.20)}
+.memo-pill:nth-child(2) .pill-ic{background:linear-gradient(145deg,#FFF0EE,#FBE8EF);color:#B66F78;border-color:rgba(219,176,181,.18)}
+.memo-pill:nth-child(3){background:#F5F2FA;border-color:rgba(180,162,204,.18)}
+.memo-pill:nth-child(3) .pill-ic{background:linear-gradient(145deg,#EFEAF8,#FFF4E8);color:#83729D;border-color:rgba(180,162,204,.18)}
 .memo-pill strong{font-size:12px;line-height:1.25}
 .memo-pill span{font-size:10.5px;line-height:1.35;color:var(--muted);font-weight:600}
+
+/* ============ 首页 · 跨年特别企划 ============ */
+.newyear-board{
+  position:relative;overflow:hidden;padding:17px 16px 16px;margin:10px 0 20px;
+  background:linear-gradient(135deg,#FFF9F1 0%,#FFF6F7 54%,#F5F1FA 100%);
+  border:1px solid rgba(219,176,181,.24);box-shadow:var(--shadow);
+}
+.newyear-board::after{content:'✦';position:absolute;right:18px;top:9px;color:rgba(184,137,158,.30);font-size:28px;transform:rotate(14deg);pointer-events:none}
+.newyear-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:13px}
+.newyear-kicker{font-size:10px;font-weight:900;letter-spacing:.22em;color:#A96873}
+.newyear-title{font-size:17px;font-weight:900;color:#684D5D;line-height:1.3;margin-top:3px}
+.newyear-sub{font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:3px}
+.newyear-badge{flex-shrink:0;border-radius:999px;padding:5px 9px;background:rgba(255,255,255,.72);border:1px solid rgba(219,176,181,.24);color:#A96873;font-size:10px;font-weight:900}
+.newyear-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.newyear-card{min-width:0;padding:12px 11px;border-radius:15px;background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.86);box-shadow:0 5px 14px rgba(126,91,107,.05)}
+.newyear-card .ny-top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.newyear-card .ny-ic{width:29px;height:29px;display:grid;place-items:center;border-radius:10px;background:#FFF0EE;color:#B66F78;font-size:16px}
+.newyear-card:nth-child(2) .ny-ic{background:#F1EDFA;color:#806B9A}
+.newyear-card:nth-child(3) .ny-ic{background:#FFF5DD;color:#A27A37}
+.newyear-card:nth-child(4) .ny-ic{background:#EDF6F7;color:#628E98}
+.newyear-card h3{font-size:12.5px;color:#684D5D;line-height:1.25}
+.newyear-card p{font-size:11px;color:var(--muted);line-height:1.45}
+.ny-status{display:inline-block;margin-top:8px;padding:3px 7px;border-radius:999px;background:rgba(255,248,235,.88);color:#9A7335;font-size:10px;font-weight:800}
+@media(min-width:640px){.newyear-board{padding:19px 20px}.newyear-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.newyear-card{padding:13px 12px}}
+@media(max-width:430px){.newyear-grid{grid-template-columns:1fr}.newyear-card{padding:13px}.newyear-card p{font-size:11.5px}}
 
 /* ============ 首页 · 城市编辑画册 ============ */
 .journal-head{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 11px}
 .journal-head h2{margin:0!important}.journal-note{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.08em}
-.journal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-bottom:18px}
-.journal-card{overflow:hidden;text-align:left;border-radius:18px;min-height:100%;background:var(--card)}
-.journal-card img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;filter:saturate(.78) contrast(.9) brightness(1.04)}
-.journal-copy{padding:10px 11px 12px}.journal-kicker{font-size:10px;font-weight:900;letter-spacing:.13em;color:var(--green-d)}
-.journal-copy h3{font-size:14px;line-height:1.25;margin:2px 0 3px}.journal-copy p{font-size:11.5px;line-height:1.45;color:var(--muted)}
-@media(min-width:640px){.journal-grid{grid-template-columns:repeat(2,1fr)}.journal-card{display:grid;grid-template-columns:185px 1fr;align-items:center}.journal-card img{height:170px;aspect-ratio:auto}.journal-copy{padding:16px}.journal-copy h3{font-size:18px}}
+.journal-toggle{
+  display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:44px;margin:-3px 0 20px;
+  border:1px solid rgba(118,169,138,.22);border-radius:14px;background:rgba(255,255,251,.72);
+  color:var(--green-d);font-size:13px;font-weight:850;box-shadow:0 4px 12px rgba(63,96,78,.05);
+  transition:background .2s ease,box-shadow .2s ease,transform .2s ease
+}
+.journal-toggle:hover{background:var(--green-xl);box-shadow:0 7px 16px rgba(63,96,78,.08)}
+.journal-toggle:active{transform:scale(.985)}
+.journal-toggle .ti{width:16px;height:16px;transition:transform .25s ease}
+.journal-toggle[aria-expanded="true"] .ti{transform:rotate(180deg)}
+.journal-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin-bottom:18px;
+  grid-auto-flow:dense;
+}
+.journal-grid.is-collapsed .journal-card:nth-child(n+7){display:none}
+.journal-card{
+  overflow:hidden;text-align:left;border-radius:18px;min-height:100%;background:var(--card);
+  display:flex;flex-direction:column;
+}
+.journal-card img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:top;filter:saturate(.82) contrast(.93) brightness(1.03);background:#F4F0E8}
+.journal-card.wide{grid-column:1 / -1}
+.journal-card.wide img{aspect-ratio:16/10}
+.journal-card.reference{grid-column:span 2;text-decoration:none}
+.journal-card.reference img{aspect-ratio:16/10;height:auto;object-fit:contain;object-position:center;background:#F6F1E5}
+.journal-card.reference .journal-copy{background:var(--card)}
+.journal-copy{padding:10px 11px 12px}
+.journal-kicker{font-size:10px;font-weight:900;letter-spacing:.13em;color:var(--green-d)}
+.journal-copy h3{font-size:14px;line-height:1.25;margin:2px 0 3px}
+.journal-copy p{font-size:11.5px;line-height:1.45;color:var(--muted)}
+.journal-card.reference{cursor:zoom-in}
+@media(min-width:640px){
+  .journal-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .journal-card.wide{grid-column:span 2}
+}
+@media(min-width:960px){
+  .journal-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .journal-card{border-radius:20px}
+  .journal-copy{padding:12px 14px 14px}
+  .journal-copy h3{font-size:16px}
+  .journal-card.wide img{aspect-ratio:16/9}
+  .journal-card:not(.wide) img{aspect-ratio:4/3}
+}
+
+/* ============ 原图查看器 ============ */
+#imageViewerBackdrop{
+  position:fixed;inset:0;z-index:1300;background:rgba(20,29,27,.78);opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .24s ease,visibility .24s ease
+}
+#imageViewerBackdrop.open{opacity:1;visibility:visible;pointer-events:auto}
+#imageViewer{
+  position:fixed;inset:0;z-index:1301;display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+  padding:calc(10px + env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) calc(14px + env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+  color:#fff;opacity:0;visibility:hidden;pointer-events:none;transform:scale(.985);transition:opacity .24s ease,transform .24s ease,visibility .24s ease
+}
+#imageViewer.open{opacity:1;visibility:visible;pointer-events:auto;transform:scale(1)}
+.image-viewer-top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px}
+.image-viewer-back,.image-viewer-close{min-height:42px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.11);color:#fff;font-size:13px;font-weight:800;display:inline-flex;align-items:center;gap:6px;padding:0 14px}
+.image-viewer-back:active,.image-viewer-close:active{background:rgba(255,255,255,.22);transform:scale(.98)}
+.image-viewer-close{width:42px;padding:0;justify-content:center;font-size:22px;font-weight:500}
+.image-viewer-stage{min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;padding:12px 0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y pinch-zoom}
+#imageViewerImg{display:block;width:auto;max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;box-shadow:0 14px 45px rgba(0,0,0,.28);background:#F6F1E5}
+.image-viewer-bottom{padding:8px 4px 0;text-align:center}
+.image-viewer-title{font-size:14px;font-weight:900;line-height:1.35}
+.image-viewer-hint{margin-top:4px;font-size:11px;color:rgba(255,255,255,.66);line-height:1.4}
+.image-viewer-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.image-viewer-action{min-height:38px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.11);color:#fff;font-size:11.5px;font-weight:800;padding:0 12px}
+.image-viewer-action:active{background:rgba(255,255,255,.22);transform:scale(.98)}
+@media(min-width:768px){
+  #imageViewer{padding-left:32px;padding-right:32px}
+  .image-viewer-stage{padding:18px 0}
+  #imageViewerImg{max-width:min(1180px,100%);max-height:calc(100dvh - 150px);border-radius:14px}
+}
+@media(prefers-reduced-motion:reduce){#imageViewerBackdrop,#imageViewer{transition:none}}
+body.viewer-open{overflow:hidden}
+
+/* ============ 文件预览器 ============ */
+#docViewerBackdrop{
+  position:fixed;inset:0;z-index:1320;background:rgba(20,29,27,.72);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .24s ease,visibility .24s ease
+}
+#docViewerBackdrop.open{opacity:1;visibility:visible;pointer-events:auto}
+#docViewer{
+  position:fixed;inset:0;z-index:1321;display:grid;grid-template-rows:auto minmax(0,1fr) auto;
+  padding:calc(10px + env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  color:#fff;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity .24s ease,transform .24s ease,visibility .24s ease
+}
+#docViewer.open{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+.doc-viewer-top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px}
+.doc-viewer-back,.doc-viewer-close,.doc-viewer-action{min-height:42px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.11);color:#fff;font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 13px}
+.doc-viewer-back:active,.doc-viewer-close:active,.doc-viewer-action:active{background:rgba(255,255,255,.22);transform:scale(.98)}
+.doc-viewer-close{width:42px;padding:0;font-size:22px;font-weight:500}
+.doc-viewer-stage{min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px 0;touch-action:pan-y pinch-zoom}
+#docViewerImg{display:none;max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;background:#F6F1E5;box-shadow:0 14px 45px rgba(0,0,0,.28)}
+#docViewerFrame{display:none;width:100%;height:100%;min-height:0;border:0;border-radius:12px;background:#fff;box-shadow:0 14px 45px rgba(0,0,0,.24)}
+.doc-viewer-empty{display:none;padding:24px;text-align:center;border:1px dashed rgba(255,255,255,.3);border-radius:16px;color:rgba(255,255,255,.78);font-size:13px;line-height:1.6}
+.doc-viewer-bottom{padding:7px 0 0;text-align:center}
+.doc-viewer-title{font-size:14px;font-weight:900;line-height:1.35;overflow-wrap:anywhere}
+.doc-viewer-hint{margin-top:4px;color:rgba(255,255,255,.64);font-size:11px;line-height:1.4}
+.doc-viewer-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.doc-viewer-action{min-height:38px;font-size:11.5px;padding:0 12px}
+@media(min-width:768px){
+  #docViewer{padding-left:32px;padding-right:32px}
+  .doc-viewer-stage{padding:18px 0}
+  #docViewerFrame{max-width:1180px}
+  #docViewerImg{max-width:min(1180px,100%);max-height:calc(100dvh - 190px);border-radius:14px}
+}
+@media(prefers-reduced-motion:reduce){#docViewerBackdrop,#docViewer{transition:none}}
+body.doc-viewer-open{overflow:hidden}
 
 /* ============ 首页 · 下一站 ============ */
-.nu-card{padding:15px;display:flex;gap:12px;align-items:center;margin-bottom:14px}
+.nu-card{padding:15px;display:flex;gap:12px;align-items:flex-start;margin-bottom:14px}
+.nu-card > div:last-child{min-width:0;flex:1}
 .nu-ic{
   flex-shrink:0;width:46px;height:46px;border-radius:15px;background:var(--green-xl);color:var(--green-d);
   display:flex;align-items:center;justify-content:center;
 }
-.nu-title{font-weight:800;font-size:14.5px}
-.nu-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.nu-title{font-weight:800;font-size:14.5px;line-height:1.45;overflow-wrap:anywhere;white-space:normal}
+.nu-kicker{display:block;color:var(--green-d);font-size:11px;font-weight:900;letter-spacing:.08em;line-height:1.3;margin-bottom:2px}
+.nu-sub{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.5;overflow-wrap:anywhere}
+@media(max-width:430px){
+  .nu-card{padding:14px 13px;gap:10px}
+  .nu-ic{width:42px;height:42px;border-radius:13px}
+  .nu-title{font-size:14px;line-height:1.5}
+  .nu-sub{font-size:12px;line-height:1.5}
+}
 
 /* ============ 天气 ============ */
 .city-tabs{display:flex;gap:8px;margin-bottom:12px}
@@ -314,14 +482,19 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 /* ============ 行程 · 日历条 ============ */
 .cal-card{padding:16px 14px 14px;margin-bottom:14px;max-width:100%;overflow:hidden}
 .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-#calTitle{font-weight:800;font-size:15px}
+.cal-heading{display:flex;align-items:baseline;gap:9px;min-width:0}
+.cal-eyebrow{font-size:10px;letter-spacing:.18em;color:var(--green-d);font-weight:900}
+#calTitle{font-weight:900;font-size:15px;color:var(--ink)}
+.cal-caption{font-size:11px;color:var(--muted);font-weight:600}
+.cal-navs{display:flex;gap:8px}
 .cal-nav{
   width:40px;height:40px;border-radius:12px;background:var(--bg);border:1px solid var(--line);color:var(--text);
   display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;
 }
 .cal-nav:disabled{opacity:.3}
 .cal-nav:active{background:var(--line)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;width:100%;max-width:300px;margin-left:auto;margin-right:auto;overflow:hidden}
+.cal-content{display:block}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;width:100%;max-width:300px;margin-left:auto;margin-right:auto;overflow:hidden;align-content:start;grid-auto-rows:42px}
 .cal-wd{font-size:11px;color:var(--muted);text-align:center;font-weight:700;padding:2px 0 6px}
 .cal-cell{
   min-width:0;height:42px;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
@@ -339,7 +512,10 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 @media(max-width:430px){
   .wrap{padding-left:14px;padding-right:14px;max-width:100vw;overflow-x:clip}
   .cal-card{padding:14px 7px 12px;width:100%;max-width:calc(100vw - 28px)}
-  .cal-grid{grid-template-columns:repeat(7,calc((100% - 6px)/7));gap:1px;min-width:0;width:min(100%,300px);margin-left:auto;margin-right:auto}
+  .cal-heading{gap:6px}
+  .cal-eyebrow,.cal-caption{display:none}
+  .cal-navs{gap:4px}
+  .cal-grid{grid-template-columns:repeat(7,calc((100% - 6px)/7));gap:1px;min-width:0;width:min(100%,300px);margin-left:auto;margin-right:auto;grid-auto-rows:38px}
   .cal-cell{height:38px;border-radius:9px;font-size:12px;min-width:0;max-width:100%;overflow:hidden}
   .cal-wd{font-size:10px}
   .cal-legend{gap:8px}
@@ -517,8 +693,45 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .legend-row::-webkit-scrollbar{display:none}
 .legend-chip{flex-shrink:0;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:5px}
 .legend-chip i{width:7px;height:7px;border-radius:50%;background:var(--lc)}
+.map-reference-groups{display:grid;gap:22px}
+.map-reference-group{min-width:0}
+.map-group-title{display:flex;align-items:center;gap:9px;margin:0 0 10px;color:var(--ink);font-size:15px;font-weight:900}
+.map-group-title::before{content:'';width:4px;height:18px;border-radius:999px;background:var(--accent,#D5B36B)}
+.map-reference-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.map-reference-card{display:block;overflow:hidden;text-align:left;background:var(--card);border:1px solid rgba(224,235,223,.95);border-radius:20px;box-shadow:var(--shadow);transition:transform .2s ease,box-shadow .2s ease}
+.map-reference-card:active{transform:scale(.99)}
+.map-reference-card img{width:100%;height:auto;display:block;background:#f6f1e5}
+.map-reference-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px 13px}
+.map-reference-meta strong{font-size:13px;color:var(--ink)}
+.map-reference-meta span{font-size:11px;color:var(--muted);font-weight:700}
+.map-reference-note{margin:12px 0 14px;padding:12px 14px;border-radius:14px;background:rgba(255,250,235,.9);border:1px dashed rgba(226,185,111,.5);color:#806635;font-size:12px;line-height:1.55}
+@media(min-width:768px){.map-reference-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.map-reference-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(31,64,46,.13)}.map-reference-meta{padding:12px 15px 14px}}
 /* ============ 交通 ============ */
 .board-card{padding:18px;display:flex;flex-direction:column;gap:6px}
+.flight-card{padding:20px;gap:14px;position:relative;overflow:hidden;background:linear-gradient(145deg,#fff 0%,#fbfdf9 72%,#f1f8f2 100%)}
+.flight-card::after{content:'';position:absolute;width:150px;height:150px;border-radius:50%;right:-72px;top:-78px;background:rgba(167,200,207,.16);pointer-events:none}
+.flight-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:relative;z-index:1}
+.flight-kicker{font-size:10px;font-weight:900;letter-spacing:.16em;color:var(--green-d)}
+.flight-number{font-size:13px;font-weight:900;color:var(--ink);margin-top:3px}
+.flight-badge{min-height:34px;padding:0 11px;border-radius:11px;background:var(--green-d);color:#fff;display:inline-flex;align-items:center;font-size:12px;font-weight:900;letter-spacing:.04em}
+.flight-route{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;position:relative;z-index:1}
+.flight-airport{display:flex;flex-direction:column;gap:2px}.flight-airport:last-child{text-align:right;align-items:flex-end}
+.flight-code{font-size:25px;line-height:1;font-weight:900;letter-spacing:.05em;color:var(--ink)}
+.flight-city{font-size:11px;font-weight:700;color:var(--muted)}
+.flight-route-line{display:flex;align-items:center;gap:6px;color:var(--green);min-width:76px}.flight-route-line::before,.flight-route-line::after{content:'';height:1px;background:rgba(118,169,138,.38);flex:1}.flight-route-line .ic{width:20px;height:20px}
+.flight-date{font-size:13px;color:var(--green-d);font-weight:900;position:relative;z-index:1}
+.flight-data{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;position:relative;z-index:1}
+.flight-data-item{padding:9px 10px;border-radius:11px;background:rgba(255,255,255,.72);border:1px solid rgba(118,169,138,.14);min-width:0}
+.flight-data-item span{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:3px}.flight-data-item strong{display:block;font-size:12px;line-height:1.3;color:var(--text);overflow-wrap:anywhere}
+.flight-baggage{display:grid;gap:7px;padding:11px 12px;border-radius:12px;background:rgba(246,251,245,.9);border:1px dashed rgba(118,169,138,.24);position:relative;z-index:1}
+.flight-baggage-title{font-size:11px;color:var(--green-d);font-weight:900}
+.flight-baggage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.flight-baggage-item{min-width:0;font-size:11px;line-height:1.5;color:var(--text)}
+.flight-baggage-item b{display:block;color:var(--green-d);font-size:11.5px;margin-bottom:1px}
+.flight-baggage-note{font-size:10.5px;color:var(--muted);line-height:1.45}
+.flight-note{font-size:11.5px;color:var(--blue-d);background:var(--blue-l);border-radius:11px;padding:9px 11px;line-height:1.5;position:relative;z-index:1}
+.flight-source-note{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.55}
+.flight-source-note span{display:block}
 .bc-photo{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;margin:-2px 0 8px;border:1px solid rgba(224,235,223,.95);box-shadow:0 6px 16px rgba(63,96,78,.07);background:var(--green-xl)}
 .bc-route{display:flex;flex-direction:column;align-items:flex-start;gap:2px;font-weight:800;font-size:16px;line-height:1.2}
 .bc-route .bc-name{font-size:16px;font-weight:900;color:var(--text)}
@@ -527,8 +740,14 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .bc-route .bc-plane .ic{width:20px;height:20px}
 .bc-date{font-size:13px;font-weight:800;color:var(--green-d)}
 .bc-meta{font-size:12.5px;color:var(--muted);font-weight:600}
+.bc-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}
+.bc-detail{min-width:0;padding:9px 10px;border-radius:11px;background:var(--green-xl);border:1px solid rgba(118,169,138,.13)}
+.bc-detail-label{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-bottom:2px}
+.bc-detail-value{display:block;font-size:12px;line-height:1.4;color:var(--text);font-weight:800;overflow-wrap:anywhere}
+.bc-detail-value small{display:block;font-size:10px;color:var(--muted);font-weight:600;margin-top:1px}
 .bc-note{font-size:12px;color:var(--blue-d);background:var(--blue-l);border-radius:10px;padding:8px 12px;margin-top:8px;line-height:1.5}
 .bc-tbd{font-size:11px;font-weight:800;color:var(--warn);background:var(--warn-l);border-radius:8px;padding:3px 9px;align-self:flex-start}
+@media(max-width:430px){.bc-details{grid-template-columns:1fr 1fr;gap:7px}.bc-detail{padding:8px 9px}.bc-detail-value{font-size:11.5px}}
 .info-card{padding:16px;font-size:13.5px;line-height:1.6}
 .info-card b{color:var(--green-d)}
 .info-card .ic-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -541,40 +760,45 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 /* ============ 待办 / 行李 行式清单 ============ */
 .list-card{overflow:hidden}
 .l-row{
-  width:100%;min-height:58px;display:flex;align-items:center;gap:12px;padding:11px 16px;
+  width:100%;min-height:58px;display:flex;align-items:center;gap:12px;padding:12px 16px;
   border-bottom:1px solid var(--line);text-align:left;background:var(--card);
-  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+  transition:transform .18s ease,box-shadow .18s ease,background .18s ease,opacity .18s ease;
 }
 .l-row:last-child{border-bottom:none}
-.l-row.dragging{opacity:.82;background:#fff;box-shadow:var(--shadow-lg);transform:scale(1.015);position:relative;z-index:6}
+.l-row.dragging{opacity:.82;background:#fff;box-shadow:var(--shadow-lg);transform:scale(1.015);position:relative;z-index:6;transition:none;will-change:transform}
+.l-row.drag-placeholder{
+  background:rgba(232,244,234,.72);border:1px dashed rgba(118,169,138,.24);box-shadow:none;opacity:.7;transition:none;
+}
+.l-row.drag-placeholder > *{opacity:0}
 .l-check{
-  flex-shrink:0;width:28px;height:28px;border-radius:9px;border:2px solid var(--line);
+  flex-shrink:0;width:32px;height:32px;border-radius:10px;border:2px solid var(--line);
   display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent;transition:all .2s;
 }
 .l-row.done .l-check{background:var(--ok);border-color:var(--ok);color:#fff}
 .l-main{flex:1;min-width:0}
-.l-text{font-weight:700;font-size:14.5px}
+.l-text{font-weight:700;font-size:14.5px;line-height:1.35}
 .l-row.done .l-text{color:var(--muted);text-decoration:line-through}
-.l-note{font-size:12px;color:var(--muted);margin-top:1px}
+.l-note{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
 .l-ic{color:var(--green);flex-shrink:0;display:flex}
 .l-row.done .l-ic{opacity:.55}
-.list-toolbar{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.list-toolbar{display:flex;align-items:center;gap:10px;margin:0 0 12px;flex-wrap:wrap}
 .list-add-btn{
-  min-height:42px;border-radius:14px;padding:0 14px;background:var(--green-xl);color:var(--green-d);
+  min-height:44px;border-radius:14px;padding:0 14px;background:var(--green-xl);color:var(--green-d);
   border:1px solid rgba(118,169,138,.22);font-size:13px;font-weight:900;display:flex;align-items:center;gap:7px;
 }
 .list-add-btn .ic{width:16px;height:16px}
 .l-toggle{flex-shrink:0}
 .l-toggle .l-check{pointer-events:none}
-.l-actions{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.l-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.l-actions .danger{display:none}
 .l-drag{
-  width:32px;height:38px;border-radius:12px;color:var(--muted);display:flex;align-items:center;justify-content:center;
+  width:36px;height:40px;border-radius:12px;color:var(--muted);display:flex;align-items:center;justify-content:center;
   touch-action:none;cursor:grab;background:rgba(239,247,241,.72);border:1px solid rgba(224,232,226,.8)
 }
 .l-drag:active{cursor:grabbing;background:var(--green-xl);color:var(--green-d)}
 .l-drag::before{content:'⋮⋮';font-size:15px;letter-spacing:-3px;transform:rotate(90deg);font-weight:900}
 .l-mini{
-  width:30px;height:30px;border-radius:10px;border:1px solid rgba(224,232,226,.95);background:var(--bg);
+  width:34px;height:34px;border-radius:11px;border:1px solid rgba(224,232,226,.95);background:var(--bg);
   color:var(--muted);display:flex;align-items:center;justify-content:center;
 }
 .l-mini .ic{width:14px;height:14px}
@@ -617,6 +841,9 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .exp-summary .es-label{font-size:12px;color:var(--muted);font-weight:700}
 .exp-summary .es-num{font-size:clamp(20px,5vw,26px);font-weight:900}
 .exp-summary .es-num small{font-size:12px;color:var(--muted);font-weight:600}
+.expense-subnote{margin:-8px 0 14px 30px;color:var(--muted);font-size:11px;line-height:1.4;font-weight:600;letter-spacing:.02em}
+.fx-rate-hint{margin:-7px 0 13px 30px;color:var(--muted);font-size:10.5px;line-height:1.45;font-weight:600;letter-spacing:.01em}
+@media(max-width:430px){.expense-subnote{margin:-8px 0 13px 28px;font-size:10.5px}}
 .es-progress{margin-top:10px;height:8px;border-radius:4px;background:var(--line);overflow:hidden}
 .es-progress i{display:block;height:100%;background:var(--grad);border-radius:4px;transition:width .6s}
 .es-status{margin-top:8px;font-size:12.5px;font-weight:700;color:var(--muted)}
@@ -661,11 +888,14 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   position:fixed;left:0;right:0;bottom:0;z-index:1001;background:var(--card);
   border-radius:24px 24px 0 0;padding:10px 20px calc(26px + env(safe-area-inset-bottom));
   transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.28,1);
-  max-width:560px;margin:0 auto;box-shadow:var(--shadow-lg);
+  max-width:560px;margin:0 auto;box-shadow:var(--shadow-lg);max-height:calc(100dvh - 8px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-sizing:border-box;
 }
 #expSheet.open{transform:translateY(0)}
+#expSheet,#itSheet,#listSheet,#essaySheet{border:1px solid rgba(224,235,223,.95);background:rgba(255,254,250,.98)}
+.sheet-close{position:absolute;top:15px;right:18px;width:40px;height:40px;border-radius:50%;background:rgba(242,248,244,.9);color:var(--muted);font-size:24px;line-height:1;display:flex;align-items:center;justify-content:center}
+.sheet-close:active{background:var(--green-l);color:var(--green-d)}
 .sheet-handle{width:44px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 14px}
-#expSheet h3{font-size:17px;margin-bottom:14px}
+#expSheet h3{font-size:19px;margin:0 44px 18px 0;color:var(--ink);letter-spacing:-.02em}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:6px}
 .field input{
@@ -682,6 +912,30 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   width:100%;height:52px;border-radius:14px;background:var(--grad);color:#fff;font-weight:900;font-size:16px;
 }
 #expSave:active{opacity:.85}
+
+/* ============ 旅程选择 ============ */
+#tripPickerBackdrop{position:fixed;inset:0;background:rgba(24,38,31,.42);z-index:1100;opacity:0;pointer-events:none;transition:opacity .28s}
+#tripPickerBackdrop.open{opacity:1;pointer-events:auto}
+#tripPickerSheet{position:fixed;left:0;right:0;bottom:0;z-index:1101;max-width:620px;margin:0 auto;padding:10px 18px calc(22px + env(safe-area-inset-bottom));border-radius:26px 26px 0 0;background:rgba(255,254,250,.98);border:1px solid rgba(224,235,223,.95);box-shadow:var(--shadow-lg);transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.28,1);max-height:calc(100dvh - 20px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#tripSettingsBackdrop{position:fixed;inset:0;background:rgba(24,38,31,.42);z-index:1110;opacity:0;pointer-events:none;transition:opacity .28s}
+#tripSettingsBackdrop.open{opacity:1;pointer-events:auto}
+#tripSettingsSheet{position:fixed;left:0;right:0;bottom:0;z-index:1111;max-width:620px;margin:0 auto;padding:10px 18px calc(22px + env(safe-area-inset-bottom));border-radius:26px 26px 0 0;background:rgba(255,254,250,.98);border:1px solid rgba(224,235,223,.95);box-shadow:var(--shadow-lg);transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.28,1);max-height:calc(100dvh - 20px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#tripSettingsSheet.open{transform:translateY(0)}
+#tripSettingsSheet h3{font-size:19px;margin:0 44px 18px 0;color:var(--ink)}
+#tripPickerSheet.open{transform:translateY(0)}
+#tripPickerSheet h3{margin:0 42px 4px 0;font-size:21px;color:var(--ink)}
+.trip-picker-sub{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:15px}
+.trip-picker-list{display:grid;gap:10px}
+.trip-option{width:100%;display:flex;align-items:center;gap:12px;padding:13px;text-align:left;border:1px solid var(--line);border-radius:17px;background:var(--card);transition:transform .18s ease,background .18s ease,border-color .18s ease}
+.trip-option:active{transform:scale(.99)}
+.trip-option.active{background:linear-gradient(135deg,#F1F8F3,#F4FBFB);border-color:rgba(118,169,138,.35)}
+.trip-option.disabled{opacity:.56;cursor:default}
+.trip-option-ic{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;border-radius:14px;background:#EEF7EF;color:var(--green-d);font-size:21px}
+.trip-option:nth-child(2) .trip-option-ic{background:#F6F0FA;color:#806B9A}.trip-option:nth-child(3) .trip-option-ic{background:#FFF3EC;color:#986545}
+.trip-option-copy{min-width:0;flex:1}.trip-option-title{font-size:14px;font-weight:900;color:var(--text)}.trip-option-meta{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.trip-option-state{flex:0 0 auto;font-size:10.5px;font-weight:900;color:var(--green-d)}
+.trip-picker-note{margin-top:13px;padding:10px 12px;border-radius:13px;background:#FFF8EC;color:#8D713F;font-size:11px;line-height:1.5}
+@media(min-width:720px){#tripPickerSheet,#tripSettingsSheet{bottom:24px;border-radius:26px;padding:18px 20px 20px}.trip-picker-list{grid-template-columns:repeat(3,minmax(0,1fr))}.trip-option{display:block;padding:15px}.trip-option-copy{margin-top:10px}.trip-option-state{display:block;margin-top:10px}}
 
 /* ============ FAB ============ */
 #expFAB{
@@ -708,7 +962,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-sizing:border-box;
 }
 #itSheet.open{transform:translateY(0)}
-#itSheet h3{font-size:18px;margin:0}
+#itSheet h3{font-size:19px;margin:0 44px 0 0;color:var(--ink);letter-spacing:-.02em}
 .it-sheet-head{
   display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:14px;
   border-bottom:1px dashed rgba(118,169,138,.18)
@@ -792,14 +1046,14 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   box-sizing:border-box;
 }
 #listSheet.open{transform:translateY(0)}
-#listSheet h3{font-size:17px;margin:0 0 12px}
+#listSheet h3{font-size:19px;margin:0 44px 18px 0;color:var(--ink);letter-spacing:-.02em}
 #listSheet textarea{
   width:100%;min-height:86px;border-radius:var(--radius-s);border:1.5px solid var(--line);
   padding:12px 14px;background:var(--bg);outline:none;resize:vertical;line-height:1.55
 }
 #listSheet input:focus,#listSheet textarea:focus{border-color:var(--green)}
 .list-sheet-actions{display:flex;gap:10px;margin-top:14px}
-.list-sheet-actions button{min-height:50px;border-radius:14px;padding:0 16px;font-weight:900}
+.list-sheet-actions button{min-height:50px;border-radius:14px;padding:0 16px;font-weight:900;font-size:14px}
 #listDelete{background:#F8ECEC;color:#9B6468;border:1px solid #EBCFD1}
 #listCancel{background:var(--card);border:1px solid var(--line);color:var(--muted)}
 #listSave{flex:1;background:var(--grad);color:#fff}
@@ -831,6 +1085,11 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   color:var(--green-d);display:flex;align-items:center;justify-content:center;flex-shrink:0
 }
 .food-head-fields{flex:1;min-width:0;display:grid;gap:8px}
+.food-display-title{flex:1;min-width:0;font-size:15px;font-weight:900;line-height:1.35;color:var(--text);overflow-wrap:anywhere}
+.food-card:not(.editing) .food-head-fields,.food-card:not(.editing) textarea.food-input{display:none}
+.food-card.editing .food-display-title{display:none}
+.food-edit-only{display:none}
+.food-card.editing .food-edit-only{display:inline-flex}
 .food-input,.food-select{
   width:100%;min-height:38px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);
   padding:0 12px;font-size:13px;outline:none;color:var(--text)
@@ -887,6 +1146,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .essay-actions button{min-height:38px;border-radius:12px;padding:0 12px;font-weight:800;font-size:12.5px;border:1px solid var(--line);background:var(--bg)}
 .essay-actions button.primary{background:var(--green-l);border-color:rgba(118,169,138,.18);color:var(--green-d)}
 .essay-actions button.danger{background:#F8ECEC;border-color:#EBCFD1;color:#9B6468}
+.essay-actions button.danger{display:none}
 .essay-mini-btn{
   min-height:34px;padding:0 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
   font-size:12px;font-weight:800;color:var(--green-d);display:inline-flex;align-items:center;gap:4px;flex:0 0 auto
@@ -913,6 +1173,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   font-size:11px;font-weight:900;letter-spacing:.02em
 }
 .essay-sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.essay-meta-grid{grid-template-columns:1.05fr .85fr 1.3fr}
 .essay-photo-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
 .essay-photo-item{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
 .essay-photo-item img{width:100%;height:100%;aspect-ratio:1/1;object-fit:cover}
@@ -929,104 +1190,114 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 #essayBackdrop.open{opacity:1;pointer-events:auto}
 #essaySheet{
   position:fixed;left:0;right:0;bottom:0;z-index:1007;background:var(--card);
-  border-radius:24px 24px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));
+  border-radius:24px 24px 0 0;padding:9px 20px calc(18px + env(safe-area-inset-bottom));
   transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.28,1);
-  max-width:560px;margin:0 auto;box-shadow:var(--shadow-lg);
-  max-height:calc(100dvh - 12px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  max-width:720px;margin:0 auto;box-shadow:var(--shadow-lg);
+  max-height:min(780px,calc(100dvh - 12px));overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
   box-sizing:border-box;
 }
 #essaySheet.open{transform:translateY(0)}
-#essaySheet h3{font-size:17px;margin:0 0 12px}
+#essaySheet h3{font-size:20px;margin:0 44px 4px 0;color:var(--ink);letter-spacing:-.03em}
+#essaySheet .sheet-sub{font-size:11.5px;color:var(--muted);line-height:1.5;margin:0 0 13px;padding-right:8px}
 #essaySheet textarea,#essaySheet input,#essaySheet select{
-  width:100%;border-radius:var(--radius-s);border:1.5px solid var(--line);padding:12px 14px;background:var(--bg);
+  width:100%;border-radius:13px;border:1.5px solid var(--line);padding:10px 12px;background:var(--bg);
   outline:none;resize:vertical;line-height:1.55
 }
+#essaySheet input,#essaySheet select{height:46px;min-height:46px}
+#essaySheet textarea{min-height:126px}
+#essaySheet .field{margin-bottom:11px}
+#essaySheet .field label{margin-bottom:5px}
+#essaySheet .essay-password-note{font-size:11px;line-height:1.4;margin-top:5px}
 #essaySheet textarea:focus,#essaySheet input:focus,#essaySheet select:focus{border-color:var(--green)}
-.doc-note-input{
-  flex:1;min-width:130px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
-  padding:0 12px;font-size:13px;color:var(--text)
-}
-.doc-file-chip{
-  display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:var(--green-xl);
-  border:1px solid rgba(118,169,138,.16);color:var(--green-d);font-size:12.5px;font-weight:800
-}
-.doc-file-chip .ic{width:18px;height:18px}
-.doc-thumb{position:relative;margin-top:2px}
-.doc-thumb img{width:100%;max-height:150px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
 @media(max-width:430px){
   .food-memory-grid{grid-template-columns:1fr}
   .essay-note{padding:14px}
   .essay-private-row input{min-width:0;width:100%}
-  .essay-sheet-grid{grid-template-columns:1fr}
+  .essay-sheet-grid,.essay-meta-grid{grid-template-columns:1fr}
   .essay-photo-row{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-.doc-card{padding:16px;display:flex;flex-direction:column;gap:10px}
-.doc-add-card{
-  padding:18px 16px;min-height:168px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  border:1px dashed rgba(118,169,138,.24);background:linear-gradient(180deg,rgba(250,253,250,.98),rgba(241,249,245,.92));
+.sheet-close + h3{margin-top:0}
+#expSheet .field,#listSheet .field,#essaySheet .field{margin-bottom:16px}
+#expSheet .field label,#listSheet .field label,#essaySheet .field label,#itSheet .field label,#tripSettingsSheet .field label{font-size:12px;color:var(--green-d);letter-spacing:.01em}
+#expSheet input,#expSheet select,#expSheet textarea,#listSheet input,#listSheet select,#listSheet textarea,#essaySheet input,#essaySheet select,#essaySheet textarea,#tripSettingsSheet input,#tripSettingsSheet select{color:var(--text);font-size:16px;min-height:48px}
+#expSheet textarea,#listSheet textarea,#essaySheet textarea{padding-top:12px;padding-bottom:12px}
+#itSheet .it-actions{padding-bottom:env(safe-area-inset-bottom)}
+#itSheet .it-actions button,#listSheet .list-sheet-actions button,#essaySheet .list-sheet-actions button{min-height:50px}
+#itSheet .it-actions,#listSheet .list-sheet-actions,#essaySheet .list-sheet-actions{align-items:stretch}
+#itSheet #itSave,#listSheet #listSave,#essaySheet #essaySave{box-shadow:0 7px 16px rgba(76,128,96,.16)}
+@media(max-width:560px){
+  #expSheet,#itSheet,#listSheet,#essaySheet{left:0;right:0;width:100%;max-height:calc(100dvh - 8px);padding-left:16px;padding-right:16px}
+  #expSheet .sheet-handle,#itSheet .sheet-handle,#listSheet .sheet-handle,#essaySheet .sheet-handle{margin-bottom:16px}
+  .sheet-close{top:14px;right:14px;width:38px;height:38px}
+  #essaySheet{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+  #essaySheet h3{font-size:19px}
+  .list-sheet-actions,.it-actions{gap:8px}
+  .list-sheet-actions button,.it-actions button{padding:0 12px}
 }
-.doc-add-card .doc-add-ic{
-  width:54px;height:54px;border-radius:18px;background:var(--grad);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;box-shadow:var(--shadow);
+@media(max-width:767px){
+  #appHeader,#bnav,.hero-badge,.hero-countdown{backdrop-filter:none;-webkit-backdrop-filter:none}
+  #appHeader{background:rgba(250,249,242,.98)}
+  #bnav{background:rgba(255,254,251,.98)}
+  .panel.active{animation-duration:.22s}
+  .reveal{transition-duration:.28s}
 }
-.doc-add-card .doc-add-title{font-size:15px;font-weight:900;color:var(--green-d)}
-.doc-add-card .doc-add-sub{font-size:12px;color:var(--muted);text-align:center;line-height:1.45}
-.doc-card.done{padding:12px 14px;gap:8px;background:linear-gradient(180deg,rgba(246,250,247,.98),rgba(255,255,251,.98))}
-.doc-card.done .doc-note,.doc-card.done .doc-actions,.doc-card.done .doc-thumb{display:none}
-.doc-card.done .doc-top{align-items:center}
-.doc-top{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.docs-page-sub{margin:-8px 0 18px;color:var(--muted);font-size:13px;line-height:1.6}
+.docs-layout{display:grid;gap:16px;align-items:start}
+.docs-rail{padding:18px;background:linear-gradient(155deg,#fff 0%,#f1f8f3 100%);border:1px solid rgba(118,169,138,.24)}
+.docs-rail-kicker{font-size:10px;letter-spacing:.16em;color:var(--green);font-weight:900}
+.docs-rail-title{margin-top:7px;font-size:20px;font-weight:900;color:var(--green-d);letter-spacing:-.03em}
+.docs-rail-copy{margin:8px 0 16px;color:var(--muted);font-size:12.5px;line-height:1.65}
+.docs-stat{display:flex;align-items:baseline;gap:7px;padding:12px 0;border-top:1px solid rgba(118,169,138,.18);border-bottom:1px solid rgba(118,169,138,.18);color:var(--muted);font-size:12px}
+.docs-stat strong{font-size:28px;line-height:1;color:var(--green-d);letter-spacing:-.04em}
+.docs-primary{width:100%;min-height:46px;margin-top:14px;border:0;border-radius:14px;background:var(--grad);color:#fff;font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:0 8px 18px rgba(76,128,96,.18)}
+.docs-primary:active{transform:scale(.985)}
+.docs-primary .ic{width:18px;height:18px}
+.docs-rail-tip{margin-top:14px;color:var(--muted);font-size:11px;line-height:1.6}
+.docs-list{display:grid;gap:12px;min-width:0}
+.doc-card{padding:18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:start}
+.doc-card-main{min-width:0;display:grid;gap:12px}
+.doc-card-head{display:flex;align-items:flex-start;gap:12px;min-width:0}
+.doc-card-title-wrap{display:grid;gap:6px;min-width:0;flex:1}
+.doc-display-title{font-size:15px;font-weight:800;line-height:1.35;color:var(--text);overflow-wrap:anywhere}
+.doc-display-note{font-size:12px;color:var(--muted);line-height:1.45;overflow-wrap:anywhere}
+.doc-card:not(.editing) .doc-title-input,.doc-card:not(.editing) .doc-note-input{display:none}
+.doc-card.editing .doc-display-title,.doc-card.editing .doc-display-note{display:none}
+.doc-edit-only{display:none}
+.doc-card.editing .doc-edit-only{display:flex}
+.doc-card-kicker{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:900}
 .doc-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
 .doc-ic{
-  flex-shrink:0;width:40px;height:40px;border-radius:13px;background:var(--green-xl);color:var(--green-d);
+  flex-shrink:0;width:44px;height:44px;border-radius:14px;background:var(--green-xl);color:var(--green-d);
   display:flex;align-items:center;justify-content:center;
 }
 .doc-title{font-weight:800;font-size:14.5px}
 .doc-hint{font-size:12px;color:var(--muted);margin-top:2px}
-.doc-head-fields{flex:1;min-width:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.doc-title-input{
-  flex:1;min-width:130px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
-  padding:0 12px;font-weight:800;font-size:14px;color:var(--text)
+.doc-title-input{width:100%;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:10px 12px;font-weight:800;font-size:15px;color:var(--text)}
+.doc-note-input{
+  width:100%;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
+  padding:10px 12px;font-size:13px;color:var(--text);box-sizing:border-box
 }
-.doc-type-select{
-  flex-shrink:0;min-width:90px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--green-xl);
-  color:var(--green-d);font-weight:800;font-size:12.5px;text-align:center;text-align-last:center;padding:0 10px
-}
-.doc-status-select{
-  margin-left:auto;flex-shrink:0;min-height:38px;min-width:104px;border-radius:999px;
-  padding:0 12px 0 10px;font-size:11.5px;font-weight:800;color:var(--green-d);background:var(--green-xl);
-  border:1px solid rgba(118,169,138,.18);appearance:none;-webkit-appearance:none;text-align:center;text-align-last:center;
-}
-.doc-status-select option{text-align:center}
-.doc-note{font-size:12.5px;color:var(--muted);background:var(--bg);border-radius:10px;padding:8px 12px;line-height:1.5;min-height:20px}
-.doc-actions{display:flex;gap:8px;flex-wrap:wrap}
+.doc-file-summary{min-width:0}
+.doc-attachment{display:flex;align-items:center;gap:8px;min-height:38px;padding:8px 11px;border-radius:11px;background:var(--green-xl);border:1px solid rgba(118,169,138,.16);color:var(--green-d);font-size:12px;font-weight:800;overflow:hidden}
+.doc-attachment .ic{width:17px;height:17px;flex-shrink:0}
+.doc-attachment span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.doc-attachment-empty{background:var(--bg);border-style:dashed;color:var(--muted);font-weight:700}
+.doc-attachment-image{padding:0;display:block;background:var(--bg);overflow:hidden}
+.doc-attachment-image img{display:block;width:100%;max-height:180px;object-fit:cover}
+.doc-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;align-content:start;gap:8px;min-width:152px}
 .doc-btn{
-  flex:1;min-height:44px;border-radius:11px;background:var(--bg);font-weight:800;font-size:12.5px;
+  min-height:42px;padding:0 12px;border-radius:11px;background:var(--bg);font-weight:800;font-size:12.5px;
   border:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:5px;
 }
 .doc-btn .ic{width:16px;height:16px}
 .doc-btn:active{background:var(--line)}
-.doc-btn.danger{flex:.72;color:#9B6468;background:#F8ECEC;border-color:#EBCFD1}
-.doc-done-wrap{
-  margin-top:2px;border-radius:18px;border:1px solid rgba(224,232,226,.95);background:rgba(252,253,251,.8);overflow:hidden
-}
-.doc-done-wrap[open]{background:rgba(249,252,249,.96)}
-.doc-done-summary{
-  list-style:none;cursor:pointer;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  font-size:12.5px;font-weight:800;color:var(--green-d);background:linear-gradient(180deg,rgba(233,243,236,.8),rgba(255,255,251,.9))
-}
-.doc-done-summary::-webkit-details-marker{display:none}
-.doc-done-summary span{font-weight:700;color:var(--muted)}
-.doc-done-summary i{width:16px;height:16px;flex-shrink:0;color:var(--green)}
-.doc-done-list{display:grid;gap:8px;padding:0 0 10px}
-.doc-card.done .doc-ic{width:34px;height:34px;border-radius:11px}
-.doc-card.done .doc-title{font-size:13.5px}
-.doc-card.done .doc-status-select{min-width:92px;min-height:34px;font-size:11px}
-.doc-card.done .doc-main{gap:1px}
-.doc-thumb .dt-del{
-  position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:rgba(24,38,31,.65);
-  color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;
-}
-.docs-hint{margin-top:14px;padding:12px 16px;border-radius:var(--radius-s);background:var(--green-xl);color:var(--green-d);font-size:12.5px;line-height:1.55;border:1px dashed var(--green)}
+.doc-btn:disabled{opacity:.42;cursor:not-allowed;background:var(--bg)}
+.doc-btn.danger{color:#9B6468;background:#F8ECEC;border-color:#EBCFD1}
+.doc-empty{padding:28px 20px;text-align:center;color:var(--muted);font-size:13px;border:1px dashed rgba(118,169,138,.28);background:rgba(255,255,255,.72)}
+@media(min-width:960px){.docs-layout{grid-template-columns:220px minmax(0,1fr)}.docs-rail{position:sticky;top:76px}}
+@media(max-width:720px){.docs-page-sub{margin-top:-7px;margin-bottom:14px}.docs-rail{padding:15px}.docs-rail-copy{margin-bottom:13px}.doc-card{grid-template-columns:1fr;padding:15px;gap:13px}.doc-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));min-width:0}.doc-btn{min-height:44px;padding:0 8px}.doc-title-input,.doc-note-input{font-size:16px}}
+@media(max-width:600px){.flight-baggage-grid{grid-template-columns:1fr;gap:6px}.flight-baggage-item{display:grid;grid-template-columns:74px minmax(0,1fr);gap:7px}.flight-baggage-item b{margin:0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.panel.active,.reveal,.hero-layer,.hero-progress i,*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 /* ============ 锦囊：美食 / 短语 / 贴士 ============ */
 .food-group{margin-bottom:16px}
@@ -1060,11 +1331,62 @@ table.phrases{width:100%;min-width:560px;border-collapse:collapse;background:var
 .tip-card .tip-top{display:flex;align-items:center;gap:8px}
 .tip-card h3{font-size:14.5px}
 .tip-card p{font-size:12.5px;color:var(--muted);line-height:1.55}
+.tips-stack{display:grid;grid-template-columns:1fr;gap:12px}
+.tips-stack .tip-card{width:100%;min-width:0}
+@media(min-width:768px){.tips-stack{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.tips-stack .tip-card{padding:17px}}
 
 /* ============ 页脚 ============ */
 footer{padding:26px 0 12px;text-align:center;color:var(--muted);font-size:12.5px}
 footer .f-heart{color:var(--pink)}
 footer .f-brand{margin-top:6px;font-size:11.5px}
+
+/* ============ 统一输入弹层 ============ */
+#expSheet,#itSheet,#listSheet,#essaySheet,#tripSettingsSheet{
+  border-radius:26px 26px 0 0;
+  background:rgba(255,254,250,.985);
+  border:1px solid rgba(224,235,223,.95);
+  box-shadow:0 -10px 36px rgba(31,64,46,.14);
+}
+#expSheet h3,#itSheet h3,#listSheet h3,#essaySheet h3,#tripSettingsSheet h3{
+  color:var(--ink);font-weight:900;letter-spacing:-.03em;line-height:1.25;
+}
+#expSheet .field,#itSheet .field,#listSheet .field,#essaySheet .field,#tripSettingsSheet .field{margin-bottom:13px}
+#expSheet .field label,#itSheet .field label,#listSheet .field label,#essaySheet .field label,#tripSettingsSheet .field label{
+  display:block;margin-bottom:6px;color:var(--green-d);font-size:12px;font-weight:850;line-height:1.3;
+}
+#expSheet input,#expSheet select,#expSheet textarea,
+#itSheet input,#itSheet select,#itSheet textarea,
+#listSheet input,#listSheet select,#listSheet textarea,
+#essaySheet input,#essaySheet select,#essaySheet textarea,
+#tripSettingsSheet input,#tripSettingsSheet select,#tripSettingsSheet textarea{
+  min-height:48px;border-radius:14px;border:1.5px solid var(--line);background:#FCFDF9;color:var(--text);
+  font-size:16px;line-height:1.45;outline:none;transition:border-color .18s,box-shadow .18s;
+}
+#expSheet input:focus,#expSheet select:focus,#expSheet textarea:focus,
+#itSheet input:focus,#itSheet select:focus,#itSheet textarea:focus,
+#listSheet input:focus,#listSheet select:focus,#listSheet textarea:focus,
+#essaySheet input:focus,#essaySheet select:focus,#essaySheet textarea:focus,
+#tripSettingsSheet input:focus,#tripSettingsSheet select:focus,#tripSettingsSheet textarea:focus{
+  border-color:var(--green);box-shadow:0 0 0 3px rgba(118,169,138,.12);
+}
+#expSheet .list-sheet-actions,#itSheet .it-actions,#listSheet .list-sheet-actions,#essaySheet .list-sheet-actions,#tripSettingsSheet .list-sheet-actions{
+  display:flex;gap:9px;align-items:stretch;margin-top:17px;padding-top:3px;
+}
+#expSheet .list-sheet-actions button,#itSheet .it-actions button,#listSheet .list-sheet-actions button,#essaySheet .list-sheet-actions button,#tripSettingsSheet .list-sheet-actions button{
+  min-height:50px;border-radius:15px;padding:0 15px;font-size:14px;font-weight:900;
+}
+#expSave,#itSave,#listSave,#essaySave,#tripSettingsSave{flex:1;background:var(--grad);color:#fff;border:0;box-shadow:0 7px 16px rgba(76,128,96,.16)}
+#expSheet #expCancel,#itCancel,#listCancel,#essayCancel,#tripSettingsCancel{background:var(--card);color:var(--muted);border:1px solid var(--line)}
+#listDelete,#essayDelete,#tripDeleteBtn{background:#F8ECEC;color:#9B6468;border:1px solid #EBCFD1}
+@media(min-width:768px){
+  #expSheet,#listSheet,#essaySheet,#tripSettingsSheet{bottom:24px;border-radius:26px;max-height:min(82dvh,760px)}
+  #itSheet{bottom:24px;border-radius:26px;max-height:min(86dvh,860px)}
+}
+@media(max-width:560px){
+  #expSheet,#itSheet,#listSheet,#essaySheet,#tripSettingsSheet{max-height:calc(100dvh - 8px);padding-left:16px;padding-right:16px}
+  #expSheet .list-sheet-actions,#itSheet .it-actions,#listSheet .list-sheet-actions,#essaySheet .list-sheet-actions,#tripSettingsSheet .list-sheet-actions{gap:8px}
+  #expSheet .list-sheet-actions button,#itSheet .it-actions button,#listSheet .list-sheet-actions button,#essaySheet .list-sheet-actions button,#tripSettingsSheet .list-sheet-actions button{padding:0 12px}
+}
 
 /* ============ 动画 ============ */
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
@@ -1080,33 +1402,84 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   .wx-day{width:108px}
   .tip-card{width:300px}
   .ring-row{gap:14px}
-  .doc-thumb img{max-height:190px}
+  .flight-data{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(min-width:960px){
-  #tab-itinerary .wrap{max-width:960px}
+  #tab-itinerary .wrap{max-width:1040px}
   #tab-itinerary .sec-title{margin-bottom:16px}
-  #tab-itinerary .cal-card{padding:18px 20px 16px}
+  #tab-itinerary .cal-card{padding:22px 26px 24px;background:linear-gradient(135deg,#fff 0%,#fbfdf9 72%,#f3f8f1 100%)}
+  #tab-itinerary .cal-head{margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid rgba(118,169,138,.16)}
+  #tab-itinerary .cal-heading{gap:12px}
+  #tab-itinerary #calTitle{font-size:22px;letter-spacing:.01em}
+  #tab-itinerary .cal-caption{font-size:12px}
+  #tab-itinerary .cal-nav{width:38px;height:38px;border-radius:12px;font-size:18px;background:rgba(255,255,255,.72)}
+  #tab-itinerary .cal-content{display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:24px;align-items:end}
   #tab-itinerary .cal-grid{
-    width:min(100%,560px);
-    max-width:560px;
+    width:100%;
+    max-width:none;
     grid-template-columns:repeat(7,minmax(0,1fr));
     gap:8px;
+    grid-auto-rows:64px;
   }
-  #tab-itinerary .cal-cell{height:48px;border-radius:13px;font-size:13px}
-  #tab-itinerary .cal-wd{font-size:12px;padding-bottom:8px}
-  #tab-itinerary .day-chip{height:42px;padding:0 16px;font-size:13px}
+  #tab-itinerary .cal-cell{height:64px;border-radius:15px;font-size:14px;align-items:flex-start;justify-content:space-between;padding:11px 12px 10px}
+  #tab-itinerary .cal-cell.trip{background:rgba(232,244,234,.82);border-color:rgba(118,169,138,.2)}
+  #tab-itinerary .cal-cell.trip.is-active{background:var(--grad);box-shadow:0 8px 18px rgba(63,96,78,.15)}
+  #tab-itinerary .cal-wd{font-size:11px;text-align:left;padding:0 4px 2px;color:var(--green-d);letter-spacing:.12em}
+  #tab-itinerary .cal-legend{height:100%;margin:0;padding:14px 0 10px 18px;border-left:1px solid rgba(118,169,138,.16);display:flex;flex-direction:column;justify-content:flex-end;gap:12px}
+  #tab-itinerary .cal-lg{font-size:12px;gap:8px}
+  #tab-itinerary .cal-lg i{width:8px;height:8px}
+  #tab-itinerary .day-chip{height:44px;padding:0 16px;font-size:13px}
   #tab-itinerary .day-card{border-radius:22px;overflow:hidden}
-  #tab-itinerary .dc-head{padding:14px 18px;gap:14px;min-height:64px}
+  #tab-itinerary .dc-head{
+    padding:14px 18px;gap:14px;min-height:68px;
+    display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;
+  }
   #tab-itinerary .dc-num{width:50px;height:50px;border-radius:16px}
-  #tab-itinerary .dc-art{width:86px;height:58px;border-radius:16px}
+  #tab-itinerary .dc-art{width:88px;height:60px;border-radius:16px}
   #tab-itinerary .dc-title{font-size:16px;line-height:1.35}
+  #tab-itinerary .dc-badge{justify-self:end}
   #tab-itinerary .dc-body-inner{padding-bottom:4px}
-  #tab-itinerary .dc-gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 18px 12px}
-  #tab-itinerary .tl-row{padding:12px 18px 12px 46px}
+  #tab-itinerary .dc-tools{padding:0 18px 10px}
+  #tab-itinerary .dc-gallery{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0 18px 12px}
+  #tab-itinerary .tl-row{
+    display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:14px;align-items:start;
+    padding:12px 18px 12px 46px;
+  }
   #tab-itinerary .tl-row::before{left:30px}
   #tab-itinerary .tl-dot{left:25px}
-  #tab-itinerary .tl-time{width:86px}
+  #tab-itinerary .tl-time{width:auto;padding-top:2px}
+  #tab-itinerary .tl-main{padding-right:10px}
+  #tab-itinerary .tl-tools{margin-left:0;padding-top:0;align-self:start}
   #tab-itinerary .tl-title{font-size:15px}
+  #tab-itinerary .tl-detail{max-width:700px}
+}
+@media(max-width:430px){
+  .journal-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .journal-card.wide{grid-column:1 / -1}
+  .journal-copy{padding:9px 10px 11px}
+  .journal-copy h3{font-size:13px}
+  .journal-copy p{font-size:11px;line-height:1.4}
+  .l-row{
+    flex-wrap:wrap;align-items:flex-start;padding:12px 12px;gap:10px;
+  }
+  .l-main{order:3;flex:1 1 calc(100% - 88px)}
+  .l-actions{order:4;margin-left:auto;justify-content:flex-end}
+  .l-drag{order:5}
+  .l-toggle{order:1}
+  .l-ic{order:2}
+  .l-mini{width:38px;height:38px}
+  .dc-head{padding:12px 14px;gap:10px}
+  .dc-num{width:42px;height:42px;border-radius:13px;font-size:14px}
+  .dc-art{width:68px;height:48px;border-radius:12px}
+  .dc-title{font-size:14px}
+  .dc-tools{padding:0 12px 8px}
+  .dc-gallery{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 12px 10px}
+  .tl-row{padding-left:38px}
+  .tl-row::before{left:23px}
+  .tl-dot{left:18px}
+  .tl-time{width:68px}
+  .tl-tools{gap:4px}
+  .tl-edit{min-height:30px;padding:0 8px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
@@ -1119,7 +1492,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- 顶部 App 头 -->
 <header id="appHeader">
   <div class="header-row">
-    <span class="brand"><i class="ti" data-ic="leaf"></i>Korea Trip</span>
+    <button class="brand" id="tripSwitcher" type="button" aria-label="切换旅程" aria-haspopup="dialog"><i class="ti" data-ic="leaf"></i>Korea Trip</button>
     <span id="tb-phase">…</span>
     <span id="tb-time"></span>
   </div>
@@ -1144,12 +1517,39 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
 
     <button id="ctaPlan"><i class="ti" data-ic="map"></i>开始规划旅程</button>
+    <div class="short-trip-banner" aria-live="polite"></div>
 
     <div class="qcards">
       <button class="card qcard qcard-btn" data-goto="todos"><span class="qc-ic"><i class="ti" data-ic="todo"></i></span>行程清单<span class="qc-sub">机票 · 酒店 · 签证</span></button>
       <button class="card qcard qcard-btn" data-goto="docs"><span class="qc-ic"><i class="ti" data-ic="file"></i></span>备忘记录<span class="qc-sub">自定义文件 · 照片</span></button>
       <button class="card qcard qcard-btn" data-goto="guide"><span class="qc-ic"><i class="ti" data-ic="heart"></i></span>我的收藏<span class="qc-sub">美食 · 短语 · 贴士</span></button>
     </div>
+
+    <div class="nu-card card" id="nextUp"></div>
+
+    <!-- 天气 -->
+    <h2 class="sec-title"><i class="ti" data-ic="sun"></i>天气 <span class="st-sub" id="wxAutoHint"></span></h2>
+    <div class="city-tabs" id="cityTabs">
+      <button class="city-tab active" data-city="busan"><i class="ti" data-ic="wave"></i>釜山</button>
+      <button class="city-tab" data-city="seoul"><i class="ti" data-ic="temple"></i>首尔</button>
+    </div>
+    <div class="card wx-now">
+      <div class="wx-big-ic" id="wxEmoji"></div>
+      <div>
+        <div class="wx-temp" id="wxTemp">--°</div>
+        <div class="wx-info">
+          <span class="wx-desc" id="wxDesc">加载中…</span>
+          <span class="wx-sub" id="wxSub"></span>
+        </div>
+      </div>
+      <div class="wx-city-tag">
+        <div class="wct-name" id="wxCityName">—</div>
+        <div class="wct-upd" id="wxUpdated"></div>
+      </div>
+    </div>
+    <div class="hscroll" id="wxDays"></div>
+    <button id="wxHourlyBtn" class="tap"><i class="ti" data-ic="clock"></i>逐小时预报</button>
+    <div id="wxHourlyWrap"><div class="hscroll" id="wxHourly"></div></div>
 
     <div class="memo-strip">
       <div class="memo-head">
@@ -1178,6 +1578,39 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       </div>
     </div>
 
+    <section class="newyear-board card" aria-labelledby="newyearTitle">
+      <div class="newyear-head">
+        <div>
+          <div class="newyear-kicker">NEW YEAR NOTES · 2026–2027</div>
+          <h2 class="newyear-title" id="newyearTitle">跨年特别企划</h2>
+          <p class="newyear-sub">把跨年活动、限定演出和临时快闪集中放在这里，官方公布后再逐条补充。</p>
+        </div>
+        <span class="newyear-badge">持续更新</span>
+      </div>
+      <div class="newyear-grid">
+        <article class="newyear-card">
+          <div class="ny-top"><span class="ny-ic">🎉</span><h3>跨年倒计时</h3></div>
+          <p>重点关注钟路、普信阁一带的官方安排和入场规则。</p>
+          <span class="ny-status">待确认 · 12/31</span>
+        </article>
+        <article class="newyear-card">
+          <div class="ny-top"><span class="ny-ic">✨</span><h3>烟花与灯光</h3></div>
+          <p>记录烟花、灯光秀、倒数舞台等跨年夜特别节目。</p>
+          <span class="ny-status">待公布</span>
+        </article>
+        <article class="newyear-card">
+          <div class="ny-top"><span class="ny-ic">🎤</span><h3>演出与快闪</h3></div>
+          <p>演唱会、街头表演、商圈快闪和节日限定布置。</p>
+          <span class="ny-status">待补充</span>
+        </article>
+        <article class="newyear-card">
+          <div class="ny-top"><span class="ny-ic">⛸️</span><h3>冬季限定</h3></div>
+          <p>滑冰场、冬日市集、节日菜单和只在冬天出现的体验。</p>
+          <span class="ny-status">持续收集</span>
+        </article>
+      </div>
+    </section>
+
     <div class="journal-head" style="margin-top:18px">
       <h2 class="sec-title"><i class="ti" data-ic="hotel"></i>住宿</h2>
       <span class="journal-note">釜山 · 首尔</span>
@@ -1187,58 +1620,93 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="釜山站ASTI酒店 手帐风外观">
         <div class="bc-route"><span class="bc-name">釜山站ASTI酒店</span><span class="bc-en">ASTI Hotel Busan Station</span></div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
-        <div class="bc-meta">釜山站步行级别 / 方便 12/29 晚上直接坐 KTX 去首尔</div>
-        <div class="bc-note">已确认：釜山站 ASTI 酒店（ASTI Hotel Busan Station）。</div>
+        <div class="bc-details">
+          <div class="bc-detail"><span class="bc-detail-label">入住时间</span><span class="bc-detail-value">12/26 15:00 后</span></div>
+          <div class="bc-detail"><span class="bc-detail-label">退房时间</span><span class="bc-detail-value">12/29 11:00 前</span></div>
+          <div class="bc-detail"><span class="bc-detail-label">房型</span><span class="bc-detail-value">景城标准双人床房<small>Standard Double Room · City View</small></span></div>
+          <div class="bc-detail"><span class="bc-detail-label">酒店地址</span><span class="bc-detail-value">韩国釜山广域市东区中央大路214番街7-8号<small>7-8 Jungang-daero 214beon-gil, Dong-gu, Busan 48733</small></span></div>
+        </div>
+        <div class="bc-note">已确认 · 确认号 26492778 · 订单号 1128150678962700</div>
       </div>
       <div class="card board-card">
         <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="首尔明洞万怡酒店 手绘酒店外观">
         <div class="bc-route"><span class="bc-name">首尔明洞万怡酒店</span><span class="bc-en">Courtyard by Marriott Seoul Myeongdong</span></div>
         <div class="bc-date">12/29 - 1/3 · 5 晚</div>
-        <div class="bc-meta">入住 12/29 15:00 · 退房 1/3 11:00</div>
-        <div class="bc-note">Confirmation #93241473 · 首尔酒店已确认。</div>
+        <div class="bc-details">
+          <div class="bc-detail"><span class="bc-detail-label">入住时间</span><span class="bc-detail-value">12/29 15:00</span></div>
+          <div class="bc-detail"><span class="bc-detail-label">退房时间</span><span class="bc-detail-value">1/3 11:00</span></div>
+          <div class="bc-detail"><span class="bc-detail-label">房型</span><span class="bc-detail-value">Premier 客房<small>Premier Guest Room</small></span></div>
+          <div class="bc-detail"><span class="bc-detail-label">酒店地址</span><span class="bc-detail-value">韩国首尔特别市中区南大门路9号<small>9 Namdaemun-ro, Jung-gu, Seoul 04526</small></span></div>
+        </div>
+        <div class="bc-note">已确认 · Confirmation #93241473 · 积分兑换价（Redemption Rate）</div>
       </div>
     </div>
 
     <div class="journal-head">
       <h2 class="sec-title"><i class="ti" data-ic="map"></i>韩国旅行画册</h2>
-      <span class="journal-note">首尔 · 釜山</span>
+      <span class="journal-note" id="journalNote">首尔 · 釜山 · 14 张手帐图片</span>
     </div>
-    <div class="journal-grid">
-      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看釜山行程">
-        <img src="assets/photos/busan-editorial.webp" alt="釜山甘川文化村编辑画册">
-        <span class="journal-copy"><span class="journal-kicker">釜山 · D1–D4</span><h3>山坡上的彩色房子</h3><p>甘川文化村、海云台与海边慢慢走</p></span>
+    <div class="journal-grid is-collapsed" id="journalGrid">
+      <a class="card journal-card wide reference" href="assets/maps/busan-hand-drawn-map.jpg" target="_blank" rel="noopener" aria-label="打开釜山手绘地图原图">
+        <img src="assets/maps/busan-hand-drawn-map.jpg" alt="釜山 5 天 4 晚手绘地图">
+        <span class="journal-copy"><span class="journal-kicker">釜山 · 手帐地图</span><h3>釜山 5 天 4 晚手绘地图</h3><p>路线、地铁、海边和每日安排都整理在一张图里 · 点击查看原图</p></span>
+      </a>
+      <a class="card journal-card wide reference" href="assets/maps/seoul-area-guide.jpg" target="_blank" rel="noopener" aria-label="打开首尔区域攻略原图">
+        <img src="assets/maps/seoul-area-guide.jpg" alt="首尔五大核心区域旅行地图攻略">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 区域攻略</span><h3>首尔五大核心区域攻略</h3><p>弘大、江南、东大门、首尔大学和汝矣岛一眼看懂 · 点击查看原图</p></span>
+      </a>
+      <a class="card journal-card wide reference" href="assets/maps/seoul-slow-travel-map.jpg" target="_blank" rel="noopener" aria-label="打开首尔慢游地图原图">
+        <img src="assets/maps/seoul-slow-travel-map.jpg" alt="首尔慢游地图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 手绘路线</span><h3>首尔慢游地图</h3><p>古宫、韩屋、市场和汉江的慢慢走路线 · 点击查看原图</p></span>
+      </a>
+      <a class="card journal-card wide reference" href="assets/maps/seoul-full-map.jpg" target="_blank" rel="noopener" aria-label="打开韩国首尔旅游全景点地图原图">
+        <img src="assets/maps/seoul-full-map.jpg" alt="韩国首尔旅游全景点地图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 全景地图</span><h3>韩国首尔旅游全景点地图</h3><p>景点、商圈、美食和交通位置集中查看 · 点击查看原图</p></span>
+      </a>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看海云台">
+        <img src="assets/photos/busan-haeundae-winter-shore.png" alt="海云台冬日海岸手帐图">
+        <span class="journal-copy"><span class="journal-kicker">釜山 · 海云台</span><h3>冬天人少的海</h3><p>海风、散步和慢一点的早晨</p></span>
       </button>
-      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看首尔行程">
-        <img src="assets/photos/seoul-editorial.webp" alt="首尔 N 首尔塔编辑画册">
-        <span class="journal-copy"><span class="journal-kicker">首尔 · D5–D9</span><h3>暮色里的南山塔</h3><p>韩屋、市场、跨年钟声与夜色</p></span>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看甘川文化村">
+        <img src="assets/photos/busan-gamcheon-hillside-colors.png" alt="甘川文化村手帐图">
+        <span class="journal-copy"><span class="journal-kicker">釜山 · 甘川</span><h3>坡上的彩色房子</h3><p>小王子、彩墙和山坡上的光</p></span>
+      </button>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看广安里">
+        <img src="assets/photos/busan-gwangalli-bridge-glow.png" alt="广安里大桥夜景手帐图">
+        <span class="journal-copy"><span class="journal-kicker">釜山 · 广安里</span><h3>桥灯亮起来的时候</h3><p>海边咖啡和夜色一块儿慢慢亮</p></span>
+      </button>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看景福宫">
+        <img src="assets/photos/seoul-palace-editorial.png" alt="景福宫手帐图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 景福宫</span><h3>古宫和冬日光线</h3><p>韩服、宫墙、安静而明亮的上午</p></span>
+      </button>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看北村">
+        <img src="assets/photos/seoul-bukchon-quiet-roofs.png" alt="北村韩屋村手帐图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 北村</span><h3>屋檐下的慢走</h3><p>韩屋巷子、坡道和安静的转角</p></span>
+      </button>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看明洞">
+        <img src="assets/photos/seoul-myeongdong-lantern-street.png" alt="明洞灯笼街手帐图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 明洞</span><h3>灯笼街和夜里的人潮</h3><p>晚餐、逛街和顺手买点小东西</p></span>
+      </button>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看首尔夜景">
+        <img src="assets/photos/seoul-night-editorial.png" alt="首尔夜景手帐图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 夜色</span><h3>跨年那晚的亮灯城市</h3><p>南山、钟路和整座城市的夜风</p></span>
+      </button>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看机场返程">
+        <img src="assets/photos/seoul-airport-editorial.png" alt="返程机场手帐图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 返程</span><h3>行李和落日一起收尾</h3><p>退税、免税店和最后一段路</p></span>
+      </button>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看万怡酒店">
+        <img src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="首尔明洞万怡酒店手帐图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 酒店</span><h3>明洞的夜色房间</h3><p>入住和休息都放在更顺手的位置</p></span>
+      </button>
+      <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看圣水洞">
+        <img src="assets/photos/seoul-seongsu-factory-cafe.png" alt="圣水洞工厂咖啡馆手帐图">
+        <span class="journal-copy"><span class="journal-kicker">首尔 · 圣水洞</span><h3>工厂区改造后的咖啡味</h3><p>买手店、面包和冬日午后</p></span>
       </button>
     </div>
-
-    <div class="nu-card card" id="nextUp"></div>
-
-    <!-- 天气 -->
-    <h2 class="sec-title"><i class="ti" data-ic="sun"></i>天气 <span class="st-sub" id="wxAutoHint"></span></h2>
-    <div class="city-tabs" id="cityTabs">
-      <button class="city-tab active" data-city="busan"><i class="ti" data-ic="wave"></i>釜山</button>
-      <button class="city-tab" data-city="seoul"><i class="ti" data-ic="temple"></i>首尔</button>
-    </div>
-    <div class="card wx-now">
-      <div class="wx-big-ic" id="wxEmoji"></div>
-      <div>
-        <div class="wx-temp" id="wxTemp">--°</div>
-        <div class="wx-info">
-          <span class="wx-desc" id="wxDesc">加载中…</span>
-          <span class="wx-sub" id="wxSub"></span>
-        </div>
-      </div>
-      <div class="wx-city-tag">
-        <div class="wct-name" id="wxCityName">—</div>
-        <div class="wct-upd" id="wxUpdated"></div>
-      </div>
-    </div>
-    <div class="hscroll" id="wxDays"></div>
-    <button id="wxHourlyBtn" class="tap"><i class="ti" data-ic="clock"></i>逐小时预报</button>
-    <div id="wxHourlyWrap"><div class="hscroll" id="wxHourly"></div></div>
+    <button class="journal-toggle" id="journalToggle" type="button" aria-expanded="false" aria-controls="journalGrid">
+      <span>展开全部画册</span><i class="ti" data-ic="chevron" aria-hidden="true"></i>
+    </button>
 
     <!-- 倒计时 -->
     <h2 class="sec-title" style="margin-top:24px"><i class="ti" data-ic="clock"></i>重要倒计时 <span class="st-sub">出发 · 跨年 · 回家</span></h2>
@@ -1279,15 +1747,23 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
     <div class="card cal-card">
       <div class="cal-head">
-        <button class="cal-nav" id="calPrev" aria-label="上个月">‹</button>
-        <span id="calTitle">2026年12月</span>
-        <button class="cal-nav" id="calNext" aria-label="下个月">›</button>
+        <div class="cal-heading">
+          <span class="cal-eyebrow">TRIP CALENDAR</span>
+          <span id="calTitle">2026年12月</span>
+          <span class="cal-caption">9 天行程 · 点击日期查看安排</span>
+        </div>
+        <div class="cal-navs">
+          <button class="cal-nav" id="calPrev" aria-label="上个月">‹</button>
+          <button class="cal-nav" id="calNext" aria-label="下个月">›</button>
+        </div>
       </div>
-      <div class="cal-grid" id="calGrid"></div>
-      <div class="cal-legend">
-        <span class="cal-lg"><i style="--lc:#A7C8CF"></i>景点</span>
-        <span class="cal-lg"><i style="--lc:#E2B96F"></i>美食</span>
-        <span class="cal-lg"><i style="--lc:#94A7B8"></i>交通</span>
+      <div class="cal-content">
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <span class="cal-lg"><i style="--lc:#A7C8CF"></i><span>景点</span></span>
+          <span class="cal-lg"><i style="--lc:#E2B96F"></i><span>美食</span></span>
+          <span class="cal-lg"><i style="--lc:#94A7B8"></i><span>交通</span></span>
+        </div>
       </div>
     </div>
 
@@ -1297,16 +1773,26 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="釜山站ASTI酒店 手帐风外观">
         <div class="bc-route"><span class="bc-name">釜山站ASTI酒店</span><span class="bc-en">ASTI Hotel Busan Station</span></div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
-        <div class="bc-meta">釜山站步行级别 / 方便 12/29 晚上直接坐 KTX 去首尔</div>
-        <div class="bc-note">已确认：釜山站 ASTI 酒店（ASTI Hotel Busan Station）。</div>
+        <div class="bc-details">
+          <div class="bc-detail"><span class="bc-detail-label">入住时间</span><span class="bc-detail-value">12/26 15:00 后</span></div>
+          <div class="bc-detail"><span class="bc-detail-label">退房时间</span><span class="bc-detail-value">12/29 11:00 前</span></div>
+          <div class="bc-detail"><span class="bc-detail-label">房型</span><span class="bc-detail-value">景城标准双人床房<small>Standard Double Room · City View</small></span></div>
+          <div class="bc-detail"><span class="bc-detail-label">酒店地址</span><span class="bc-detail-value">韩国釜山广域市东区中央大路214番街7-8号<small>7-8 Jungang-daero 214beon-gil, Dong-gu, Busan 48733</small></span></div>
+        </div>
+        <div class="bc-note">已确认 · 确认号 26492778 · 订单号 1128150678962700</div>
         <span class="bc-tbd">已确认</span>
       </div>
       <div class="card board-card">
         <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="首尔明洞万怡酒店 手绘酒店外观">
         <div class="bc-route"><span class="bc-name">首尔明洞万怡酒店</span><span class="bc-en">Courtyard by Marriott Seoul Myeongdong</span></div>
         <div class="bc-date">12/29 - 1/3 · 5 晚</div>
-        <div class="bc-meta">入住 12/29 15:00 · 退房 1/3 11:00</div>
-        <div class="bc-note">Confirmation #93241473 · 原名 Seoul Namdaemun，现已更名为 Myeongdong。</div>
+        <div class="bc-details">
+          <div class="bc-detail"><span class="bc-detail-label">入住时间</span><span class="bc-detail-value">12/29 15:00</span></div>
+          <div class="bc-detail"><span class="bc-detail-label">退房时间</span><span class="bc-detail-value">1/3 11:00</span></div>
+          <div class="bc-detail"><span class="bc-detail-label">房型</span><span class="bc-detail-value">Premier 客房<small>Premier Guest Room</small></span></div>
+          <div class="bc-detail"><span class="bc-detail-label">酒店地址</span><span class="bc-detail-value">韩国首尔特别市中区南大门路9号<small>9 Namdaemun-ro, Jung-gu, Seoul 04526</small></span></div>
+        </div>
+        <div class="bc-note">已确认 · Confirmation #93241473 · 积分兑换价（Redemption Rate）</div>
         <span class="bc-tbd">已确认</span>
       </div>
     </div>
@@ -1320,12 +1806,36 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <section class="panel" id="tab-map">
   <div class="wrap">
     <h2 class="sec-title"><i class="ti" data-ic="pin"></i>双城地图</h2>
-    <div class="map-tabs" id="mapTabs">
-      <button class="city-tab active" data-city="busan" style="max-width:none"><i class="ti" data-ic="wave"></i>釜山</button>
-      <button class="city-tab" data-city="seoul" style="max-width:none"><i class="ti" data-ic="temple"></i>首尔</button>
+    <div class="short-trip-banner" aria-live="polite"></div>
+    <div class="map-reference-note">这里直接保留你提供的小红书原图，不做重绘和裁剪。点击任意图片可打开原尺寸，手机上适合上下滑动查看，电脑端按釜山、首尔分组浏览。</div>
+    <div class="map-reference-groups">
+      <section class="map-reference-group" aria-labelledby="busanMapTitle">
+        <h3 class="map-group-title" id="busanMapTitle">釜山地图</h3>
+        <div class="map-reference-grid">
+          <a class="map-reference-card" href="assets/maps/busan-hand-drawn-map.jpg" target="_blank" rel="noopener">
+            <img src="assets/maps/busan-hand-drawn-map.jpg" alt="釜山 5 天 4 晚手绘地图">
+            <span class="map-reference-meta"><strong>釜山 · 5 天 4 晚手绘地图</strong><span>点击查看原图</span></span>
+          </a>
+        </div>
+      </section>
+      <section class="map-reference-group" aria-labelledby="seoulMapTitle">
+        <h3 class="map-group-title" id="seoulMapTitle">首尔地图</h3>
+        <div class="map-reference-grid">
+          <a class="map-reference-card" href="assets/maps/seoul-area-guide.jpg" target="_blank" rel="noopener">
+            <img src="assets/maps/seoul-area-guide.jpg" alt="首尔旅行地图攻略">
+            <span class="map-reference-meta"><strong>首尔 · 五大核心区域攻略</strong><span>点击查看原图</span></span>
+          </a>
+          <a class="map-reference-card" href="assets/maps/seoul-slow-travel-map.jpg" target="_blank" rel="noopener">
+            <img src="assets/maps/seoul-slow-travel-map.jpg" alt="首尔慢游地图">
+            <span class="map-reference-meta"><strong>首尔 · 慢游地图</strong><span>点击查看原图</span></span>
+          </a>
+          <a class="map-reference-card" href="assets/maps/seoul-full-map.jpg" target="_blank" rel="noopener">
+            <img src="assets/maps/seoul-full-map.jpg" alt="韩国首尔旅游全景点地图">
+            <span class="map-reference-meta"><strong>首尔 · 旅游全景点地图</strong><span>点击查看原图</span></span>
+          </a>
+        </div>
+      </section>
     </div>
-    <div id="map"></div>
-    <div class="legend-row" id="mapLegend"></div>
   </div>
 </section>
 
@@ -1333,23 +1843,73 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <section class="panel" id="tab-transport">
   <div class="wrap">
     <h2 class="sec-title"><i class="ti" data-ic="bus"></i>交通 <span class="st-sub">深圳 ⇄ 首尔 ⇄ 釜山</span></h2>
+    <div class="short-trip-banner" aria-live="polite"></div>
 
     <div class="block-title"><i class="ti" data-ic="plane"></i>航班</div>
     <div class="grid g2">
-      <div class="card board-card">
-        <div class="bc-route">SZX <span class="bc-plane"><i class="ti" data-ic="plane"></i></span> ICN</div>
-        <div class="bc-date">去程 · 12/26 02:25 起飞</div>
-        <div class="bc-meta">深圳宝安 T3 → 首尔仁川 T2 · OZ372</div>
-        <div class="bc-note">06:50 落地，入境后直接 AREX / KTX 南下釜山；提前 2.5–3h 到机场值机。</div>
-        <span class="bc-tbd">OZ372</span>
+      <div class="card board-card flight-card">
+        <div class="flight-top">
+          <div><div class="flight-kicker">OUTBOUND · 去程</div><div class="flight-number">深圳 → 首尔</div></div>
+          <span class="flight-badge">OZ372</span>
+        </div>
+        <div class="flight-route">
+          <div class="flight-airport"><strong class="flight-code">SZX</strong><span class="flight-city">深圳宝安 T3</span></div>
+          <span class="flight-route-line"><i class="ti" data-ic="plane"></i></span>
+          <div class="flight-airport"><strong class="flight-code">ICN</strong><span class="flight-city">首尔仁川 T2</span></div>
+        </div>
+        <div class="flight-date">12/26 · 02:25 起飞 → 06:50 到达</div>
+        <div class="flight-data">
+          <div class="flight-data-item"><span>旅客座位</span><strong>可乐 34G<br>金鹿 34H</strong></div>
+          <div class="flight-data-item"><span>航司</span><strong>韩亚航空</strong></div>
+          <div class="flight-data-item"><span>预订号</span><strong>DM3UK6</strong></div>
+          <div class="flight-data-item"><span>飞行时长</span><strong>03小时25分</strong></div>
+          <div class="flight-data-item"><span>机型</span><strong>A330</strong></div>
+        </div>
+        <div class="flight-baggage">
+          <span class="flight-baggage-title">行李额度</span>
+          <div class="flight-baggage-grid">
+            <div class="flight-baggage-item"><b>随身物品</b><span>每人1件 · ≤40×30×20cm · 放座椅下</span></div>
+            <div class="flight-baggage-item"><b>客舱行李</b><span>每人1件 · ≤10kg · ≤55×40×20cm</span></div>
+            <div class="flight-baggage-item"><b>托运行李</b><span>每人1件 · ≤23kg · 三边和≤158cm</span></div>
+          </div>
+          <span class="flight-baggage-note">实际件数、重量和尺寸以韩亚航空电子客票/值机页面为准，超额行李可能另收费。</span>
+        </div>
+        <div class="flight-note">落地后入境，直接 AREX / KTX 南下釜山；建议提前 2.5–3 小时到机场值机。</div>
       </div>
-      <div class="card board-card">
-        <div class="bc-route">ICN <span class="bc-plane"><i class="ti" data-ic="plane"></i></span> SZX</div>
-        <div class="bc-date">回程 · 1/3 22:10 起飞</div>
-        <div class="bc-meta">首尔仁川 T2 → 深圳宝安 T3 · OZ371</div>
-        <div class="bc-note">1/4 01:15 落地；仁川机场提前 3h 到，留足退税和免税店提货时间。</div>
-        <span class="bc-tbd">OZ371</span>
+      <div class="card board-card flight-card">
+        <div class="flight-top">
+          <div><div class="flight-kicker">RETURN · 回程</div><div class="flight-number">首尔 → 深圳</div></div>
+          <span class="flight-badge">OZ371</span>
+        </div>
+        <div class="flight-route">
+          <div class="flight-airport"><strong class="flight-code">ICN</strong><span class="flight-city">首尔仁川 T2</span></div>
+          <span class="flight-route-line"><i class="ti" data-ic="plane"></i></span>
+          <div class="flight-airport"><strong class="flight-code">SZX</strong><span class="flight-city">深圳宝安 T3</span></div>
+        </div>
+        <div class="flight-date">1/3 · 22:10 起飞 → 1/4 01:15 到达</div>
+        <div class="flight-data">
+          <div class="flight-data-item"><span>旅客座位</span><strong>可乐 38G<br>金鹿 38H</strong></div>
+          <div class="flight-data-item"><span>航司</span><strong>韩亚航空</strong></div>
+          <div class="flight-data-item"><span>预订号</span><strong>DM3UK6</strong></div>
+          <div class="flight-data-item"><span>飞行时长</span><strong>04小时05分</strong></div>
+          <div class="flight-data-item"><span>机型</span><strong>A330</strong></div>
+        </div>
+        <div class="flight-baggage">
+          <span class="flight-baggage-title">行李额度</span>
+          <div class="flight-baggage-grid">
+            <div class="flight-baggage-item"><b>随身物品</b><span>每人1件 · ≤40×30×20cm · 放座椅下</span></div>
+            <div class="flight-baggage-item"><b>客舱行李</b><span>每人1件 · ≤10kg · ≤55×40×20cm</span></div>
+            <div class="flight-baggage-item"><b>托运行李</b><span>每人1件 · ≤23kg · 三边和≤158cm</span></div>
+          </div>
+          <span class="flight-baggage-note">实际件数、重量和尺寸以韩亚航空电子客票/值机页面为准，超额行李可能另收费。</span>
+        </div>
+        <div class="flight-note">仁川机场建议提前 3 小时到达，留足退税、免税店提货和安检时间。</div>
       </div>
+    </div>
+    <div class="flight-source-note">
+      <span>预订号 DM3UK6</span>
+      <span>张子豪票号 9884869687272 · 仇金鹿票号 9884869687271</span>
+      <span>登机口和登机时间以正式登机牌及航司值机页面为准</span>
     </div>
 
     <div class="block-title"><i class="ti" data-ic="train"></i>城际铁路 KTX</div>
@@ -1382,7 +1942,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
     <div class="block-title"><i class="ti" data-ic="warning"></i>交通贴士</div>
     <div class="card list-card">
-      <div class="tip-line"><i class="ti" data-ic="subway"></i><span class="tl-txt"><b>地铁</b>：爱心座（粉色/黄色）别坐；扶梯靠右，左侧留给赶时间的人。</span></div>
+      <div class="tip-line"><i class="ti" data-ic="subway"></i><span class="tl-txt"><b>地铁</b>：粉色孕妇专座、深绿色老弱病残席别坐；通常扶梯靠右，左侧留给赶时间的人，现场有提示时以提示为准。</span></div>
       <div class="tip-line"><i class="ti" data-ic="map"></i><span class="tl-txt"><b>导航</b>：先在站内看大致方位；真正出门时 iPhone/iPad 可直接打开 Apple 地图，韩国本地细节再用 Naver / Kakao 交叉确认。</span></div>
       <div class="tip-line"><i class="ti" data-ic="train"></i><span class="tl-txt"><b>KTX</b>：开车前 20 分钟到站即可，无安检；电子票截图存手机。</span></div>
       <div class="tip-line"><i class="ti" data-ic="plane"></i><span class="tl-txt"><b>离境</b>：退税 + 免税店提货都在安检后，登机口附近取现金，别忘记。</span></div>
@@ -1486,7 +2046,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 支出 ============ -->
 <section class="panel" id="tab-expenses">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="wallet"></i>行程总支出 <span class="st-sub">多币种 → 人均 RMB</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="wallet"></i>行程总支出 <span class="st-sub">多币种 · 统一人民币显示</span></h2>
+    <div class="fx-rate-hint" id="fxRateHint">汇率加载中…</div>
+    <div class="expense-subnote">（仅用于统计分析目的）</div>
     <div class="card exp-summary">
       <div class="es-item"><span class="es-label">人均花费</span><span class="es-num" id="esPer">¥0</span></div>
       <div class="es-item"><span class="es-label">总额 / 笔数</span><span class="es-num" id="esTotal">¥0 <small>/ 0 笔</small></span></div>
@@ -1502,11 +2064,22 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   </div>
 </section>
 
-<!-- ============ 文件 ============ -->
+<!-- ============ 证件 & 文件 ============ -->
 <section class="panel" id="tab-docs">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">自定义上传 · 多设备同步</span></h2>
-    <div class="grid g2 g3" id="docsGrid" style="gap:12px"></div>
+    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">出行资料夹 · 多设备同步</span></h2>
+    <p class="docs-page-sub">机票、酒店、证件和临时资料都放在这里，文件本身就是状态，不再额外标记“待准备”或“已上传”。</p>
+    <div class="docs-layout">
+      <aside class="card docs-rail">
+        <div class="docs-rail-kicker">TRAVEL FOLDER</div>
+        <div class="docs-rail-title">出行资料夹</div>
+        <p class="docs-rail-copy">保持一份清楚、轻量的旅行文件清单。附件会优先保存在本机，没网也能查看。</p>
+        <div class="docs-stat"><strong id="docsCount">0</strong><span>份资料</span></div>
+        <button class="docs-primary" id="docsNewBtn" type="button"><i class="ti" data-ic="plus"></i>新增文件</button>
+        <div class="docs-rail-tip">支持图片、PDF、Word、TXT。网络恢复后会继续同步。</div>
+      </aside>
+      <div class="docs-list" id="docsGrid"></div>
+    </div>
   </div>
 </section>
 
@@ -1514,7 +2087,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <section class="panel" id="tab-guide">
   <div class="wrap">
     <h2 class="sec-title"><i class="ti" data-ic="book"></i>旅行锦囊</h2>
-    <div class="block-title"><i class="ti" data-ic="chat"></i>韩语短语 <span style="color:var(--muted);font-weight:600;font-size:12px">左右滑动表格</span></div>
+    <div class="block-title"><i class="ti" data-ic="chat"></i>韩语短语 <span style="color:var(--muted);font-weight:600;font-size:12px">旅行常用 · 左右滑动浏览</span></div>
     <div class="table-wrap">
       <table class="phrases">
         <thead><tr><th>韩语</th><th>罗马音</th><th>意思</th></tr></thead>
@@ -1522,8 +2095,8 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       </table>
     </div>
 
-    <div class="block-title"><i class="ti" data-ic="snowflake"></i>冬季出行贴士 <span style="color:var(--muted);font-weight:600;font-size:12px">左右滑动</span></div>
-    <div class="hscroll" id="tipsRow"></div>
+    <div class="block-title"><i class="ti" data-ic="snowflake"></i>冬季出行贴士 <span style="color:var(--muted);font-weight:600;font-size:12px">上下查看</span></div>
+    <div class="tips-stack" id="tipsRow"></div>
   </div>
 </section>
 </main>
@@ -1548,11 +2121,94 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   <div class="f-brand">由腾讯云开发 CloudBase 与 Vercel 托管</div>
 </footer>
 
+<!-- 手帐原图查看器：保留原图比例，手机/iPad 上站内返回 -->
+<div id="imageViewerBackdrop"></div>
+<div id="imageViewer" role="dialog" aria-modal="true" aria-labelledby="imageViewerTitle">
+  <div class="image-viewer-top">
+    <button class="image-viewer-back" id="imageViewerBack" type="button"><span aria-hidden="true">‹</span>返回画册</button>
+    <button class="image-viewer-close" id="imageViewerClose" type="button" aria-label="关闭原图">×</button>
+  </div>
+  <div class="image-viewer-stage" id="imageViewerStage">
+    <img id="imageViewerImg" alt="">
+  </div>
+  <div class="image-viewer-bottom">
+    <div class="image-viewer-title" id="imageViewerTitle">手帐原图</div>
+    <div class="image-viewer-hint">原图完整展示 · 上下滑动查看 · 点击右上角返回</div>
+    <div class="image-viewer-actions">
+      <button class="image-viewer-action" id="imageViewerDownload" type="button">下载原图</button>
+      <button class="image-viewer-action" id="imageViewerNewWindow" type="button">新窗口打开</button>
+    </div>
+  </div>
+</div>
+
+<!-- 证件/文件预览器：站内保留返回网页和文件操作 -->
+<div id="docViewerBackdrop"></div>
+<div id="docViewer" role="dialog" aria-modal="true" aria-labelledby="docViewerTitle">
+  <div class="doc-viewer-top">
+    <button class="doc-viewer-back" id="docViewerBack" type="button"><span aria-hidden="true">‹</span>返回文件</button>
+    <button class="doc-viewer-close" id="docViewerClose" type="button" aria-label="关闭文件预览">×</button>
+  </div>
+  <div class="doc-viewer-stage">
+    <img id="docViewerImg" alt="">
+    <iframe id="docViewerFrame" title="文件预览"></iframe>
+    <div class="doc-viewer-empty" id="docViewerEmpty">这个文件类型暂不支持站内预览，可以选择下载或在新窗口打开。</div>
+  </div>
+  <div class="doc-viewer-bottom">
+    <div class="doc-viewer-title" id="docViewerTitle">文件预览</div>
+    <div class="doc-viewer-hint">文件已保留在当前旅程 · 点击返回可回到网页</div>
+    <div class="doc-viewer-actions">
+      <button class="doc-viewer-action" id="docViewerDownload" type="button">下载文件</button>
+      <button class="doc-viewer-action" id="docViewerNewWindow" type="button">新窗口打开</button>
+    </div>
+  </div>
+</div>
+
+<!-- 旅程选择层：第一次打开显示，之后点击顶部 Korea Trip 主动切换 -->
+<div id="tripPickerBackdrop" onclick="closeTripPicker()"></div>
+<div id="tripPickerSheet" role="dialog" aria-modal="true" aria-labelledby="tripPickerTitle">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" type="button" aria-label="关闭" onclick="closeTripPicker()">×</button>
+  <h3 id="tripPickerTitle">选择一段旅程</h3>
+  <p class="trip-picker-sub">进入后会记住上次选择，下次打开直接回到这段旅程。</p>
+  <div class="trip-picker-list">
+    <button class="trip-option active" type="button" data-trip-id="korea-2026">
+      <span class="trip-option-ic">🇰🇷</span><span class="trip-option-copy"><span class="trip-option-title">韩国冬日旅行</span><span class="trip-option-meta">Korea Trip · 2026.12.26–2027.01.03</span></span><span class="trip-option-state">进入</span>
+    </button>
+    <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic">🇭🇰</span><span class="trip-option-copy"><span class="trip-option-title">香港旅行</span><span class="trip-option-meta">Hong Kong Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
+    <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic">🌊</span><span class="trip-option-copy"><span class="trip-option-title">厦门旅行</span><span class="trip-option-meta">Xiamen Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
+  </div>
+  <div class="trip-picker-actions"><button class="tap" id="tripManageBtn" type="button">管理旅程</button><button class="tap" id="tripNewBtn" type="button">＋ 新建旅程</button><button class="tap" id="tripExportBtn" type="button">导出备份</button><button class="tap" id="tripImportBtn" type="button">导入恢复</button><input id="tripImportInput" type="file" accept="application/json,.json" hidden></div>
+  <div class="trip-picker-note">每台设备会记住上次打开的旅程；不同旅程的行程、文件、支出和照片分别保存。</div>
+</div>
+
+<div id="tripSettingsBackdrop" onclick="closeTripSettings()"></div>
+<div id="tripSettingsSheet" role="dialog" aria-modal="true" aria-labelledby="tripSettingsTitle">
+  <div class="sheet-handle"></div>
+  <button class="sheet-close" type="button" aria-label="关闭" onclick="closeTripSettings()">×</button>
+  <h3 id="tripSettingsTitle">新建旅程</h3>
+  <div class="field"><label>旅程名称</label><input id="tripNameInput" placeholder="比如：香港周末旅行"></div>
+  <div class="field"><label>页面品牌</label><input id="tripBrandInput" placeholder="比如：Hong Kong Trip"></div>
+  <div class="essay-sheet-grid">
+    <div class="field"><label>开始时间</label><input id="tripStartInput" type="datetime-local"></div>
+    <div class="field"><label>结束时间</label><input id="tripEndInput" type="datetime-local"></div>
+  </div>
+  <div class="essay-sheet-grid">
+    <div class="field"><label>同行人</label><input id="tripMembersInput" placeholder="可乐、金鹿"></div>
+    <div class="field"><label>时区</label><input id="tripTimezoneInput" value="Asia/Shanghai" placeholder="Asia/Shanghai"></div>
+  </div>
+  <div class="field"><label>主要城市</label><input id="tripCityInput" placeholder="比如：香港"></div>
+  <div class="field"><label>封面图片（可选）</label><input id="tripCoverInput" placeholder="assets/photos/xxx.jpg"></div>
+  <div class="field" id="tripTemplateField"><label>复制已有旅程模板</label><select id="tripTemplateInput"></select></div>
+  <div class="field"><label>主题色</label><select id="tripThemeInput"><option value="green">薄荷绿</option><option value="purple">雾紫</option><option value="blue">海盐蓝</option></select></div>
+  <div class="list-sheet-actions"><button id="tripDeleteBtn" type="button">删除</button><button id="tripSettingsCancel" type="button">取消</button><button id="tripSettingsSave" type="button">保存</button></div>
+</div>
+
 <!-- 记账弹层 -->
 <div id="sheetBackdrop" onclick="closeSheet()"></div>
-<div id="expSheet">
+<div id="expSheet" role="dialog" aria-modal="true" aria-labelledby="expSheetTitle">
   <div class="sheet-handle"></div>
-  <h3>记一笔</h3>
+  <button class="sheet-close" type="button" aria-label="关闭" onclick="closeSheet()">×</button>
+  <h3 id="expSheetTitle">记一笔</h3>
   <div class="field"><label>描述</label><input id="expDesc" placeholder="如：KTX 釜山→首尔 / 炸鸡啤酒"></div>
   <div class="field"><label>金额</label><input id="expAmount" type="number" inputmode="decimal" placeholder="0.00"></div>
   <div class="field"><label>分类</label>
@@ -1591,8 +2247,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
 <!-- 行程编辑弹层 -->
 <div id="itBackdrop" onclick="closeItSheet()"></div>
-<div id="itSheet">
+<div id="itSheet" role="dialog" aria-modal="true" aria-labelledby="itSheetTitle">
   <div class="sheet-handle"></div>
+  <button class="sheet-close" type="button" aria-label="关闭" onclick="closeItSheet()">×</button>
   <div class="it-sheet-head">
     <div class="it-sheet-copy">
   <h3 id="itSheetTitle">整理行程</h3>
@@ -1637,8 +2294,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
 <!-- 待办 / 行李编辑弹层 -->
 <div id="listBackdrop" onclick="closeListSheet()"></div>
-<div id="listSheet">
+<div id="listSheet" role="dialog" aria-modal="true" aria-labelledby="listSheetTitle">
   <div class="sheet-handle"></div>
+  <button class="sheet-close" type="button" aria-label="关闭" onclick="closeListSheet()">×</button>
   <h3 id="listSheetTitle">编辑</h3>
   <div class="field">
     <label id="listTitleLabel">名称</label>
@@ -1657,15 +2315,16 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
 <!-- 随笔编辑弹层 -->
 <div id="essayBackdrop" onclick="closeEssaySheet()"></div>
-<div id="essaySheet">
+<div id="essaySheet" role="dialog" aria-modal="true" aria-labelledby="essaySheetTitle">
   <div class="sheet-handle"></div>
+  <button class="sheet-close" type="button" aria-label="关闭" onclick="closeEssaySheet()">×</button>
   <h3 id="essaySheetTitle">新建随笔</h3>
-  <div class="sheet-sub">可以写点日记、收集攻略摘录、贴照片和地点。内容会先按密码锁起来，只有你们输入密码后才能看。</div>
+  <div class="sheet-sub">记录日记、攻略或美食，内容会按这篇的密码锁定。</div>
   <div class="field">
     <label>标题</label>
     <input id="essayTitleInput" placeholder="比如：釜山海边的晚餐">
   </div>
-  <div class="essay-sheet-grid">
+  <div class="essay-sheet-grid essay-meta-grid">
     <div class="field">
       <label>分类</label>
       <select id="essayKindInput">
@@ -1678,15 +2337,15 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <label>日期</label>
       <input id="essayDateInput" type="date">
     </div>
-  </div>
-  <div class="field">
-    <label>地点</label>
-    <input id="essayPlaceInput" placeholder="比如：海云台 / 明洞 / 某家咖啡馆">
+    <div class="field">
+      <label>地点</label>
+      <input id="essayPlaceInput" placeholder="海云台 / 明洞">
+    </div>
   </div>
   <div class="field">
     <label>随笔密码</label>
     <input id="essayPasswordInput" type="password" placeholder="新建时必须填写；编辑时留空表示沿用当前密码">
-    <div class="essay-password-note">每篇随笔都单独加密。你输入这篇对应的密码后，才会在列表里展开内容。</div>
+    <div class="essay-password-note">每篇单独加密；编辑时留空即可沿用原密码。</div>
   </div>
   <div class="field">
     <label>正文</label>
@@ -1709,26 +2368,86 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <script>
 /* ================= 常量 ================= */
 const API_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api';
-const FX_RATES = { CNY: 1, USD: 6.80, KRW: 1 / 190 };
+const FX_RATES = { CNY: 1, USD: 6.73, KRW: 1 / 202.06 };
+const FX_RATES_KEY = 'kr_fx_rates_latest';
+const FX_RATES_URL = 'https://open.er-api.com/v6/latest/CNY';
+let FX_UPDATED_AT = '';
 const PEOPLE = ['可乐', '金鹿'];
 
-const D1 = new Date('2026-12-26T02:25:00+08:00');       // 深圳飞首尔
-const BUSAN_END = new Date('2026-12-29T21:00:00+09:00'); // 釜山 → 首尔（晚些北上）
-const TRIP_END = new Date('2027-01-04T01:15:00+08:00');  // 到家
-const NEWYEAR = new Date('2026-12-31T23:59:00+09:00');   // 普信阁跨年
-const DEPART_LABEL = '12/26';
-
-const CITIES = {
-  busan: { name: '釜山', lat: 35.1796, lon: 129.0756 },
-  seoul: { name: '首尔', lat: 37.5665, lon: 126.9780 }
+/* 旅程配置是所有静态旅行资料的唯一入口；新增旅程时只需增加一个配置。 */
+const TRIP_DATA = {
+  'korea-2026': {
+    id: 'korea-2026', name: '韩国冬日旅行', brand: 'Korea Trip', dates: '2026.12.26–2027.01.03', icon: '🇰🇷',
+    startAt: '2026-12-26T02:25:00+08:00', transferAt: '2026-12-29T21:00:00+09:00',
+    endAt: '2027-01-04T01:15:00+08:00', newYearAt: '2026-12-31T23:59:00+09:00',
+    departLabel: '12/26', defaultCity: 'busan',
+    cities: { busan: { name: '釜山', lat: 35.1796, lon: 129.0756 }, seoul: { name: '首尔', lat: 37.5665, lon: 126.9780 } },
+    heroImages: ['assets/photos/busan-watercolor.webp', 'assets/photos/busan-harbor-editorial.png', 'assets/photos/seoul-palace-editorial.png', 'assets/photos/seoul-night-editorial.png'],
+    galleryImages: ['assets/maps/busan-hand-drawn-map.jpg', 'assets/maps/seoul-area-guide.jpg', 'assets/maps/seoul-slow-travel-map.jpg', 'assets/maps/seoul-full-map.jpg', 'assets/photos/busan-haeundae-winter-shore.png', 'assets/photos/busan-gamcheon-hillside-colors.png', 'assets/photos/busan-gwangalli-bridge-glow.png', 'assets/photos/seoul-palace-editorial.png', 'assets/photos/seoul-bukchon-quiet-roofs.png', 'assets/photos/seoul-myeongdong-lantern-street.png', 'assets/photos/seoul-night-editorial.png', 'assets/photos/seoul-airport-editorial.png', 'assets/photos/seoul-marriott-myeongdong-editorial.png', 'assets/photos/seoul-seongsu-factory-cafe.png'],
+    newYearItems: [
+      { title: '跨年倒计时', note: '重点关注钟路、普信阁一带的官方安排和入场规则。', status: '待确认 · 12/31' },
+      { title: '烟花与灯光', note: '记录烟花、灯光秀、倒数舞台等跨年夜特别节目。', status: '待公布' },
+      { title: '演出与快闪', note: '演唱会、街头表演、商圈快闪和节日限定布置。', status: '待补充' },
+      { title: '冬季限定', note: '滑冰场、冬日市集、节日菜单和只在冬天出现的体验。', status: '持续收集' }
+    ],
+    flights: [
+      { no: 'OZ372', from: 'SZX', fromName: '深圳宝安 T3', to: 'ICN', toName: '首尔仁川 T2', date: '12/26 · 02:25 起飞 → 06:50 到达', seats: '可乐 34G\\n金鹿 34H', airline: '韩亚航空', booking: 'DM3UK6', duration: '03小时25分', aircraft: 'A330' },
+      { no: 'OZ371', from: 'ICN', fromName: '首尔仁川 T2', to: 'SZX', toName: '深圳宝安 T3', date: '1/3 · 22:10 起飞 → 1/4 01:15 到达', seats: '可乐 38G\\n金鹿 38H', airline: '韩亚航空', booking: 'DM3UK6', duration: '04小时05分', aircraft: 'A330' }
+    ],
+    hotels: [
+      { name: '釜山站ASTI酒店', en: 'ASTI Hotel Busan Station', date: '12/26 - 12/29 · 3 晚', checkIn: '12/26 15:00 后', checkOut: '12/29 11:00 前', room: '景城标准双人床房', roomEn: 'Standard Double Room · City View', address: '韩国釜山广域市东区中央大路214番街7-8号', addressEn: '7-8 Jungang-daero 214beon-gil, Dong-gu, Busan 48733', note: '已确认 · 确认号 26492778 · 订单号 1128150678962700' },
+      { name: '首尔明洞万怡酒店', en: 'Courtyard by Marriott Seoul Myeongdong', date: '12/29 - 1/3 · 5 晚', checkIn: '12/29 15:00', checkOut: '1/3 11:00', room: 'Premier 客房', roomEn: 'Premier Guest Room', address: '韩国首尔特别市中区南大门路9号', addressEn: '9 Namdaemun-ro, Jung-gu, Seoul 04526', note: '已确认 · Confirmation #93241473 · 积分兑换价（Redemption Rate）' }
+    ],
+    content: 'ready'
+  },
+  'hong-kong': {
+    id: 'hong-kong', name: '香港周末旅行', brand: 'Hong Kong Trip', dates: '2026.12.18–12.20', icon: '🇭🇰', content: 'ready', days: 3,
+    startAt: '2026-12-18T18:30:00+08:00', transferAt: '2026-12-19T09:00:00+08:00', endAt: '2026-12-20T21:00:00+08:00',
+    departLabel: '12/18 下班后', defaultCity: 'hong-kong',
+    cities: { 'hong-kong': { name: '香港', lat: 22.3193, lon: 114.1694 } }, heroImages: [],
+    itinerary: [
+      { day: 1, sortOrder: 1, time: '18:30', title: '深圳下班后出发', subtitle: '前往香港', detail: '下班后过关，抵达香港后入住并简单吃饭。' },
+      { day: 1, sortOrder: 2, time: '21:30', title: '入住酒店', subtitle: '香港周末第一晚', detail: '放下行李，准备第二天迪士尼。' },
+      { day: 2, sortOrder: 1, time: '09:00', title: '香港迪士尼乐园', subtitle: '全天游玩', detail: '提前查看开园时间、预约项目和夜间演出安排。' },
+      { day: 2, sortOrder: 2, time: '20:30', title: '迪士尼烟花或夜间演出', subtitle: '以当天官方安排为准', detail: '结束后返回市区休息。' },
+      { day: 3, sortOrder: 1, time: '10:00', title: '香港市区慢慢逛', subtitle: '中环 · 维港 · 尖沙咀', detail: '根据体力安排市区散步、吃饭和拍照。' },
+      { day: 3, sortOrder: 2, time: '18:00', title: '返回深圳', subtitle: '周日晚上回家', detail: '预留过关和交通时间，不把返程安排得太紧。' }
+    ]
+  },
+  'xiamen': {
+    id: 'xiamen', name: '厦门周末旅行', brand: 'Xiamen Trip', dates: '2027.01.08–01.10', icon: '🌊', content: 'ready', days: 3,
+    startAt: '2027-01-08T18:30:00+08:00', transferAt: '2027-01-09T09:00:00+08:00', endAt: '2027-01-10T21:00:00+08:00',
+    departLabel: '1/8 下班后', defaultCity: 'xiamen',
+    cities: { xiamen: { name: '厦门', lat: 24.4798, lon: 118.0894 } }, heroImages: [],
+    itinerary: [
+      { day: 1, sortOrder: 1, time: '18:30', title: '深圳下班后出发', subtitle: '前往厦门', detail: '晚上出发，抵达后入住。' },
+      { day: 2, sortOrder: 1, time: '09:30', title: '厦门城市散步', subtitle: '鼓浪屿或市区', detail: '根据天气和船票安排周末第一天。' },
+      { day: 2, sortOrder: 2, time: '18:00', title: '海边晚餐', subtitle: '慢慢吃、慢慢逛', detail: '留一点时间看海边夜色。' },
+      { day: 3, sortOrder: 1, time: '10:00', title: '厦门最后半天', subtitle: '咖啡 · 旧街 · 海边', detail: '选择一个区域轻松走走。' },
+      { day: 3, sortOrder: 2, time: '18:00', title: '返回深圳', subtitle: '周日晚上回家', detail: '预留返程交通时间。' }
+    ]
+  }
 };
-
-const HERO_IMAGES = [
-  'assets/photos/busan-watercolor.webp',
-  'assets/photos/busan-harbor-editorial.png',
-  'assets/photos/seoul-palace-editorial.png',
-  'assets/photos/seoul-night-editorial.png'
-];
+const TRIP_REGISTRY = Object.values(TRIP_DATA);
+const ACTIVE_TRIP_KEY = 'kr_active_trip_id';
+const CUSTOM_TRIPS_KEY = 'kr_custom_trips';
+function storedTripId() {
+  try { return localStorage.getItem(ACTIVE_TRIP_KEY) || TRIP_REGISTRY[0].id; } catch { return TRIP_REGISTRY[0].id; }
+}
+function customTrips() { try { return JSON.parse(localStorage.getItem(CUSTOM_TRIPS_KEY) || '[]'); } catch { return []; } }
+function allTrips() {
+  const merged = new Map(TRIP_REGISTRY.map((trip) => [trip.id, trip]));
+  customTrips().forEach((trip) => merged.set(trip.id, trip));
+  return [...merged.values()];
+}
+function currentTripData() { return allTrips().find((trip) => trip.id === storedTripId()) || TRIP_DATA['korea-2026']; }
+const D1 = new Date(currentTripData().startAt || '2999-01-01T00:00:00+08:00');
+const BUSAN_END = new Date(currentTripData().transferAt || currentTripData().startAt || '2999-01-01T00:00:00+08:00');
+const TRIP_END = new Date(currentTripData().endAt || currentTripData().startAt || '2999-01-01T00:00:00+08:00');
+const NEWYEAR = new Date(currentTripData().newYearAt || currentTripData().endAt || '2999-01-01T00:00:00+08:00');
+const DEPART_LABEL = currentTripData().departLabel || '出发日';
+const CITIES = currentTripData().cities || {};
+const HERO_IMAGES = currentTripData().heroImages || [];
 const PHOTO_FALLBACK = 'linear-gradient(135deg,#EEF7EF,#F1F9F9,#FFF9ED)';
 
 /* ================= 工具 ================= */
@@ -1743,20 +2462,216 @@ function dl(ms) {
 function tripPhase() {
   const now = Date.now();
   if (now < D1) return 'prep';
+  if (currentTripData().id !== 'korea-2026') return now <= TRIP_END ? 'active' : 'done';
   if (now < BUSAN_END) return 'busan';
   if (now <= TRIP_END) return 'seoul';
   return 'done';
 }
-function dayIndex() { return Math.min(9, Math.max(1, Math.floor((Date.now() - D1) / 86400000) + 1)); }
+function dayIndex() { return Math.min(currentTripData().days || 9, Math.max(1, Math.floor((Date.now() - D1) / 86400000) + 1)); }
 const cache = {
-  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
+  key(k) { return String(k).startsWith('kr_') && k !== 'kr_active_trip_id' ? `${k}::${activeTrip().id}` : k; },
+  get(k) { try { return JSON.parse(localStorage.getItem(this.key(k))); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(this.key(k), JSON.stringify(v)); return true; } catch { return false; } }
 };
+function activeTrip() {
+  const id = storedTripId();
+  return allTrips().find((trip) => trip.id === id) || TRIP_REGISTRY[0];
+}
+function renderTripChrome() {
+  const trip = currentTripData();
+  const switcher = $('#tripSwitcher');
+  if (switcher) switcher.innerHTML = `${ic('leaf')}${esc(trip.brand)}`;
+  document.title = `${trip.brand} · ${trip.name}`;
+  document.querySelector('meta[name="description"]')?.setAttribute('content', `${trip.name} · ${trip.dates}`);
+  document.body.dataset.tripId = trip.id;
+  const palettes = {
+    green: { '--green':'#72A67F', '--green-d':'#40684F', '--green-l':'#EAF5EB', '--ink':'#395F4A' },
+    purple: { '--green':'#9C8CC4', '--green-d':'#66558E', '--green-l':'#F1ECFA', '--ink':'#5D4B86' },
+    blue: { '--green':'#6FA7C2', '--green-d':'#47758D', '--green-l':'#EAF5FA', '--ink':'#416D82' }
+  };
+  Object.entries(palettes[trip.theme] || {}).forEach(([key, value]) => document.body.style.setProperty(key, value));
+  if (trip.id !== 'korea-2026') {
+    const badge = $('.hero-badge');
+    const title = $('.hero-inner h1');
+    const sub = $('.hero-sub');
+    const meta = $('.hero-meta');
+    if (badge) badge.textContent = `${trip.name} · 周末版`;
+    if (title) title.textContent = trip.name;
+    if (sub) sub.textContent = trip.id === 'hong-kong' ? '迪士尼与城市散步' : '海边与城市慢游';
+    if (meta) meta.textContent = `可乐 & 金鹿 · ${trip.dates}`;
+  }
+  document.body.classList.toggle('short-trip', trip.id !== 'korea-2026');
+  document.querySelectorAll('.short-trip-banner').forEach((el) => {
+    el.innerHTML = trip.id === 'korea-2026' ? '' : `<strong>${esc(trip.name)}</strong><br>${esc(trip.dates)} · 周末轻旅行模板，后续可继续补充具体酒店、交通和收藏。`;
+  });
+  if (trip.id !== 'korea-2026') {
+    const footer = document.querySelector('footer');
+    if (footer) footer.innerHTML = `<div>${esc(trip.name)} · 可乐 &amp; 金鹿</div><div class="f-brand">由腾讯云开发 CloudBase 与 Vercel 托管</div>`;
+  }
+}
+function openTripPicker() {
+  const backdrop = $('#tripPickerBackdrop');
+  const sheet = $('#tripPickerSheet');
+  if (!backdrop || !sheet) return;
+  backdrop.classList.add('open');
+  sheet.classList.add('open');
+  setTimeout(() => sheet.querySelector('[data-trip-id]')?.focus(), 120);
+}
+function closeTripPicker() {
+  $('#tripPickerBackdrop')?.classList.remove('open');
+  $('#tripPickerSheet')?.classList.remove('open');
+}
+let tripSettingsId = null;
+function localDateTime(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+function openTripSettings(trip = null) {
+  const item = trip || { name: '', brand: '', startAt: '', endAt: '', theme: 'green', members: PEOPLE, timezone: 'Asia/Shanghai', cities: {} };
+  tripSettingsId = trip?.id || null;
+  $('#tripSettingsTitle').textContent = trip ? '编辑旅程' : '新建旅程';
+  $('#tripNameInput').value = item.name || '';
+  $('#tripBrandInput').value = item.brand || '';
+  $('#tripStartInput').value = localDateTime(item.startAt);
+  $('#tripEndInput').value = localDateTime(item.endAt);
+  $('#tripThemeInput').value = item.theme || 'green';
+  $('#tripMembersInput').value = Array.isArray(item.members) ? item.members.join('、') : (item.members || PEOPLE.join('、'));
+  $('#tripTimezoneInput').value = item.timezone || 'Asia/Shanghai';
+  $('#tripCityInput').value = Object.values(item.cities || {}).map((city) => city.name).join('、');
+  $('#tripCoverInput').value = item.cover || '';
+  $('#tripTemplateInput').innerHTML = `<option value="">不复制，创建空白旅程</option>${allTrips().filter((candidate) => candidate.id !== trip?.id).map((candidate) => `<option value="${esc(candidate.id)}">从“${esc(candidate.name)}”复制框架</option>`).join('')}`;
+  $('#tripTemplateField').style.display = trip ? 'none' : 'block';
+  $('#tripDeleteBtn').style.display = trip && !TRIP_REGISTRY.some((base) => base.id === trip.id) ? 'block' : 'none';
+  closeTripPicker();
+  $('#tripSettingsBackdrop').classList.add('open');
+  $('#tripSettingsSheet').classList.add('open');
+  setTimeout(() => $('#tripNameInput')?.focus(), 120);
+}
+function closeTripSettings() {
+  $('#tripSettingsBackdrop')?.classList.remove('open');
+  $('#tripSettingsSheet')?.classList.remove('open');
+  tripSettingsId = null;
+}
+function saveTripSettings() {
+  const name = $('#tripNameInput').value.trim();
+  const brand = $('#tripBrandInput').value.trim() || name;
+  const startAt = $('#tripStartInput').value ? `${$('#tripStartInput').value}:00+08:00` : '';
+  const endAt = $('#tripEndInput').value ? `${$('#tripEndInput').value}:00+08:00` : '';
+  if (!name || !startAt || !endAt || new Date(endAt) <= new Date(startAt)) { alert('请填写名称、开始时间和结束时间，并确认结束时间晚于开始时间。'); return; }
+  const previous = tripSettingsId ? allTrips().find((trip) => trip.id === tripSettingsId) : null;
+  const template = !previous && $('#tripTemplateInput').value ? allTrips().find((trip) => trip.id === $('#tripTemplateInput').value) : null;
+  const base = previous || template || {};
+  const id = tripSettingsId || `trip-${Date.now()}`;
+  const cityNames = $('#tripCityInput').value.split(/[、,，]/).map((value) => value.trim()).filter(Boolean);
+  const cityList = cityNames.length ? cityNames : [name];
+  const cities = Object.fromEntries(cityList.map((city, index) => [index ? `city-${index + 1}` : 'main', { name: city, lat: 0, lon: 0 }]));
+  const draft = { ...base, id, name, brand, dates: `${startAt.slice(0, 10)}–${endAt.slice(0, 10)}`, startAt, endAt, transferAt: base.transferAt || startAt, newYearAt: base.newYearAt || endAt, days: Math.max(1, Math.ceil((new Date(endAt) - new Date(startAt)) / 86400000)), defaultCity: base.defaultCity || Object.keys(cities)[0], cities, heroImages: base.heroImages || [], itinerary: base.itinerary || [], content: 'ready', theme: $('#tripThemeInput').value, members: $('#tripMembersInput').value.split(/[、,，]/).map((value) => value.trim()).filter(Boolean), timezone: $('#tripTimezoneInput').value.trim() || 'Asia/Shanghai', cover: $('#tripCoverInput').value.trim() };
+  const custom = customTrips().filter((trip) => trip.id !== id);
+  custom.push(draft);
+  localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom));
+  localStorage.setItem(ACTIVE_TRIP_KEY, id);
+  closeTripSettings();
+  window.location.reload();
+}
+function deleteTripSettings() {
+  if (!tripSettingsId || TRIP_REGISTRY.some((trip) => trip.id === tripSettingsId)) return;
+  if (!confirm('删除这段旅程及其本机入口？云端资料不会自动删除。')) return;
+  localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(customTrips().filter((trip) => trip.id !== tripSettingsId)));
+  localStorage.setItem(ACTIVE_TRIP_KEY, 'korea-2026');
+  closeTripSettings();
+  window.location.reload();
+}
+function backupKeysForTrip(tripId) {
+  const prefix = `kr_`;
+  return Object.keys(localStorage).filter((key) => key.startsWith(prefix) && key.endsWith(`::${tripId}`));
+}
+function exportTripBackup() {
+  const trip = activeTrip();
+  const cacheData = {};
+  backupKeysForTrip(trip.id).forEach((key) => { cacheData[key] = localStorage.getItem(key); });
+  const payload = { format: 'zaishang-trip-backup', version: 1, exportedAt: new Date().toISOString(), trip, cacheData };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${trip.id}-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function importTripBackup(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const payload = JSON.parse(String(reader.result || '{}'));
+      if (payload.format !== 'zaishang-trip-backup' || payload.version !== 1 || !payload.trip?.id || typeof payload.cacheData !== 'object') throw new Error('invalid backup');
+      if (payload.trip.id !== activeTrip().id && !confirm(`这个备份属于“${payload.trip.name || payload.trip.id}”，要导入为当前旅程的本地备份吗？`)) return;
+      if (!confirm(`确定用备份覆盖当前“${activeTrip().name}”的本机数据吗？云端数据不会被删除。`)) return;
+      Object.entries(payload.cacheData).forEach(([key, value]) => {
+        if (!key.startsWith('kr_') || key === 'kr_active_trip_id' || typeof value !== 'string') return;
+        const sourceSuffix = `::${payload.trip.id}`;
+        const targetKey = key.endsWith(sourceSuffix) ? `${key.slice(0, -sourceSuffix.length)}::${activeTrip().id}` : '';
+        if (targetKey) localStorage.setItem(targetKey, value);
+      });
+      if (payload.trip.id === activeTrip().id) {
+        const custom = customTrips().filter((trip) => trip.id !== payload.trip.id);
+        if (!TRIP_REGISTRY.some((trip) => trip.id === payload.trip.id)) {
+          custom.push(payload.trip);
+          localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom));
+        }
+      }
+      alert('备份已恢复到本机，页面即将刷新。');
+      window.location.reload();
+    } catch { alert('这个备份文件无法读取，请选择“导出备份”生成的 JSON 文件。'); }
+  };
+  reader.readAsText(file);
+}
+function renderTripPicker() {
+  const list = $('.trip-picker-list');
+  if (!list) return;
+  const selected = activeTrip().id;
+  list.innerHTML = allTrips().map((trip) => {
+    const disabled = trip.content !== 'ready';
+    return `<${disabled ? 'div' : 'button'} class="trip-option${trip.id === selected ? ' active' : ''}${disabled ? ' disabled' : ''}"${disabled ? ' aria-disabled="true"' : ` type="button" data-trip-id="${esc(trip.id)}"`}>
+      <span class="trip-option-ic">${trip.icon}</span><span class="trip-option-copy"><span class="trip-option-title">${esc(trip.name)}</span><span class="trip-option-meta">${esc(trip.brand)} · ${esc(trip.dates)}</span></span><span class="trip-option-state">${disabled ? '未创建' : '进入'}</span>
+    </${disabled ? 'div' : 'button'}>`;
+  }).join('');
+}
+function selectTrip(id) {
+  const trip = allTrips().find((item) => item.id === id);
+  if (!trip || trip.content === 'empty') return;
+  localStorage.setItem(ACTIVE_TRIP_KEY, trip.id);
+  closeTripPicker();
+  // 日期、城市、静态素材在启动时读取配置，切换后重启页面避免残留上一段旅程状态。
+  window.location.reload();
+}
+function initTripPicker() {
+  renderTripPicker();
+  $('#tripSwitcher')?.addEventListener('click', openTripPicker);
+  $('#tripPickerSheet')?.addEventListener('click', (event) => {
+    const option = event.target.closest('[data-trip-id]');
+    if (option) selectTrip(option.dataset.tripId);
+  });
+  $('#tripManageBtn')?.addEventListener('click', () => openTripSettings(activeTrip()));
+  $('#tripNewBtn')?.addEventListener('click', () => openTripSettings());
+  $('#tripSettingsSave')?.addEventListener('click', saveTripSettings);
+  $('#tripSettingsCancel')?.addEventListener('click', closeTripSettings);
+  $('#tripDeleteBtn')?.addEventListener('click', deleteTripSettings);
+  $('#tripExportBtn')?.addEventListener('click', exportTripBackup);
+  $('#tripImportBtn')?.addEventListener('click', () => $('#tripImportInput')?.click());
+  $('#tripImportInput')?.addEventListener('change', (event) => importTripBackup(event.target.files?.[0]));
+  if (!localStorage.getItem(ACTIVE_TRIP_KEY)) {
+    setTimeout(openTripPicker, 180);
+  }
+}
 async function apiGet(path, cacheKey, fallback) {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
   try {
-    const res = await fetch(API_BASE + path, controller ? { signal: controller.signal } : undefined);
+    const joiner = path.includes('?') ? '&' : '?';
+    const res = await fetch(`${API_BASE}${path}${joiner}tripId=${encodeURIComponent(activeTrip().id)}`, controller ? { signal: controller.signal } : undefined);
     const json = await res.json();
     if (json.success && Array.isArray(json.data)) {
       cache.set(cacheKey, json.data);
@@ -1771,15 +2686,49 @@ async function apiGet(path, cacheKey, fallback) {
     if (timer) clearTimeout(timer);
   }
 }
+const OFFLINE_QUEUE_KEY = 'kr_offline_write_queue';
+function readOfflineQueue() { try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]'); } catch { return []; } }
+function queueOfflineWrite(path, body, tripId = activeTrip().id) {
+  const queue = readOfflineQueue();
+  queue.push({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, path, body, tripId, queuedAt: Date.now() });
+  try { localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue.slice(-40))); } catch {}
+}
+async function flushOfflineQueue() {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
+  const queue = readOfflineQueue();
+  if (!queue.length) return;
+  const pending = [];
+  for (const item of queue) {
+    try {
+      const res = await fetch(API_BASE + item.path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...(item.body || {}), tripId: item.tripId }) });
+      const json = await res.json();
+      if (!res.ok || !json.success) throw new Error('sync failed');
+    } catch { pending.push(item); }
+  }
+  try { localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(pending)); } catch {}
+}
 async function apiPost(path, body) {
-  const res = await fetch(API_BASE + path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body || {})
-  });
-  const json = await res.json();
-  if (!json.success) throw new Error(json.error || 'bad response');
-  return json;
+  const tripId = activeTrip().id;
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) { queueOfflineWrite(path, body, tripId); return { success: true, queued: true }; }
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
+  try {
+    const res = await fetch(API_BASE + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...(body || {}), tripId: activeTrip().id }),
+      ...(controller ? { signal: controller.signal } : {})
+    });
+    const json = await res.json();
+    if (!json.success) throw Object.assign(new Error(json.error || 'bad response'), { remote: true });
+    return json;
+  } catch (err) {
+    if (err.remote) throw err;
+    queueOfflineWrite(path, body, tripId);
+    return { success: true, queued: true };
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
 }
 
 /* ================= 手绘线条图标 ================= */
@@ -1884,7 +2833,7 @@ function iconFor(emoji) {
 document.querySelectorAll('[data-ic]').forEach((el) => { el.innerHTML = ic(el.dataset.ic); });
 
 /* ================= 内置兜底数据（API 不可用时也能看） ================= */
-const EMBEDDED_ITINERARY = [
+const KOREA_ITINERARY = [
   { day: 1, sortOrder: 1, time: '02:25', title: '深圳宝安 T3 起飞', subtitle: 'SZX → 首尔仁川 T2 · OZ372', detail: '凌晨深夜出发，提前 2.5–3 小时到机场值机。', mapUrl: 'https://uri.amap.com/search?keyword=%E6%B7%B1%E5%9C%B3%E5%AE%9D%E5%AE%89%E6%9C%BA%E5%9C%BA&city=%E6%B7%B1%E5%9C%B3&view=map&src=mypage&coordinate=gaode&callnative=0' },
   { day: 1, sortOrder: 2, time: '06:50', title: '落地首尔仁川机场', subtitle: '入境 + 换汇 + 买 T-money', detail: '出关后到机场便利店买 T-money 卡并充值，坐地铁/机场快线都能用。' },
   { day: 1, sortOrder: 3, time: '09:00', title: '仁川机场 → 首尔站 → 釜山', subtitle: 'AREX + KTX 直达南下', detail: '机场快线到首尔站，换乘 KTX 去釜山，车程约 2.5–3h。' },
@@ -1929,6 +2878,8 @@ const EMBEDDED_ITINERARY = [
   { day: 9, sortOrder: 4, time: '22:10', title: 'ICN → SZX 回程航班', subtitle: '首尔仁川 T2 → 深圳宝安 T3 · OZ371', detail: '深夜返程，留足退税和免税店提货时间。' },
   { day: 9, sortOrder: 5, time: '1/4 01:15', title: '落地深圳 · 回家', subtitle: '旅程结束', detail: '到家补觉，倒时差 1 小时（韩国比中国快 1 小时）。' }
 ];
+TRIP_DATA['korea-2026'].itinerary = KOREA_ITINERARY;
+const EMBEDDED_ITINERARY = currentTripData().itinerary || [];
 const DAY_THEMES = {
   1: '凌晨起飞 · 南下釜山', 2: '海云台 · 甘川', 3: '白浅滩 · 南浦洞', 4: 'KTX 晚些回首尔',
   5: '景福宫 · 韩屋村', 6: '明洞 · 跨年敲钟', 7: '元旦 · N首尔塔 · 弘大', 8: '圣水洞 · 汉江', 9: '免税店 · 回国'
@@ -2077,16 +3028,10 @@ const PHRASES = [
   ['감사합니다', 'gam-sa-ham-ni-da', '谢谢'],
   ['이거 얼마예요?', 'i-geo eol-ma-ye-yo', '这个多少钱？'],
   ['화장실 어디예요?', 'hwa-jang-sil eo-di-ye-yo', '洗手间在哪里？'],
-  ['메뉴판 주세요', 'me-nyu-pan ju-se-yo', '请给我菜单'],
   ['카드 돼요?', 'ka-deu dwae-yo', '可以刷卡吗？'],
   ['계산해주세요', 'gye-san-hae-ju-se-yo', '请结账'],
-  ['맛있어요!', 'ma-si-sseo-yo', '好吃！'],
-  ['와이파이 있어요?', 'wa-i-pa-i i-sseo-yo', '有 WiFi 吗？'],
-  ['도와주세요', 'do-wa-ju-se-yo', '请帮帮我'],
   ['한국어 못해요', 'han-gu-geo mo-tae-yo', '我不会韩语'],
-  ['천천히 말해주세요', 'cheon-cheon-hi mal-hae-ju-se-yo', '请说慢一点'],
-  ['지하철역 어디예요?', 'ji-ha-cheol-yeok eo-di-ye-yo', '地铁站在哪？'],
-  ['맥주 한 잔 주세요', 'maek-ju han jan ju-se-yo', '来一杯啤酒']
+  ['지하철역 어디예요?', 'ji-ha-cheol-yeok eo-di-ye-yo', '地铁站在哪？']
 ];
 const TIPS = [
   ['🧣', '保暖穿搭', '首尔 1 月均温 -6~2°C：羽绒服 + 围巾 + 手套 + 暖宝宝。室内暖气足，内搭别太厚。'],
@@ -2099,8 +3044,24 @@ const TIPS = [
   ['🙇', '礼仪', '地铁爱心座不坐、扶梯靠右、餐厅不大声喧哗、递东西用双手。'],
   ['🧾', '退税', '单笔满 30,000 韩元可退税；拿好退税单，机场自助机扫描 + 登机口取现金。'],
   ['🆘', '紧急求助', '报警 112 / 急救 119；必要时联系中国驻韩大使馆。'],
-  ['🗣️', '语言', 'Papago 拍照翻译神器；年轻人多少会点英语，说慢一点 + 手势就够用。'],
-  ['🥶', '冬天限定', '首尔广场滑冰场、汉江雪景、热乎乎的鱼饼汤(오뎅국) —— 冬天的韩国别有味道。']
+  ['🗣️', '语言', 'Papago 拍照翻译神器；沟通时尽量用短句，配合手势或直接出示翻译结果。'],
+  ['🥶', '冬天限定', '首尔广场滑冰场、汉江雪景、热乎乎的鱼饼汤(오뎅국) —— 冬天的韩国别有味道。'],
+  ['🍱', '外带 / 堂食', '很多店的外带和堂食是两套点单方式。想在店里吃，点单前先确认；堂食没吃完，再问能否打包，不要点了外带直接在店内打开。'],
+  ['🗑️', '垃圾分类', '街边垃圾桶不一定好找，遇到合适的垃圾桶就尽早处理。看到垃圾站一定按标识分类，不要把外面带来的垃圾直接塞进便利店或店家垃圾桶。'],
+  ['🚻', '洗手间', '街上不一定随处有厕所，出发前和吃饭、逛商场时提前解决；地铁站通常能找到公厕，店内厕所可能在楼内、需要密码或凭小票进入。纸张能否直接冲下去要看现场提示。'],
+  ['🥡', '不要带外食', '餐厅、咖啡店通常不接受外带食物；便利店也尽量只在店内吃自己买的东西。部分餐厅或咖啡店需要自助收餐具，是否提供热水也要现场确认。'],
+  ['♻️', '便利店收尾', '在 CU、GS25 等店内用餐后，把包装、饮料杯、剩余食物按垃圾站标识分开；外面的垃圾不要默认让店家代收。'],
+  ['🧻', '厕所标识', '先看马桶旁和墙上的说明：有的厕所可直接冲纸，有的要投入纸篓；湿巾、卫生用品不要冲进马桶，按标识处理。'],
+  ['👟', '脱鞋场所', '进入榻榻米、韩式坐席或部分传统餐厅前留意门口提示，看到鞋柜就脱鞋；袜子保持干净会更方便。'],
+  ['🤫', '公共空间', '地铁、公交、居民区和韩屋村尽量放低音量；背包在人多时背到胸前，优先座和车门口不要占用。'],
+  ['↗️', '扶梯靠右', '通常站在扶梯右侧，把左侧留给赶路的人；如果现场有新标识或人流习惯不同，按现场提示走。'],
+  ['🚦', '过马路', '一定走人行道、按信号灯通行，不要抢灯或翻越护栏；韩国交通管理严格，违规可能被处罚。'],
+  ['📸', '拍照礼貌', '不要把镜头长时间对着陌生路人，尤其是近距离拍摄；想拍人物先征得同意，商店、展馆也先看拍摄提示。'],
+  ['💗', '地铁爱心座', '粉色孕妇专座和深绿色老弱病残席不要坐，即使暂时没人；普通座位也不要把包占一个位置。'],
+  ['🛍️', '购物与退税', '逛街建议随身带护照；购物后要小票，退税相关小票和退税单都留好，离境时按流程办理。'],
+  ['✈️', '返程退税', '返程日建议提前 3–4 小时到仁川机场，预留退税、托运、安检和免税店提货时间。'],
+  ['🛂', '出入境拍摄', '不要在出入境检查、海关和安检区域拍照或录像；看到禁止拍摄标识要立即收起手机。'],
+  ['🍜', '外卖餐具', '点外卖或外送泡面时记得主动勾选餐具；便利店泡面通常不会自动附送叉子或筷子。']
 ];
 const RESTOS = {
   busan: [
@@ -2159,18 +3120,20 @@ function showTab(name, pushHash = true) {
   document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + name));
   document.querySelectorAll('.bn-btn').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
   $('#expFAB').style.display = (name === 'expenses') ? 'flex' : 'none';
-  window.scrollTo(0, 0);
-  requestAnimationFrame(() => window.scrollTo(0, 0));
-  setTimeout(() => window.scrollTo(0, 0), 120);
+  window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   // 面板内元素入场动画
   document.querySelectorAll('#tab-' + name + ' .reveal:not(.in)').forEach((el) => el.classList.add('in'));
   if (name === 'map') {
     if (!mapInited) { initMap(); mapInited = true; }
     else renderMapCity(currentMapCity);
   }
-  // 底部导航：激活项滚动到可见位置
-  const act = document.querySelector('.bn-btn.active');
-  if (act && act.scrollIntoView) act.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  // 只滚动底部导航自身，避免 iOS Safari 的 scrollIntoView 改变页面纵向位置。
+  const nav = $('#bnav');
+  const act = nav?.querySelector('.bn-btn.active');
+  if (nav && act) {
+    const left = act.offsetLeft - (nav.clientWidth - act.offsetWidth) / 2;
+    nav.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+  }
   if (pushHash && location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
 }
 document.querySelectorAll('.bn-btn').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
@@ -2190,11 +3153,155 @@ function updateHeader() {
   }
   else if (phase === 'busan') phaseText = `DAY ${dayIndex()} · 釜山`;
   else if (phase === 'seoul') phaseText = `DAY ${dayIndex()} · 首尔`;
+  else if (phase === 'active') phaseText = `DAY ${dayIndex()} · ${currentTripData().name}`;
   else phaseText = '旅程已结束';
   $('#tb-phase').textContent = phaseText;
   $('#tb-time').textContent = '韩国时间 ' + fmtKR({ hour: '2-digit', minute: '2-digit', hour12: false });
   const pct = Math.min(100, Math.max(0, (Date.now() - D1) / (TRIP_END - D1) * 100));
   $('#heroProgress').style.width = pct + '%';
+}
+function renderConfiguredTripData() {
+  const trip = currentTripData();
+  if (trip.content !== 'ready') return;
+  trip.flights?.forEach((flight, index) => {
+    const card = document.querySelectorAll('#tab-transport .flight-card')[index];
+    if (!card) return;
+    const route = card.querySelectorAll('.flight-airport');
+    const data = card.querySelectorAll('.flight-data-item strong');
+    const set = (selector, value) => { const el = card.querySelector(selector); if (el) el.textContent = value; };
+    set('.flight-badge', flight.no);
+    set('.flight-date', flight.date);
+    if (route[0]) { route[0].querySelector('.flight-code').textContent = flight.from; route[0].querySelector('.flight-city').textContent = flight.fromName; }
+    if (route[1]) { route[1].querySelector('.flight-code').textContent = flight.to; route[1].querySelector('.flight-city').textContent = flight.toName; }
+    if (data[0]) data[0].innerHTML = esc(flight.seats).replace(/\\n/g, '<br>');
+    if (data[1]) data[1].textContent = flight.airline;
+    if (data[2]) data[2].textContent = flight.booking;
+    if (data[3]) data[3].textContent = flight.duration;
+    if (data[4]) data[4].textContent = flight.aircraft;
+  });
+  trip.hotels?.forEach((hotel, index) => {
+    const card = document.querySelectorAll('#tab-home .board-card')[index];
+    if (!card) return;
+    const text = (selector, value) => { const el = card.querySelector(selector); if (el) el.textContent = value; };
+    text('.bc-name', hotel.name);
+    text('.bc-en', hotel.en);
+    text('.bc-date', hotel.date);
+    const values = card.querySelectorAll('.bc-detail-value');
+    if (values[0]) values[0].textContent = hotel.checkIn;
+    if (values[1]) values[1].textContent = hotel.checkOut;
+    if (values[2]) values[2].innerHTML = `${esc(hotel.room)}<small>${esc(hotel.roomEn)}</small>`;
+    if (values[3]) values[3].innerHTML = `${esc(hotel.address)}<small>${esc(hotel.addressEn)}</small>`;
+    text('.bc-note', hotel.note);
+  });
+  trip.galleryImages?.forEach((src, index) => {
+    const image = document.querySelectorAll('#tab-home .journal-grid img')[index];
+    if (image) {
+      image.src = src;
+      image.loading = index < 6 ? 'eager' : 'lazy';
+      image.decoding = 'async';
+    }
+  });
+  updateJournalMeta();
+  trip.newYearItems?.forEach((item, index) => {
+    const card = document.querySelectorAll('#tab-home .newyear-card')[index];
+    if (!card) return;
+    const title = card.querySelector('h3');
+    const note = card.querySelector('p');
+    const status = card.querySelector('.ny-status');
+    if (title) title.textContent = item.title;
+    if (note) note.textContent = item.note;
+    if (status) status.textContent = item.status;
+  });
+}
+
+function updateJournalMeta() {
+  const grid = $('#journalGrid');
+  const toggle = $('#journalToggle');
+  const note = $('#journalNote');
+  if (!grid || !toggle) return;
+  const count = grid.querySelectorAll('.journal-card').length;
+  const visibleCount = Math.min(6, count);
+  const expanded = toggle.getAttribute('aria-expanded') === 'true';
+  if (document.body.classList.contains('short-trip')) {
+    toggle.style.display = 'none';
+    return;
+  }
+  if (note) note.textContent = `${currentTripData().cities ? Object.values(currentTripData().cities).map((city) => city.name).join(' · ') : ''} · ${count} 张手帐图片`;
+  toggle.style.display = count > visibleCount ? 'flex' : 'none';
+  toggle.setAttribute('aria-expanded', String(expanded));
+  const label = toggle.querySelector('span');
+  if (label) label.textContent = expanded ? '收起画册' : `展开全部画册（${count - visibleCount} 张）`;
+}
+function initJournal() {
+  const grid = $('#journalGrid');
+  const toggle = $('#journalToggle');
+  if (!grid || !toggle) return;
+  toggle.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    grid.classList.toggle('is-collapsed', expanded);
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    const label = toggle.querySelector('span');
+    const count = grid.querySelectorAll('.journal-card').length;
+    if (label) label.textContent = expanded ? `展开全部画册（${count - 6} 张）` : '收起画册';
+    if (expanded) toggle.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+  updateJournalMeta();
+}
+let activeImageViewer = null;
+function openImageViewer(src, title, alt = '') {
+  const viewer = $('#imageViewer');
+  const backdrop = $('#imageViewerBackdrop');
+  const image = $('#imageViewerImg');
+  if (!viewer || !backdrop || !image || !src) return;
+  image.src = src;
+  image.alt = alt || title || '手帐原图';
+  activeImageViewer = { src, title: title || '手帐原图', alt: alt || title || '手帐原图' };
+  $('#imageViewerTitle').textContent = title || '手帐原图';
+  backdrop.classList.add('open');
+  viewer.classList.add('open');
+  document.body.classList.add('viewer-open');
+  $('#imageViewerClose')?.focus();
+}
+function closeImageViewer() {
+  $('#imageViewerBackdrop')?.classList.remove('open');
+  $('#imageViewer')?.classList.remove('open');
+  document.body.classList.remove('viewer-open');
+  const image = $('#imageViewerImg');
+  if (image) image.removeAttribute('src');
+  activeImageViewer = null;
+}
+function downloadImageViewer() {
+  if (!activeImageViewer?.src) return;
+  const link = document.createElement('a');
+  link.href = activeImageViewer.src;
+  link.download = `${activeImageViewer.title || '手帐原图'}.jpg`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+function openImageViewerInNewWindow() {
+  if (!activeImageViewer?.src) return;
+  window.open(activeImageViewer.src, '_blank', 'noopener');
+}
+function initImageViewer() {
+  document.addEventListener('click', (event) => {
+    const card = event.target.closest('.journal-card.reference,.map-reference-card');
+    if (!card) return;
+    const image = card.querySelector('img');
+    if (!image) return;
+    event.preventDefault();
+    const title = card.querySelector('.journal-copy h3,.map-reference-meta strong')?.textContent?.trim() || image.alt;
+    openImageViewer(card.getAttribute('href') || image.currentSrc || image.src, title, image.alt);
+  });
+  $('#imageViewerBackdrop')?.addEventListener('click', closeImageViewer);
+  $('#imageViewerBack')?.addEventListener('click', closeImageViewer);
+  $('#imageViewerClose')?.addEventListener('click', closeImageViewer);
+  $('#imageViewerDownload')?.addEventListener('click', downloadImageViewer);
+  $('#imageViewerNewWindow')?.addEventListener('click', openImageViewerInNewWindow);
+  $('#imageViewer')?.addEventListener('click', (event) => event.stopPropagation());
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && $('#imageViewer')?.classList.contains('open')) closeImageViewer();
+  });
 }
 
 /* ================= 倒计时 ================= */
@@ -2229,6 +3336,7 @@ function updateRings() {
 /* ================= Hero ================= */
 let heroIdx = 0, heroLayer = 0;
 function rotateHero() {
+  if (!HERO_IMAGES.length) return;
   heroIdx = (heroIdx + 1) % HERO_IMAGES.length;
   const layer = heroLayer === 0 ? $('#heroA') : $('#heroB');
   layer.style.backgroundImage = `url('${HERO_IMAGES[heroIdx]}'), ${PHOTO_FALLBACK}`;
@@ -2237,6 +3345,11 @@ function rotateHero() {
   heroLayer = 1 - heroLayer;
 }
 function initHero() {
+  if (!HERO_IMAGES.length) {
+    $('#heroA').style.backgroundImage = PHOTO_FALLBACK;
+    $('#heroA').classList.add('active');
+    return;
+  }
   $('#heroA').style.backgroundImage = `url('${HERO_IMAGES[0]}'), ${PHOTO_FALLBACK}`;
   $('#heroA').classList.add('active');
   setInterval(rotateHero, 5000);
@@ -2255,6 +3368,8 @@ function updateHeroCountdown() {
     el.innerHTML = t.d > 0
       ? `<div class="hc-top"><span class="hc-chip">首尔</span><span class="hc-main">首尔段 D${dayIndex()} · 距跨年 ${t.d} 天</span></div><div class="hc-sub">12/29 晚上 KTX 北上，住进明洞附近的首尔酒店</div>`
       : `<div class="hc-top"><span class="hc-chip">新年</span><span class="hc-main">首尔段 D${dayIndex()} · 新年快乐！</span></div><div class="hc-sub">跨年钟声之后，继续在首尔慢慢走</div>`;
+  } else if (phase === 'active') {
+    el.innerHTML = `<div class="hc-top"><span class="hc-chip">旅行中</span><span class="hc-main">${esc(currentTripData().name)} · D${dayIndex()}</span></div><div class="hc-sub">周末轻旅行，按当天行程慢慢走</div>`;
   } else {
     el.innerHTML = `<div class="hc-top"><span class="hc-chip">完成</span><span class="hc-main">旅程已结束，下一站再见</span></div><div class="hc-sub">行程、地图、文件和支出都会继续保留在同一份旅程里</div>`;
   }
@@ -2267,7 +3382,7 @@ function renderNextUp() {
   const phase = tripPhase();
   if (phase === 'prep') {
     const t = dl(D1 - Date.now());
-    el.innerHTML = `<div class="nu-ic">${ic('bag')}</div><div><div class="nu-title">准备期 · ${DEPART_LABEL} 出发前 ${t.d} 天</div>
+    el.innerHTML = `<div class="nu-ic">${ic('bag')}</div><div><div class="nu-kicker">准备期</div><div class="nu-title">距 ${DEPART_LABEL} 出发还有 ${t.d} 天</div>
       <div class="nu-sub">先去「待办」把机票、酒店、签证一件件打勾</div></div>`;
     return;
   }
@@ -2345,18 +3460,22 @@ const wxCache = { busan: null, seoul: null };
 
 function autoCity() {
   const phase = tripPhase();
+  if (currentTripData().id !== 'korea-2026') return currentTripData().defaultCity || Object.keys(CITIES)[0];
   if (phase === 'busan') return 'busan';
   return 'seoul';
 }
 async function fetchWeather(city) {
   const c = CITIES[city];
+  if (!c) return null;
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}` +
     `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m` +
     `&daily=weather_code,temperature_2m_max,temperature_2m_min` +
     `&hourly=temperature_2m,weather_code&timezone=Asia%2FSeoul&forecast_days=5`;
   try {
     const res = await fetch(url);
+    if (!res.ok) throw new Error('weather request failed');
     const json = await res.json();
+    if (!json?.current || !json?.daily?.time || !json?.hourly?.time) throw new Error('weather response incomplete');
     wxCache[city] = json;
     return json;
   } catch {
@@ -2403,7 +3522,9 @@ function renderWeather() {
   }).join('');
 }
 async function initWeather() {
-  await Promise.all([fetchWeather('busan'), fetchWeather('seoul')]);
+  const cityIds = Object.keys(CITIES);
+  renderCityTabs(cityIds);
+  await Promise.all(cityIds.map(fetchWeather));
   wxCity = wxAuto ? autoCity() : wxCity;
   document.querySelectorAll('#cityTabs .city-tab').forEach((b) => b.classList.toggle('active', b.dataset.city === wxCity));
   renderWeather();
@@ -2417,13 +3538,21 @@ async function initWeather() {
     }
     renderWeather();
   }, 15 * 60 * 1000);
-  setInterval(() => { fetchWeather('busan'); fetchWeather('seoul'); }, 30 * 60 * 1000);
+  setInterval(() => { cityIds.forEach(fetchWeather); }, 30 * 60 * 1000);
 }
-document.querySelectorAll('#cityTabs .city-tab').forEach((b) => b.addEventListener('click', () => {
-  wxCity = b.dataset.city; wxAuto = false;
-  document.querySelectorAll('#cityTabs .city-tab').forEach((x) => x.classList.toggle('active', x === b));
-  renderWeather();
-}));
+function renderCityTabs(cityIds) {
+  const tabs = $('#cityTabs');
+  if (!tabs) return;
+  tabs.innerHTML = cityIds.map((id) => `<button class="city-tab${id === (currentTripData().defaultCity || cityIds[0]) ? ' active' : ''}" data-city="${esc(id)}"><i class="ti" data-ic="pin"></i>${esc(CITIES[id].name)}</button>`).join('');
+  tabs.querySelectorAll('[data-ic]').forEach((el) => { el.innerHTML = ic(el.dataset.ic); });
+  tabs.onclick = (event) => {
+    const button = event.target.closest('.city-tab');
+    if (!button) return;
+    wxCity = button.dataset.city; wxAuto = false;
+    tabs.querySelectorAll('.city-tab').forEach((x) => x.classList.toggle('active', x === button));
+    renderWeather();
+  };
+}
 $('#wxHourlyBtn').addEventListener('click', function () {
   this.classList.toggle('active');
   $('#wxHourlyWrap').classList.toggle('open');
@@ -2453,7 +3582,7 @@ function appleCityUrl(city) {
   return `https://maps.apple.com/?ll=${center.lat},${center.lon}&q=${encodeURIComponent(center.label)}`;
 }
 function initMap() {
-  renderMapCity('busan');
+  // 地图页使用用户提供的原图，避免旧的 SVG 关系图覆盖静态地图资料。
 }
 const LEGEND_COLOR_NAME = {
   '#A7C8CF': '景点', '#D7A0A5': '打卡点', '#E2B96F': '美食购物', '#94A7B8': '交通', '#87938C': '住宿'
@@ -2503,6 +3632,19 @@ const MAP_ROUTE_ORDER = {
   busan: ['金海机场', '釜山站', '釜山站ASTI酒店', '海云台海水浴场', '胶囊小火车·青沙浦', '广安里大桥', '甘川文化村', '札嘎其市场', 'BIFF广场', '白浅滩文化村', '太宗台'],
   seoul: ['仁川机场', '首尔站', '首尔明洞万怡酒店', '景福宫', '北村韩屋村', '仁寺洞', '明洞', '普信阁', '广藏市场', 'N首尔塔', '弘大', '圣水洞', '汉江公园']
 };
+TRIP_DATA['korea-2026'].map = { meta: MAP_META, visible: MAP_VISIBLE, layout: MAP_LAYOUT, routeOrder: MAP_ROUTE_ORDER, spots: SPOTS };
+function tripMapData() {
+  if (currentTripData().map) return currentTripData().map;
+  const cities = currentTripData().cities || {};
+  const spots = Object.entries(cities).reduce((all, [id, city]) => {
+    all[id] = [{ lat: city.lat, lon: city.lon, label: city.name, emoji: '📍', color: '#A7C8CF', desc: `${city.name} 周末旅行` }];
+    return all;
+  }, {});
+  const names = Object.fromEntries(Object.entries(cities).map(([id, city]) => [id, [city.name]]));
+  const meta = Object.fromEntries(Object.entries(cities).map(([id, city]) => [id, { title: `${city.name}旅行地图`, hint: '周末轻旅行范围示意', art: 'none' }]));
+  return { meta, visible: names, layout: {}, routeOrder: names, spots };
+}
+function tripSpots() { return tripMapData().spots; }
 function mapLabel(s) {
   return s.label
     .replace('海水浴场', '')
@@ -2517,14 +3659,14 @@ function mapLabel(s) {
     .replace('Courtyard by Marriott Seoul Myeongdong', '首尔明洞万怡酒店');
 }
 function visibleSpots(city) {
-  const names = MAP_VISIBLE[city] || [];
-  return SPOTS[city].filter((s) => names.some((n) => s.label.includes(n)));
+  const names = tripMapData().visible[city] || [];
+  return (tripSpots()[city] || []).filter((s) => names.some((n) => s.label.includes(n)));
 }
 function spotPoint(city, s) {
-  const layout = MAP_LAYOUT[city] || {};
+  const layout = tripMapData().layout[city] || {};
   const direct = layout[s.label] || Object.entries(layout).find(([k]) => s.label.includes(k))?.[1];
   if (direct) return direct;
-  const spots = SPOTS[city];
+  const spots = tripSpots()[city] || [];
   const minLat = Math.min(...spots.map((x) => x.lat));
   const maxLat = Math.max(...spots.map((x) => x.lat));
   const minLon = Math.min(...spots.map((x) => x.lon));
@@ -2534,7 +3676,7 @@ function spotPoint(city, s) {
   return { x: Math.max(14, Math.min(86, x)), y: Math.max(10, Math.min(88, y)) };
 }
 function mapPath(city, spots) {
-  const order = (MAP_ROUTE_ORDER[city] || []).map((name) => spots.find((s) => s.label === name || s.label.includes(name))).filter(Boolean);
+  const order = (tripMapData().routeOrder[city] || []).map((name) => spots.find((s) => s.label === name || s.label.includes(name))).filter(Boolean);
   const route = order.length >= 2 ? order : spots;
   if (route.length < 2) return '';
   return route.map((s, i) => {
@@ -2543,7 +3685,7 @@ function mapPath(city, spots) {
   }).join(' ');
 }
 function routeIndex(city, s) {
-  const order = MAP_ROUTE_ORDER[city] || [];
+  const order = tripMapData().routeOrder[city] || [];
   const idx = order.findIndex((name) => s.label === name || s.label.includes(name) || name.includes(s.label));
   return idx >= 0 ? idx + 1 : '';
 }
@@ -2604,7 +3746,7 @@ window.copyCoord = function (txt, btn) {
     .catch(() => { prompt('复制坐标：', txt); });
 };
 window.selectMapSpot = function (city, label) {
-  const s = SPOTS[city].find((item) => item.label === label);
+  const s = (tripSpots()[city] || []).find((item) => item.label === label);
   if (!s) return;
   document.querySelectorAll('.map-point').forEach((p) => p.classList.toggle('active', p.dataset.label === label));
   const cap = document.querySelector('#map .map-caption');
@@ -2613,9 +3755,9 @@ window.selectMapSpot = function (city, label) {
 function renderMapCity(city) {
   currentMapCity = city;
   document.querySelectorAll('#mapTabs .city-tab').forEach((b) => b.classList.toggle('active', b.dataset.city === city));
-  const meta = MAP_META[city];
+  const meta = tripMapData().meta[city];
   const visible = visibleSpots(city);
-  const first = visible[0] || SPOTS[city][0];
+  const first = visible[0] || (tripSpots()[city] || [])[0];
   const points = visible.map((s, i) => {
     const p = spotPoint(city, s);
     const num = routeIndex(city, s) || i + 1;
@@ -2642,10 +3784,10 @@ function renderMapCity(city) {
     </div>
     <div class="map-caption">${selectedMapHTML(city, first)}</div>
   </div>
-  <div class="map-list">${SPOTS[city].map((s) => `<button class="map-mini" onclick="selectMapSpot('${city}','${esc(s.label)}')">
+  <div class="map-list">${(tripSpots()[city] || []).map((s) => `<button class="map-mini" onclick="selectMapSpot('${city}','${esc(s.label)}')">
     <b>${esc(s.label)}</b><span>${esc(s.desc || '')}</span>
   </button>`).join('')}</div>`;
-  const legend = [...new Set(SPOTS[city].map((s) => s.color))];
+  const legend = [...new Set((tripSpots()[city] || []).map((s) => s.color))];
   $('#mapLegend').innerHTML = legend.map((c) => `<span class="legend-chip"><i style="--lc:${c}"></i> ${LEGEND_COLOR_NAME[c] || '地点'}</span>`).join('');
   mapScale = 1;
   setTimeout(() => {
@@ -2856,6 +3998,8 @@ $('#itEditorList').addEventListener('click', (e) => {
   const rowEl = e.target.closest('.it-row');
   if (!rowEl) return;
   const idx = Number(rowEl.dataset.idx);
+  const title = rowEl.querySelector('[data-k="title"]')?.value?.trim() || '这一条行程';
+  if (!confirm(`确定删除“${title}”吗？`)) return;
   itineraryEditorRows.splice(idx, 1);
   if (!itineraryEditorRows.length) itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
   renderItineraryEditorRows();
@@ -3103,34 +4247,99 @@ function listContainerKind(el) {
   return '';
 }
 function setupListDrag(container, kind) {
-  container.addEventListener('pointerdown', (e) => {
-    const handle = e.target.closest('.l-drag');
-    if (!handle) return;
-    const row = handle.closest('.l-row');
-    if (!row) return;
-    listDragState = { kind, id: row.dataset.id, row };
+  const LONG_PRESS_MS = 220;
+  const MOVE_TOLERANCE = 8;
+  const clearPending = (state) => {
+    if (state?.timer) clearTimeout(state.timer);
+    if (state?.handle?.hasPointerCapture?.(state.pointerId)) state.handle.releasePointerCapture(state.pointerId);
+    if (listDragState === state) listDragState = null;
+  };
+  const renderDragFrame = () => {
+    const state = listDragState;
+    if (!state || state.kind !== kind || !state.active) return;
+    state.frame = requestAnimationFrame(renderDragFrame);
+    const { row, placeholder } = state;
+    const over = document.elementFromPoint(state.lastX, state.lastY)?.closest?.('.l-row');
+    if (over && over !== row && container.contains(over)) {
+      const rect = over.getBoundingClientRect();
+      const before = state.lastY < rect.top + rect.height / 2;
+      if (before && placeholder !== over.previousElementSibling) container.insertBefore(placeholder, over);
+      if (!before && placeholder !== over.nextElementSibling) container.insertBefore(placeholder, over.nextSibling);
+    }
+    row.style.transform = `translate3d(${state.lastX - state.offsetX}px, ${state.lastY - state.offsetY}px, 0) scale(1.015)`;
+    const edge = 92;
+    if (state.lastY < edge) window.scrollBy(0, -Math.max(4, (edge - state.lastY) * .18));
+    else if (state.lastY > window.innerHeight - edge) window.scrollBy(0, Math.max(4, (state.lastY - (window.innerHeight - edge)) * .18));
+  };
+  const startDrag = (state) => {
+    if (listDragState !== state || state.moved || state.active) return;
+    const row = state.row;
+    const rect = row.getBoundingClientRect();
+    const placeholder = document.createElement('div');
+    placeholder.className = 'l-row drag-placeholder';
+    placeholder.setAttribute('aria-hidden', 'true');
+    placeholder.style.height = `${rect.height}px`;
+    row.after(placeholder);
+    state.placeholder = placeholder;
+    state.active = true;
     row.classList.add('dragging');
-    row.setPointerCapture?.(e.pointerId);
-    e.preventDefault();
-  });
-  container.addEventListener('pointermove', (e) => {
-    if (!listDragState || listDragState.kind !== kind) return;
-    const over = document.elementFromPoint(e.clientX, e.clientY)?.closest?.('.l-row');
-    if (!over || over === listDragState.row || !container.contains(over)) return;
-    const rect = over.getBoundingClientRect();
-    const before = e.clientY < rect.top + rect.height / 2;
-    container.insertBefore(listDragState.row, before ? over : over.nextSibling);
-  });
-  const finish = async () => {
-    if (!listDragState || listDragState.kind !== kind) return;
+    row.style.position = 'fixed';
+    row.style.left = '0';
+    row.style.top = '0';
+    row.style.width = `${rect.width}px`;
+    row.style.zIndex = '1000';
+    row.style.pointerEvents = 'none';
+    row.style.willChange = 'transform';
+    state.offsetX = state.lastX - rect.left;
+    state.offsetY = state.lastY - rect.top;
+    state.frame = requestAnimationFrame(renderDragFrame);
+    state.handle.setPointerCapture?.(state.pointerId);
+  };
+  const finish = async (e) => {
+    const state = listDragState;
+    if (!state || state.kind !== kind || (e && e.pointerId !== state.pointerId)) return;
+    if (!state.active) { clearPending(state); return; }
+    if (state.frame) cancelAnimationFrame(state.frame);
     const cfg = listState(kind);
+    const { row, placeholder, handle } = state;
+    if (placeholder?.parentNode) placeholder.replaceWith(row);
+    row.classList.remove('dragging');
+    row.style.removeProperty('position');
+    row.style.removeProperty('left');
+    row.style.removeProperty('top');
+    row.style.removeProperty('width');
+    row.style.removeProperty('transform');
+    row.style.removeProperty('z-index');
+    row.style.removeProperty('pointer-events');
+    row.style.removeProperty('will-change');
+    handle?.releasePointerCapture?.(state.pointerId);
     const ids = [...container.querySelectorAll('.l-row')].map((r) => r.dataset.id);
     cfg.items.sort((a, b) => ids.indexOf(String(a.id)) - ids.indexOf(String(b.id)));
-    listDragState.row.classList.remove('dragging');
     listDragState = null;
     cfg.render();
     await cfg.persist();
   };
+  container.addEventListener('pointerdown', (e) => {
+    const handle = e.target.closest('.l-drag');
+    if (!handle || e.button > 0 || listDragState) return;
+    const row = handle.closest('.l-row');
+    if (!row) return;
+    const state = { kind, row, handle, pointerId: e.pointerId, startX: e.clientX, startY: e.clientY, lastX: e.clientX, lastY: e.clientY, moved: false, active: false, timer: 0, frame: 0 };
+    listDragState = state;
+    state.timer = setTimeout(() => startDrag(state), LONG_PRESS_MS);
+    handle.setPointerCapture?.(e.pointerId);
+  });
+  container.addEventListener('pointermove', (e) => {
+    const state = listDragState;
+    if (!state || state.kind !== kind || e.pointerId !== state.pointerId) return;
+    state.lastX = e.clientX;
+    state.lastY = e.clientY;
+    if (!state.active) {
+      if (Math.hypot(e.clientX - state.startX, e.clientY - state.startY) > MOVE_TOLERANCE) { state.moved = true; clearPending(state); }
+      return;
+    }
+    e.preventDefault();
+  });
   container.addEventListener('pointerup', finish);
   container.addEventListener('pointercancel', finish);
 }
@@ -3227,7 +4436,7 @@ async function initTodos() {
 }
 
 /* ================= 打卡清单 ================= */
-let bucketItems = [], bucketTimer = null;
+let bucketItems = [], bucketTimer = null, bucketLocalChangeAt = 0;
 function renderBucket() {
   const done = bucketItems.filter((b) => b.done).length;
   $('#bucketCount').textContent = `${done}/${bucketItems.length}`;
@@ -3245,22 +4454,29 @@ window.toggleBucket = async function (el) {
   if (!item) return;
   const prev = item.done;
   item.done = !item.done;
+  bucketLocalChangeAt = Date.now();
+  cache.set('kr_cache_bucketlist', bucketItems);
   renderBucket();
   try {
     if (String(id).length > 20) {
-      await fetch(`${API_BASE}/bucket-list/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ done: item.done }) });
+      const res = await fetch(`${API_BASE}/bucket-list/${id}?tripId=${encodeURIComponent(activeTrip().id)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ done: item.done, tripId: activeTrip().id }) });
+      if (!res.ok) throw new Error('bucket update failed');
     }
   } catch {
-    item.done = prev; renderBucket();
+    item.done = prev;
+    cache.set('kr_cache_bucketlist', bucketItems);
+    renderBucket();
   }
 };
 async function initBucket() {
   bucketItems = cache.get('kr_cache_bucketlist') || EMBEDDED_BUCKET;
   renderBucket();
   apiGet('/bucket-list', 'kr_cache_bucketlist', EMBEDDED_BUCKET).then((fresh) => {
+    if (Date.now() - bucketLocalChangeAt < 2500) return;
     bucketItems = fresh; renderBucket();
   });
   bucketTimer = setInterval(async () => {
+    if (Date.now() - bucketLocalChangeAt < 2500) return;
     const fresh = await apiGet('/bucket-list', 'kr_cache_bucketlist', EMBEDDED_BUCKET);
     bucketItems = fresh; renderBucket();
   }, 10000);
@@ -3358,6 +4574,43 @@ function itemPerPersonRMB(it) {
   if (it.splitType === 'perPerson') return it.amount * rate;
   return (it.amount * rate) / 2;
 }
+function setFxRateHint() {
+  const hint = $('#fxRateHint');
+  if (!hint) return;
+  const usd = FX_RATES.USD.toFixed(4);
+  const krw = FX_RATES.KRW.toFixed(5);
+  hint.textContent = `当前参考汇率：1 美元 ≈ ¥${usd} · 1,000 韩元 ≈ ¥${(FX_RATES.KRW * 1000).toFixed(2)}${FX_UPDATED_AT ? ` · 更新于 ${FX_UPDATED_AT}` : ' · 使用内置参考值'}`;
+}
+function restoreFxRates() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(FX_RATES_KEY) || 'null');
+    if (!saved?.rates?.USD || !saved?.rates?.KRW) return;
+    FX_RATES.USD = Number(saved.rates.USD);
+    FX_RATES.KRW = Number(saved.rates.KRW);
+    FX_UPDATED_AT = saved.updatedAt || '';
+  } catch {}
+}
+async function refreshFxRates() {
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
+  try {
+    const res = await fetch(FX_RATES_URL, controller ? { signal: controller.signal } : undefined);
+    const data = await res.json();
+    const usdPerCny = Number(data?.rates?.USD);
+    const krwPerCny = Number(data?.rates?.KRW);
+    if (!res.ok || !Number.isFinite(usdPerCny) || !Number.isFinite(krwPerCny) || usdPerCny <= 0 || krwPerCny <= 0) throw new Error('invalid FX response');
+    FX_RATES.USD = 1 / usdPerCny;
+    FX_RATES.KRW = 1 / krwPerCny;
+    FX_UPDATED_AT = data.time_last_update_utc ? new Date(data.time_last_update_utc).toLocaleString('zh-CN', { hour12: false }) : '刚刚';
+    localStorage.setItem(FX_RATES_KEY, JSON.stringify({ rates: { USD: FX_RATES.USD, KRW: FX_RATES.KRW }, updatedAt: FX_UPDATED_AT, fetchedAt: Date.now() }));
+    setFxRateHint();
+    renderExpenses();
+  } catch {
+    setFxRateHint();
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
 function expCatOf(it) { return CATS.includes(it.category) ? it.category : '其他'; }
 function renderDonut() {
   const sums = {}; CATS.forEach((c) => { sums[c] = 0; });
@@ -3410,13 +4663,15 @@ function renderExpenses() {
       <span class="exp-ic" style="--eic-c:${col};--eic:${col}1f">${ic(CAT_ICONS[cat])}</span>
       <span class="exp-main"><span class="exp-desc">${esc(it.desc)}<span class="exp-cat" style="--cc:${col};--cc-l:${col}1f">${cat}</span></span>
         <div class="exp-meta">${isTotal ? '总额平摊' : '人均'} · ${esc((it.people && it.people[0]) || '')}${it.people && it.people.length > 1 ? ' & ' + esc(it.people[1]) : ''} · ¥${itemPerPersonRMB(it).toFixed(0)}/人</div></span>
-      <span class="exp-amt"><span class="ea-main">${curSym}${Number(it.amount).toLocaleString()}</span>
-        <div class="ea-sub">¥${(it.amount * (FX_RATES[it.currency] || 1)).toFixed(0)}${isTotal ? ' 总额' : '/人'}</div></span>
+      <span class="exp-amt"><span class="ea-main">¥${(it.amount * (FX_RATES[it.currency] || 1)).toFixed(0)}</span>
+        <div class="ea-sub">${curSym}${Number(it.amount).toLocaleString()}${isTotal ? ' 总额' : '/人'}</div></span>
       <button class="exp-del" onclick="delExpense('${esc(it._id || it.clientId)}')">${ic('x')}</button>
     </div>`;
   }).join('') || '<div style="padding:22px;text-align:center;color:var(--muted);font-size:13px">暂无记录</div>';
 }
 window.delExpense = async function (id) {
+  const item = expenses.find((e) => (e._id || e.clientId) == id);
+  if (!item || !confirm(`确定删除“${item.desc || '这笔支出'}”吗？`)) return;
   expenses = expenses.filter((e) => (e._id || e.clientId) != id);
   renderExpenses();
   await persistExpenses();
@@ -3426,14 +4681,19 @@ async function persistExpenses() {
     desc: e.desc, amount: e.amount, currency: e.currency,
     splitType: e.splitType, people: e.people, category: e.category || '其他', createdAt: e.createdAt
   }));
+  cache.set('kr_cache_expenses', expenses);
   try {
-    await fetch(API_BASE + '/expenses', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: payload }) });
+    const res = await fetch(`${API_BASE}/expenses?tripId=${encodeURIComponent(activeTrip().id)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: payload, tripId: activeTrip().id }) });
+    if (!res.ok) throw new Error('expense save failed');
   } catch { /* 下次同步会再试 */ }
 }
 async function initExpenses() {
+  restoreFxRates();
+  setFxRateHint();
   const list = await apiGet('/expenses', 'kr_cache_expenses', []);
   expenses = list;
   renderExpenses();
+  refreshFxRates();
   expensesTimer = setInterval(async () => {
     const fresh = await apiGet('/expenses', 'kr_cache_expenses', []);
     expenses = fresh; renderExpenses();
@@ -3473,21 +4733,14 @@ function initSheet() {
 }
 
 /* ================= 文件 / 随笔（同步 + 本地兜底） ================= */
-const DOC_STATUSES = ['待准备', '已上传', '已确认', '已归档'];
-const DOC_STYLE = {
-  '待准备': ['#87938C', '#EFF3F0'],
-  '已上传': ['#6A99A4', '#E8F4F8'],
-  '已确认': ['#A98245', '#FCF3E1'],
-  '已归档': ['#7F789F', '#F0EBFA']
-};
 const DOC_SEEDS = [
-  { id: 'seed-trip-zh', kind: 'file', sortOrder: 1, title: '携程中文版机票行程单', attachmentUrl: '/assets/docs/visa/携程中文版机票行程单.pdf', attachmentName: '携程中文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '去程航班信息' },
-  { id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf', attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '英文版行程单' },
-  { id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/张子豪的韩亚航空官方行程单.pdf', attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
-  { id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金鹿的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf', attachmentName: '仇金鹿的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
-  { id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证（中文）', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店中文版入住凭证.pdf', attachmentName: '釜山ASTI酒店中文版入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
-  { id: 'seed-busan-hotel-en', kind: 'file', sortOrder: 6, title: '釜山 ASTI 酒店入住凭证（英文）', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店英文版入住凭证.pdf', attachmentName: '釜山ASTI酒店英文版入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
-  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 7, title: '首尔酒店确认单', attachmentUrl: '/assets/docs/visa/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', status: '已确认', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' }
+  { id: 'seed-trip-zh', kind: 'file', sortOrder: 1, title: '携程中文版机票行程单', attachmentUrl: '/assets/docs/visa/携程中文版机票行程单.pdf', attachmentName: '携程中文版机票行程单.pdf', attachmentType: 'pdf', note: '去程航班信息' },
+  { id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf', attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', note: '英文版行程单' },
+  { id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/张子豪的韩亚航空官方行程单.pdf', attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', note: '12/26 深夜出发' },
+  { id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金鹿的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf', attachmentName: '仇金鹿的韩亚航空官方行程单.pdf', attachmentType: 'pdf', note: '12/26 深夜出发' },
+  { id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证（中文）', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店中文版入住凭证.pdf', attachmentName: '釜山ASTI酒店中文版入住凭证.pdf', attachmentType: 'pdf', note: '釜山站旁住宿' },
+  { id: 'seed-busan-hotel-en', kind: 'file', sortOrder: 6, title: '釜山 ASTI 酒店入住凭证（英文）', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店英文版入住凭证.pdf', attachmentName: '釜山ASTI酒店英文版入住凭证.pdf', attachmentType: 'pdf', note: '釜山站旁住宿' },
+  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 7, title: '首尔酒店确认单', attachmentUrl: '/assets/docs/visa/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' }
 ];
 const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
 const ESSAY_KIND_LABELS = { diary: '日记', guide: '攻略摘录', food: '美食' };
@@ -3595,13 +4848,11 @@ function normalizeFileDoc(doc, idx) {
   const title = String(doc.title || '').trim();
   const attachmentUrl = doc.attachmentUrl || doc.fileUrl || doc.photo || '';
   const attachmentName = String(doc.attachmentName || fileNameFromPath(attachmentUrl) || title || '文件').trim();
-  const status = DOC_STATUSES.includes(doc.status) ? doc.status : '待准备';
   return {
     id: doc.id || doc._id || `doc-${idx + 1}`,
     kind: 'file',
     sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
     title: title || attachmentName.replace(/\.[^.]+$/, ''),
-    status,
     note: doc.note || '',
     attachmentUrl,
     attachmentName,
@@ -3730,15 +4981,67 @@ async function persistDocs() {
 function fileCardIcon(doc) {
   return ic(guessDocIcon(doc));
 }
+let activeDocViewer = null;
+function docAttachmentUrl(doc) {
+  const rawUrl = String(doc?.attachmentUrl || '');
+  return rawUrl.startsWith('data:') ? rawUrl : encodeURI(rawUrl);
+}
+function openDocViewer(doc) {
+  if (!doc?.attachmentUrl) return;
+  const viewer = $('#docViewer');
+  const backdrop = $('#docViewerBackdrop');
+  const image = $('#docViewerImg');
+  const frame = $('#docViewerFrame');
+  const empty = $('#docViewerEmpty');
+  if (!viewer || !backdrop || !image || !frame || !empty) return;
+  activeDocViewer = doc;
+  const url = docAttachmentUrl(doc);
+  const isImage = isImagePath(doc.attachmentUrl, doc.attachmentMime);
+  const isPreviewable = isImage || doc.attachmentType === 'pdf' || doc.attachmentType === 'text' || doc.attachmentType === 'txt';
+  image.style.display = isImage ? 'block' : 'none';
+  frame.style.display = !isImage && isPreviewable ? 'block' : 'none';
+  empty.style.display = isPreviewable ? 'none' : 'block';
+  image.removeAttribute('src');
+  frame.removeAttribute('src');
+  if (isImage) {
+    image.src = url;
+    image.alt = doc.title || doc.attachmentName || '文件附件';
+  } else if (isPreviewable) {
+    frame.src = url;
+  }
+  $('#docViewerTitle').textContent = doc.title || doc.attachmentName || '文件预览';
+  backdrop.classList.add('open');
+  viewer.classList.add('open');
+  document.body.classList.add('doc-viewer-open');
+  $('#docViewerClose')?.focus();
+}
+function closeDocViewer() {
+  $('#docViewerBackdrop')?.classList.remove('open');
+  $('#docViewer')?.classList.remove('open');
+  document.body.classList.remove('doc-viewer-open');
+  $('#docViewerImg')?.removeAttribute('src');
+  $('#docViewerFrame')?.removeAttribute('src');
+  activeDocViewer = null;
+}
+function openDocInNewWindow(doc) {
+  if (!doc?.attachmentUrl) return;
+  const a = document.createElement('a');
+  a.href = docAttachmentUrl(doc);
+  a.rel = 'noopener';
+  a.target = '_blank';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
 function openDocAttachment(doc, mode = 'open') {
   if (!doc?.attachmentUrl) return;
-  const rawUrl = String(doc.attachmentUrl);
-  const url = rawUrl.startsWith('data:') ? rawUrl : encodeURI(rawUrl);
+  const url = docAttachmentUrl(doc);
+  if (mode === 'open') { openDocViewer(doc); return; }
   const a = document.createElement('a');
   a.href = url;
   a.rel = 'noopener';
   if (mode === 'download') {
-    a.download = doc.attachmentName || fileNameFromPath(rawUrl) || 'file';
+    a.download = doc.attachmentName || fileNameFromPath(doc.attachmentUrl) || 'file';
   } else {
     a.target = '_blank';
   }
@@ -3746,52 +5049,57 @@ function openDocAttachment(doc, mode = 'open') {
   a.click();
   a.remove();
 }
+function initDocViewer() {
+  $('#docViewerBackdrop')?.addEventListener('click', closeDocViewer);
+  $('#docViewerBack')?.addEventListener('click', closeDocViewer);
+  $('#docViewerClose')?.addEventListener('click', closeDocViewer);
+  $('#docViewer')?.addEventListener('click', (event) => event.stopPropagation());
+  $('#docViewerDownload')?.addEventListener('click', () => activeDocViewer && openDocAttachment(activeDocViewer, 'download'));
+  $('#docViewerNewWindow')?.addEventListener('click', () => activeDocViewer && openDocInNewWindow(activeDocViewer));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && $('#docViewer')?.classList.contains('open')) closeDocViewer();
+  });
+}
 function renderDocs() {
-  const renderOne = (d, compact = false) => {
-    const [fc, bc] = DOC_STYLE[d.status] || ['#87938C', '#EFF3F0'];
+  const count = $('#docsCount');
+  if (count) count.textContent = String(docsData.length);
+  const renderOne = (d) => {
     const isImage = isImagePath(d.attachmentUrl, d.attachmentMime);
-    return `<div class="card doc-card${compact ? ' done' : ''}" data-id="${esc(d.id)}">
-      <div class="doc-top">
+    const attachmentLabel = d.attachmentUrl
+      ? (isImage ? '图片附件' : (d.attachmentType === 'pdf' ? 'PDF' : d.attachmentType === 'doc' ? '文档' : '附件'))
+      : '未添加附件';
+    const attachmentMarkup = d.attachmentUrl
+      ? (isImage
+        ? `<div class="doc-attachment doc-attachment-image"><img src="${esc(d.attachmentUrl)}" alt="${esc(d.title || '文件附件')}"></div>`
+        : `<div class="doc-attachment">${ic('file')}<span>${esc(d.attachmentName || '附件')}</span></div>`)
+      : `<div class="doc-attachment doc-attachment-empty">${ic('attach')}<span>还没有添加附件</span></div>`;
+    return `<article class="card doc-card" data-id="${esc(d.id)}">
+      <div class="doc-card-main">
+      <div class="doc-card-head">
         <span class="doc-ic">${fileCardIcon(d)}</span>
-        <div class="doc-head-fields">
+        <div class="doc-card-title-wrap">
+          <span class="doc-card-kicker">${esc(attachmentLabel)}</span>
+          <div class="doc-display-title">${esc(d.title || '未命名文件')}</div>
           <input class="doc-title-input" data-act="title" value="${esc(d.title)}" placeholder="文件名称">
-          <input class="doc-note-input" data-act="noteinline" value="${esc(d.note || '')}" placeholder="备注（可选）">
         </div>
-        <select class="doc-status-select" data-act="status" aria-label="修改状态" style="color:${fc};background:${bc}">
-          ${DOC_STATUSES.map((s) => `<option value="${esc(s)}"${s === d.status ? ' selected' : ''}>${esc(s)}</option>`).join('')}
-        </select>
       </div>
-      <div class="doc-hint">${esc(d.attachmentName || '未添加附件')}</div>
-      <div class="doc-note">${esc(d.note) || '点击“备注”补充说明；附件上传后也能直接打开。'}</div>
-      ${d.attachmentUrl ? (isImage
-        ? `<div class="doc-thumb"><img src="${esc(d.attachmentUrl)}" alt="${esc(d.title)}"></div>`
-        : `<div class="doc-file-chip">${ic(isImage ? 'image' : 'file')}<span>${esc(d.attachmentName || '附件')}</span></div>`) : ''}
+      <div class="doc-file-summary">${attachmentMarkup}</div>
+      <div class="doc-display-note">${esc(d.note || '暂无备注')}</div>
+      <input class="doc-note-input" data-act="noteinline" value="${esc(d.note || '')}" placeholder="备注（可选）">
+      </div>
       <div class="doc-actions">
-        <button class="doc-btn" data-act="attach">${ic('attach')}${d.attachmentUrl ? '换附件' : '添加附件'}</button>
+        <button class="doc-btn" data-act="edit">${ic('edit')}编辑</button>
+        <button class="doc-btn doc-edit-only" data-act="attach">${ic('attach')}${d.attachmentUrl ? '换附件' : '添加附件'}</button>
         <button class="doc-btn" data-act="open"${d.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
         <button class="doc-btn" data-act="download"${d.attachmentUrl ? '' : ' disabled'}>${ic('download')}下载</button>
-        <button class="doc-btn" data-act="note">${ic('edit')}备注</button>
-        <button class="doc-btn danger" data-act="delete">${ic('x')}删除</button>
+        <button class="doc-btn danger doc-edit-only" data-act="delete">${ic('x')}删除</button>
       </div>
-    </div>`;
+    </article>`;
   };
-  const pending = docsData.filter((d) => d.status === '待准备');
-  const done = docsData.filter((d) => d.status !== '待准备');
-  const addCard = `<button class="card doc-card doc-add-card" data-act="newdoc">
-    <div class="doc-add-ic">+</div>
-    <div class="doc-add-title">新增文件</div>
-    <div class="doc-add-sub">自己填名称、备注，上传图片或文件即可；不要的模板都不预设。</div>
-  </button>`;
-  const pendingHTML = pending.length
-    ? `<div class="doc-pending">${pending.map((d) => renderOne(d, false)).join('')}</div>`
-    : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">还没有待准备文件，先点上面的“新增文件”。</div>`;
-  const doneHTML = done.length
-    ? `<details class="doc-done-wrap">
-        <summary class="doc-done-summary">${ic('chevron')}已整理 ${done.length} 项 <span>已上传 / 已确认 / 已归档会先收起来</span></summary>
-        <div class="doc-done-list">${done.map((d) => renderOne(d, true)).join('')}</div>
-      </details>`
-    : '';
-  $('#docsGrid').innerHTML = addCard + pendingHTML + doneHTML;
+  const docsHTML = docsData.length
+    ? docsData.map(renderOne).join('')
+    : `<div class="card doc-empty">还没有文件，点击左侧“新增文件”开始整理。</div>`;
+  $('#docsGrid').innerHTML = docsHTML;
 }
 function readAttachment(file, cb) {
   if (file.type.startsWith('image/')) {
@@ -3828,7 +5136,6 @@ function attachFile(doc) {
       doc.attachmentType = guessAttachmentType(file);
       doc.attachmentName = file.name;
       if (!doc.title) doc.title = file.name.replace(/\.[^.]+$/, '');
-      doc.status = '已上传';
       renderDocs();
       persistDocs();
     });
@@ -3839,31 +5146,31 @@ function docById(id) { return docsData.find((d) => d.id == id); }
 async function initDocs() {
   await loadDocs();
   renderDocs();
+  $('#docsNewBtn').addEventListener('click', async () => {
+    docsData.unshift(normalizeFileDoc({ id: `doc-${Date.now()}`, kind: 'file', title: '', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1 }, 0));
+    docsData = docsData.map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
+    renderDocs();
+    const firstInput = $('#docsGrid .doc-title-input');
+    if (firstInput) firstInput.focus();
+    await persistDocs();
+  });
   $('#docsGrid').addEventListener('click', async (e) => {
-    const btn = e.target.closest('.doc-btn, .dt-del, [data-act="newdoc"]');
+    const btn = e.target.closest('.doc-btn');
     if (!btn) return;
-    if (btn.dataset.act === 'newdoc') {
-      docsData.unshift(normalizeFileDoc({ id: `doc-${Date.now()}`, kind: 'file', title: '', status: '待准备', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1 }, 0));
-      docsData = docsData.map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
-      renderDocs();
-      const firstInput = $('#docsGrid .doc-title-input');
-      if (firstInput) firstInput.focus();
-      await persistDocs();
-      return;
-    }
     const card = e.target.closest('.doc-card');
     const doc = card ? docById(card.dataset.id) : null;
     if (!doc) return;
     const act = btn.dataset.act;
-    if (act === 'attach') {
+    if (act === 'edit') {
+      const editing = card.classList.toggle('editing');
+      btn.innerHTML = `${ic(editing ? 'check' : 'edit')}${editing ? '完成' : '编辑'}`;
+      return;
+    } else if (act === 'attach') {
       attachFile(doc);
     } else if (act === 'open') {
       openDocAttachment(doc, 'open');
     } else if (act === 'download') {
       openDocAttachment(doc, 'download');
-    } else if (act === 'note') {
-      const v = prompt('备注：', doc.note || '');
-      if (v !== null) { doc.note = v.trim(); renderDocs(); await persistDocs(); }
     } else if (act === 'delete') {
       if (confirm('删除这个文件记录？')) {
         docsData = docsData.filter((d) => d.id !== doc.id);
@@ -3874,14 +5181,12 @@ async function initDocs() {
     }
   });
   $('#docsGrid').addEventListener('change', async (e) => {
-    const sel = e.target.closest('.doc-status-select');
     const title = e.target.closest('.doc-title-input');
     const note = e.target.closest('.doc-note-input');
-    if (!sel && !title && !note) return;
+    if (!title && !note) return;
     const card = e.target.closest('.doc-card');
     const doc = card ? docById(card.dataset.id) : null;
     if (!doc) return;
-    if (sel) doc.status = sel.value;
     if (title) doc.title = title.value.trim();
     if (note) doc.note = note.value.trim();
     renderDocs();
@@ -3993,6 +5298,14 @@ function closeEssaySheet() {
   $('#essayBackdrop').classList.remove('open');
   $('#essaySheet').classList.remove('open');
 }
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if ($('#tripPickerSheet').classList.contains('open')) closeTripPicker();
+  else if ($('#essaySheet').classList.contains('open')) closeEssaySheet();
+  else if ($('#listSheet').classList.contains('open')) closeListSheet();
+  else if ($('#itSheet').classList.contains('open')) closeItSheet();
+  else if ($('#expSheet').classList.contains('open')) closeSheet();
+});
 function renderEssayDraftPhotos() {
   $('#essayPhotoRow').innerHTML = essayDraftPhotos.length
     ? essayDraftPhotos.map((src, idx) => `<div class="essay-photo-item"><img src="${esc(src)}" alt=""><button type="button" data-act="remove-photo" data-idx="${idx}">✕</button></div>`).join('')
@@ -4077,6 +5390,7 @@ function initEssay() {
     if (!btn) return;
     const idx = Number(btn.dataset.idx);
     if (Number.isFinite(idx)) {
+      if (!confirm('确定删除这张照片吗？')) return;
       essayDraftPhotos.splice(idx, 1);
       renderEssayDraftPhotos();
     }
@@ -4152,6 +5466,7 @@ function renderFood() {
     return `<div class="card food-card" data-id="${esc(r.id)}">
       <div class="food-top">
         <span class="food-ic">${ic('food')}</span>
+        <div class="food-display-title">${esc(r.title || '未命名美食')}</div>
         <div class="food-head-fields">
           <input class="food-input" data-act="title" value="${esc(r.title)}" placeholder="店名 / 菜名">
           <div class="grid" style="grid-template-columns:1fr 1fr;gap:8px">
@@ -4170,9 +5485,10 @@ function renderFood() {
         : `<div class="food-chip">${ic('image')}<span>${esc(r.attachmentName || '照片')}</span></div>`) : ''}
       <textarea class="food-input" data-act="note" placeholder="备注 / 推荐菜 / 攻略摘录">${esc(r.note || '')}</textarea>
       <div class="food-actions">
-        <button class="food-btn" type="button" data-act="photo">${ic('camera')}${r.attachmentUrl ? '换照片' : '添加照片'}</button>
+        <button class="food-btn" type="button" data-act="edit">${ic('edit')}编辑</button>
+        <button class="food-btn food-edit-only" type="button" data-act="photo">${ic('camera')}${r.attachmentUrl ? '换照片' : '添加照片'}</button>
         <button class="food-btn" type="button" data-act="open"${r.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
-        <button class="food-btn danger" type="button" data-act="delete">${ic('x')}删除</button>
+        <button class="food-btn danger food-edit-only" type="button" data-act="delete">${ic('x')}删除</button>
       </div>
     </div>`;
   };
@@ -4215,7 +5531,10 @@ function initFood() {
       const item = card ? foodRecords.find((r) => r.id === card.dataset.id) : null;
       if (!item) return;
       const act = btn.dataset.act;
-      if (act === 'photo') {
+      if (act === 'edit') {
+        const editing = card.classList.toggle('editing');
+        btn.innerHTML = `${ic(editing ? 'check' : 'edit')}${editing ? '完成' : '编辑'}`;
+      } else if (act === 'photo') {
         attachImage(item);
       } else if (act === 'open') {
         openDocAttachment(item, 'open');
@@ -4268,15 +5587,24 @@ function initSW() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
+  window.addEventListener('online', flushOfflineQueue);
+  if (navigator.onLine !== false) setTimeout(flushOfflineQueue, 900);
 }
 
 /* ================= 启动 ================= */
 (function boot() {
+  renderTripChrome();
+  renderConfiguredTripData();
   updateHeader();
   updateRings();
   updateHeroCountdown();
   renderNextUp();
-  setInterval(() => { updateHeader(); updateHeroCountdown(); renderNextUp(); }, 1000);
+  let lastNextUpRender = 0;
+  setInterval(() => {
+    updateHeader();
+    updateHeroCountdown();
+    if (Date.now() - lastNextUpRender > 30000) { renderNextUp(); lastNextUpRender = Date.now(); }
+  }, 1000);
   setInterval(updateRings, 1000);
   initHero();
   initWeather();
@@ -4287,12 +5615,16 @@ function initSW() {
   initExpenses();
   initDocs();
   initEssay();
+  initDocViewer();
   renderFood();
   initFood();
   renderEssay();
   renderPhrases();
   renderTips();
+  initJournal();
+  initImageViewer();
   initSheet();
+  initTripPicker();
   initSW();
   // 初始 Tab（支持分享链接直达：/#itinerary 等）
   const initial = location.hash.slice(1) || 'home';
