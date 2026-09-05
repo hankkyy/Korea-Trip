@@ -33,7 +33,7 @@ body[data-trip-id="xiamen"]{--green:#6FA7C2;--green-d:#47758D;--green-l:#EAF5FA;
 body.short-trip #tab-home .memo-strip,body.short-trip #tab-home .newyear-board,body.short-trip #tab-home .home-hotels,body.short-trip #tab-home .journal-head,body.short-trip #tab-home .journal-grid,body.short-trip #tab-home #ringRow,body.short-trip #tab-home h2.sec-title[style]{display:none}
 body.short-trip #tab-home .journal-toggle{display:none!important}
 body.short-trip #tab-transport .wrap>*:not(.sec-title),body.short-trip #tab-map .map-board{display:none}
-body.short-trip #tab-map .map-reference-note,body.short-trip #tab-map .map-reference-groups,body.short-trip #tab-map .map-reference-grid{display:none}
+body.short-trip #tab-map .map-reference-note,body.short-trip #tab-map .map-city-tabs,body.short-trip #tab-map .map-reference-groups,body.short-trip #tab-map .map-reference-grid{display:none}
 body.short-trip #tab-itinerary .cal-card,body.short-trip #tab-itinerary .korea-only-itinerary,body.short-trip #tab-itinerary #dayChips,body.short-trip #tab-guide .block-title,body.short-trip #tab-guide .phrase-panel,body.short-trip #tab-guide .tips-stack{display:none}
 body.short-trip #tab-food .food-group{display:none}
 body.short-trip .short-trip-banner{display:block!important}
@@ -736,6 +736,11 @@ body.doc-viewer-open{overflow:hidden}
 .legend-chip{flex-shrink:0;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;gap:5px}
 .legend-chip i{width:7px;height:7px;border-radius:50%;background:var(--lc)}
 .map-reference-groups{display:grid;gap:22px}
+.map-city-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 18px}
+.map-city-tab{min-height:44px;border:1px solid var(--line);border-radius:13px;background:var(--card);color:var(--muted);font-size:13px;font-weight:900;transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease}
+.map-city-tab.active{background:var(--green-d);border-color:var(--green-d);color:#fff}
+.map-city-tab:active{transform:scale(.985)}
+.map-reference-group.is-hidden{display:none}
 .map-reference-group{min-width:0}
 .map-group-title{display:flex;align-items:center;gap:9px;margin:0 0 10px;color:var(--ink);font-size:15px;font-weight:900}
 .map-group-title::before{content:'';width:4px;height:18px;border-radius:999px;background:var(--accent,#D5B36B)}
@@ -1870,9 +1875,12 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   <div class="wrap">
     <h2 class="sec-title"><i class="ti" data-ic="pin"></i>双城地图</h2>
     <div class="short-trip-banner" aria-live="polite"></div>
-    <div class="map-reference-note">这里直接保留你提供的小红书原图，不做重绘和裁剪。点击任意图片可打开原尺寸，手机上适合上下滑动查看，电脑端按釜山、首尔分组浏览。</div>
+    <div class="map-city-tabs" role="tablist" aria-label="选择地图城市">
+      <button class="map-city-tab active" type="button" role="tab" aria-selected="true" data-map-reference-city="busan">釜山</button>
+      <button class="map-city-tab" type="button" role="tab" aria-selected="false" data-map-reference-city="seoul">首尔</button>
+    </div>
     <div class="map-reference-groups">
-      <section class="map-reference-group" aria-labelledby="busanMapTitle">
+      <section class="map-reference-group" data-map-reference-group="busan" aria-labelledby="busanMapTitle">
         <h3 class="map-group-title" id="busanMapTitle">釜山地图</h3>
         <div class="map-reference-grid">
           <a class="map-reference-card" href="assets/maps/busan-hand-drawn-map.jpg" target="_blank" rel="noopener">
@@ -1881,7 +1889,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           </a>
         </div>
       </section>
-      <section class="map-reference-group" aria-labelledby="seoulMapTitle">
+      <section class="map-reference-group is-hidden" data-map-reference-group="seoul" aria-labelledby="seoulMapTitle" hidden>
         <h3 class="map-group-title" id="seoulMapTitle">首尔地图</h3>
         <div class="map-reference-grid">
           <a class="map-reference-card" href="assets/maps/seoul-area-guide.jpg" target="_blank" rel="noopener">
@@ -3660,6 +3668,24 @@ function appleCityUrl(city) {
 }
 function initMap() {
   // 地图页使用用户提供的原图，避免旧的 SVG 关系图覆盖静态地图资料。
+}
+function initMapReferenceTabs() {
+  const tabs = document.querySelectorAll('[data-map-reference-city]');
+  const groups = document.querySelectorAll('[data-map-reference-group]');
+  if (!tabs.length || !groups.length) return;
+  tabs.forEach((tab) => tab.addEventListener('click', () => {
+    const city = tab.dataset.mapReferenceCity;
+    tabs.forEach((item) => {
+      const active = item === tab;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-selected', String(active));
+    });
+    groups.forEach((group) => {
+      const visible = group.dataset.mapReferenceGroup === city;
+      group.classList.toggle('is-hidden', !visible);
+      group.hidden = !visible;
+    });
+  }));
 }
 const LEGEND_COLOR_NAME = {
   '#A7C8CF': '景点', '#D7A0A5': '打卡点', '#E2B96F': '美食购物', '#94A7B8': '交通', '#87938C': '住宿'
@@ -5726,6 +5752,7 @@ function initSW() {
   renderTips();
   initJournal();
   initImageViewer();
+  initMapReferenceTabs();
   initSheet();
   initTripPicker();
   initSW();
