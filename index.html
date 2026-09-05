@@ -1457,8 +1457,8 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   .weather-layout .wx-now .wx-temp{font-size:44px}
   .weather-layout .wx-now .wx-sub{white-space:nowrap}
   .weather-layout .wx-now .wx-city-tag{align-self:flex-start;padding-top:2px}
-  .weather-forecast-card .hscroll#wxDays{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;overflow:visible;scroll-snap-type:none;padding-bottom:2px}
-  .weather-forecast-card .hscroll#wxDays .wx-day{width:auto;min-width:0;padding:12px 5px}
+  .weather-forecast-card .hscroll#wxDays{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
+  .weather-forecast-card .hscroll#wxDays .wx-day{width:96px;min-width:96px;padding:12px 5px}
   .weather-forecast-card #wxHourlyBtn{width:100%;justify-content:center;margin-top:10px}
 }
 @media(min-width:960px){
@@ -1648,7 +1648,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       </div>
       <div class="card weather-forecast-card">
         <div class="weather-block-head">
-          <span class="weather-block-title">未来 5 天</span>
+          <span class="weather-block-title">未来 10 天</span>
           <span class="weather-block-hint">最高 / 最低气温</span>
         </div>
         <div class="hscroll" id="wxDays"></div>
@@ -3528,12 +3528,12 @@ function makeWxFallback(city) {
       relative_humidity_2m: 65
     },
     daily: {
-      time: dayBase,
-      weather_code: preset.codes,
-      temperature_2m_max: preset.highs,
-      temperature_2m_min: preset.lows,
-      precipitation_probability_max: [10, 10, 15, 20, 15],
-      uv_index_max: [2, 2, 2, 1, 2]
+      time: Array.from({ length: 10 }, (_, i) => dayBase[i] || seoulDateISO(i)),
+      weather_code: Array.from({ length: 10 }, (_, i) => preset.codes[i % preset.codes.length]),
+      temperature_2m_max: Array.from({ length: 10 }, (_, i) => preset.highs[i % preset.highs.length]),
+      temperature_2m_min: Array.from({ length: 10 }, (_, i) => preset.lows[i % preset.lows.length]),
+      precipitation_probability_max: Array.from({ length: 10 }, (_, i) => [10, 10, 15, 20, 15][i % 5]),
+      uv_index_max: Array.from({ length: 10 }, (_, i) => [2, 2, 2, 1, 2][i % 5])
     },
     hourly: {
       time: hourBase,
@@ -3557,7 +3557,7 @@ async function fetchWeather(city) {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}` +
     `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m` +
     `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max` +
-    `&hourly=temperature_2m,weather_code&timezone=Asia%2FSeoul&forecast_days=5`;
+    `&hourly=temperature_2m,weather_code&timezone=Asia%2FSeoul&forecast_days=10`;
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error('weather request failed');
@@ -3592,7 +3592,7 @@ function renderWeather() {
   $('#wxAutoHint').textContent = '';
 
   const days = data.daily;
-  $('#wxDays').innerHTML = days.time.slice(0, 5).map((date, i) => {
+  $('#wxDays').innerHTML = days.time.slice(0, 10).map((date, i) => {
     const [e] = wmo(days.weather_code[i]);
     const wd = new Date(date + 'T12:00:00+09:00').toLocaleDateString('zh-CN', { timeZone: 'Asia/Seoul', weekday: 'short', month: 'numeric', day: 'numeric' });
     const today = i === 0;
