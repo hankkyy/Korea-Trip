@@ -4611,9 +4611,10 @@ function itemPerPersonRMB(it) {
 function setFxRateHint() {
   const hint = $('#fxRateHint');
   if (!hint) return;
-  const usd = FX_RATES.USD.toFixed(4);
-  const krw = FX_RATES.KRW.toFixed(5);
-  hint.textContent = `当前参考汇率：1 美元 ≈ ¥${usd} · 1,000 韩元 ≈ ¥${(FX_RATES.KRW * 1000).toFixed(2)}${FX_UPDATED_AT ? ` · 更新于 ${FX_UPDATED_AT}` : ' · 使用内置参考值'}`;
+  const cnyBase = 100;
+  const usd = (cnyBase / FX_RATES.USD).toFixed(2);
+  const krw = Math.round(cnyBase / FX_RATES.KRW).toLocaleString('en-US');
+  hint.textContent = `当前参考汇率：¥100 ≈ $${usd} ≈ ₩${krw}${FX_UPDATED_AT ? ` · 更新于 ${FX_UPDATED_AT}` : ' · 使用内置参考值'}`;
 }
 function restoreFxRates() {
   try {
