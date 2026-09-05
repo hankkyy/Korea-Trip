@@ -2138,9 +2138,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   <button class="bn-btn" data-tab="essay"><i class="ti" data-ic="book"></i><span>随笔</span></button>
   <button class="bn-btn" data-tab="todos"><i class="ti" data-ic="todo"></i><span>待办</span></button>
   <button class="bn-btn" data-tab="packing"><i class="ti" data-ic="bag"></i><span>行李</span></button>
+  <button class="bn-btn" data-tab="guide"><i class="ti" data-ic="book"></i><span>锦囊</span></button>
   <button class="bn-btn" data-tab="docs"><i class="ti" data-ic="file"></i><span>文件</span></button>
   <button class="bn-btn" data-tab="expenses"><i class="ti" data-ic="wallet"></i><span>支出</span></button>
-  <button class="bn-btn" data-tab="guide"><i class="ti" data-ic="book"></i><span>锦囊</span></button>
 </nav>
 
 <footer>
@@ -3141,7 +3141,7 @@ const SPOTS = {
 };
 
 /* ================= Tab 切换 ================= */
-const TABS = ['home', 'itinerary', 'transport', 'map', 'food', 'essay', 'todos', 'packing', 'docs', 'expenses', 'guide'];
+const TABS = ['home', 'itinerary', 'transport', 'map', 'food', 'essay', 'todos', 'packing', 'guide', 'docs', 'expenses'];
 let mapInited = false;
 function showTab(name, pushHash = true) {
   if (!TABS.includes(name)) name = 'home';
