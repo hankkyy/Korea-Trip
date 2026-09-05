@@ -141,6 +141,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 }
 #bnav::-webkit-scrollbar{display:none}
 body.keyboard-open #bnav{opacity:0;pointer-events:none;transform:translate(-50%,120%)}
+body.essay-sheet-open #bnav{opacity:0;pointer-events:none;transform:translate(-50%,120%)}
 .bn-btn{
   flex-shrink:0;min-width:48px;height:52px;padding:0 8px;border-radius:999px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -3230,6 +3231,9 @@ function initKeyboardViewport() {
   const update = () => document.body.classList.toggle('keyboard-open', window.innerHeight - viewport.height > 120);
   viewport.addEventListener('resize', update, { passive: true });
   viewport.addEventListener('scroll', update, { passive: true });
+  document.addEventListener('focusin', (event) => {
+    if (window.matchMedia('(max-width: 767px)').matches && event.target.matches('input,select,textarea')) document.body.classList.add('keyboard-open');
+  });
   document.addEventListener('focusout', () => setTimeout(update, 80));
   update();
 }
@@ -5422,11 +5426,13 @@ function openEssaySheet(entry = null) {
   renderEssayDraftPhotos();
   $('#essayBackdrop').classList.add('open');
   $('#essaySheet').classList.add('open');
+  document.body.classList.add('essay-sheet-open');
   setTimeout(() => $('#essayTitleInput').focus(), 180);
 }
 function closeEssaySheet() {
   $('#essayBackdrop').classList.remove('open');
   $('#essaySheet').classList.remove('open');
+  document.body.classList.remove('essay-sheet-open', 'keyboard-open');
 }
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;
