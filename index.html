@@ -3240,7 +3240,9 @@ function renderConfiguredTripData() {
   trip.galleryImages?.forEach((src, index) => {
     const image = document.querySelectorAll('#tab-home .journal-grid img')[index];
     if (image) {
-      image.src = src;
+      // 兼容云端旧旅程数据，避免历史路径把已替换的地图预览覆盖回旧图。
+      const resolvedSrc = src === 'assets/maps/seoul-full-map.jpg' ? 'assets/maps/seoul-full-map-v2.jpg' : src;
+      image.src = resolvedSrc;
       image.loading = index < 6 ? 'eager' : 'lazy';
       image.decoding = 'async';
     }
