@@ -1768,7 +1768,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           <circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="ring1" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
           <div class="ring-center"><span class="rc-num" id="ring1Num">—</span><span class="rc-unit" id="ring1Unit">天</span></div>
         </div>
-        <div class="ring-label">出发 · 12/26</div>
+        <div class="ring-label">出发 · 12/25</div>
         <div class="ring-detail" id="ring1Detail"></div>
       </div>
       <div class="card ring-card reveal">
@@ -1784,7 +1784,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           <svg viewBox="0 0 120 120"><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="ring3" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/></svg>
           <div class="ring-center"><span class="rc-num" id="ring3Num">—</span><span class="rc-unit" id="ring3Unit">天</span></div>
         </div>
-        <div class="ring-label">回家 · 1/4</div>
+        <div class="ring-label">回家 · 1/3</div>
         <div class="ring-detail" id="ring3Detail"></div>
       </div>
     </div>
@@ -2428,7 +2428,7 @@ const TRIP_DATA = {
     id: 'korea-2026', name: '韩国冬日旅行', brand: 'Korea Trip', dates: '2026.12.26–2027.01.03', icon: '🇰🇷',
     startAt: '2026-12-26T02:25:00+08:00', transferAt: '2026-12-29T21:00:00+09:00',
     endAt: '2027-01-04T01:15:00+08:00', newYearAt: '2026-12-31T23:59:00+09:00',
-    departLabel: '12/26', defaultCity: 'busan',
+    departLabel: '12/25', countdownStartAt: '2026-12-25T00:00:00+08:00', countdownHomeAt: '2027-01-03T00:00:00+08:00', defaultCity: 'busan',
     cities: { busan: { name: '釜山', lat: 35.1796, lon: 129.0756 }, seoul: { name: '首尔', lat: 37.5665, lon: 126.9780 } },
     heroImages: ['assets/photos/busan-watercolor.webp', 'assets/photos/busan-harbor-editorial.png', 'assets/photos/seoul-palace-editorial.png', 'assets/photos/seoul-night-editorial.png'],
     galleryImages: ['assets/photos/busan-haeundae-winter-shore.png', 'assets/photos/busan-gamcheon-hillside-colors.png', 'assets/photos/busan-gwangalli-bridge-glow.png', 'assets/photos/seoul-palace-editorial.png', 'assets/photos/seoul-bukchon-quiet-roofs.png', 'assets/photos/seoul-myeongdong-lantern-street.png', 'assets/photos/seoul-night-editorial.png', 'assets/photos/seoul-airport-editorial.png', 'assets/photos/seoul-marriott-myeongdong-editorial.png', 'assets/photos/seoul-seongsu-factory-cafe.png'],
@@ -2480,6 +2480,8 @@ const D1 = new Date(currentTripData().startAt || '2999-01-01T00:00:00+08:00');
 const BUSAN_END = new Date(currentTripData().transferAt || currentTripData().startAt || '2999-01-01T00:00:00+08:00');
 const TRIP_END = new Date(currentTripData().endAt || currentTripData().startAt || '2999-01-01T00:00:00+08:00');
 const NEWYEAR = new Date(currentTripData().newYearAt || currentTripData().endAt || '2999-01-01T00:00:00+08:00');
+const COUNTDOWN_START = new Date(currentTripData().countdownStartAt || currentTripData().startAt || '2999-01-01T00:00:00+08:00');
+const COUNTDOWN_HOME = new Date(currentTripData().countdownHomeAt || currentTripData().endAt || '2999-01-01T00:00:00+08:00');
 const DEPART_LABEL = currentTripData().departLabel || '出发日';
 const CITIES = currentTripData().cities || {};
 const HERO_IMAGES = currentTripData().heroImages || [];
@@ -3187,7 +3189,7 @@ function updateHeader() {
   const phase = tripPhase();
   let phaseText = '';
   if (phase === 'prep') {
-    const t = dl(D1 - Date.now());
+    const t = dl(COUNTDOWN_START - Date.now());
     phaseText = t.d > 0
       ? `准备期 · 距 ${DEPART_LABEL} 出发还有 ${t.d} 天`
       : `准备期 · 距 ${DEPART_LABEL} 出发还有 ${pad(t.h)}:${pad(t.m)}:${pad(t.s)}`;
@@ -3354,9 +3356,9 @@ function initImageViewer() {
 
 /* ================= 倒计时 ================= */
 const RINGS = [
-  { id: 1, target: D1, label: '出发', doneText: '已出发' },
+  { id: 1, target: COUNTDOWN_START, label: '出发', doneText: '已出发' },
   { id: 2, target: NEWYEAR, label: '跨年', doneText: '已跨年' },
-  { id: 3, target: TRIP_END, label: '回家', doneText: '已到家' }
+  { id: 3, target: COUNTDOWN_HOME, label: '回家', doneText: '已到家' }
 ];
 function updateRings() {
   RINGS.forEach((r) => {
@@ -3406,7 +3408,7 @@ function updateHeroCountdown() {
   const phase = tripPhase();
   const el = $('#heroCountdown');
   if (phase === 'prep') {
-    const t = dl(D1 - Date.now());
+    const t = dl(COUNTDOWN_START - Date.now());
     const trip = currentTripData();
     const prepSub = trip.id === 'korea-2026'
       ? '12/26 02:25 · 深圳起飞，行李、文件、支出都在这里查'
@@ -3433,7 +3435,7 @@ function renderNextUp() {
   const el = $('#nextUp');
   const phase = tripPhase();
   if (phase === 'prep') {
-    const t = dl(D1 - Date.now());
+    const t = dl(COUNTDOWN_START - Date.now());
     el.innerHTML = `<div class="nu-ic">${ic('bag')}</div><div><div class="nu-kicker">准备期</div><div class="nu-title">距 ${DEPART_LABEL} 出发还有 ${t.d} 天</div>
       <div class="nu-sub">先去「待办」把机票、酒店、签证一件件打勾</div></div>`;
     return;
