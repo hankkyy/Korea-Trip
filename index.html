@@ -2890,7 +2890,7 @@ function renderDayChips() {
 }
 function renderItinerary(list) {
   const todayIdx = (tripPhase() === 'busan' || tripPhase() === 'seoul') ? dayIndex() : -1;
-  const openDay = todayIdx > 0 ? todayIdx : (list.length ? list[0].day : 1);
+  const openDay = null;
   const byDay = {};
   list.forEach((item) => { (byDay[item.day] = byDay[item.day] || []).push(item); });
   $('#itineraryList').innerHTML = Object.keys(byDay).map((d) => {
