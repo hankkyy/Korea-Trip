@@ -811,13 +811,49 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 }
 .food-note-title{font-size:15px;font-weight:900;color:var(--green-d);margin-bottom:4px}
 .food-note-text{font-size:12.5px;color:var(--muted);line-height:1.6}
-.food-memory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.food-memory-item{
-  padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)
+.food-collections{display:grid;gap:14px;margin-top:4px}
+.food-collection{padding:14px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,251,.97),rgba(245,249,246,.95));border:1px solid rgba(118,169,138,.12);box-shadow:var(--shadow)}
+.food-collection-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.food-collection-head h3{font-size:14px;font-weight:900;color:var(--green-d)}
+.food-add-btn{
+  min-height:34px;padding:0 12px;border-radius:999px;border:1px solid rgba(118,169,138,.22);
+  background:var(--green-xl);color:var(--green-d);font-size:12px;font-weight:900
 }
-.food-memory-item h4{font-size:14px;font-weight:900;color:var(--text);margin-bottom:4px}
-.food-memory-item p{font-size:12px;line-height:1.5;color:var(--muted)}
-.food-memory-item .fm-tag{display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:5px 10px;border-radius:999px;background:var(--green-l);color:var(--green-d);font-size:11px;font-weight:800}
+.food-add-btn:active{transform:translateY(1px)}
+.food-memory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.food-card{
+  padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px
+}
+.food-card.done{background:linear-gradient(180deg,rgba(246,250,247,.98),rgba(255,255,251,.98))}
+.food-top{display:flex;gap:10px;align-items:flex-start}
+.food-ic{
+  width:34px;height:34px;border-radius:12px;background:linear-gradient(145deg,rgba(118,169,138,.18),rgba(118,169,138,.08));
+  color:var(--green-d);display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.food-head-fields{flex:1;min-width:0;display:grid;gap:8px}
+.food-input,.food-select{
+  width:100%;min-height:38px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);
+  padding:0 12px;font-size:13px;outline:none;color:var(--text)
+}
+.food-input:focus,.food-select:focus{border-color:var(--green)}
+.food-select{appearance:none}
+.food-card textarea.food-input{min-height:72px;padding:10px 12px;resize:vertical;line-height:1.55}
+.food-add-card{cursor:pointer}
+.food-meta{font-size:12px;color:var(--muted);line-height:1.5}
+.food-note{font-size:12.5px;color:var(--muted);background:var(--bg);border-radius:12px;padding:8px 12px;line-height:1.55;min-height:20px}
+.food-chip{
+  display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:14px;background:var(--green-xl);color:var(--green-d);font-size:12px;font-weight:800
+}
+.food-chip .ic{width:16px;height:16px}
+.food-thumb{position:relative;margin-top:2px}
+.food-thumb img{width:100%;max-height:170px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
+.food-actions{display:flex;gap:8px;flex-wrap:wrap}
+.food-btn{
+  min-height:38px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:12.5px;font-weight:800;color:var(--text)
+}
+.food-btn .ic{width:16px;height:16px}
+.food-btn:active{background:var(--line)}
+.food-btn.danger{flex:.7;color:#9B6468;background:#F8ECEC;border-color:#EBCFD1}
 .essay-note{
   padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,251,.97),rgba(246,250,246,.92));
   border:1px solid rgba(118,169,138,.14);box-shadow:var(--shadow)
@@ -1353,7 +1389,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <h2 class="sec-title"><i class="ti" data-ic="food"></i>美食收藏 <span class="st-sub">小红书/攻略收藏都可以收进来</span></h2>
     <div class="card food-note-card">
       <div class="food-note-title">把想吃的店先攒起来</div>
-      <div class="food-note-text">釜山 / 首尔分开收，想吃什么直接点开。</div>
+      <div class="food-note-text">下面这块是你们自己的美食收藏夹，可以自己新增、改名字、换照片。</div>
     </div>
     <div class="food-group open" id="fg-busan-food">
       <button class="fg-head tap" onclick="toggleFood('fg-busan-food')"><i class="ti" data-ic="wave"></i>釜山必吃 <span class="fg-arrow"><i class="ti" data-ic="chevron"></i></span></button>
@@ -1363,8 +1399,23 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <button class="fg-head tap" onclick="toggleFood('fg-seoul-food')"><i class="ti" data-ic="temple"></i>首尔必吃 <span class="fg-arrow"><i class="ti" data-ic="chevron"></i></span></button>
       <div class="fg-collapse"><div class="fg-inner"><div class="grid g2 g3 resto-grid" id="restoSeoulFood"></div></div></div>
     </div>
-    <div class="block-title"><i class="ti" data-ic="book"></i>吃饭备忘</div>
-    <div class="food-memory-grid" id="foodMemory"></div>
+    <div class="block-title"><i class="ti" data-ic="book"></i>我的收藏</div>
+    <div class="food-collections">
+      <div class="food-collection">
+        <div class="food-collection-head">
+          <h3>釜山收藏</h3>
+          <button class="food-add-btn" type="button" data-act="newfood" data-city="busan">+ 新增</button>
+        </div>
+        <div class="food-memory-grid" id="foodBusan"></div>
+      </div>
+      <div class="food-collection">
+        <div class="food-collection-head">
+          <h3>首尔收藏</h3>
+          <button class="food-add-btn" type="button" data-act="newfood" data-city="seoul">+ 新增</button>
+        </div>
+        <div class="food-memory-grid" id="foodSeoul"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -3426,13 +3477,15 @@ const DOC_SEEDS = [
   { id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf', attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '英文版行程单' },
   { id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/张子豪的韩亚航空官方行程单.pdf', attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
   { id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金鹿的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf', attachmentName: '仇金鹿的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
-  { id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店入住凭证.pdf', attachmentName: '釜山ASTI酒店入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
-  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 6, title: '首尔酒店确认单', attachmentUrl: '/assets/docs/visa/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', status: '已确认', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' }
+  { id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证（中文）', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店中文版入住凭证.pdf', attachmentName: '釜山ASTI酒店中文版入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
+  { id: 'seed-busan-hotel-en', kind: 'file', sortOrder: 6, title: '釜山 ASTI 酒店入住凭证（英文）', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店英文版入住凭证.pdf', attachmentName: '釜山ASTI酒店英文版入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
+  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 7, title: '首尔酒店确认单', attachmentUrl: '/assets/docs/visa/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', status: '已确认', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' }
 ];
 const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
 const ESSAY_KIND_LABELS = { diary: '日记', guide: '攻略摘录', food: '美食' };
 let docsData = [];
 let essayRecords = [];
+let foodRecords = [];
 let essayLegacyMeta = null;
 let essayOpenPayloads = new Map();
 let essayUnlockedPasswords = new Map();
@@ -3561,6 +3614,25 @@ function normalizeEssayVault(doc, idx) {
     updatedAt: Number(doc.updatedAt) || Date.now()
   };
 }
+function normalizeFoodRecord(doc, idx) {
+  const city = doc.city === 'seoul' ? 'seoul' : 'busan';
+  const title = String(doc.title || doc.name || '').trim();
+  const attachmentUrl = doc.attachmentUrl || doc.photoUrl || doc.fileUrl || doc.photo || '';
+  return {
+    id: doc.id || doc._id || `food-${idx + 1}`,
+    kind: 'food',
+    city,
+    sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
+    title: title || '未命名美食',
+    place: String(doc.place || doc.area || doc.location || '').trim(),
+    note: doc.note || '',
+    attachmentUrl,
+    attachmentName: String(doc.attachmentName || fileNameFromPath(attachmentUrl) || '美食照片').trim(),
+    attachmentType: doc.attachmentType || (isImagePath(attachmentUrl, doc.attachmentMime || '') ? 'image' : 'image'),
+    attachmentMime: doc.attachmentMime || '',
+    sourceKey: doc.sourceKey || attachmentUrl || title || `food-${idx + 1}`
+  };
+}
 function shouldKeepFileDoc(doc) {
   const title = String(doc.title || '').trim();
   const note = String(doc.note || '').trim();
@@ -3594,23 +3666,44 @@ function syncSeedDocs(payload) {
   });
   return { payload: next, changed };
 }
+function attachImage(doc) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    if (file.size > 12 * 1024 * 1024) { alert('图片太大（>12MB），先压缩或换一张'); return; }
+    readAttachment(file, (dataUrl, mime) => {
+      doc.attachmentUrl = dataUrl;
+      doc.attachmentMime = mime;
+      doc.attachmentType = 'image';
+      doc.attachmentName = file.name;
+      renderFood();
+      persistDocs();
+    });
+  };
+  input.click();
+}
 async function loadDocs() {
   const cached = Array.isArray(cache.get('kr_docs')) ? cache.get('kr_docs') : [];
   const cloudDocs = await apiGet('/docs', 'kr_docs', cached);
   const source = Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : cached;
   const fileSource = (source || []).filter((d) => !d || d.kind === 'file' || !d.kind);
   const essaySource = (source || []).filter((d) => d && d.kind === 'essay');
+  const foodSource = (source || []).filter((d) => d && d.kind === 'food');
   essayLegacyMeta = (source || []).find((d) => d && d.kind === 'essay-meta') || null;
   docsData = seedDocs(fileSource.map(normalizeFileDoc).filter(shouldKeepFileDoc).sort((a, b) => a.sortOrder - b.sortOrder));
   const seededSync = syncSeedDocs(docsData);
   docsData = seededSync.payload;
   essayRecords = essaySource.map(normalizeEssayVault).filter((d) => d.kind !== 'essay-meta').sort((a, b) => a.sortOrder - b.sortOrder);
+  foodRecords = foodSource.map(normalizeFoodRecord).sort((a, b) => a.sortOrder - b.sortOrder);
   essayOpenPayloads = new Map();
   essayUnlockedPasswords = new Map();
-  cache.set('kr_docs', [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords]);
+  cache.set('kr_docs', [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords, ...foodRecords]);
   const needSeedSync = seededSync.changed || docsData.length !== fileSource.length || seedDocs(fileSource.map(normalizeFileDoc)).length !== docsData.length;
-  if (needSeedSync || (source || []).length !== docsData.length + essayRecords.length + (essayLegacyMeta ? 1 : 0)) {
-    apiPost('/docs', { items: [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords] }).catch(() => {});
+  if (needSeedSync || (source || []).length !== docsData.length + essayRecords.length + foodRecords.length + (essayLegacyMeta ? 1 : 0)) {
+    apiPost('/docs', { items: [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords, ...foodRecords] }).catch(() => {});
   }
 }
 async function persistDocs() {
@@ -3618,6 +3711,7 @@ async function persistDocs() {
   const legacyRemain = essayRecords.some((item) => !item.passSalt || !item.passHash);
   if (essayLegacyMeta && legacyRemain) payload.push(essayLegacyMeta);
   payload.push(...essayRecords);
+  payload.push(...foodRecords);
   if (!cache.set('kr_docs', payload)) alert('本地缓存已满：请删掉几条记录后再试。');
   try {
     await apiPost('/docs', { items: payload });
@@ -4036,28 +4130,115 @@ function initEssay() {
   });
 }
 function renderFood() {
-  const cardHTML = (r) => `
-    <div class="card resto-card">
-      <div class="rc-top"><span class="rc-ic">${iconFor(r.emoji)}</span>
-        <div><h3>${esc(r.name)}</h3><div class="rc-ko">${esc(r.ko)} · ${esc(r.area)}</div></div>
+  const grouped = {
+    busan: foodRecords.filter((r) => r.city === 'busan'),
+    seoul: foodRecords.filter((r) => r.city === 'seoul')
+  };
+  const renderAdd = (city) => `<button class="card food-card food-add-card" type="button" data-act="newfood" data-city="${city}">
+    <div class="food-ic">${ic('plus')}</div>
+    <div class="food-meta">新增一条 ${city === 'busan' ? '釜山' : '首尔'} 美食收藏</div>
+    <div class="food-note">可以写店名、地点、推荐菜，顺手加一张照片。</div>
+  </button>`;
+  const renderOne = (r) => {
+    const isImage = isImagePath(r.attachmentUrl, r.attachmentMime);
+    return `<div class="card food-card" data-id="${esc(r.id)}">
+      <div class="food-top">
+        <span class="food-ic">${ic('food')}</span>
+        <div class="food-head-fields">
+          <input class="food-input" data-act="title" value="${esc(r.title)}" placeholder="店名 / 菜名">
+          <div class="grid" style="grid-template-columns:1fr 1fr;gap:8px">
+            <select class="food-select" data-act="city" aria-label="选择城市">
+              <option value="busan"${r.city === 'busan' ? ' selected' : ''}>釜山</option>
+              <option value="seoul"${r.city === 'seoul' ? ' selected' : ''}>首尔</option>
+            </select>
+            <input class="food-input" data-act="place" value="${esc(r.place || '')}" placeholder="地点 / 商圈">
+          </div>
+        </div>
       </div>
-      <div class="rc-note">${esc(r.note)}</div>
-      <a class="rc-map" href="https://map.naver.com/p/search/${encodeURIComponent(r.ko.split(' ')[0])}" target="_blank" rel="noopener">Naver 地图</a>
+      <div class="food-meta">${esc(r.city === 'busan' ? '釜山收藏' : '首尔收藏')} · ${esc(r.place || '未填地点')}</div>
+      <div class="food-note">${esc(r.note) || '写一句为什么想去吃，或者要点什么。'}</div>
+      ${r.attachmentUrl ? (isImage
+        ? `<div class="food-thumb"><img src="${esc(r.attachmentUrl)}" alt="${esc(r.title)}"></div>`
+        : `<div class="food-chip">${ic('image')}<span>${esc(r.attachmentName || '照片')}</span></div>`) : ''}
+      <textarea class="food-input" data-act="note" placeholder="备注 / 推荐菜 / 攻略摘录">${esc(r.note || '')}</textarea>
+      <div class="food-actions">
+        <button class="food-btn" type="button" data-act="photo">${ic('camera')}${r.attachmentUrl ? '换照片' : '添加照片'}</button>
+        <button class="food-btn" type="button" data-act="open"${r.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
+        <button class="food-btn danger" type="button" data-act="delete">${ic('x')}删除</button>
+      </div>
     </div>`;
-  const memory = [
-    { emoji: '🍲', title: '落地第一顿', text: '密阳血肠猪肉汤饭，釜山海风里先来一碗热汤。', tag: '釜山' },
-    { emoji: '🥞', title: '市场边小吃', text: '广藏市场的绿豆煎饼和鱼饼串，边走边吃。', tag: '首尔' },
-    { emoji: '🍗', title: '夜宵组合', text: '炸鸡 + 啤酒，冬天晚上最稳的快乐。', tag: '宵夜' },
-    { emoji: '☕', title: '咖啡休息', text: '圣水洞找一家窗边咖啡馆坐一会儿。', tag: '随手记' }
-  ];
-  $('#restoBusanFood').innerHTML = RESTOS.busan.map(cardHTML).join('');
-  $('#restoSeoulFood').innerHTML = RESTOS.seoul.map(cardHTML).join('');
-  $('#foodMemory').innerHTML = memory.map((m) => `
-    <div class="card food-memory-item">
-      <div class="rc-top"><span class="rc-ic">${iconFor(m.emoji)}</span><div><h4>${esc(m.title)}</h4></div></div>
-      <p>${esc(m.text)}</p>
-      <span class="fm-tag">${esc(m.tag)}</span>
-    </div>`).join('');
+  };
+  $('#foodBusan').innerHTML = renderAdd('busan') + (grouped.busan.length ? grouped.busan.map(renderOne).join('') : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">还没有釜山收藏，先点上面的“新增”。</div>`);
+  $('#foodSeoul').innerHTML = renderAdd('seoul') + (grouped.seoul.length ? grouped.seoul.map(renderOne).join('') : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">还没有首尔收藏，先点上面的“新增”。</div>`);
+}
+function toggleFood(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+function initFood() {
+  const bind = (container, city) => {
+    if (!container) return;
+    container.addEventListener('click', async (e) => {
+      const btn = e.target.closest('[data-act]');
+      if (!btn) return;
+      const add = btn.dataset.act === 'newfood';
+      if (add) {
+        const targetCity = btn.dataset.city === 'seoul' ? 'seoul' : city;
+        const item = normalizeFoodRecord({
+          id: `food-${Date.now()}`,
+          kind: 'food',
+          city: targetCity,
+          title: '',
+          place: '',
+          note: '',
+          attachmentUrl: '',
+          attachmentName: '',
+          sortOrder: 1
+        }, 0);
+        foodRecords.unshift(item);
+        foodRecords = foodRecords.map((r, idx) => ({ ...r, sortOrder: idx + 1 }));
+        renderFood();
+        await persistDocs();
+        const focus = document.querySelector(`#food${targetCity === 'busan' ? 'Busan' : 'Seoul'} .food-card[data-id="${item.id}"] .food-input[data-act="title"]`);
+        if (focus) focus.focus();
+        return;
+      }
+      const card = e.target.closest('.food-card');
+      const item = card ? foodRecords.find((r) => r.id === card.dataset.id) : null;
+      if (!item) return;
+      const act = btn.dataset.act;
+      if (act === 'photo') {
+        attachImage(item);
+      } else if (act === 'open') {
+        openDocAttachment(item, 'open');
+      } else if (act === 'delete') {
+        if (!confirm('删除这条美食收藏？')) return;
+        foodRecords = foodRecords.filter((r) => r.id !== item.id).map((r, idx) => ({ ...r, sortOrder: idx + 1 }));
+        renderFood();
+        await persistDocs();
+      }
+    });
+    container.addEventListener('change', async (e) => {
+      const card = e.target.closest('.food-card');
+      if (!card) return;
+      const item = foodRecords.find((r) => r.id === card.dataset.id);
+      if (!item) return;
+      const title = e.target.closest('.food-input[data-act="title"]');
+      const place = e.target.closest('.food-input[data-act="place"]');
+      const note = e.target.closest('.food-input[data-act="note"]');
+      const citySel = e.target.closest('.food-select[data-act="city"]');
+      if (!title && !place && !note && !citySel) return;
+      if (title) item.title = title.value.trim() || '未命名美食';
+      if (place) item.place = place.value.trim();
+      if (note) item.note = note.value.trim();
+      if (citySel) item.city = citySel.value === 'seoul' ? 'seoul' : 'busan';
+      foodRecords = foodRecords.map((r) => (r.id === item.id ? { ...item } : r)).sort((a, b) => a.sortOrder - b.sortOrder);
+      renderFood();
+      await persistDocs();
+    });
+  };
+  bind(document.getElementById('foodBusan'), 'busan');
+  bind(document.getElementById('foodSeoul'), 'seoul');
 }
 function renderPhrases() {
   $('#phraseBody').innerHTML = PHRASES.map((p) => `<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td></tr>`).join('');
@@ -4099,6 +4280,7 @@ function initSW() {
   initDocs();
   initEssay();
   renderFood();
+  initFood();
   renderEssay();
   renderPhrases();
   renderTips();
