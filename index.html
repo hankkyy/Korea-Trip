@@ -1430,11 +1430,8 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <h2 class="sec-title"><i class="ti" data-ic="wallet"></i>行程总支出 <span class="st-sub">多币种 → 人均 RMB</span></h2>
     <div class="card exp-summary">
       <div class="es-item"><span class="es-label">人均花费</span><span class="es-num" id="esPer">¥0</span></div>
-      <div class="es-item"><span class="es-label">总额 / 预算</span><span class="es-num" id="esTotal">¥0 <small>/ ¥10000</small></span></div>
-      <div style="grid-column:1/-1">
-        <div class="es-progress"><i id="esBar" style="width:0%"></i></div>
-        <div class="es-status" id="esStatus">还没有记账，点右下角 ＋ 添加第一笔</div>
-      </div>
+      <div class="es-item"><span class="es-label">总额 / 笔数</span><span class="es-num" id="esTotal">¥0 <small>/ 0 笔</small></span></div>
+      <div class="es-status" id="esStatus" style="grid-column:1/-1">还没有记账，点右下角 ＋ 添加第一笔</div>
     </div>
     <div class="card donut-card">
       <div class="donut" id="donut">
@@ -1655,7 +1652,6 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 /* ================= 常量 ================= */
 const API_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api';
 const FX_RATES = { CNY: 1, USD: 6.80, KRW: 1 / 190 };
-const BUDGET_TOTAL = 10000;                 // 两人总额预算（占位，可改）
 const PEOPLE = ['可乐', '金鹿'];
 
 const D1 = new Date('2026-12-26T02:25:00+08:00');       // 深圳飞首尔
@@ -3341,16 +3337,12 @@ function renderExpenses() {
     const rate = FX_RATES[it.currency] || 1;
     return s + (it.splitType === 'perPerson' ? it.amount * rate * 2 : it.amount * rate);
   }, 0);
+  const count = expenses.length;
   $('#esPer').textContent = '¥' + per.toFixed(0);
-  $('#esTotal').innerHTML = `¥${total.toFixed(0)} <small>/ ¥${BUDGET_TOTAL}</small>`;
-  $('#esBar').style.width = Math.min(100, total / BUDGET_TOTAL * 100) + '%';
+  $('#esTotal').innerHTML = `¥${total.toFixed(0)} <small>/ ${count} 笔</small>`;
   const st = $('#esStatus');
-  if (!expenses.length) { st.className = 'es-status'; st.textContent = '还没有记账，点右下角 ＋ 添加第一笔'; }
-  else {
-    const diff = BUDGET_TOTAL - total;
-    st.className = 'es-status ' + (diff >= 0 ? 'saved' : 'over');
-    st.textContent = diff >= 0 ? `预算内，还剩 ¥${diff.toFixed(0)} · 人均 ¥${per.toFixed(0)}` : `超支 ¥${(-diff).toFixed(0)} · 人均 ¥${per.toFixed(0)}`;
-  }
+  st.className = 'es-status';
+  st.textContent = expenses.length ? `已记录 ${count} 笔记账 · 人均 ¥${per.toFixed(0)}` : '还没有记账，点右下角 ＋ 添加第一笔';
   renderDonut();
   $('#expenseList').innerHTML = expenses.map((it) => {
     const curSym = it.currency === 'KRW' ? '₩' : it.currency === 'USD' ? '$' : '¥';

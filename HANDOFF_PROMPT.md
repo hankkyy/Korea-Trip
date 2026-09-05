@@ -110,7 +110,6 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 - [x] 釜山酒店已确认并补进住宿卡和行程卡（釜山站ASTI酒店 / ASTI Hotel Busan Station，12/26–12/29）
 - [x] 现金与保险决策已更新：不提前大量换韩元现金；到韩国用 Fidelity 卡 ATM 无手续费取现，旅行保险不单独购买
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
-- [ ] 预算总额确认（现占位 10000 RMB）
 - [x] 文件区跨设备同步（自定义名称 / 状态 / 备注 / 附件；无预设模板、无 emoji 选择）
 - [x] 待办 / 行李支持新增、编辑、删除、拖动重排序
 - [x] 自定义域名 jinlu.cloud 已上线（Vercel，用户控制台操作；备案通过后换绑 CloudBase）
@@ -119,7 +118,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 
 ## 关键文件与细节
 - index.html：单文件应用（~122KB / 2059 行），顶部常量区 FX_RATES（1 RMB≈190 KRW、USD 6.80）、
-  BUDGET_TOTAL=10000、D1/BUSAN_END/TRIP_END/NEWYEAR 时间常量、HERO_IMAGES。
+  D1/BUSAN_END/TRIP_END/NEWYEAR 时间常量、HERO_IMAGES。
 - sw.js 缓存版本已更新到 `korea-trip-v17`；manifest.json theme_color #78AA8B，Add to Home Screen 名称为“在璐上”。
 - 完整文档：README.md（含交接状态）与 REQUIREMENTS.md，在项目根目录和 /tmp/kr_split/ 均有。
 - 会话记忆：~/.claude/projects/-Users-hankzhang/memory/korea-vercel-project.md。
