@@ -470,6 +470,23 @@ body.doc-viewer-open{overflow:hidden}
 #wxHourlyBtn.active{background:var(--blue-l);border-color:var(--blue);color:var(--blue-d)}
 #wxHourlyWrap{display:none;margin-top:12px}
 #wxHourlyWrap.open{display:block}
+#wxHourly{gap:8px}
+
+@media(max-width:767px){
+  .city-tabs{gap:10px;margin-bottom:12px}
+  .city-tab{flex:1 1 0;max-width:none;min-width:0;height:48px;padding:0 12px}
+  .wx-now{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;padding:16px;margin-bottom:12px}
+  .wx-now .wx-city-tag{max-width:116px;overflow-wrap:anywhere}
+  .wx-now .wx-city-tag .wct-upd{white-space:nowrap}
+  #wxHourlyBtn{width:100%;justify-content:center}
+  #wxHourly{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;overflow:visible;scroll-snap-type:none;padding:0}
+  #wxHourly .wx-hour{width:auto;min-width:0;padding:10px 3px}
+}
+
+@media(min-width:768px) and (max-width:1079px){
+  #wxHourly{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;overflow:visible;scroll-snap-type:none;padding:0}
+  #wxHourly .wx-hour{width:auto;min-width:0}
+}
 
 /* ============ 倒计时圆环 ============ */
 .ring-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
@@ -3542,7 +3559,7 @@ function renderWeather() {
   const nowIso = nowStr.replace(/\//g, '-').replace(/(\d{4})-(\d{2})-(\d{2}) (\d{2}).*/, '$1-$2-$3T$4:00');
   const start = hours.time.findIndex((t) => t >= nowIso);
   const from = start >= 0 ? start : 0;
-  $('#wxHourly').innerHTML = hours.time.slice(from, from + 24).map((t, i) => {
+  $('#wxHourly').innerHTML = hours.time.slice(from, from + 8).map((t, i) => {
     const [e] = wmo(hours.weather_code[from + i]);
     const hh = t.slice(11, 13);
     return `<div class="card wx-hour"><div class="wh-t">${hh}时</div><div class="wh-ic">${ic(e)}</div><div class="wh-temp">${Math.round(hours.temperature_2m[from + i])}°</div></div>`;
