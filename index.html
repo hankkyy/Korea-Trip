@@ -2686,6 +2686,7 @@ function selectTrip(id) {
   const trip = allTrips().find((item) => item.id === id);
   if (!trip || trip.content === 'empty') return;
   localStorage.setItem(ACTIVE_TRIP_KEY, trip.id);
+  try { sessionStorage.setItem('kr_return_to_top', '1'); } catch {}
   closeTripPicker();
   // 日期、城市、静态素材在启动时读取配置，切换后重启页面避免残留上一段旅程状态。
   window.location.reload();
@@ -2697,8 +2698,16 @@ function initTripPicker() {
     const option = event.target.closest('[data-trip-id]');
     if (option) selectTrip(option.dataset.tripId);
   });
-  $('#tripManageBtn')?.addEventListener('click', () => openTripSettings(activeTrip()));
-  $('#tripNewBtn')?.addEventListener('click', () => openTripSettings());
+  $('#tripManageBtn')?.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openTripSettings(activeTrip());
+  });
+  $('#tripNewBtn')?.addEventListener('click', (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    openTripSettings();
+  });
   $('#tripSettingsSave')?.addEventListener('click', saveTripSettings);
   $('#tripSettingsCancel')?.addEventListener('click', closeTripSettings);
   $('#tripDeleteBtn')?.addEventListener('click', deleteTripSettings);
@@ -5670,6 +5679,7 @@ function initSW() {
 
 /* ================= 启动 ================= */
 (function boot() {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   renderTripChrome();
   renderConfiguredTripData();
   updateHeader();
@@ -5706,6 +5716,12 @@ function initSW() {
   // 初始 Tab（支持分享链接直达：/#itinerary 等）
   const initial = location.hash.slice(1) || 'home';
   showTab(initial, false);
+  try {
+    if (sessionStorage.getItem('kr_return_to_top') === '1') {
+      sessionStorage.removeItem('kr_return_to_top');
+      requestAnimationFrame(() => window.scrollTo(0, 0));
+    }
+  } catch {}
 })();
 </script>
 </body>
