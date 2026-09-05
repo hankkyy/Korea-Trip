@@ -2689,7 +2689,7 @@ function importTripBackup(file) {
 }
 function tripDateLabel(value) {
   const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
-  return match ? `${match[1]}年${Number(match[2])}月${Number(match[3])}日` : '';
+  return match ? `${match[1]}.${match[2]}.${match[3]}` : '';
 }
 function tripDateRange(trip) {
   const start = tripDateLabel(trip.startAt);
