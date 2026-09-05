@@ -1583,7 +1583,6 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <h1>韩国旅行计划</h1>
         <div class="hero-sub">遇见首尔的浪漫时光</div>
         <div class="hero-meta">可乐 &amp; 金鹿 · 12.26 – 1.3 · 首尔 × 釜山</div>
-        <div class="hero-countdown" id="heroCountdown">…</div>
       </div>
       <div class="hero-progress"><i id="heroProgress"></i></div>
     </div>
@@ -3441,31 +3440,6 @@ function initHero() {
   $('#heroA').classList.add('active');
   setInterval(rotateHero, 5000);
 }
-function updateHeroCountdown() {
-  const phase = tripPhase();
-  const el = $('#heroCountdown');
-  if (phase === 'prep') {
-    const t = dl(COUNTDOWN_START - Date.now());
-    const trip = currentTripData();
-    const prepSub = trip.id === 'korea-2026'
-      ? '12/26 02:25 · 深圳起飞，行李、文件、支出都在这里查'
-      : `${trip.dates} · 行程、文件和支出都可以在这里整理`;
-    el.innerHTML = `<div class="hc-top"><span class="hc-chip">准备</span><span class="hc-main">距 ${DEPART_LABEL} 出发还有 ${t.d} 天 ${pad(t.h)} 小时 ${pad(t.m)} 分</span></div><div class="hc-sub">${esc(prepSub)}</div>`;
-  } else if (phase === 'busan') {
-    const t = dl(NEWYEAR - Date.now());
-    el.innerHTML = `<div class="hc-top"><span class="hc-chip">釜山</span><span class="hc-main">釜山段 D${dayIndex()} · 距跨年 ${t.d} 天 ${pad(t.h)} 小时</span></div><div class="hc-sub">12/26–12/29 · 釜山站ASTI酒店 / ASTI Hotel Busan Station</div>`;
-  } else if (phase === 'seoul') {
-    const t = dl(NEWYEAR - Date.now());
-    el.innerHTML = t.d > 0
-      ? `<div class="hc-top"><span class="hc-chip">首尔</span><span class="hc-main">首尔段 D${dayIndex()} · 距跨年 ${t.d} 天</span></div><div class="hc-sub">12/29 晚上 KTX 北上，住进明洞附近的首尔酒店</div>`
-      : `<div class="hc-top"><span class="hc-chip">新年</span><span class="hc-main">首尔段 D${dayIndex()} · 新年快乐！</span></div><div class="hc-sub">跨年钟声之后，继续在首尔慢慢走</div>`;
-  } else if (phase === 'active') {
-    el.innerHTML = `<div class="hc-top"><span class="hc-chip">旅行中</span><span class="hc-main">${esc(currentTripData().name)} · D${dayIndex()}</span></div><div class="hc-sub">周末轻旅行，按当天行程慢慢走</div>`;
-  } else {
-    el.innerHTML = `<div class="hc-top"><span class="hc-chip">完成</span><span class="hc-main">旅程已结束，下一站再见</span></div><div class="hc-sub">行程、地图、文件和支出都会继续保留在同一份旅程里</div>`;
-  }
-}
-
 /* ================= 首页 · 接下来 ================= */
 const t2min = (t) => { const m = String(t).match(/(\d{1,2}):(\d{2})/); return m ? (+m[1] * 60 + +m[2]) : Infinity; };
 function renderNextUp() {
@@ -5722,12 +5696,10 @@ function initSW() {
   renderConfiguredTripData();
   updateHeader();
   updateRings();
-  updateHeroCountdown();
   renderNextUp();
   let lastNextUpRender = 0;
   setInterval(() => {
     updateHeader();
-    updateHeroCountdown();
     if (Date.now() - lastNextUpRender > 30000) { renderNextUp(); lastNextUpRender = Date.now(); }
   }, 1000);
   setInterval(updateRings, 1000);
