@@ -1309,8 +1309,8 @@ body.doc-viewer-open{overflow:hidden}
 .doc-display-note{font-size:12px;color:var(--muted);line-height:1.45;overflow-wrap:anywhere}
 .doc-card:not(.editing) .doc-title-input,.doc-card:not(.editing) .doc-note-input{display:none}
 .doc-card.editing .doc-display-title,.doc-card.editing .doc-display-note{display:none}
-.doc-edit-only{display:none}
-.doc-card.editing .doc-edit-only{display:flex}
+.doc-card:not(.editing) .doc-actions .doc-edit-only{display:none}
+.doc-card.editing .doc-actions .doc-edit-only{display:flex}
 .doc-card-kicker{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:900}
 .doc-main{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
 .doc-ic{
@@ -5174,7 +5174,7 @@ function renderDocs() {
       </div>
       <div class="doc-actions">
         <button class="doc-btn" data-act="edit">${ic('edit')}编辑</button>
-        <button class="doc-btn doc-edit-only" data-act="attach">${ic('attach')}${d.attachmentUrl ? '换附件' : '添加附件'}</button>
+        <button class="doc-btn doc-edit-only" data-act="attach">${ic('attach')}${d.attachmentUrl ? '替换文件' : '添加文件'}</button>
         <button class="doc-btn" data-act="open"${d.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
         <button class="doc-btn" data-act="download"${d.attachmentUrl ? '' : ' disabled'}>${ic('download')}下载</button>
         <button class="doc-btn danger doc-edit-only" data-act="delete">${ic('x')}删除</button>
