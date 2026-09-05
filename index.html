@@ -4697,7 +4697,7 @@ function setFxRateHint() {
   const cnyBase = 100;
   const usd = (cnyBase / FX_RATES.USD).toFixed(2);
   const krw = Math.round(cnyBase / FX_RATES.KRW).toLocaleString('en-US');
-  hint.textContent = `当前参考汇率：¥100 ≈ $${usd} ≈ ₩${krw}${FX_UPDATED_AT ? ` · 更新于 ${FX_UPDATED_AT}` : ' · 使用内置参考值'}`;
+  hint.textContent = `当前参考汇率：¥100人民币 ≈ $${usd}美元 ≈ ₩${krw}韩币${FX_UPDATED_AT ? ` · 更新于 ${FX_UPDATED_AT}` : ' · 使用内置参考值'}`;
 }
 function restoreFxRates() {
   try {
