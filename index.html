@@ -702,46 +702,66 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 #itBackdrop.open{opacity:1;pointer-events:auto}
 #itSheet{
   position:fixed;left:0;right:0;bottom:0;z-index:1003;background:var(--card);
-  border-radius:24px 24px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));
+  border-radius:24px 24px 0 0;padding:10px 16px calc(20px + env(safe-area-inset-bottom));
   transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,.28,1);
   max-width:860px;margin:0 auto;box-shadow:var(--shadow-lg);max-height:min(88dvh,860px);overflow-y:auto;
   overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-sizing:border-box;
 }
 #itSheet.open{transform:translateY(0)}
-#itSheet h3{font-size:17px;margin:0 0 6px}
-#itSheet .sheet-sub{font-size:12.5px;color:var(--muted);margin-bottom:14px}
-.it-topbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.it-topbar .field{flex:1 1 180px;margin-bottom:0}
-.it-topbar input,.it-topbar select{height:48px}
+#itSheet h3{font-size:18px;margin:0}
+.it-sheet-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;margin-bottom:14px;
+  border-bottom:1px dashed rgba(118,169,138,.18)
+}
+.it-sheet-copy{min-width:0;flex:1}
+.it-sheet-sub{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.55;max-width:34em}
+.it-sheet-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.it-meta-chip{
+  display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 10px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(245,250,245,.95),rgba(237,246,239,.95));border:1px solid rgba(118,169,138,.12);
+  color:var(--green-d);font-size:11.5px;font-weight:900;letter-spacing:.01em
+}
+.it-topbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.it-topbar .field{margin-bottom:0}
+.it-topbar input,.it-topbar select{
+  height:46px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,251,.98),rgba(246,250,246,.96))
+}
 .it-preview{
   margin-top:10px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px
 }
 .it-preview .dc-gimg{aspect-ratio:1.35/1}
 .it-list{display:flex;flex-direction:column;gap:12px}
 .it-row{
-  padding:12px;border-radius:18px;border:1px solid rgba(231,238,231,.95);background:rgba(255,255,251,.96);
+  padding:14px;border-radius:20px;border:1px solid rgba(231,238,231,.95);
+  background:linear-gradient(180deg,rgba(255,255,251,.98),rgba(248,251,247,.95));
   box-shadow:0 4px 12px rgba(63,96,78,.05)
 }
-.it-row-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
-.it-row-title{font-size:13px;font-weight:900;color:var(--green-d)}
+.it-row-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.it-row-title{
+  font-size:12px;font-weight:900;color:var(--green-d);letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 9px;border-radius:999px;background:var(--green-l);border:1px solid rgba(118,169,138,.12)
+}
 .it-row-remove{
   min-height:30px;padding:0 10px;border-radius:999px;border:1px solid rgba(221,176,179,.45);
   color:#A66E72;background:rgba(221,176,179,.11);font-size:12px;font-weight:800
 }
-.it-grid{display:grid;grid-template-columns:1fr;gap:8px}
+.it-grid{display:grid;grid-template-columns:1fr;gap:9px}
 .it-grid .field{margin-bottom:0}
-.it-grid label{margin-bottom:5px}
+.it-grid label{margin-bottom:5px;font-size:11.5px;letter-spacing:.02em}
 .it-grid input,.it-grid select,.it-grid textarea{
-  width:100%;border-radius:12px;border:1.5px solid var(--line);padding:12px 12px;background:var(--bg);outline:none;
+  width:100%;border-radius:14px;border:1.5px solid var(--line);padding:12px 12px;background:rgba(255,255,251,.98);outline:none;
 }
 .it-grid textarea{min-height:84px;resize:vertical;line-height:1.55}
 .it-grid input:focus,.it-grid select:focus,.it-grid textarea:focus{border-color:var(--green)}
 .it-grid .it-photo-row{display:grid;grid-template-columns:1fr 116px;gap:8px;align-items:start}
-.it-grid .it-photo-row .it-photo-preview{width:116px;height:88px;border-radius:14px;overflow:hidden;background:var(--green-xl);border:1px solid rgba(118,169,138,.14)}
+.it-grid .it-photo-row .it-photo-preview{
+  width:116px;height:88px;border-radius:16px;overflow:hidden;background:var(--green-xl);
+  border:1px solid rgba(118,169,138,.14)
+}
 .it-grid .it-photo-row .it-photo-preview img{width:100%;height:100%;object-fit:cover}
 .it-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
 .it-actions button{
-  min-height:50px;border-radius:14px;padding:0 16px;font-weight:900;font-size:15px
+  min-height:50px;border-radius:16px;padding:0 16px;font-weight:900;font-size:15px
 }
 #itAddRow{background:var(--green-xl);color:var(--green-d);border:1px solid rgba(118,169,138,.18)}
 #itSave{flex:1;background:var(--grad);color:#fff}
@@ -751,6 +771,11 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   .it-grid .it-wide{grid-column:1 / -1}
   .it-grid .it-photo-row{grid-column:1 / -1;grid-template-columns:1fr 180px}
   .it-grid .it-photo-row .it-photo-preview{width:180px;height:124px}
+}
+@media(max-width:720px){
+  .it-sheet-head{flex-direction:column}
+  .it-topbar{grid-template-columns:1fr}
+  .it-preview{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 /* ============ 待办 / 行李编辑底板 ============ */
@@ -1513,8 +1538,17 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <div id="itBackdrop" onclick="closeItSheet()"></div>
 <div id="itSheet">
   <div class="sheet-handle"></div>
-  <h3 id="itSheetTitle">编辑行程</h3>
-  <div class="sheet-sub">支持手动改时间、标题、补充说明，也能给当天换一个更贴近内容的封面图。保存后会自动更新。</div>
+  <div class="it-sheet-head">
+    <div class="it-sheet-copy">
+  <h3 id="itSheetTitle">整理行程</h3>
+      <div class="it-sheet-sub">像整理一页手帐便签一样，轻轻改时间、标题、说明和图片就行。</div>
+      <div class="it-sheet-meta">
+        <span class="it-meta-chip" id="itMetaDay">D1</span>
+        <span class="it-meta-chip" id="itMetaTheme">默认主题</span>
+        <span class="it-meta-chip" id="itMetaCover">主图</span>
+      </div>
+    </div>
+  </div>
   <div class="it-topbar">
     <div class="field">
       <label>编辑哪一天</label>
@@ -1525,7 +1559,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <input id="itThemeInput" placeholder="比如：海云台 · 甘川">
     </div>
     <div class="field">
-      <label>本日主图</label>
+      <label>当天主图</label>
       <select id="itCoverSelect"></select>
     </div>
   </div>
@@ -2597,6 +2631,16 @@ function editorPhotoPreview(src) {
 }
 let itineraryEditorDay = 1;
 let itineraryEditorRows = [];
+function updateItineraryEditorMeta() {
+  const list = currentItinerary || EMBEDDED_ITINERARY;
+  const day = Number($('#itDaySelect')?.value || itineraryEditorDay);
+  const theme = ($('#itThemeInput')?.value || dayThemeFor(list, day) || '').trim();
+  const cover = ($('#itCoverSelect')?.value || dayCoverFor(list, day) || '').trim();
+  const coverLabel = PHOTO_LIBRARY.find((opt) => opt.value === cover)?.label || '主图';
+  $('#itMetaDay') && ($('#itMetaDay').textContent = `D${day}`);
+  $('#itMetaTheme') && ($('#itMetaTheme').textContent = theme || '未写主题');
+  $('#itMetaCover') && ($('#itMetaCover').textContent = coverLabel || '主图');
+}
 function renderItineraryEditorRows() {
   const list = itineraryEditorRows.length ? itineraryEditorRows : [{ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' }];
   $('#itEditorList').innerHTML = list.map((row, idx) => {
@@ -2632,11 +2676,12 @@ function openItSheet(day, focusRow = null) {
   itineraryEditorRows = dayItems(list, itineraryEditorDay).map((item) => ({ ...item }));
   if (!itineraryEditorRows.length) itineraryEditorRows = [{ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' }];
   const days = Array.from({ length: 9 }, (_, i) => i + 1);
-  $('#itSheetTitle').textContent = `编辑 D${itineraryEditorDay} 行程`;
+  $('#itSheetTitle').textContent = `整理 D${itineraryEditorDay} 行程`;
   $('#itDaySelect').innerHTML = days.map((d) => `<option value="${d}"${d === itineraryEditorDay ? ' selected' : ''}>D${d} · ${dayThemeFor(list, d) || ''}</option>`).join('');
   $('#itThemeInput').value = dayThemeFor(list, itineraryEditorDay);
   $('#itCoverSelect').innerHTML = PHOTO_LIBRARY.map((opt) => `<option value="${esc(opt.value)}"${opt.value === dayCoverFor(list, itineraryEditorDay) ? ' selected' : ''}>${esc(opt.label)}</option>`).join('');
   renderItineraryEditorRows();
+  updateItineraryEditorMeta();
   refreshItineraryPreview();
   $('#itBackdrop').classList.add('open');
   $('#itSheet').classList.add('open');
@@ -2698,6 +2743,7 @@ function refreshItineraryPreview() {
   const list = currentItinerary || EMBEDDED_ITINERARY;
   const day = Number($('#itDaySelect').value || itineraryEditorDay);
   const cover = $('#itCoverSelect').value.trim() || dayCoverFor(list, day);
+  updateItineraryEditorMeta();
   const rows = dayGalleryFor([
     { photo: cover },
     ...itineraryEditorRows.map((r) => ({ photo: r.photo, title: r.title, subtitle: r.subtitle, detail: r.detail }))
@@ -2719,6 +2765,7 @@ $('#itAddRow').addEventListener('click', () => {
 $('#itSave').addEventListener('click', commitItinerarySheet);
 $('#itCancel').addEventListener('click', closeItSheet);
 $('#itDaySelect').addEventListener('change', (e) => openItSheet(Number(e.target.value || 1)));
+$('#itThemeInput').addEventListener('input', updateItineraryEditorMeta);
 $('#itCoverSelect').addEventListener('change', refreshItineraryPreview);
 $('#itEditorList').addEventListener('click', (e) => {
   const btn = e.target.closest('[data-act="remove-row"]');
