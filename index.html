@@ -433,6 +433,13 @@ body.doc-viewer-open{overflow:hidden}
 .city-tab.active{background:var(--green);border-color:var(--green);color:#fff;box-shadow:var(--shadow)}
 .city-tab.active .ti{color:#fff}
 .wx-now{display:flex;align-items:center;gap:15px;padding:18px;margin-bottom:12px}
+.weather-layout{display:block}
+.weather-forecast-card{padding:14px 14px 12px;margin-bottom:12px;min-width:0}
+.weather-block-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.weather-block-title{font-size:13px;font-weight:900;color:var(--ink)}
+.weather-block-hint{font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap}
+.weather-forecast-card .hscroll{padding-top:0}
+.weather-forecast-card #wxHourlyWrap{margin-left:-2px;margin-right:-2px}
 .wx-big-ic{
   flex-shrink:0;width:64px;height:64px;border-radius:18px;background:var(--green-xl);color:var(--green-d);
   display:flex;align-items:center;justify-content:center;
@@ -1404,6 +1411,18 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   .ring-row{gap:14px}
   .flight-data{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+@media(min-width:1080px){
+  .weather-layout{display:grid;grid-template-columns:minmax(290px,.82fr) minmax(0,1.48fr);gap:14px;align-items:stretch}
+  .weather-layout .wx-now{margin-bottom:0;min-height:154px;padding:20px}
+  .weather-layout .weather-forecast-card{margin-bottom:0;padding:14px 16px 12px}
+  .weather-layout .wx-now .wx-big-ic{width:70px;height:70px}
+  .weather-layout .wx-now .wx-temp{font-size:44px}
+  .weather-layout .wx-now .wx-city-tag{align-self:flex-start;padding-top:2px}
+  .weather-forecast-card .hscroll#wxDays{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;overflow:visible;scroll-snap-type:none;padding-bottom:2px}
+  .weather-forecast-card .hscroll#wxDays .wx-day{width:auto;min-width:0;padding:12px 5px}
+  .weather-forecast-card #wxHourlyBtn{width:100%;justify-content:center;margin-top:10px}
+}
 @media(min-width:960px){
   #tab-itinerary .wrap{max-width:1040px}
   #tab-itinerary .sec-title{margin-bottom:16px}
@@ -1533,23 +1552,31 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <button class="city-tab active" data-city="busan"><i class="ti" data-ic="wave"></i>釜山</button>
       <button class="city-tab" data-city="seoul"><i class="ti" data-ic="temple"></i>首尔</button>
     </div>
-    <div class="card wx-now">
-      <div class="wx-big-ic" id="wxEmoji"></div>
-      <div>
-        <div class="wx-temp" id="wxTemp">--°</div>
-        <div class="wx-info">
-          <span class="wx-desc" id="wxDesc">加载中…</span>
-          <span class="wx-sub" id="wxSub"></span>
+    <div class="weather-layout">
+      <div class="card wx-now">
+        <div class="wx-big-ic" id="wxEmoji"></div>
+        <div>
+          <div class="wx-temp" id="wxTemp">--°</div>
+          <div class="wx-info">
+            <span class="wx-desc" id="wxDesc">加载中…</span>
+            <span class="wx-sub" id="wxSub"></span>
+          </div>
+        </div>
+        <div class="wx-city-tag">
+          <div class="wct-name" id="wxCityName">—</div>
+          <div class="wct-upd" id="wxUpdated"></div>
         </div>
       </div>
-      <div class="wx-city-tag">
-        <div class="wct-name" id="wxCityName">—</div>
-        <div class="wct-upd" id="wxUpdated"></div>
+      <div class="card weather-forecast-card">
+        <div class="weather-block-head">
+          <span class="weather-block-title">未来 5 天</span>
+          <span class="weather-block-hint">最高 / 最低气温</span>
+        </div>
+        <div class="hscroll" id="wxDays"></div>
+        <button id="wxHourlyBtn" class="tap"><i class="ti" data-ic="clock"></i>逐小时预报</button>
+        <div id="wxHourlyWrap"><div class="hscroll" id="wxHourly"></div></div>
       </div>
     </div>
-    <div class="hscroll" id="wxDays"></div>
-    <button id="wxHourlyBtn" class="tap"><i class="ti" data-ic="clock"></i>逐小时预报</button>
-    <div id="wxHourlyWrap"><div class="hscroll" id="wxHourly"></div></div>
 
     <div class="memo-strip">
       <div class="memo-head">
