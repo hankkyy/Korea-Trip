@@ -1014,6 +1014,11 @@ body.doc-viewer-open{overflow:hidden}
   overscroll-behavior:contain;-webkit-overflow-scrolling:touch;box-sizing:border-box;
 }
 #itSheet.open{transform:translateY(0)}
+#itSheet.single-item .it-sheet-sub,#itSheet.single-item .it-sheet-meta,#itSheet.single-item .it-topbar{display:none}
+#itSheet.single-item .it-sheet-head{padding-bottom:8px;margin-bottom:10px}
+#itSheet.single-item .it-row{padding:0;border:0;box-shadow:none;background:transparent}
+#itSheet.single-item #itAddRow{display:none}
+#itSheet.single-item .it-row-remove{display:none}
 #itSheet h3{font-size:19px;margin:0 44px 0 0;color:var(--ink);letter-spacing:-.02em}
 .it-sheet-head{
   display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:9px;margin-bottom:10px;
@@ -3978,6 +3983,8 @@ function editorPhotoPreview(src) {
 }
 let itineraryEditorDay = 1;
 let itineraryEditorRows = [];
+let itineraryEditorSingleIndex = null;
+let itineraryEditorTargetId = '';
 function updateItineraryEditorMeta() {
   const list = currentItinerary || EMBEDDED_ITINERARY;
   const day = Number($('#itDaySelect')?.value || itineraryEditorDay);
@@ -3994,7 +4001,7 @@ function renderItineraryEditorRows() {
     const photo = row.photo || '';
     return `<div class="it-row" data-idx="${idx}">
       <div class="it-row-top">
-        <div class="it-row-title">条目 ${idx + 1}</div>
+        <div class="it-row-title">${itineraryEditorSingleIndex != null ? '编辑这一条' : `条目 ${idx + 1}`}</div>
         <button class="it-row-remove" type="button" data-act="remove-row">删除</button>
       </div>
       <div class="it-grid">
@@ -4020,16 +4027,21 @@ function renderItineraryEditorRows() {
 function openItSheet(day, focusRow = null) {
   itineraryEditorDay = Number(day || 1);
   const list = currentItinerary || EMBEDDED_ITINERARY;
-  itineraryEditorRows = dayItems(list, itineraryEditorDay).map((item) => ({ ...item }));
+  const dayRows = dayItems(list, itineraryEditorDay);
+  itineraryEditorSingleIndex = focusRow != null ? Number(focusRow) : null;
+  const target = itineraryEditorSingleIndex != null ? dayRows[itineraryEditorSingleIndex] : null;
+  itineraryEditorTargetId = target?.id || '';
+  itineraryEditorRows = target ? [{ ...target }] : dayRows.map((item) => ({ ...item }));
   if (!itineraryEditorRows.length) itineraryEditorRows = [{ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' }];
   const days = Array.from({ length: 9 }, (_, i) => i + 1);
-  $('#itSheetTitle').textContent = `整理 D${itineraryEditorDay} 行程`;
+  $('#itSheetTitle').textContent = target ? '编辑这一条行程' : `整理 D${itineraryEditorDay} 行程`;
   $('#itDaySelect').innerHTML = days.map((d) => `<option value="${d}"${d === itineraryEditorDay ? ' selected' : ''}>D${d} · ${dayThemeFor(list, d) || ''}</option>`).join('');
   $('#itThemeInput').value = dayThemeFor(list, itineraryEditorDay);
   $('#itCoverSelect').innerHTML = PHOTO_LIBRARY.map((opt) => `<option value="${esc(opt.value)}"${opt.value === dayCoverFor(list, itineraryEditorDay) ? ' selected' : ''}>${esc(opt.label)}</option>`).join('');
   renderItineraryEditorRows();
   updateItineraryEditorMeta();
   refreshItineraryPreview();
+  $('#itSheet').classList.toggle('single-item', Boolean(target));
   $('#itBackdrop').classList.add('open');
   $('#itSheet').classList.add('open');
   if (focusRow != null) {
@@ -4042,6 +4054,9 @@ function openItSheet(day, focusRow = null) {
 function closeItSheet() {
   $('#itBackdrop').classList.remove('open');
   $('#itSheet').classList.remove('open');
+  $('#itSheet').classList.remove('single-item');
+  itineraryEditorSingleIndex = null;
+  itineraryEditorTargetId = '';
 }
 function addItineraryRow() {
   itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
@@ -4064,7 +4079,23 @@ async function commitItinerarySheet() {
   const dayCover = $('#itCoverSelect').value.trim();
   const rows = [...document.querySelectorAll('#itEditorList .it-row')].map(readItineraryRow)
     .filter((row) => row.time || row.title || row.subtitle || row.detail || row.mapUrl || row.photo);
-  const base = (currentItinerary || EMBEDDED_ITINERARY).filter((item) => Number(item.day) !== day);
+  const source = currentItinerary || EMBEDDED_ITINERARY;
+  if (itineraryEditorSingleIndex != null) {
+    const target = source.find((item) => itineraryEditorTargetId ? item.id === itineraryEditorTargetId : Number(item.day) === day && Number(item.sortOrder) === itineraryEditorSingleIndex + 1);
+    if (!target || !rows[0]) return;
+    const next = source.map((item) => item === target ? {
+      ...item,
+      ...rows[0],
+      day,
+      sortOrder: target.sortOrder,
+      dayTheme: target.dayTheme || dayThemeFor(source, day) || DAY_THEMES[day] || '',
+      dayCover: target.dayCover || dayCoverFor(source, day) || defaultDayArt(day)
+    } : item);
+    await saveItinerary(next);
+    closeItSheet();
+    return;
+  }
+  const base = source.filter((item) => Number(item.day) !== day);
   const next = rows.length ? rows.map((row, idx) => ({
     ...row,
     day,
