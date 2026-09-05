@@ -1691,22 +1691,6 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <span class="journal-note" id="journalNote">首尔 · 釜山 · 14 张手帐图片</span>
     </div>
     <div class="journal-grid is-collapsed" id="journalGrid">
-      <a class="card journal-card wide reference" href="assets/maps/busan-hand-drawn-map.jpg" target="_blank" rel="noopener" aria-label="打开釜山手绘地图原图">
-        <img src="assets/maps/busan-hand-drawn-map.jpg" alt="釜山 5 天 4 晚手绘地图">
-        <span class="journal-copy"><span class="journal-kicker">釜山 · 手帐地图</span><h3>釜山 5 天 4 晚手绘地图</h3><p>路线、地铁、海边和每日安排都整理在一张图里 · 点击查看原图</p></span>
-      </a>
-      <a class="card journal-card wide reference" href="assets/maps/seoul-area-guide.jpg" target="_blank" rel="noopener" aria-label="打开首尔区域攻略原图">
-        <img src="assets/maps/seoul-area-guide.jpg" alt="首尔五大核心区域旅行地图攻略">
-        <span class="journal-copy"><span class="journal-kicker">首尔 · 区域攻略</span><h3>首尔五大核心区域攻略</h3><p>弘大、江南、东大门、首尔大学和汝矣岛一眼看懂 · 点击查看原图</p></span>
-      </a>
-      <a class="card journal-card wide reference" href="assets/maps/seoul-slow-travel-map.jpg" target="_blank" rel="noopener" aria-label="打开首尔慢游地图原图">
-        <img src="assets/maps/seoul-slow-travel-map.jpg" alt="首尔慢游地图">
-        <span class="journal-copy"><span class="journal-kicker">首尔 · 手绘路线</span><h3>首尔慢游地图</h3><p>古宫、韩屋、市场和汉江的慢慢走路线 · 点击查看原图</p></span>
-      </a>
-      <a class="card journal-card wide reference" href="assets/maps/seoul-full-map-v2.jpg" target="_blank" rel="noopener" aria-label="打开韩国首尔旅游全景点地图原图">
-        <img src="assets/maps/seoul-full-map-v2.jpg" alt="韩国首尔旅游全景点地图">
-        <span class="journal-copy"><span class="journal-kicker">首尔 · 全景地图</span><h3>韩国首尔旅游全景点地图</h3><p>景点、商圈、美食和交通位置集中查看 · 点击查看原图</p></span>
-      </a>
       <button class="card journal-card qcard-btn" data-goto="itinerary" aria-label="查看海云台">
         <img src="assets/photos/busan-haeundae-winter-shore.png" alt="海云台冬日海岸手帐图">
         <span class="journal-copy"><span class="journal-kicker">釜山 · 海云台</span><h3>冬天人少的海</h3><p>海风、散步和慢一点的早晨</p></span>
@@ -2427,7 +2411,7 @@ const TRIP_DATA = {
     departLabel: '12/26', defaultCity: 'busan',
     cities: { busan: { name: '釜山', lat: 35.1796, lon: 129.0756 }, seoul: { name: '首尔', lat: 37.5665, lon: 126.9780 } },
     heroImages: ['assets/photos/busan-watercolor.webp', 'assets/photos/busan-harbor-editorial.png', 'assets/photos/seoul-palace-editorial.png', 'assets/photos/seoul-night-editorial.png'],
-    galleryImages: ['assets/maps/busan-hand-drawn-map.jpg', 'assets/maps/seoul-area-guide.jpg', 'assets/maps/seoul-slow-travel-map.jpg', 'assets/maps/seoul-full-map-v2.jpg', 'assets/photos/busan-haeundae-winter-shore.png', 'assets/photos/busan-gamcheon-hillside-colors.png', 'assets/photos/busan-gwangalli-bridge-glow.png', 'assets/photos/seoul-palace-editorial.png', 'assets/photos/seoul-bukchon-quiet-roofs.png', 'assets/photos/seoul-myeongdong-lantern-street.png', 'assets/photos/seoul-night-editorial.png', 'assets/photos/seoul-airport-editorial.png', 'assets/photos/seoul-marriott-myeongdong-editorial.png', 'assets/photos/seoul-seongsu-factory-cafe.png'],
+    galleryImages: ['assets/photos/busan-haeundae-winter-shore.png', 'assets/photos/busan-gamcheon-hillside-colors.png', 'assets/photos/busan-gwangalli-bridge-glow.png', 'assets/photos/seoul-palace-editorial.png', 'assets/photos/seoul-bukchon-quiet-roofs.png', 'assets/photos/seoul-myeongdong-lantern-street.png', 'assets/photos/seoul-night-editorial.png', 'assets/photos/seoul-airport-editorial.png', 'assets/photos/seoul-marriott-myeongdong-editorial.png', 'assets/photos/seoul-seongsu-factory-cafe.png'],
     newYearItems: [
       { title: '跨年倒计时', note: '重点关注钟路、普信阁一带的官方安排和入场规则。', status: '待确认 · 12/31' },
       { title: '烟花与灯光', note: '记录烟花、灯光秀、倒数舞台等跨年夜特别节目。', status: '待公布' },
@@ -3237,12 +3221,12 @@ function renderConfiguredTripData() {
     if (values[3]) values[3].innerHTML = `${esc(hotel.address)}<small>${esc(hotel.addressEn)}</small>`;
     text('.bc-note', hotel.note);
   });
-  trip.galleryImages?.forEach((src, index) => {
+  // 画册只展示手帐照片，地图统一留在地图页；兼容云端历史数据中的地图路径。
+  const galleryImages = (trip.galleryImages || []).filter((src) => !String(src).includes('/maps/'));
+  galleryImages.forEach((src, index) => {
     const image = document.querySelectorAll('#tab-home .journal-grid img')[index];
     if (image) {
-      // 兼容云端旧旅程数据，避免历史路径把已替换的地图预览覆盖回旧图。
-      const resolvedSrc = src === 'assets/maps/seoul-full-map.jpg' ? 'assets/maps/seoul-full-map-v2.jpg' : src;
-      image.src = resolvedSrc;
+      image.src = src;
       image.loading = index < 6 ? 'eager' : 'lazy';
       image.decoding = 'async';
     }
