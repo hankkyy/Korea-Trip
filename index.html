@@ -1888,7 +1888,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 交通 ============ -->
 <section class="panel" id="tab-transport">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="bus"></i>交通 <span class="st-sub">深圳 ⇄ 首尔 ⇄ 釜山</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="bus"></i>交通 <span class="st-sub">韩亚航空 · Asiana Airlines</span></h2>
     <div class="short-trip-banner" aria-live="polite"></div>
 
     <div class="block-title"><i class="ti" data-ic="plane"></i>航班</div>
@@ -1906,9 +1906,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <div class="flight-date">12/26 · 02:25 起飞 → 06:50 到达</div>
         <div class="flight-data">
           <div class="flight-data-item"><span>旅客座位</span><strong>可乐 34G · 金鹿 34H</strong></div>
-          <div class="flight-data-item"><span>航司 &amp; 机型</span><strong>韩亚航空 · Asiana Airlines · 空客 A330-300（大）</strong></div>
           <div class="flight-data-item"><span>预订号</span><strong>DM3UK6</strong></div>
           <div class="flight-data-item"><span>飞行时长</span><strong>03小时25分</strong></div>
+          <div class="flight-data-item"><span>机型</span><strong>空客 A330-300（大）</strong></div>
         </div>
         <div class="flight-baggage">
           <span class="flight-baggage-title">行李额度</span>
@@ -1934,9 +1934,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <div class="flight-date">1/3 · 22:10 起飞 → 1/4 01:15 到达</div>
         <div class="flight-data">
           <div class="flight-data-item"><span>旅客座位</span><strong>可乐 38G · 金鹿 38H</strong></div>
-          <div class="flight-data-item"><span>航司 &amp; 机型</span><strong>韩亚航空 · Asiana Airlines · 空客 A330-300（大）</strong></div>
           <div class="flight-data-item"><span>预订号</span><strong>DM3UK6</strong></div>
           <div class="flight-data-item"><span>飞行时长</span><strong>04小时05分</strong></div>
+          <div class="flight-data-item"><span>机型</span><strong>空客 A330-300（大）</strong></div>
         </div>
         <div class="flight-baggage">
           <span class="flight-baggage-title">行李额度</span>
@@ -3228,9 +3228,9 @@ function renderConfiguredTripData() {
     if (route[0]) { route[0].querySelector('.flight-code').textContent = flight.from; route[0].querySelector('.flight-city').textContent = flight.fromName; }
     if (route[1]) { route[1].querySelector('.flight-code').textContent = flight.to; route[1].querySelector('.flight-city').textContent = flight.toName; }
     if (data[0]) data[0].textContent = String(flight.seats || '').replace(/\\n/g, ' · ');
-    if (data[1]) data[1].textContent = `${flight.airline} · ${flight.aircraft}`;
-    if (data[2]) data[2].textContent = flight.booking;
-    if (data[3]) data[3].textContent = flight.duration;
+    if (data[1]) data[1].textContent = flight.booking;
+    if (data[2]) data[2].textContent = flight.duration;
+    if (data[3]) data[3].textContent = flight.aircraft;
   });
   trip.hotels?.forEach((hotel, index) => {
     const card = document.querySelectorAll('#tab-home .board-card')[index];
