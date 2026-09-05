@@ -3228,8 +3228,8 @@ function updateHeader() {
   if (phase === 'prep') {
     const t = dl(COUNTDOWN_START - Date.now());
     phaseText = t.d > 0
-      ? `准备期 · 距 ${DEPART_LABEL} 出发还有 ${t.d} 天`
-      : `准备期 · 距 ${DEPART_LABEL} 出发还有 ${pad(t.h)}:${pad(t.m)}:${pad(t.s)}`;
+      ? `距 ${DEPART_LABEL} 出发还有 ${t.d} 天`
+      : `距 ${DEPART_LABEL} 出发还有 ${pad(t.h)}:${pad(t.m)}:${pad(t.s)}`;
   }
   else if (phase === 'busan') phaseText = `DAY ${dayIndex()} · 釜山`;
   else if (phase === 'seoul') phaseText = `DAY ${dayIndex()} · 首尔`;
