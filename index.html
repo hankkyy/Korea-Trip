@@ -3424,12 +3424,12 @@ const DOC_STYLE = {
   '已归档': ['#7F789F', '#F0EBFA']
 };
 const DOC_SEEDS = [
-  { id: 'seed-trip-zh', kind: 'file', sortOrder: 1, title: '携程中文版机票行程单', attachmentUrl: '/签证文件/携程中文版机票行程单.pdf', attachmentName: '携程中文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '去程航班信息' },
-  { id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: '/签证文件/携程英文版机票行程单.pdf', attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '英文版行程单' },
-  { id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: '/签证文件/张子豪的韩亚航空官方行程单.pdf', attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
-  { id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金鹿的韩亚航空官方行程单', attachmentUrl: '/签证文件/仇金鹿的韩亚航空官方行程单.pdf', attachmentName: '仇金鹿的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
-  { id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证', attachmentUrl: '/签证文件/釜山ASTI酒店入住凭证.pdf', attachmentName: '釜山ASTI酒店入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
-  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 6, title: '首尔酒店确认单', attachmentUrl: '/签证文件/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', status: '已确认', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' }
+  { id: 'seed-trip-zh', kind: 'file', sortOrder: 1, title: '携程中文版机票行程单', attachmentUrl: '/assets/docs/visa/携程中文版机票行程单.pdf', attachmentName: '携程中文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '去程航班信息' },
+  { id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf', attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '英文版行程单' },
+  { id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/张子豪的韩亚航空官方行程单.pdf', attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
+  { id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金鹿的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf', attachmentName: '仇金鹿的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
+  { id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店入住凭证.pdf', attachmentName: '釜山ASTI酒店入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
+  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 6, title: '首尔酒店确认单', attachmentUrl: '/assets/docs/visa/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', status: '已确认', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' }
 ];
 const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
 const ESSAY_KIND_LABELS = { diary: '日记', guide: '攻略摘录', food: '美食' };
@@ -3578,6 +3578,24 @@ function seedDocs(payload) {
   });
   return payload;
 }
+function syncSeedDocs(payload) {
+  const seedMap = new Map(DOC_SEEDS.map((seed) => [seed.id, seed]));
+  let changed = false;
+  const next = payload.map((doc) => {
+    const seed = seedMap.get(doc.id);
+    if (!seed) return doc;
+    const merged = { ...doc };
+    ['title', 'attachmentUrl', 'attachmentName', 'attachmentType'].forEach((key) => {
+      if (merged[key] !== seed[key]) {
+        merged[key] = seed[key];
+        changed = true;
+      }
+    });
+    if (!merged.sourceKey) merged.sourceKey = seed.id;
+    return merged;
+  });
+  return { payload: next, changed };
+}
 async function loadDocs() {
   const cached = Array.isArray(cache.get('kr_docs')) ? cache.get('kr_docs') : [];
   const cloudDocs = await apiGet('/docs', 'kr_docs', cached);
@@ -3586,11 +3604,13 @@ async function loadDocs() {
   const essaySource = (source || []).filter((d) => d && d.kind === 'essay');
   essayLegacyMeta = (source || []).find((d) => d && d.kind === 'essay-meta') || null;
   docsData = seedDocs(fileSource.map(normalizeFileDoc).filter(shouldKeepFileDoc).sort((a, b) => a.sortOrder - b.sortOrder));
+  const seededSync = syncSeedDocs(docsData);
+  docsData = seededSync.payload;
   essayRecords = essaySource.map(normalizeEssayVault).filter((d) => d.kind !== 'essay-meta').sort((a, b) => a.sortOrder - b.sortOrder);
   essayOpenPayloads = new Map();
   essayUnlockedPasswords = new Map();
   cache.set('kr_docs', [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords]);
-  const needSeedSync = docsData.length !== fileSource.length || seedDocs(fileSource.map(normalizeFileDoc)).length !== docsData.length;
+  const needSeedSync = seededSync.changed || docsData.length !== fileSource.length || seedDocs(fileSource.map(normalizeFileDoc)).length !== docsData.length;
   if (needSeedSync || (source || []).length !== docsData.length + essayRecords.length + (essayLegacyMeta ? 1 : 0)) {
     apiPost('/docs', { items: [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords] }).catch(() => {});
   }
@@ -3609,6 +3629,22 @@ async function persistDocs() {
 }
 function fileCardIcon(doc) {
   return ic(guessDocIcon(doc));
+}
+function openDocAttachment(doc, mode = 'open') {
+  if (!doc?.attachmentUrl) return;
+  const rawUrl = String(doc.attachmentUrl);
+  const url = rawUrl.startsWith('data:') ? rawUrl : encodeURI(rawUrl);
+  const a = document.createElement('a');
+  a.href = url;
+  a.rel = 'noopener';
+  if (mode === 'download') {
+    a.download = doc.attachmentName || fileNameFromPath(rawUrl) || 'file';
+  } else {
+    a.target = '_blank';
+  }
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 function renderDocs() {
   const renderOne = (d, compact = false) => {
@@ -3633,6 +3669,7 @@ function renderDocs() {
       <div class="doc-actions">
         <button class="doc-btn" data-act="attach">${ic('attach')}${d.attachmentUrl ? '换附件' : '添加附件'}</button>
         <button class="doc-btn" data-act="open"${d.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
+        <button class="doc-btn" data-act="download"${d.attachmentUrl ? '' : ' disabled'}>${ic('download')}下载</button>
         <button class="doc-btn" data-act="note">${ic('edit')}备注</button>
         <button class="doc-btn danger" data-act="delete">${ic('x')}删除</button>
       </div>
@@ -3721,9 +3758,9 @@ async function initDocs() {
     if (act === 'attach') {
       attachFile(doc);
     } else if (act === 'open') {
-      if (!doc.attachmentUrl) return;
-      const url = String(doc.attachmentUrl).startsWith('data:') ? doc.attachmentUrl : encodeURI(doc.attachmentUrl);
-      window.open(url, '_blank', 'noopener');
+      openDocAttachment(doc, 'open');
+    } else if (act === 'download') {
+      openDocAttachment(doc, 'download');
     } else if (act === 'note') {
       const v = prompt('备注：', doc.note || '');
       if (v !== null) { doc.note = v.trim(); renderDocs(); await persistDocs(); }
