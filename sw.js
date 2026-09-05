@@ -28,7 +28,7 @@ const PRECACHE = [
   '/assets/maps/busan-hand-drawn-map.jpg',
   '/assets/maps/seoul-area-guide.jpg',
   '/assets/maps/seoul-slow-travel-map.jpg',
-  '/assets/maps/seoul-full-map.jpg',
+  '/assets/maps/seoul-full-map-v2.jpg',
   '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf',
   '/assets/docs/visa/张子豪的韩亚航空官方行程单.pdf',
   '/assets/docs/visa/携程中文版机票行程单.pdf',
