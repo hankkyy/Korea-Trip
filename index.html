@@ -520,7 +520,9 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 /* ============ 交通 ============ */
 .board-card{padding:18px;display:flex;flex-direction:column;gap:6px}
 .bc-photo{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;margin:-2px 0 8px;border:1px solid rgba(224,235,223,.95);box-shadow:0 6px 16px rgba(63,96,78,.07);background:var(--green-xl)}
-.bc-route{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
+.bc-route{display:flex;flex-direction:column;align-items:flex-start;gap:2px;font-weight:800;font-size:16px;line-height:1.2}
+.bc-route .bc-name{font-size:16px;font-weight:900;color:var(--text)}
+.bc-route .bc-en{font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:.01em}
 .bc-route .bc-plane{color:var(--green);display:flex}
 .bc-route .bc-plane .ic{width:20px;height:20px}
 .bc-date{font-size:13px;font-weight:800;color:var(--green-d)}
@@ -1092,7 +1094,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <div class="memo-pill">
           <div class="pill-ic"><i class="ti" data-ic="hotel"></i></div>
           <strong>12/26–29 釜山</strong>
-          <span>ASTI Hotel Busan Station</span>
+          <span>釜山站ASTI酒店 / ASTI Hotel Busan Station</span>
         </div>
         <div class="memo-pill">
           <div class="pill-ic"><i class="ti" data-ic="temple"></i></div>
@@ -1108,15 +1110,15 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
     <div class="grid g2">
       <div class="card board-card">
-        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="ASTI Hotel Busan Station 手帐风外观">
-        <div class="bc-route">ASTI Hotel Busan Station</div>
+        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="釜山站ASTI酒店 手帐风外观">
+        <div class="bc-route"><span class="bc-name">釜山站ASTI酒店</span><span class="bc-en">ASTI Hotel Busan Station</span></div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
         <div class="bc-meta">釜山站步行级别 / 方便 12/29 晚上直接坐 KTX 去首尔</div>
         <div class="bc-note">已确认：釜山站 ASTI 酒店（ASTI Hotel Busan Station）。</div>
       </div>
       <div class="card board-card">
-        <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="Courtyard by Marriott Seoul Myeongdong 手绘酒店外观">
-        <div class="bc-route">Courtyard by Marriott Seoul Myeongdong</div>
+        <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="首尔明洞万怡酒店 手绘酒店外观">
+        <div class="bc-route"><span class="bc-name">首尔明洞万怡酒店</span><span class="bc-en">Courtyard by Marriott Seoul Myeongdong</span></div>
         <div class="bc-date">12/29 - 1/3 · 5 晚</div>
         <div class="bc-meta">入住 12/29 15:00 · 退房 1/3 11:00</div>
         <div class="bc-note">Confirmation #93241473 · 首尔酒店已确认。</div>
@@ -1218,16 +1220,16 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="block-title"><i class="ti" data-ic="hotel"></i>住宿</div>
     <div class="grid g2">
       <div class="card board-card">
-        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="ASTI Hotel Busan Station 手帐风外观">
-        <div class="bc-route">ASTI Hotel Busan Station</div>
+        <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="釜山站ASTI酒店 手帐风外观">
+        <div class="bc-route"><span class="bc-name">釜山站ASTI酒店</span><span class="bc-en">ASTI Hotel Busan Station</span></div>
         <div class="bc-date">12/26 - 12/29 · 3 晚</div>
         <div class="bc-meta">釜山站步行级别 / 方便 12/29 晚上直接坐 KTX 去首尔</div>
         <div class="bc-note">已确认：釜山站 ASTI 酒店（ASTI Hotel Busan Station）。</div>
         <span class="bc-tbd">已确认</span>
       </div>
       <div class="card board-card">
-        <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="Courtyard by Marriott Seoul Myeongdong 手绘酒店外观">
-        <div class="bc-route">Courtyard by Marriott Seoul Myeongdong</div>
+        <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.png" alt="首尔明洞万怡酒店 手绘酒店外观">
+        <div class="bc-route"><span class="bc-name">首尔明洞万怡酒店</span><span class="bc-en">Courtyard by Marriott Seoul Myeongdong</span></div>
         <div class="bc-date">12/29 - 1/3 · 5 晚</div>
         <div class="bc-meta">入住 12/29 15:00 · 退房 1/3 11:00</div>
         <div class="bc-note">Confirmation #93241473 · 原名 Seoul Namdaemun，现已更名为 Myeongdong。</div>
@@ -1793,7 +1795,7 @@ const EMBEDDED_ITINERARY = [
   { day: 1, sortOrder: 1, time: '02:25', title: '深圳宝安 T3 起飞', subtitle: 'SZX → 首尔仁川 T2 · OZ372', detail: '凌晨深夜出发，提前 2.5–3 小时到机场值机。', mapUrl: 'https://uri.amap.com/search?keyword=%E6%B7%B1%E5%9C%B3%E5%AE%9D%E5%AE%89%E6%9C%BA%E5%9C%BA&city=%E6%B7%B1%E5%9C%B3&view=map&src=mypage&coordinate=gaode&callnative=0' },
   { day: 1, sortOrder: 2, time: '06:50', title: '落地首尔仁川机场', subtitle: '入境 + 换汇 + 买 T-money', detail: '出关后到机场便利店买 T-money 卡并充值，坐地铁/机场快线都能用。' },
   { day: 1, sortOrder: 3, time: '09:00', title: '仁川机场 → 首尔站 → 釜山', subtitle: 'AREX + KTX 直达南下', detail: '机场快线到首尔站，换乘 KTX 去釜山，车程约 2.5–3h。' },
-  { day: 1, sortOrder: 4, time: '14:00', title: '抵达釜山，入住 ASTI 酒店', subtitle: '釜山站旁 · 转车更方便', detail: 'ASTI Hotel Busan Station 方便后面 12/29 晚上直接坐 KTX 去首尔，也方便当天到站后休整。' },
+  { day: 1, sortOrder: 4, time: '14:00', title: '入住 釜山站ASTI酒店', subtitle: '釜山站旁 · 转车更方便', detail: 'ASTI Hotel Busan Station 方便后面 12/29 晚上直接坐 KTX 去首尔，也方便当天到站后休整。' },
   { day: 1, sortOrder: 5, time: '18:00', title: '晚餐：猪肉汤饭', subtitle: '돼지국밥 · 海云台传统市场附近', detail: '落地第一顿吃热汤饭暖胃。', mapUrl: 'https://map.naver.com/p/search/해운대돼지국밥' },
   { day: 2, sortOrder: 1, time: '09:00', title: '海云台海水浴场', subtitle: '海边散步 · 冬天人少的海', detail: '拍空景大片的好机会，海边风大注意保暖。', mapUrl: 'https://map.naver.com/p/search/해운대해수욕장' },
   { day: 2, sortOrder: 2, time: '10:30', title: '胶囊小火车', subtitle: '海云台 Blueline Park · 天空舱', detail: '青沙浦站出发，沿海行驶的海上小火车，超适合拍照。', mapUrl: 'https://map.naver.com/p/search/해운대블루라인파크' },
@@ -1807,7 +1809,7 @@ const EMBEDDED_ITINERARY = [
   { day: 4, sortOrder: 1, time: '10:00', title: '太宗台', subtitle: '灯塔 + 悬崖海景', detail: '观光小火车代步，天气好能看到对马岛。', mapUrl: 'https://map.naver.com/p/search/태종대' },
   { day: 4, sortOrder: 2, time: '14:00', title: '酒店退房 → 釜山站', subtitle: '取行李出发', detail: '买点釜山特产带上车吃。' },
   { day: 4, sortOrder: 3, time: '18:30', title: 'KTX 釜山 → 首尔', subtitle: '车程约 2.5–3h', detail: '按现在的节奏晚一点北上；车上补觉，21 点前后到首尔站。' },
-  { day: 4, sortOrder: 4, time: '21:30', title: '入住 Courtyard by Marriott Seoul Myeongdong', subtitle: '明洞 · 官方 15:00 可入住', detail: 'Confirmation #93241473；如果晚到就直接办理入住，离明洞和首尔站都比较顺。' },
+  { day: 4, sortOrder: 4, time: '21:30', title: '入住 首尔明洞万怡酒店', subtitle: '明洞 · 官方 15:00 可入住', detail: 'Confirmation #93241473；如果晚到就直接办理入住，离明洞和首尔站都比较顺。' },
   { day: 4, sortOrder: 5, time: '22:00', title: '明洞夜宵 / 踩点', subtitle: '小吃 + 便利店', detail: '如果体力够就浅逛一下，别把第二天古宫行程拖太晚。', mapUrl: 'https://map.naver.com/p/search/명동교자' },
   { day: 5, sortOrder: 1, time: '09:00', title: '景福宫', subtitle: '穿韩服进宫免门票', detail: '光化门附近韩服租赁店，穿上韩服穿越古宫。', mapUrl: 'https://map.naver.com/p/search/경복궁' },
   { day: 5, sortOrder: 2, time: '11:00', title: '北村韩屋村', subtitle: '韩屋小巷', detail: '坡上拍照经典机位，注意居民区保持安静。', mapUrl: 'https://map.naver.com/p/search/북촌한옥마을' },
@@ -1851,7 +1853,7 @@ const DAY_ART = {
 };
 const PHOTO_LIBRARY = [
   { value: '', label: '自动匹配（按内容）', preview: 'assets/photos/palace-watercolor.webp' },
-  { value: 'assets/photos/busan-asti-hotel-editorial.png', label: '釜山 ASTI 酒店 / 釜山站', preview: 'assets/photos/busan-asti-hotel-editorial.png' },
+  { value: 'assets/photos/busan-asti-hotel-editorial.png', label: '釜山站ASTI酒店 / 釜山站', preview: 'assets/photos/busan-asti-hotel-editorial.png' },
   { value: 'assets/photos/busan-harbor-editorial.png', label: '釜山海云台 / 胶囊列车', preview: 'assets/photos/busan-harbor-editorial.png' },
   { value: 'assets/photos/busan-village-editorial.png', label: '釜山甘川 / 山坡彩屋', preview: 'assets/photos/busan-village-editorial.png' },
   { value: 'assets/photos/busan-editorial.png', label: '釜山文艺 / 岸边散步', preview: 'assets/photos/busan-editorial.png' },
@@ -1860,7 +1862,7 @@ const PHOTO_LIBRARY = [
   { value: 'assets/photos/seoul-palace-editorial.png', label: '首尔景福宫 / 古宫水墨', preview: 'assets/photos/seoul-palace-editorial.png' },
   { value: 'assets/photos/seoul-night-editorial.png', label: '首尔夜色 / 明洞塔影', preview: 'assets/photos/seoul-night-editorial.png' },
   { value: 'assets/photos/seoul-airport-editorial.png', label: '返程机场 / 行李与落日', preview: 'assets/photos/seoul-airport-editorial.png' },
-  { value: 'assets/photos/seoul-marriott-myeongdong-editorial.png', label: '首尔明洞万怡 / 酒店与夜色', preview: 'assets/photos/seoul-marriott-myeongdong-editorial.png' },
+  { value: 'assets/photos/seoul-marriott-myeongdong-editorial.png', label: '首尔明洞万怡酒店 / 夜色', preview: 'assets/photos/seoul-marriott-myeongdong-editorial.png' },
   { value: 'assets/photos/seoul-watercolor.png', label: '首尔清晨 / 汉江水彩', preview: 'assets/photos/seoul-watercolor.png' },
   { value: 'assets/photos/seoul-watercolor.webp', label: '首尔清晨 / 汉江', preview: 'assets/photos/seoul-watercolor.webp' },
   { value: 'assets/photos/seoul-editorial.png', label: '首尔文艺 / 城市散步', preview: 'assets/photos/seoul-editorial.png' },
@@ -2007,7 +2009,7 @@ const SPOTS = {
     { lat: 35.1534, lon: 129.1188, label: '广安里大桥', emoji: '🌉', color: '#A7C8CF', desc: '灯光桥夜景' },
     { lat: 35.1154, lon: 129.0417, label: '釜山站', emoji: '🚄', color: '#94A7B8', desc: 'KTX 出发/到达' },
     { lat: 35.1796, lon: 128.9382, label: '金海机场', emoji: '✈️', color: '#94A7B8', desc: '釜山机场（备选交通）' },
-  { lat: 35.1154, lon: 129.0417, label: 'ASTI Hotel Busan Station', emoji: '🏨', color: '#87938C', desc: '12/26–12/29 住宿 · 釜山站旁，方便 KTX 去首尔' }
+  { lat: 35.1154, lon: 129.0417, label: '釜山站ASTI酒店', en: 'ASTI Hotel Busan Station', emoji: '🏨', color: '#87938C', desc: '12/26–12/29 住宿 · 釜山站旁，方便 KTX 去首尔' }
   ],
   seoul: [
     { lat: 37.5796, lon: 126.9770, label: '景福宫', emoji: '🏯', color: '#A7C8CF', desc: '韩服体验 · 免门票' },
@@ -2022,7 +2024,7 @@ const SPOTS = {
     { lat: 37.5286, lon: 126.9334, label: '汉江公园·汝矣岛', emoji: '🌉', color: '#A7C8CF', desc: '拉面野餐' },
     { lat: 37.5547, lon: 126.9707, label: '首尔站', emoji: '🚄', color: '#94A7B8', desc: 'KTX / AREX 枢纽' },
     { lat: 37.4602, lon: 126.4407, label: '仁川机场', emoji: '✈️', color: '#94A7B8', desc: 'ICN · 进出韩国' },
-    { lat: 37.5617, lon: 126.9863, label: 'Courtyard by Marriott Seoul Myeongdong', emoji: '🏨', color: '#87938C', desc: '12/29–1/3 住宿 · 15:00 可入住' }
+    { lat: 37.5617, lon: 126.9863, label: '首尔明洞万怡酒店', en: 'Courtyard by Marriott Seoul Myeongdong', emoji: '🏨', color: '#87938C', desc: '12/29–1/3 住宿 · 15:00 可入住' }
   ]
 };
 
@@ -2124,7 +2126,7 @@ function updateHeroCountdown() {
     el.innerHTML = `<div class="hc-top"><span class="hc-chip">准备</span><span class="hc-main">距 ${DEPART_LABEL} 出发还有 ${t.d} 天 ${pad(t.h)} 小时 ${pad(t.m)} 分</span></div><div class="hc-sub">12/26 02:25 · 深圳起飞，行李、文件、支出都在这里查</div>`;
   } else if (phase === 'busan') {
     const t = dl(NEWYEAR - Date.now());
-    el.innerHTML = `<div class="hc-top"><span class="hc-chip">釜山</span><span class="hc-main">釜山段 D${dayIndex()} · 距跨年 ${t.d} 天 ${pad(t.h)} 小时</span></div><div class="hc-sub">12/26–12/29 · ASTI Hotel Busan Station</div>`;
+    el.innerHTML = `<div class="hc-top"><span class="hc-chip">釜山</span><span class="hc-main">釜山段 D${dayIndex()} · 距跨年 ${t.d} 天 ${pad(t.h)} 小时</span></div><div class="hc-sub">12/26–12/29 · 釜山站ASTI酒店 / ASTI Hotel Busan Station</div>`;
   } else if (phase === 'seoul') {
     const t = dl(NEWYEAR - Date.now());
     el.innerHTML = t.d > 0
@@ -2338,14 +2340,14 @@ const MAP_META = {
   seoul: { title: '首尔关系示意图', hint: '古宫、明洞、弘大、汉江和机场/车站的大致关系', art: 'url("assets/photos/seoul-watercolor.webp")' }
 };
 const MAP_VISIBLE = {
-  busan: ['金海机场', '釜山站', 'ASTI Hotel Busan Station', '海云台', '胶囊小火车', '广安里大桥', '甘川文化村', '札嘎其市场', 'BIFF广场', '白浅滩文化村', '太宗台'],
-  seoul: ['仁川机场', '首尔站', 'Courtyard by Marriott Seoul Myeongdong', '景福宫', '北村韩屋村', '明洞', '仁寺洞', '普信阁', '广藏市场', 'N首尔塔', '弘大', '圣水洞', '汉江公园']
+  busan: ['金海机场', '釜山站', '釜山站ASTI酒店', '海云台', '胶囊小火车', '广安里大桥', '甘川文化村', '札嘎其市场', 'BIFF广场', '白浅滩文化村', '太宗台'],
+  seoul: ['仁川机场', '首尔站', '首尔明洞万怡酒店', '景福宫', '北村韩屋村', '明洞', '仁寺洞', '普信阁', '广藏市场', 'N首尔塔', '弘大', '圣水洞', '汉江公园']
 };
 const MAP_LAYOUT = {
   busan: {
     '金海机场': { x: 14, y: 24 },
     '釜山站': { x: 30, y: 39 },
-    'ASTI Hotel Busan Station': { x: 36, y: 50 },
+    '釜山站ASTI酒店': { x: 36, y: 50 },
     '海云台海水浴场': { x: 68, y: 34 },
     '海云台': { x: 68, y: 34 },
     '胶囊小火车·青沙浦': { x: 66, y: 18 },
@@ -2360,7 +2362,7 @@ const MAP_LAYOUT = {
   seoul: {
     '仁川机场': { x: 12, y: 50 },
     '首尔站': { x: 31, y: 54 },
-    'Courtyard by Marriott Seoul Myeongdong': { x: 43, y: 50 },
+    '首尔明洞万怡酒店': { x: 43, y: 50 },
     '景福宫': { x: 43, y: 24 },
     '北村韩屋村': { x: 53, y: 22 },
     '仁寺洞': { x: 53, y: 34 },
@@ -2375,8 +2377,8 @@ const MAP_LAYOUT = {
   }
 };
 const MAP_ROUTE_ORDER = {
-  busan: ['金海机场', '釜山站', 'ASTI Hotel Busan Station', '海云台海水浴场', '胶囊小火车·青沙浦', '广安里大桥', '甘川文化村', '札嘎其市场', 'BIFF广场', '白浅滩文化村', '太宗台'],
-  seoul: ['仁川机场', '首尔站', 'Courtyard by Marriott Seoul Myeongdong', '景福宫', '北村韩屋村', '仁寺洞', '明洞', '普信阁', '广藏市场', 'N首尔塔', '弘大', '圣水洞', '汉江公园']
+  busan: ['金海机场', '釜山站', '釜山站ASTI酒店', '海云台海水浴场', '胶囊小火车·青沙浦', '广安里大桥', '甘川文化村', '札嘎其市场', 'BIFF广场', '白浅滩文化村', '太宗台'],
+  seoul: ['仁川机场', '首尔站', '首尔明洞万怡酒店', '景福宫', '北村韩屋村', '仁寺洞', '明洞', '普信阁', '广藏市场', 'N首尔塔', '弘大', '圣水洞', '汉江公园']
 };
 function mapLabel(s) {
   return s.label
@@ -2386,10 +2388,10 @@ function mapLabel(s) {
     .replace('广安里大桥', '广安里')
     .replace('汉江公园·汝矣岛', '汉江公园')
     .replace('北村韩屋村', '北村')
-    .replace('Asti Hotel Busan Station', 'ASTI 酒店')
-    .replace('酒店·海云台(待定)', 'ASTI 酒店')
-    .replace('釜山站附近酒店', 'ASTI 酒店')
-    .replace('Courtyard by Marriott Seoul Myeongdong', '明洞万怡酒店');
+    .replace('Asti Hotel Busan Station', '釜山站ASTI酒店')
+    .replace('酒店·海云台(待定)', '釜山站ASTI酒店')
+    .replace('釜山站附近酒店', '釜山站ASTI酒店')
+    .replace('Courtyard by Marriott Seoul Myeongdong', '首尔明洞万怡酒店');
 }
 function visibleSpots(city) {
   const names = MAP_VISIBLE[city] || [];
@@ -2462,7 +2464,7 @@ function setMapZoom(delta) {
 }
 window.zoomMap = function (delta) { setMapZoom(delta); };
 function selectedMapHTML(city, s) {
-  return `<h3>${esc(s.label)}</h3>
+  return `<h3>${esc(s.label)}${s.en ? `<small style="display:block;font-size:11px;color:var(--muted);font-weight:700;margin-top:2px">${esc(s.en)}</small>` : ''}</h3>
     <p>${esc(s.desc || '')} · 坐标 ${s.lat.toFixed(4)}, ${s.lon.toFixed(4)}</p>
     <div class="map-actions">
       <a class="apple-primary" href="${appleMapUrl(s)}" target="_blank" rel="noopener">Apple 地图</a>
@@ -3353,7 +3355,7 @@ const DOC_SEEDS = [
   { id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: '/签证文件/张子豪的韩亚航空官方行程单.pdf', attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
   { id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金鹿的韩亚航空官方行程单', attachmentUrl: '/签证文件/仇金鹿的韩亚航空官方行程单.pdf', attachmentName: '仇金鹿的韩亚航空官方行程单.pdf', attachmentType: 'pdf', status: '已确认', note: '12/26 深夜出发' },
   { id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证', attachmentUrl: '/签证文件/釜山ASTI酒店入住凭证.pdf', attachmentName: '釜山ASTI酒店入住凭证.pdf', attachmentType: 'pdf', status: '已确认', note: '釜山站旁住宿' },
-  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 6, title: '首尔酒店确认单', attachmentUrl: '/签证文件/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', status: '已确认', note: 'Courtyard by Marriott Seoul Myeongdong' }
+  { id: 'seed-seoul-hotel', kind: 'file', sortOrder: 6, title: '首尔酒店确认单', attachmentUrl: '/签证文件/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', status: '已确认', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' }
 ];
 const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
 const ESSAY_KIND_LABELS = { diary: '日记', guide: '攻略摘录', food: '美食' };
