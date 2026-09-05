@@ -28,9 +28,9 @@
 - 已确认航班：
   - 去程：Asiana OZ372，2026-12-26 02:25 深圳宝安 T3 → 06:50 首尔仁川 T2
   - 回程：Asiana OZ371，2027-01-03 22:10 首尔仁川 T2 → 2027-01-04 01:15 深圳宝安 T3
-- 已确认釜山酒店：Asti Hotel Busan Station
+- 已确认釜山酒店：釜山站ASTI酒店 / ASTI Hotel Busan Station
   - 12/26–12/29，釜山站旁，方便 12/29 晚上直接坐 KTX 去首尔
-- 已确认首尔酒店：Courtyard by Marriott Seoul Myeongdong
+- 已确认首尔酒店：首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong
   - 入住：2026-12-29 15:00
   - 退房：2027-01-03 11:00
   - Confirmation：#93241473
@@ -121,7 +121,7 @@ v1.1 由「长页下滑」重构为 **多 Tab 视图**（类原生 App 结构）
 
 ## 7. 待补内容（TODO）
 
-- [x] 釜山酒店（Asti Hotel Busan Station，12/26–12/29）
+- [x] 釜山酒店（釜山站ASTI酒店 / ASTI Hotel Busan Station，12/26–12/29）
 - [ ] 真实照片（放入 `assets/photos/`，文件名对应 `PHOTO_LOCAL` 映射表）
 - [ ] 预算总额确认
 - [x] 文件区跨设备同步（状态 / 备注 / 附件，见 §3.4）

@@ -2,7 +2,7 @@
 
 **可乐 & 金鹿** 的韩国冬季之旅可视化计划站。网页内品牌名保持 **“Korea Trip”**，Add to Home Screen 后桌面名称为 **“在璐上”**。
 
-- 行程：深圳 ⇄ 首尔 · **2026.12.26 – 2027.1.3**（12/26 02:25 由深圳飞首尔 → 当日南下釜山 → 12/26–12/29 住 Asti Hotel Busan Station → 12/29 傍晚 KTX 回首尔 → 首尔酒店已定为 Courtyard by Marriott Seoul Myeongdong → 普信阁跨年 → 1/3 22:10 回深圳，1/4 01:15 落地）
+- 行程：深圳 ⇄ 首尔 · **2026.12.26 – 2027.1.3**（12/26 02:25 由深圳飞首尔 → 当日南下釜山 → 12/26–12/29 住 釜山站ASTI酒店 / ASTI Hotel Busan Station → 12/29 傍晚 KTX 回首尔 → 首尔酒店已定为 首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong → 普信阁跨年 → 1/3 22:10 回深圳，1/4 01:15 落地）
 - 域名：当前 `https://korea-vercel.vercel.app`（默认域名；上线稳定后可换绑 `hankzhang.cloud`）
 - **本项目核心目标：手机 / iPad 优先的浏览体验**（金鹿不用电脑），并支持 Add to Home Screen 当原生 App 用。详见 [REQUIREMENTS.md](./REQUIREMENTS.md)
 - **最高优先级补充**：保证中国大陆 / 美国 / 韩国都能正常打开；页面里的图片、跳转、地图、天气等资源都要优先走这三地可稳定访问的路径。Google / Naver 这类入口可以保留，但不能只依赖单一入口。
@@ -146,8 +146,8 @@ cd ~/Desktop/korea-vercel && vercel domains add hankzhang.cloud
 
 - 去程航班：Asiana OZ372，2026-12-26 02:25 从深圳宝安 T3 起飞，06:50 落地仁川 T2。
 - 回程航班：Asiana OZ371，2027-01-03 22:10 从仁川 T2 起飞，2027-01-04 01:15 落地深圳宝安 T3。
-- 釜山酒店：Asti Hotel Busan Station，12/26–12/29，釜山站旁，方便 12/29 晚上直接坐 KTX 去首尔。
-- 首尔酒店：Courtyard by Marriott Seoul Myeongdong，入住 2026-12-29 15:00，退房 2027-01-03 11:00，确认号 #93241473。
+- 釜山酒店：釜山站ASTI酒店 / ASTI Hotel Busan Station，12/26–12/29，釜山站旁，方便 12/29 晚上直接坐 KTX 去首尔。
+- 首尔酒店：首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong，入住 2026-12-29 15:00，退房 2027-01-03 11:00，确认号 #93241473。
 - 12/29 釜山 → 首尔：计划晚一点再北上，KTX 预计傍晚出发，晚上到首尔后入住酒店。
 - 现金与保险：不提前大量换韩元现金；到韩国优先用 Fidelity 卡在 ATM 无手续费取现，旅行保险（含医疗 / 航班延误）已确认不单独购买。
 

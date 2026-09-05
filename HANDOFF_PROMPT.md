@@ -8,8 +8,8 @@
 
 ## 项目背景
 可乐 & 金鹿的韩国冬季旅行计划站（PWA，手机/iPad 优先）：
-2026-12-26 02:25 深圳飞首尔 → 当日 AREX+KTX 南下釜山（12/26–12/29 住 Asti Hotel Busan Station）→ 12/29 傍晚 KTX 北上首尔
-→ 首尔酒店已定为 Courtyard by Marriott Seoul Myeongdong → 12/31 普信阁跨年敲钟 → 2027-01-03 22:10 回深圳，01-04 01:15 落地。
+2026-12-26 02:25 深圳飞首尔 → 当日 AREX+KTX 南下釜山（12/26–12/29 住 釜山站ASTI酒店 / ASTI Hotel Busan Station）→ 12/29 傍晚 KTX 北上首尔
+→ 首尔酒店已定为 首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong → 12/31 普信阁跨年敲钟 → 2027-01-03 22:10 回深圳，01-04 01:15 落地。
 参考项目 ~/Desktop/hanoi-vercel（架构规范）；后端复用其 CloudBase 环境 hanoi-d4gj8vd2q1e7a3dc0，
 NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 🚫 红色安全线：~/Desktop/hanoi-vercel/.env.local 里的 VERCEL_OIDC_TOKEN 绝不能复制进本项目或任何输出。
@@ -107,7 +107,7 @@ NoSQL 集合 kr_ 前缀，HTTP 云函数 korea-api。
 🚫 hanoi 的 .env.local VERCEL_OIDC_TOKEN 绝不能复制到本项目；Desktop 下 `.env.local`、`.git`、`.vercel`、截图、cloudfunctions 绝不能上传部署；`签证文件/` 要保留在本项目静态资源里，供文件卡片直接引用。
 
 ## 待办清单
-- [x] 釜山酒店已确认并补进住宿卡和行程卡（Asti Hotel Busan Station，12/26–12/29）
+- [x] 釜山酒店已确认并补进住宿卡和行程卡（釜山站ASTI酒店 / ASTI Hotel Busan Station，12/26–12/29）
 - [x] 现金与保险决策已更新：不提前大量换韩元现金；到韩国用 Fidelity 卡 ATM 无手续费取现，旅行保险不单独购买
 - [ ] 真实照片替换 assets/photos/ 的水彩 SVG 插画
 - [ ] 预算总额确认（现占位 10000 RMB）
