@@ -30,7 +30,7 @@
 }
 body[data-trip-id="hong-kong"]{--green:#9C8CC4;--green-d:#66558E;--green-l:#F1ECFA;--green-xl:#FAF8FE;--ink:#5D4B86;--line:#E8E0F2;--grad:linear-gradient(120deg,#B8A8D8,#8D7AB8)}
 body[data-trip-id="xiamen"]{--green:#6FA7C2;--green-d:#47758D;--green-l:#EAF5FA;--green-xl:#F7FCFE;--ink:#416D82;--line:#DDECF2;--grad:linear-gradient(120deg,#8EC2D8,#649AB6)}
-body.short-trip #tab-home .memo-strip,body.short-trip #tab-home .newyear-board,body.short-trip #tab-home .journal-head,body.short-trip #tab-home .journal-grid,body.short-trip #tab-home #ringRow,body.short-trip #tab-home h2.sec-title[style]{display:none}
+body.short-trip #tab-home .memo-strip,body.short-trip #tab-home .newyear-board,body.short-trip #tab-home .home-hotels,body.short-trip #tab-home .journal-head,body.short-trip #tab-home .journal-grid,body.short-trip #tab-home #ringRow,body.short-trip #tab-home h2.sec-title[style]{display:none}
 body.short-trip #tab-home .journal-toggle{display:none!important}
 body.short-trip #tab-transport .wrap>*:not(.sec-title),body.short-trip #tab-map .map-board{display:none}
 body.short-trip #tab-map .map-reference-note,body.short-trip #tab-map .map-reference-groups,body.short-trip #tab-map .map-reference-grid{display:none}
@@ -172,7 +172,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .hero-inner h1{
   display:inline-block;font-family:"STXingkai","Xingkai SC","Kaiti SC","Songti SC",serif;
   font-size:clamp(42px,12vw,72px);font-weight:700;letter-spacing:0;line-height:1.08;margin-top:2px;
-  color:#315845;text-shadow:0 3px 14px rgba(255,255,250,.98),0 0 2px rgba(255,255,250,.85);
+  color:var(--ink);text-shadow:0 3px 14px rgba(255,255,250,.98),0 0 2px rgba(255,255,250,.85);
 }
 .hero-sub{font-size:clamp(13.5px,3.8vw,16px);font-weight:600;opacity:.96}
 .hero-meta{font-size:12px;font-weight:600;opacity:.85}
@@ -195,7 +195,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .hero-progress{
   position:absolute;left:0;right:0;bottom:0;z-index:2;height:4px;background:rgba(255,255,255,.24);
 }
-.hero-progress i{display:block;height:100%;width:0%;background:linear-gradient(90deg,#CBE4D1,#78AA8B);transition:width 1s linear}
+.hero-progress i{display:block;height:100%;width:0%;background:var(--grad);transition:width 1s linear}
 
 /* ============ 全站页面水彩页头 ============ */
 .panel:not(#tab-home)>.wrap::before{
@@ -233,7 +233,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 
 /* ============ 首页 · CTA + 快捷卡片 ============ */
 #ctaPlan{
-  width:100%;height:58px;border-radius:18px;background:#EDF6EF;color:var(--green-d);font-weight:900;font-size:16px;
+  width:100%;height:58px;border-radius:18px;background:var(--green-l);color:var(--green-d);font-weight:900;font-size:16px;
   display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:var(--shadow);border:1px solid rgba(118,169,138,.2);
   margin-bottom:14px;
 }
@@ -1696,11 +1696,11 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       </div>
     </section>
 
-    <div class="journal-head" style="margin-top:18px">
+    <div class="journal-head home-hotels" style="margin-top:18px">
       <h2 class="sec-title"><i class="ti" data-ic="hotel"></i>住宿</h2>
       <span class="journal-note">釜山 · 首尔</span>
     </div>
-    <div class="grid g2">
+    <div class="grid g2 home-hotels">
       <div class="card board-card">
         <img class="bc-photo" src="assets/photos/busan-asti-hotel-editorial.png" alt="釜山站ASTI酒店 手帐风外观">
         <div class="bc-route"><span class="bc-name">釜山站ASTI酒店</span><span class="bc-en">ASTI Hotel Busan Station</span></div>
@@ -5027,8 +5027,13 @@ function attachImage(doc) {
 }
 async function loadDocs() {
   const cached = Array.isArray(cache.get('kr_docs')) ? cache.get('kr_docs') : [];
-  const cloudDocs = await apiGet('/docs', 'kr_docs', cached);
-  const source = Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : cached;
+  const isKoreaTrip = currentTripData().id === 'korea-2026';
+  const shortTripCache = cached.filter((doc) => {
+    const text = `${doc?.id || ''} ${doc?.title || ''} ${doc?.attachmentName || ''} ${doc?.attachmentUrl || ''}`;
+    return !DOC_SEEDS.some((seed) => seed.id === doc?.id) && !/韩亚航空|ASTI|首尔酒店|釜山 ASTI|携程.*机票|assets\/docs\/visa/.test(text);
+  });
+  const cloudDocs = isKoreaTrip ? await apiGet('/docs', 'kr_docs', cached) : null;
+  const source = isKoreaTrip ? (Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : cached) : shortTripCache;
   const fileSource = (source || []).filter((d) => !d || d.kind === 'file' || !d.kind);
   const essaySource = (source || []).filter((d) => d && d.kind === 'essay');
   const foodSource = (source || []).filter((d) => d && d.kind === 'food');
