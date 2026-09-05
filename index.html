@@ -1640,9 +1640,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           <div class="wct-upd" id="wxUpdated"></div>
         </div>
         <div class="wx-now-extra" aria-label="天气详情">
-          <div class="wx-stat"><span class="wx-stat-label">今日最高 / 最低</span><span class="wx-stat-value" id="wxRange">-- / --</span></div>
-          <div class="wx-stat"><span class="wx-stat-label">体感温度</span><span class="wx-stat-value" id="wxFeels">--°</span></div>
-          <div class="wx-stat"><span class="wx-stat-label">风速</span><span class="wx-stat-value" id="wxWind">-- km/h</span></div>
+          <div class="wx-stat"><span class="wx-stat-label">最高 / 最低</span><span class="wx-stat-value" id="wxRange">-- / --</span></div>
+          <div class="wx-stat"><span class="wx-stat-label">降雨概率</span><span class="wx-stat-value" id="wxRain">--%</span></div>
+          <div class="wx-stat"><span class="wx-stat-label">紫外线强度</span><span class="wx-stat-value" id="wxUv">--</span></div>
           <div class="wx-stat"><span class="wx-stat-label">相对湿度</span><span class="wx-stat-value" id="wxHumidity">--%</span></div>
         </div>
       </div>
@@ -3531,7 +3531,9 @@ function makeWxFallback(city) {
       time: dayBase,
       weather_code: preset.codes,
       temperature_2m_max: preset.highs,
-      temperature_2m_min: preset.lows
+      temperature_2m_min: preset.lows,
+      precipitation_probability_max: [10, 10, 15, 20, 15],
+      uv_index_max: [2, 2, 2, 1, 2]
     },
     hourly: {
       time: hourBase,
@@ -3554,7 +3556,7 @@ async function fetchWeather(city) {
   if (!c) return null;
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}` +
     `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m` +
-    `&daily=weather_code,temperature_2m_max,temperature_2m_min` +
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max` +
     `&hourly=temperature_2m,weather_code&timezone=Asia%2FSeoul&forecast_days=5`;
   try {
     const res = await fetch(url);
@@ -3573,14 +3575,17 @@ function renderWeather() {
   if (!data) return;
   const c = CITIES[wxCity];
   const cur = data.current;
+  const todayRain = Math.round(data.daily.precipitation_probability_max?.[0] ?? 10);
+  const todayUv = Number(data.daily.uv_index_max?.[0] ?? 2);
+  const uvText = todayUv < 3 ? '低' : todayUv < 6 ? '中' : todayUv < 8 ? '高' : todayUv < 11 ? '很高' : '极高';
   const [icName, desc] = wmo(cur.weather_code);
   $('#wxEmoji').innerHTML = ic(icName);
   $('#wxTemp').textContent = Math.round(cur.temperature_2m) + '°';
   $('#wxDesc').textContent = desc;
-  $('#wxSub').textContent = `体感 ${Math.round(cur.apparent_temperature)}° · 风速 ${Math.round(cur.wind_speed_10m)} km/h`;
+  $('#wxSub').textContent = `风速 ${Math.round(cur.wind_speed_10m)} km/h · 实时天气`;
   $('#wxRange').textContent = `${Math.round(data.daily.temperature_2m_max[0])}° / ${Math.round(data.daily.temperature_2m_min[0])}°`;
-  $('#wxFeels').textContent = `${Math.round(cur.apparent_temperature)}°`;
-  $('#wxWind').textContent = `${Math.round(cur.wind_speed_10m)} km/h`;
+  $('#wxRain').textContent = `${todayRain}%`;
+  $('#wxUv').textContent = `${uvText} · ${todayUv}`;
   $('#wxHumidity').textContent = `${Math.round(cur.relative_humidity_2m ?? 65)}%`;
   $('#wxCityName').textContent = c.name;
   $('#wxUpdated').textContent = fmtKR({ hour: '2-digit', minute: '2-digit', hour12: false }) + ' 更新';
