@@ -76,10 +76,16 @@ h2.sec-title{font-size:clamp(19px,4.4vw,24px);font-weight:800;display:flex;align
 h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-left:auto}
 .block-title{font-size:15px;font-weight:800;margin:24px 0 10px;display:flex;align-items:center;gap:8px;color:var(--text)}
 .block-title .st-sub{font-size:11.5px;font-weight:600;color:var(--muted);margin-left:3px;line-height:1.35;white-space:nowrap}
-.card{background:rgba(255,255,251,.95);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(224,235,223,.95)}
+.card{background:rgba(255,255,251,.95);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(224,235,223,.95);transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease}
 .grid{display:grid;gap:12px}
 @media(min-width:640px){.grid.g2{grid-template-columns:1fr 1fr}}
 @media(min-width:960px){.grid.g3{grid-template-columns:repeat(3,1fr)}}
+@media(hover:hover) and (pointer:fine){
+  .card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(63,96,78,.11)}
+  .city-tab:not(.active):hover,.trip-option:not(.active):hover,.phrase-toggle:hover{background:var(--green-xl);border-color:rgba(118,169,138,.32)}
+  a:hover{color:var(--green-d)}
+  .map-reference-card:hover img{transform:scale(1.018)}
+}
 
 /* ============ 通用图标 ============ */
 .ti{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green)}
@@ -737,7 +743,7 @@ body.doc-viewer-open{overflow:hidden}
 .map-reference-grid{display:grid;grid-template-columns:1fr;gap:14px}
 .map-reference-card{display:block;overflow:hidden;text-align:left;background:var(--card);border:1px solid rgba(224,235,223,.95);border-radius:20px;box-shadow:var(--shadow);transition:transform .2s ease,box-shadow .2s ease}
 .map-reference-card:active{transform:scale(.99)}
-.map-reference-card img{width:100%;height:auto;display:block;background:#f6f1e5}
+.map-reference-card img{width:100%;height:auto;display:block;background:#f6f1e5;transition:transform .38s ease}
 .map-reference-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px 13px}
 .map-reference-meta strong{font-size:13px;color:var(--ink)}
 .map-reference-meta span{font-size:11px;color:var(--muted);font-weight:700}
