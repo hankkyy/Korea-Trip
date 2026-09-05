@@ -34,8 +34,14 @@ body.short-trip #tab-home .memo-strip,body.short-trip #tab-home .newyear-board,b
 body.short-trip #tab-home .journal-toggle{display:none!important}
 body.short-trip #tab-transport .wrap>*:not(.sec-title),body.short-trip #tab-map .map-board{display:none}
 body.short-trip #tab-map .map-reference-note,body.short-trip #tab-map .map-reference-groups,body.short-trip #tab-map .map-reference-grid{display:none}
+body.short-trip #tab-itinerary .cal-card,body.short-trip #tab-itinerary .korea-only-itinerary,body.short-trip #tab-itinerary #dayChips,body.short-trip #tab-guide .block-title,body.short-trip #tab-guide .phrase-panel,body.short-trip #tab-guide .tips-stack{display:none}
+body.short-trip #tab-food .food-group{display:none}
 body.short-trip .short-trip-banner{display:block!important}
 .short-trip-banner{display:none;margin:16px 0;padding:18px;border:1px dashed var(--accent-line,var(--line));border-radius:var(--radius);background:var(--green-l);color:var(--green-d);font-weight:700}
+.empty-state{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:28px 24px;color:var(--muted)}
+.empty-state strong{font-size:18px;color:var(--ink)}
+.empty-state-icon{font-size:28px;color:var(--green);line-height:1}
+.empty-state .list-add-btn{margin-top:8px}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:auto;width:100%;overflow-x:hidden}
 body{
@@ -1779,7 +1785,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 行程 ============ -->
 <section class="panel" id="tab-itinerary">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="calendar"></i>9 天行程 <span class="st-sub">点日期跳到当天</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="calendar"></i><span id="itineraryTitle">9 天行程</span> <span class="st-sub" id="itineraryHint">点日期跳到当天</span></h2>
 
     <div class="card cal-card">
       <div class="cal-head">
@@ -1803,6 +1809,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       </div>
     </div>
 
+    <div class="korea-only-itinerary">
     <div class="block-title"><i class="ti" data-ic="hotel"></i>住宿</div>
     <div class="grid g2">
       <div class="card board-card">
@@ -1831,6 +1838,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <div class="bc-note">已确认 · Confirmation #93241473</div>
         <span class="bc-tbd">已确认</span>
       </div>
+    </div>
     </div>
 
     <div id="dayChips"></div>
@@ -2123,6 +2131,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <section class="panel" id="tab-guide">
   <div class="wrap">
     <h2 class="sec-title"><i class="ti" data-ic="book"></i>旅行锦囊</h2>
+    <div class="short-trip-banner" aria-live="polite"></div>
     <div class="block-title"><i class="ti" data-ic="chat"></i>韩语短语 <span style="color:var(--muted);font-weight:600;font-size:12px">旅行常用 · 左右滑动浏览</span></div>
     <div class="phrase-panel is-collapsed" id="phrasePanel">
       <div class="table-wrap">
@@ -2440,31 +2449,18 @@ const TRIP_DATA = {
     content: 'ready'
   },
   'hong-kong': {
-    id: 'hong-kong', name: '香港周末旅行', brand: 'Hong Kong Trip', dates: '2026.12.18–12.20', icon: '🇭🇰', content: 'ready', days: 3,
+    id: 'hong-kong', name: '香港周末旅行', brand: 'Hong Kong Trip', dates: '2026.12.18–12.20', icon: '🇭🇰', content: 'ready', theme: 'purple', days: 3,
     startAt: '2026-12-18T18:30:00+08:00', transferAt: '2026-12-19T09:00:00+08:00', endAt: '2026-12-20T21:00:00+08:00',
     departLabel: '12/18 下班后', defaultCity: 'hong-kong',
     cities: { 'hong-kong': { name: '香港', lat: 22.3193, lon: 114.1694 } }, heroImages: [],
-    itinerary: [
-      { day: 1, sortOrder: 1, time: '18:30', title: '深圳下班后出发', subtitle: '前往香港', detail: '下班后过关，抵达香港后入住并简单吃饭。' },
-      { day: 1, sortOrder: 2, time: '21:30', title: '入住酒店', subtitle: '香港周末第一晚', detail: '放下行李，准备第二天迪士尼。' },
-      { day: 2, sortOrder: 1, time: '09:00', title: '香港迪士尼乐园', subtitle: '全天游玩', detail: '提前查看开园时间、预约项目和夜间演出安排。' },
-      { day: 2, sortOrder: 2, time: '20:30', title: '迪士尼烟花或夜间演出', subtitle: '以当天官方安排为准', detail: '结束后返回市区休息。' },
-      { day: 3, sortOrder: 1, time: '10:00', title: '香港市区慢慢逛', subtitle: '中环 · 维港 · 尖沙咀', detail: '根据体力安排市区散步、吃饭和拍照。' },
-      { day: 3, sortOrder: 2, time: '18:00', title: '返回深圳', subtitle: '周日晚上回家', detail: '预留过关和交通时间，不把返程安排得太紧。' }
-    ]
+    itinerary: []
   },
   'xiamen': {
-    id: 'xiamen', name: '厦门周末旅行', brand: 'Xiamen Trip', dates: '2027.01.08–01.10', icon: '🌊', content: 'ready', days: 3,
+    id: 'xiamen', name: '厦门周末旅行', brand: 'Xiamen Trip', dates: '2027.01.08–01.10', icon: '🌊', content: 'ready', theme: 'blue', days: 3,
     startAt: '2027-01-08T18:30:00+08:00', transferAt: '2027-01-09T09:00:00+08:00', endAt: '2027-01-10T21:00:00+08:00',
     departLabel: '1/8 下班后', defaultCity: 'xiamen',
     cities: { xiamen: { name: '厦门', lat: 24.4798, lon: 118.0894 } }, heroImages: [],
-    itinerary: [
-      { day: 1, sortOrder: 1, time: '18:30', title: '深圳下班后出发', subtitle: '前往厦门', detail: '晚上出发，抵达后入住。' },
-      { day: 2, sortOrder: 1, time: '09:30', title: '厦门城市散步', subtitle: '鼓浪屿或市区', detail: '根据天气和船票安排周末第一天。' },
-      { day: 2, sortOrder: 2, time: '18:00', title: '海边晚餐', subtitle: '慢慢吃、慢慢逛', detail: '留一点时间看海边夜色。' },
-      { day: 3, sortOrder: 1, time: '10:00', title: '厦门最后半天', subtitle: '咖啡 · 旧街 · 海边', detail: '选择一个区域轻松走走。' },
-      { day: 3, sortOrder: 2, time: '18:00', title: '返回深圳', subtitle: '周日晚上回家', detail: '预留返程交通时间。' }
-    ]
+    itinerary: []
   }
 };
 const TRIP_REGISTRY = Object.values(TRIP_DATA);
@@ -2487,6 +2483,7 @@ const NEWYEAR = new Date(currentTripData().newYearAt || currentTripData().endAt 
 const DEPART_LABEL = currentTripData().departLabel || '出发日';
 const CITIES = currentTripData().cities || {};
 const HERO_IMAGES = currentTripData().heroImages || [];
+const tripSeed = (items) => currentTripData().id === 'korea-2026' ? items : [];
 const PHOTO_FALLBACK = 'linear-gradient(135deg,#EEF7EF,#F1F9F9,#FFF9ED)';
 
 /* ================= 工具 ================= */
@@ -2540,6 +2537,11 @@ function renderTripChrome() {
     if (meta) meta.textContent = `可乐 & 金鹿 · ${trip.dates}`;
   }
   document.body.classList.toggle('short-trip', trip.id !== 'korea-2026');
+  const itineraryTitle = $('#itineraryTitle');
+  const itineraryHint = $('#itineraryHint');
+  if (itineraryTitle) itineraryTitle.textContent = trip.id === 'korea-2026' ? '9 天行程' : '行程安排';
+  if (itineraryHint) itineraryHint.textContent = trip.id === 'korea-2026' ? '点日期跳到当天' : '空白模板 · 可随时新增';
+  document.querySelectorAll('#tab-food .food-collection-head h3').forEach((el) => { el.textContent = trip.id === 'korea-2026' ? el.textContent : '当前旅程收藏'; });
   document.querySelectorAll('.short-trip-banner').forEach((el) => {
     el.innerHTML = trip.id === 'korea-2026' ? '' : `<strong>${esc(trip.name)}</strong><br>${esc(trip.dates)} · 周末轻旅行模板，后续可继续补充具体酒店、交通和收藏。`;
   });
@@ -3195,7 +3197,9 @@ function updateHeader() {
   else if (phase === 'active') phaseText = `DAY ${dayIndex()} · ${currentTripData().name}`;
   else phaseText = '旅程已结束';
   $('#tb-phase').textContent = phaseText;
-  $('#tb-time').textContent = '韩国时间 ' + fmtKR({ hour: '2-digit', minute: '2-digit', hour12: false });
+  const timeZone = currentTripData().timezone || (currentTripData().id === 'korea-2026' ? 'Asia/Seoul' : 'Asia/Shanghai');
+  const timeText = new Date().toLocaleTimeString('zh-CN', { timeZone, hour: '2-digit', minute: '2-digit', hour12: false });
+  $('#tb-time').textContent = `${currentTripData().id === 'korea-2026' ? '韩国时间' : '当地时间'} ${timeText}`;
   const pct = Math.min(100, Math.max(0, (Date.now() - D1) / (TRIP_END - D1) * 100));
   $('#heroProgress').style.width = pct + '%';
 }
@@ -3404,7 +3408,11 @@ function updateHeroCountdown() {
   const el = $('#heroCountdown');
   if (phase === 'prep') {
     const t = dl(D1 - Date.now());
-    el.innerHTML = `<div class="hc-top"><span class="hc-chip">准备</span><span class="hc-main">距 ${DEPART_LABEL} 出发还有 ${t.d} 天 ${pad(t.h)} 小时 ${pad(t.m)} 分</span></div><div class="hc-sub">12/26 02:25 · 深圳起飞，行李、文件、支出都在这里查</div>`;
+    const trip = currentTripData();
+    const prepSub = trip.id === 'korea-2026'
+      ? '12/26 02:25 · 深圳起飞，行李、文件、支出都在这里查'
+      : `${trip.dates} · 行程、文件和支出都可以在这里整理`;
+    el.innerHTML = `<div class="hc-top"><span class="hc-chip">准备</span><span class="hc-main">距 ${DEPART_LABEL} 出发还有 ${t.d} 天 ${pad(t.h)} 小时 ${pad(t.m)} 分</span></div><div class="hc-sub">${esc(prepSub)}</div>`;
   } else if (phase === 'busan') {
     const t = dl(NEWYEAR - Date.now());
     el.innerHTML = `<div class="hc-top"><span class="hc-chip">釜山</span><span class="hc-main">釜山段 D${dayIndex()} · 距跨年 ${t.d} 天 ${pad(t.h)} 小时</span></div><div class="hc-sub">12/26–12/29 · 釜山站ASTI酒店 / ASTI Hotel Busan Station</div>`;
@@ -4131,6 +4139,10 @@ function renderDayChips() {
   }));
 }
 function renderItinerary(list) {
+  if (!list.length) {
+    $('#itineraryList').innerHTML = `<div class="card empty-state"><div class="empty-state-icon">✦</div><strong>这段旅程还没有行程</strong><span>先保留空白模板，之后可以从这里逐条新增日期、时间和地点。</span><button class="list-add-btn" type="button" onclick="openItSheet(1)">新增第一条行程</button></div>`;
+    return;
+  }
   const todayIdx = (tripPhase() === 'busan' || tripPhase() === 'seoul') ? dayIndex() : -1;
   const openDay = null;
   const byDay = {};
@@ -4206,11 +4218,11 @@ $('#itineraryList').addEventListener('click', (e) => {
   }
 });
 async function initItinerary() {
-  currentItinerary = normalizeItinerary(cache.get('kr_cache_itinerary') || EMBEDDED_ITINERARY);
+  currentItinerary = normalizeItinerary(cache.get('kr_cache_itinerary') || tripSeed(EMBEDDED_ITINERARY));
   renderItinerary(currentItinerary);
   renderDayChips();
   renderCalendar();
-  const list = await apiGet('/itinerary', 'kr_cache_itinerary', EMBEDDED_ITINERARY);
+  const list = await apiGet('/itinerary', 'kr_cache_itinerary', tripSeed(EMBEDDED_ITINERARY));
   const fresh = normalizeItinerary(list);
   if (JSON.stringify(fresh) !== JSON.stringify(currentItinerary)) {
     currentItinerary = fresh;
@@ -4458,7 +4470,7 @@ async function handleTodoAction(action, id) {
   await persistTodos();
 }
 async function initTodos() {
-  todoItems = sortByOrder((cache.get('kr_cache_todos') || EMBEDDED_TODOS).map(normalizeTodo));
+  todoItems = sortByOrder((cache.get('kr_cache_todos') || tripSeed(EMBEDDED_TODOS)).map(normalizeTodo));
   renderTodos();
   $('#todoAdd').addEventListener('click', () => openListSheet('todos'));
   $('#todosList').addEventListener('click', async (e) => {
@@ -4469,13 +4481,13 @@ async function initTodos() {
     await handleTodoAction(btn.dataset.act, row.dataset.id);
   });
   setupListDrag($('#todosList'), 'todos');
-  apiGet('/todos', 'kr_cache_todos', EMBEDDED_TODOS).then((fresh) => {
+  apiGet('/todos', 'kr_cache_todos', tripSeed(EMBEDDED_TODOS)).then((fresh) => {
     if (Date.now() - listLocalChangeAt < 2500 || $('#listSheet').classList.contains('open')) return;
     todoItems = sortByOrder(fresh.map(normalizeTodo)); renderTodos();
   });
   todoTimer = setInterval(async () => {
     if (Date.now() - listLocalChangeAt < 2500 || $('#listSheet').classList.contains('open')) return;
-    const fresh = await apiGet('/todos', 'kr_cache_todos', EMBEDDED_TODOS);
+    const fresh = await apiGet('/todos', 'kr_cache_todos', tripSeed(EMBEDDED_TODOS));
     todoItems = sortByOrder(fresh.map(normalizeTodo)); renderTodos();
   }, 10000);
 }
@@ -4514,15 +4526,15 @@ window.toggleBucket = async function (el) {
   }
 };
 async function initBucket() {
-  bucketItems = cache.get('kr_cache_bucketlist') || EMBEDDED_BUCKET;
+  bucketItems = cache.get('kr_cache_bucketlist') || tripSeed(EMBEDDED_BUCKET);
   renderBucket();
-  apiGet('/bucket-list', 'kr_cache_bucketlist', EMBEDDED_BUCKET).then((fresh) => {
+  apiGet('/bucket-list', 'kr_cache_bucketlist', tripSeed(EMBEDDED_BUCKET)).then((fresh) => {
     if (Date.now() - bucketLocalChangeAt < 2500) return;
     bucketItems = fresh; renderBucket();
   });
   bucketTimer = setInterval(async () => {
     if (Date.now() - bucketLocalChangeAt < 2500) return;
-    const fresh = await apiGet('/bucket-list', 'kr_cache_bucketlist', EMBEDDED_BUCKET);
+    const fresh = await apiGet('/bucket-list', 'kr_cache_bucketlist', tripSeed(EMBEDDED_BUCKET));
     bucketItems = fresh; renderBucket();
   }, 10000);
 }
@@ -4586,7 +4598,7 @@ async function handleChecklistAction(action, id) {
   await persistChecklist();
 }
 async function initChecklist() {
-  checklistItems = sortByOrder((cache.get('kr_cache_checklist') || EMBEDDED_CHECKLIST).map(normalizeChecklistItem));
+  checklistItems = sortByOrder((cache.get('kr_cache_checklist') || tripSeed(EMBEDDED_CHECKLIST)).map(normalizeChecklistItem));
   renderChecklist();
   $('#checklistAdd').addEventListener('click', () => openListSheet('checklist'));
   $('#checklistList').addEventListener('click', async (e) => {
@@ -4597,13 +4609,13 @@ async function initChecklist() {
     await handleChecklistAction(btn.dataset.act, row.dataset.id);
   });
   setupListDrag($('#checklistList'), 'checklist');
-  apiGet('/checklist', 'kr_cache_checklist', EMBEDDED_CHECKLIST).then((fresh) => {
+  apiGet('/checklist', 'kr_cache_checklist', tripSeed(EMBEDDED_CHECKLIST)).then((fresh) => {
     if (Date.now() - listLocalChangeAt < 2500 || $('#listSheet').classList.contains('open')) return;
     checklistItems = sortByOrder(fresh.map(normalizeChecklistItem)); renderChecklist();
   });
   checklistTimer = setInterval(async () => {
     if (Date.now() - listLocalChangeAt < 2500 || $('#listSheet').classList.contains('open')) return;
-    const fresh = await apiGet('/checklist', 'kr_cache_checklist', EMBEDDED_CHECKLIST);
+    const fresh = await apiGet('/checklist', 'kr_cache_checklist', tripSeed(EMBEDDED_CHECKLIST));
     checklistItems = sortByOrder(fresh.map(normalizeChecklistItem)); renderChecklist();
   }, 10000);
 }
@@ -4946,6 +4958,7 @@ function shouldKeepFileDoc(doc) {
   return Boolean(doc.id || title || note || attachment);
 }
 function seedDocs(payload) {
+  if (currentTripData().id !== 'korea-2026') return payload;
   const ids = new Set(payload.map((d) => d.id || d.sourceKey || d.attachmentUrl || d.title));
   DOC_SEEDS.forEach((seed) => {
     const key = seed.id;
