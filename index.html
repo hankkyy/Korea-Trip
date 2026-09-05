@@ -967,8 +967,8 @@ body.doc-viewer-open{overflow:hidden}
 .trip-option.active{background:linear-gradient(135deg,#F1F8F3,#F4FBFB);border-color:rgba(118,169,138,.35)}
 .trip-option.disabled{opacity:.56;cursor:default}
 .trip-option-ic{width:42px;height:42px;display:grid;place-items:center;flex:0 0 42px;border-radius:14px;background:#EEF7EF;color:var(--green-d);font-size:21px}
-.trip-option:nth-child(2) .trip-option-ic{background:#F6F0FA;color:#806B9A}.trip-option:nth-child(3) .trip-option-ic{background:#FFF3EC;color:#986545}
-.trip-option-copy{min-width:0;flex:1;display:block}.trip-option-title{display:block;font-size:14px;font-weight:900;color:var(--text);line-height:1.35;overflow-wrap:anywhere}.trip-option-meta{display:block;font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.45;overflow-wrap:anywhere}
+.trip-option.trip-hong-kong .trip-option-ic{background:#F6F0FA;color:#806B9A}.trip-option.trip-xiamen .trip-option-ic{background:#EDF5FA;color:#527D9A}
+.trip-option-copy{min-width:0;flex:1;display:block}.trip-option-title{display:block;font-size:14px;font-weight:900;color:var(--text);line-height:1.35;overflow-wrap:anywhere}.trip-option-meta{display:block;font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.35;overflow-wrap:anywhere}.trip-option-dates{display:flex;flex-wrap:wrap;align-items:center;gap:3px 5px;margin-top:6px;color:var(--muted);font-size:11.5px;font-weight:700;line-height:1.35}.trip-option-date{white-space:nowrap}.trip-option-date-sep{color:var(--green-d);font-size:10.5px;font-weight:900;white-space:nowrap}
 .trip-option-state{flex:0 0 auto;font-size:10.5px;font-weight:900;color:var(--green-d)}
 .trip-picker-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
 .trip-picker-actions .tap{min-height:42px;padding:0 10px;border:1px solid var(--line);border-radius:13px;background:var(--card);color:var(--text);font-size:12px;font-weight:850;white-space:nowrap}
@@ -2680,14 +2680,24 @@ function importTripBackup(file) {
   };
   reader.readAsText(file);
 }
+function tripDateLabel(value) {
+  const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  return match ? `${match[1]}年${Number(match[2])}月${Number(match[3])}日` : '';
+}
+function tripDateRange(trip) {
+  const start = tripDateLabel(trip.startAt);
+  const end = tripDateLabel(trip.endAt);
+  if (!start || !end) return `<span class="trip-option-date">${esc(trip.dates || '日期待补充')}</span>`;
+  return `<span class="trip-option-date">${start}</span><span class="trip-option-date-sep">至</span><span class="trip-option-date">${end}</span>`;
+}
 function renderTripPicker() {
   const list = $('.trip-picker-list');
   if (!list) return;
   const selected = activeTrip().id;
-  list.innerHTML = allTrips().map((trip) => {
+  list.innerHTML = allTrips().slice().sort((a, b) => String(a.startAt || '').localeCompare(String(b.startAt || ''))).map((trip) => {
     const disabled = trip.content !== 'ready';
-    return `<${disabled ? 'div' : 'button'} class="trip-option${trip.id === selected ? ' active' : ''}${disabled ? ' disabled' : ''}"${disabled ? ' aria-disabled="true"' : ` type="button" data-trip-id="${esc(trip.id)}"`}>
-      <span class="trip-option-ic">${trip.icon}</span><span class="trip-option-copy"><span class="trip-option-title">${esc(trip.name)}</span><span class="trip-option-meta">${esc(trip.brand)} · ${esc(trip.dates)}</span></span><span class="trip-option-state">${disabled ? '未创建' : '进入'}</span>
+    return `<${disabled ? 'div' : 'button'} class="trip-option trip-${esc(trip.id)}${trip.id === selected ? ' active' : ''}${disabled ? ' disabled' : ''}"${disabled ? ' aria-disabled="true"' : ` type="button" data-trip-id="${esc(trip.id)}"`}>
+      <span class="trip-option-ic">${trip.icon}</span><span class="trip-option-copy"><span class="trip-option-title">${esc(trip.name)}</span><span class="trip-option-meta">${esc(trip.brand)}</span><span class="trip-option-dates">${tripDateRange(trip)}</span></span><span class="trip-option-state">${disabled ? '未创建' : '进入'}</span>
     </${disabled ? 'div' : 'button'}>`;
   }).join('');
 }
