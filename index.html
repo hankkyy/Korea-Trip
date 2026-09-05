@@ -1504,6 +1504,14 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   #tab-itinerary .tl-detail{max-width:700px}
 }
 @media(max-width:430px){
+  .header-row{height:auto;min-height:58px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"brand time" "phase phase";gap:3px 10px;padding-top:8px;padding-bottom:8px}
+  .header-row .brand{grid-area:brand;min-width:0}
+  .header-row #tb-phase{grid-area:phase;max-width:none;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35;padding:4px 10px}
+  .header-row #tb-time{grid-area:time;margin-left:0;align-self:center;font-size:11.5px}
+  h2.sec-title{align-items:flex-start;flex-wrap:wrap;gap:5px 7px}
+  h2.sec-title .st-sub{flex:1 1 100%;margin-left:29px;line-height:1.35}
+  .flight-card,.board-card,.food-card,.essay-card,.doc-card,.exp-summary,.info-card{min-width:0}
+  .flight-number,.bc-name,.food-display-title,.essay-card-title,.doc-title{overflow-wrap:anywhere}
   .journal-grid{grid-template-columns:1fr 1fr;gap:10px}
   .journal-card.wide{grid-column:1 / -1}
   .journal-copy{padding:9px 10px 11px}
