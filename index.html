@@ -788,24 +788,17 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .food-memory-item h4{font-size:14px;font-weight:900;color:var(--text);margin-bottom:4px}
 .food-memory-item p{font-size:12px;line-height:1.5;color:var(--muted)}
 .food-memory-item .fm-tag{display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:5px 10px;border-radius:999px;background:var(--green-l);color:var(--green-d);font-size:11px;font-weight:800}
-.essay-lock{
+.essay-note{
   padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,251,.97),rgba(246,250,246,.92));
   border:1px solid rgba(118,169,138,.14);box-shadow:var(--shadow)
 }
-.essay-lock-ic{
+.essay-note-ic{
   width:48px;height:48px;border-radius:16px;background:var(--green-xl);color:var(--green-d);
   display:flex;align-items:center;justify-content:center;flex-shrink:0
 }
-.essay-lock-body{flex:1;min-width:0}
-.essay-lock-title{font-size:15px;font-weight:900;color:var(--green-d)}
-.essay-lock-text{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:3px}
-.essay-lock-row{display:flex;gap:8px;margin-top:10px}
-.essay-lock-row input{
-  flex:1;min-width:0;height:44px;border-radius:14px;border:1px solid var(--line);background:var(--bg);padding:0 12px;font-size:15px
-}
-.essay-lock-row button{
-  min-width:84px;border-radius:14px;background:var(--grad);color:#fff;font-weight:900;padding:0 14px
-}
+.essay-note-body{flex:1;min-width:0}
+.essay-note-title{font-size:15px;font-weight:900;color:var(--green-d)}
+.essay-note-text{font-size:12.5px;color:var(--muted);line-height:1.65;margin-top:3px}
 .essay-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
 .essay-tabs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
 .essay-tabs::-webkit-scrollbar{display:none}
@@ -832,6 +825,27 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   min-height:34px;padding:0 10px;border-radius:12px;border:1px solid var(--line);background:var(--bg);
   font-size:12px;font-weight:800;color:var(--green-d);display:inline-flex;align-items:center;gap:4px;flex:0 0 auto
 }
+.essay-private{
+  padding:14px;margin-top:10px;border-radius:16px;background:linear-gradient(180deg,rgba(244,248,244,.98),rgba(249,251,246,.9));
+  border:1px solid rgba(118,169,138,.12);display:flex;flex-direction:column;gap:10px
+}
+.essay-private-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.essay-private-label{
+  font-size:11px;font-weight:900;letter-spacing:.08em;color:var(--green-d);text-transform:uppercase
+}
+.essay-private-note{font-size:12px;color:var(--muted);line-height:1.55}
+.essay-private-row input{
+  flex:1;min-width:170px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--card);padding:0 12px;font-size:15px
+}
+.essay-private-row button{
+  min-width:84px;height:42px;border-radius:14px;background:var(--grad);color:#fff;font-weight:900;padding:0 14px
+}
+.essay-open .essay-card-title{font-size:16px}
+.essay-open .essay-card-sub{color:var(--green-d);font-weight:700}
+.essay-locked-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:var(--green-l);color:var(--green-d);
+  font-size:11px;font-weight:900;letter-spacing:.02em
+}
 .essay-sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .essay-photo-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
 .essay-photo-item{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
@@ -842,6 +856,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .essay-photo-empty{
   padding:14px;border-radius:14px;border:1px dashed var(--line);background:var(--bg);color:var(--muted);font-size:12.5px;line-height:1.6
 }
+.essay-password-note{font-size:12px;color:var(--muted);line-height:1.5;margin-top:8px}
 #essayBackdrop{
   position:fixed;inset:0;background:rgba(24,38,31,.45);z-index:1006;opacity:0;pointer-events:none;transition:opacity .28s;
 }
@@ -872,7 +887,8 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .doc-thumb img{width:100%;max-height:150px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
 @media(max-width:430px){
   .food-memory-grid{grid-template-columns:1fr}
-  .essay-lock{padding:14px}
+  .essay-note{padding:14px}
+  .essay-private-row input{min-width:0;width:100%}
   .essay-sheet-grid{grid-template-columns:1fr}
   .essay-photo-row{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -1323,30 +1339,24 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 随笔 ============ -->
 <section class="panel" id="tab-essay">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="book"></i>随笔 <span class="st-sub">照片、地点、文字，自己上锁</span></h2>
-    <div class="essay-lock card" id="essayLockCard">
-      <div class="essay-lock-ic"><i class="ti" data-ic="lock"></i></div>
-      <div class="essay-lock-body">
-        <div class="essay-lock-title">这本随笔先上锁了</div>
-        <div class="essay-lock-text">输入密码后才会显示内容。你可以把旅行日记、攻略摘录、想法碎片都放进来。</div>
-        <div class="essay-lock-row">
-          <input id="essayPasswordInput" type="password" placeholder="输入随笔密码">
-          <button id="essayUnlockBtn" type="button">打开</button>
-        </div>
+    <h2 class="sec-title"><i class="ti" data-ic="book"></i>随笔 <span class="st-sub">每篇独立密码 · 照片、地点、文字都可以写</span></h2>
+    <div class="essay-note card">
+      <div class="essay-note-ic"><i class="ti" data-ic="lock"></i></div>
+      <div class="essay-note-body">
+        <div class="essay-note-title">每篇随笔都是独立锁</div>
+        <div class="essay-note-text">别人打开网页时只能看到锁住的卡片；只有输入对应那篇随笔的密码，才会展开标题、地点、照片和正文。</div>
       </div>
     </div>
-    <div id="essayUnlockedWrap" style="display:none">
-      <div class="essay-toolbar">
-        <button class="list-add-btn" id="essayAddBtn" type="button"><i class="ti" data-ic="plus"></i>新建随笔</button>
-        <div class="essay-tabs" id="essayTabs">
-          <button class="active" data-kind="all">全部</button>
-          <button data-kind="diary">日记</button>
-          <button data-kind="guide">攻略</button>
-          <button data-kind="food">美食</button>
-        </div>
+    <div class="essay-toolbar">
+      <button class="list-add-btn" id="essayAddBtn" type="button"><i class="ti" data-ic="plus"></i>新建随笔</button>
+      <div class="essay-tabs" id="essayTabs">
+        <button class="active" data-kind="all">全部</button>
+        <button data-kind="diary">日记</button>
+        <button data-kind="guide">攻略</button>
+        <button data-kind="food">美食</button>
       </div>
-      <div class="essay-grid" id="essayGrid"></div>
     </div>
+    <div class="essay-grid" id="essayGrid"></div>
   </div>
 </section>
 
@@ -1576,6 +1586,11 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   <div class="field">
     <label>地点</label>
     <input id="essayPlaceInput" placeholder="比如：海云台 / 明洞 / 某家咖啡馆">
+  </div>
+  <div class="field">
+    <label>随笔密码</label>
+    <input id="essayPasswordInput" type="password" placeholder="新建时必须填写；编辑时留空表示沿用当前密码">
+    <div class="essay-password-note">每篇随笔都单独加密。你输入这篇对应的密码后，才会在列表里展开内容。</div>
   </div>
   <div class="field">
     <label>正文</label>
@@ -3344,11 +3359,10 @@ const DOC_SEEDS = [
 const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
 const ESSAY_KIND_LABELS = { diary: '日记', guide: '攻略摘录', food: '美食' };
 let docsData = [];
-let essayVault = [];
-let essayItems = [];
-let essayMeta = null;
-let essayUnlocked = false;
-let essayPassword = '';
+let essayRecords = [];
+let essayLegacyMeta = null;
+let essayOpenPayloads = new Map();
+let essayUnlockedPasswords = new Map();
 let essayEditingId = null;
 let essayDraftPhotos = [];
 let essayFilter = 'all';
@@ -3390,20 +3404,25 @@ async function deriveEssayKey(password, saltB64) {
     ['encrypt', 'decrypt']
   );
 }
-async function essayEncrypt(payload) {
-  if (!essayMeta || !essayPassword) throw new Error('essay password missing');
-  const key = await deriveEssayKey(essayPassword, essayMeta.salt);
+async function essayEncryptWithPassword(payload, password, saltB64 = '') {
+  const pwd = String(password || '').trim();
+  if (!pwd) throw new Error('essay password missing');
+  const salt = saltB64 || randomB64(16);
+  const key = await deriveEssayKey(pwd, salt);
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, bytesFromText(JSON.stringify(payload)));
   return {
+    salt,
+    hash: await sha256B64(`${salt}:${pwd}`),
     iv: base64FromBytes(iv),
     data: base64FromBytes(new Uint8Array(encrypted))
   };
 }
-async function essayDecrypt(record) {
-  if (!essayMeta || !essayPassword || !record?.payloadIv || !record?.payloadEnc) return null;
+async function essayDecryptWithPassword(record, password, saltB64 = '') {
+  const pwd = String(password || '').trim();
+  if (!pwd || !record?.payloadIv || !record?.payloadEnc) return null;
   try {
-    const key = await deriveEssayKey(essayPassword, essayMeta.salt);
+    const key = await deriveEssayKey(pwd, saltB64);
     const plain = await crypto.subtle.decrypt(
       { name: 'AES-GCM', iv: bytesFromBase64(record.payloadIv) },
       key,
@@ -3460,10 +3479,12 @@ function normalizeFileDoc(doc, idx) {
 function normalizeEssayVault(doc, idx) {
   return {
     id: doc.id || doc._id || `essay-${idx + 1}`,
-    kind: 'essay',
+    kind: String(doc.kind || 'essay'),
     sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
     payloadEnc: doc.payloadEnc || doc.contentEnc || '',
     payloadIv: doc.payloadIv || doc.contentIv || '',
+    passSalt: doc.passSalt || '',
+    passHash: doc.passHash || '',
     updatedAt: Number(doc.updatedAt) || Date.now()
   };
 }
@@ -3488,36 +3509,22 @@ async function loadDocs() {
   const source = Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : cached;
   const fileSource = (source || []).filter((d) => !d || d.kind === 'file' || !d.kind);
   const essaySource = (source || []).filter((d) => d && d.kind === 'essay');
-  essayMeta = (source || []).find((d) => d && d.kind === 'essay-meta') || null;
+  essayLegacyMeta = (source || []).find((d) => d && d.kind === 'essay-meta') || null;
   docsData = seedDocs(fileSource.map(normalizeFileDoc).filter(shouldKeepFileDoc).sort((a, b) => a.sortOrder - b.sortOrder));
-  essayVault = essaySource.map(normalizeEssayVault).sort((a, b) => a.sortOrder - b.sortOrder);
-  cache.set('kr_docs', [...docsData, ...(essayMeta ? [essayMeta] : []), ...essayVault]);
+  essayRecords = essaySource.map(normalizeEssayVault).filter((d) => d.kind !== 'essay-meta').sort((a, b) => a.sortOrder - b.sortOrder);
+  essayOpenPayloads = new Map();
+  essayUnlockedPasswords = new Map();
+  cache.set('kr_docs', [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords]);
   const needSeedSync = docsData.length !== fileSource.length || seedDocs(fileSource.map(normalizeFileDoc)).length !== docsData.length;
-  if (needSeedSync || (source || []).length !== docsData.length + essayVault.length + (essayMeta ? 1 : 0)) {
-    apiPost('/docs', { items: [...docsData, ...(essayMeta ? [essayMeta] : []), ...essayVault] }).catch(() => {});
+  if (needSeedSync || (source || []).length !== docsData.length + essayRecords.length + (essayLegacyMeta ? 1 : 0)) {
+    apiPost('/docs', { items: [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords] }).catch(() => {});
   }
 }
 async function persistDocs() {
   const payload = [...docsData.map(normalizeFileDoc).filter(shouldKeepFileDoc)];
-  if (essayMeta) {
-    payload.push(essayMeta);
-    if (essayUnlocked && essayPassword) {
-      essayVault = [];
-      for (let i = 0; i < essayItems.length; i += 1) {
-        const item = essayItems[i];
-        const encrypted = await essayEncrypt(item);
-        essayVault.push({
-          id: item.id || `essay-${Date.now()}-${i}`,
-          kind: 'essay',
-          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : i + 1,
-          payloadEnc: encrypted.data,
-          payloadIv: encrypted.iv,
-          updatedAt: Date.now()
-        });
-      }
-    }
-  }
-  payload.push(...essayVault);
+  const legacyRemain = essayRecords.some((item) => !item.passSalt || !item.passHash);
+  if (essayLegacyMeta && legacyRemain) payload.push(essayLegacyMeta);
+  payload.push(...essayRecords);
   if (!cache.set('kr_docs', payload)) alert('本地缓存已满：请删掉几条记录后再试。');
   try {
     await apiPost('/docs', { items: payload });
@@ -3673,80 +3680,84 @@ async function initDocs() {
 function essaySortKey(item) {
   return Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : Date.now();
 }
-function essayPayloadPreview(item) {
-  const place = item.place ? ` · ${item.place}` : '';
-  const date = item.date ? ` · ${item.date}` : '';
-  return `${ESSAY_KIND_LABELS[item.category] || '随笔'}${date}${place}`;
-}
 function renderEssayPhotos(photos = []) {
   if (!photos.length) return '';
   return photos.map((src, idx) => `<div class="essay-photo-item"><img src="${esc(src)}" alt=""><button type="button" data-act="remove-photo" data-idx="${idx}">✕</button></div>`).join('');
 }
-async function unlockEssayVault(password) {
+function essayOpenLabel(item, idx) {
+  return `私密随笔 ${String(idx + 1).padStart(2, '0')}`;
+}
+async function unlockEssayRecord(record, password) {
   const pwd = String(password || '').trim();
   if (!pwd) return false;
-  if (!essayMeta) {
-    essayMeta = { kind: 'essay-meta', id: 'essay-meta', salt: randomB64(16), verifier: '', updatedAt: Date.now() };
-    essayMeta.verifier = await sha256B64(`${essayMeta.salt}:${pwd}`);
-    essayPassword = pwd;
-    essayUnlocked = true;
-    essayItems = [];
-    essayVault = [];
-    await persistDocs();
-    renderEssay();
+  if (record.passSalt && record.passHash) {
+    const verifier = await sha256B64(`${record.passSalt}:${pwd}`);
+    if (verifier !== record.passHash) return false;
+    const payload = await essayDecryptWithPassword(record, pwd, record.passSalt);
+    if (!payload) return false;
+    essayUnlockedPasswords.set(record.id, pwd);
+    essayOpenPayloads.set(record.id, payload);
     return true;
   }
-  const verifier = await sha256B64(`${essayMeta.salt}:${pwd}`);
-  if (verifier !== essayMeta.verifier) return false;
-  essayPassword = pwd;
-  const decrypted = [];
-  for (const rec of essayVault) {
-    const payload = await essayDecrypt(rec);
-    if (payload) decrypted.push({ ...payload, id: rec.id, sortOrder: rec.sortOrder });
-  }
-  essayItems = decrypted.sort((a, b) => essaySortKey(a) - essaySortKey(b));
-  essayUnlocked = true;
-  renderEssay();
+  if (!essayLegacyMeta) return false;
+  const verifier = await sha256B64(`${essayLegacyMeta.salt}:${pwd}`);
+  if (verifier !== essayLegacyMeta.verifier) return false;
+  const payload = await essayDecryptWithPassword(record, pwd, essayLegacyMeta.salt);
+  if (!payload) return false;
+  const sealed = await essayEncryptWithPassword(payload, pwd);
+  const migrated = {
+    ...record,
+    passSalt: sealed.salt,
+    passHash: sealed.hash,
+    payloadEnc: sealed.data,
+    payloadIv: sealed.iv,
+    updatedAt: Date.now()
+  };
+  const idx = essayRecords.findIndex((it) => it.id === record.id);
+  if (idx >= 0) essayRecords[idx] = migrated;
+  essayUnlockedPasswords.set(record.id, pwd);
+  essayOpenPayloads.set(record.id, payload);
+  await persistDocs();
   return true;
 }
 function renderEssay() {
-  const lock = $('#essayLockCard');
-  const body = $('#essayUnlockedWrap');
-  const title = $('#essayLockCard .essay-lock-title');
-  const text = $('#essayLockCard .essay-lock-text');
-  if (!essayUnlocked) {
-    lock.style.display = 'flex';
-    body.style.display = 'none';
-    title.textContent = essayMeta ? '这本随笔先上锁了' : '先给随笔设一个密码';
-    text.textContent = essayMeta
-      ? '输入密码后才会显示内容。你可以把旅行日记、攻略摘录、想法碎片都放进来。'
-      : '第一次使用时先设置一个密码，之后两台设备都可以用它打开这本随笔。';
-    return;
-  }
-  lock.style.display = 'none';
-  body.style.display = 'block';
   $('#essayTabs').querySelectorAll('button').forEach((btn) => btn.classList.toggle('active', btn.dataset.kind === essayFilter));
-  const list = essayItems
+  const list = essayRecords
     .filter((item) => essayFilter === 'all' ? true : item.category === essayFilter)
     .sort((a, b) => essaySortKey(a) - essaySortKey(b));
   $('#essayGrid').innerHTML = list.length
-    ? list.map((item) => {
-        const photos = Array.isArray(item.photos) ? item.photos : [];
-        return `<article class="card essay-card" data-id="${esc(item.id)}">
+    ? list.map((item, idx) => {
+        const payload = essayOpenPayloads.get(item.id);
+        const open = Boolean(payload);
+        const photos = open && Array.isArray(payload.photos) ? payload.photos : [];
+        return `<article class="card essay-card${open ? ' essay-open' : ' essay-locked'}" data-id="${esc(item.id)}">
           <div class="essay-card-top">
             <div>
-              <div class="essay-card-title">${esc(item.title || '未命名随笔')}</div>
-              <div class="essay-card-sub">${esc(ESSAY_KIND_LABELS[item.category] || '随笔')}</div>
+              <div class="essay-card-title">${esc(open ? (payload.title || '未命名随笔') : essayOpenLabel(item, idx))}</div>
+              <div class="essay-card-sub">${esc(open ? (ESSAY_KIND_LABELS[payload.category] || '随笔') : (ESSAY_KIND_LABELS[item.category] || '私密随笔'))}</div>
             </div>
-            <button class="essay-mini-btn" data-act="edit">${ic('edit')}编辑</button>
+            ${open
+              ? `<button class="essay-mini-btn" data-act="edit">${ic('edit')}编辑</button>`
+              : `<button class="essay-mini-btn" data-act="unlock">${ic('lock')}打开</button>`}
           </div>
-          <div class="essay-card-meta">${esc((item.date || '').replace(/-/g, ' / '))}${item.place ? ` · ${esc(item.place)}` : ''}</div>
-          <div class="essay-card-body">${esc(item.content || '')}</div>
-          ${photos.length ? `<div class="essay-photo-row">${photos.map((src) => `<img src="${esc(src)}" alt="">`).join('')}</div>` : ''}
-          <div class="essay-actions">
-            <button class="primary" data-act="edit">编辑</button>
-            <button class="danger" data-act="delete">删除</button>
-          </div>
+          ${open
+            ? `
+              <div class="essay-card-meta">${esc((payload.date || '').replace(/-/g, ' / '))}${payload.place ? ` · ${esc(payload.place)}` : ''}</div>
+              <div class="essay-card-body">${esc(payload.content || '')}</div>
+              ${photos.length ? `<div class="essay-photo-row">${photos.map((src) => `<img src="${esc(src)}" alt="">`).join('')}</div>` : ''}
+              <div class="essay-actions">
+                <button class="primary" data-act="edit">编辑</button>
+                <button class="danger" data-act="delete">删除</button>
+              </div>`
+            : `
+              <div class="essay-private">
+                <div class="essay-locked-badge">${ic('lock')} 已加密</div>
+                <div class="essay-private-note">这篇内容只有输入对应密码后才会展开。别人打开网页时看不到正文、照片和地点。</div>
+                <div class="essay-private-row">
+                  <input type="password" data-act="card-password" placeholder="输入这篇的密码">
+                  <button type="button" data-act="unlock-card">打开</button>
+                </div>
+              </div>`}
         </article>`;
       }).join('')
     : `<div class="card" style="padding:18px;color:var(--muted);font-size:13px">还没有随笔，点“新建随笔”就可以开始记。</div>`;
@@ -3760,6 +3771,7 @@ function openEssaySheet(entry = null) {
   $('#essayDateInput').value = entry?.date || '';
   $('#essayPlaceInput').value = entry?.place || '';
   $('#essayContentInput').value = entry?.content || '';
+  $('#essayPasswordInput').value = '';
   renderEssayDraftPhotos();
   $('#essayBackdrop').classList.add('open');
   $('#essaySheet').classList.add('open');
@@ -3790,46 +3802,55 @@ function addEssayPhoto() {
   input.click();
 }
 async function saveEssaySheet() {
-  if (!essayUnlocked) {
-    alert('请先设置或输入随笔密码。');
-    return;
-  }
+  const existing = essayEditingId ? essayRecords.find((it) => it.id === essayEditingId) : null;
   const title = $('#essayTitleInput').value.trim() || '未命名随笔';
   const category = $('#essayKindInput').value;
   const date = $('#essayDateInput').value;
   const place = $('#essayPlaceInput').value.trim();
   const content = $('#essayContentInput').value.trim();
-  const base = {
-    id: essayEditingId || `essay-${Date.now()}`,
-    category: ESSAY_KIND_LABELS[category] ? category : 'diary',
+  const inputPassword = String($('#essayPasswordInput').value || '').trim();
+  const currentPassword = essayEditingId ? essayUnlockedPasswords.get(essayEditingId) : '';
+  const password = inputPassword || currentPassword || '';
+  if (!password) {
+    alert('请先填写这篇随笔的密码。');
+    return;
+  }
+  const payload = {
     title,
+    category: ESSAY_KIND_LABELS[category] ? category : 'diary',
     date,
     place,
     content,
     photos: [...essayDraftPhotos],
-    sortOrder: essayEditingId ? (essayItems.find((it) => it.id === essayEditingId)?.sortOrder || Date.now()) : Date.now()
+    createdAt: existing?.createdAt || Date.now(),
+    updatedAt: Date.now()
   };
-  const idx = essayItems.findIndex((it) => it.id === essayEditingId);
-  if (idx >= 0) essayItems[idx] = base;
-  else essayItems.unshift(base);
-  essayItems = essayItems.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+  const useExistingSalt = Boolean(existing?.passSalt && existing.passHash && !inputPassword);
+  const sealed = await essayEncryptWithPassword(payload, password, useExistingSalt ? existing.passSalt : '');
+  const base = {
+    id: existing?.id || `essay-${Date.now()}`,
+    kind: 'essay',
+    sortOrder: Number.isFinite(Number(existing?.sortOrder)) ? Number(existing.sortOrder) : Date.now(),
+    category: payload.category,
+    passSalt: sealed.salt,
+    passHash: sealed.hash,
+    payloadEnc: sealed.data,
+    payloadIv: sealed.iv,
+    createdAt: existing?.createdAt || Date.now(),
+    updatedAt: Date.now()
+  };
+  const idx = essayRecords.findIndex((it) => it.id === essayEditingId);
+  if (idx >= 0) essayRecords[idx] = base;
+  else essayRecords.unshift(base);
+  essayRecords = essayRecords.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+  essayUnlockedPasswords.set(base.id, password);
+  essayOpenPayloads.set(base.id, payload);
   closeEssaySheet();
   renderEssay();
   await persistDocs();
 }
 function initEssay() {
-  const unlockAndRender = async () => {
-    const pwd = $('#essayPasswordInput').value.trim();
-    if (!pwd) return;
-    const ok = await unlockEssayVault(pwd);
-    if (!ok) alert('密码不对，再试一次。');
-  };
-  $('#essayUnlockBtn').addEventListener('click', unlockAndRender);
-  $('#essayPasswordInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') unlockAndRender();
-  });
   $('#essayAddBtn').addEventListener('click', () => {
-    if (!essayUnlocked) { alert('先打开随笔再新建。'); return; }
     openEssaySheet();
   });
   $('#essayTabs').addEventListener('click', (e) => {
@@ -3856,8 +3877,10 @@ function initEssay() {
       return;
     }
     if (!confirm('删除这篇随笔？')) return;
-    essayItems = essayItems.filter((item) => item.id !== essayEditingId);
-    essayItems = essayItems.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+    essayRecords = essayRecords.filter((item) => item.id !== essayEditingId);
+    essayRecords = essayRecords.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+    essayOpenPayloads.delete(essayEditingId);
+    essayUnlockedPasswords.delete(essayEditingId);
     essayEditingId = null;
     closeEssaySheet();
     renderEssay();
@@ -3868,16 +3891,38 @@ function initEssay() {
     if (!btn) return;
     const card = e.target.closest('.essay-card');
     if (!card) return;
-    const item = essayItems.find((it) => it.id === card.dataset.id);
+    const item = essayRecords.find((it) => it.id === card.dataset.id);
     if (!item) return;
-    if (btn.dataset.act === 'edit') openEssaySheet(item);
+    if (btn.dataset.act === 'unlock' || btn.dataset.act === 'unlock-card') {
+      const input = card.querySelector('input[data-act="card-password"]');
+      const pwd = String(input?.value || '').trim();
+      if (!pwd) { alert('请输入这篇的密码。'); return; }
+      const ok = await unlockEssayRecord(item, pwd);
+      if (!ok) alert('密码不对，再试一次。');
+      else renderEssay();
+      return;
+    }
+    if (btn.dataset.act === 'edit') openEssaySheet({ ...essayOpenPayloads.get(item.id), id: item.id, category: item.category, sortOrder: item.sortOrder, createdAt: item.createdAt });
     if (btn.dataset.act === 'delete') {
       if (!confirm('删除这篇随笔？')) return;
-      essayItems = essayItems.filter((it) => it.id !== item.id);
-      essayItems = essayItems.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+      essayRecords = essayRecords.filter((it) => it.id !== item.id);
+      essayRecords = essayRecords.map((it, i) => ({ ...it, sortOrder: i + 1 }));
+      essayOpenPayloads.delete(item.id);
+      essayUnlockedPasswords.delete(item.id);
       renderEssay();
       await persistDocs();
     }
+  });
+  $('#essayGrid').addEventListener('keydown', async (e) => {
+    if (e.key !== 'Enter') return;
+    const input = e.target.closest('input[data-act="card-password"]');
+    if (!input) return;
+    const card = e.target.closest('.essay-card');
+    const item = card ? essayRecords.find((it) => it.id === card.dataset.id) : null;
+    if (!item) return;
+    const ok = await unlockEssayRecord(item, String(input.value || '').trim());
+    if (!ok) alert('密码不对，再试一次。');
+    else renderEssay();
   });
 }
 function renderFood() {
