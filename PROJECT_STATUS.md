@@ -61,7 +61,7 @@ CloudBase 已按 `tripId` 隔离，已有本地缓存和基础重试队列；后
 - `index.html`：页面、样式、旅程配置、交互和本地缓存。
 - `cloudfunctions/korea-api/index.js`：CloudBase HTTP API，目前包含批量替换逻辑。
 - `manifest.json`：App 名称“在璐上”。
-- `sw.js`：离线缓存，当前缓存版本 `korea-trip-v22`。
+- `sw.js`：离线缓存，当前缓存版本 `korea-trip-v23`。
 - `assets/photos/`：画册和旅行图片。
 - `assets/maps/`：釜山、首尔手帐地图。
 - `scripts/verify.mjs`：发布前线上入口、资源、API 和天气 smoke check。

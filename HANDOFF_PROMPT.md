@@ -38,7 +38,7 @@
 - API 地址：`https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
 - Vercel 生产地址：`https://korea-vercel.vercel.app/`。
 - 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`；前端或图片修改后必须额外部署 CloudBase 静态包。
-- Service Worker 当前缓存版本：`korea-trip-v22`；改资源后必须递增并验证旧缓存清理。
+- Service Worker 当前缓存版本：`korea-trip-v23`；改资源后必须递增并验证旧缓存清理。
 - 多数数据接口当前是整批替换，存在双设备覆盖风险，这是已知架构缺口。
 - 旅程选择层已有 JSON 导出/导入恢复；后端已提供 `/records/:collection/:docId` 单条更新/删除和 `baseUpdatedAt` 冲突检测，但前端尚未全部接入。
 - 旅程设置已支持成员、时区、城市、封面和从已有旅程复制框架；不要把这误写成完整资料 CRUD。

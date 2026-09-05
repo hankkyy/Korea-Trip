@@ -69,7 +69,7 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 - 旅程配置和基础模板位于 `TRIP_DATA`；记录逐步迁移到 `tripId` 隔离。
 - Vercel：`https://korea-vercel.vercel.app/`。
 - CloudBase 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`。
-- Service Worker 当前版本：`korea-trip-v22`。
+- Service Worker 当前版本：`korea-trip-v23`。
 - 发布前 smoke check：`node scripts/verify.mjs`。
 
 ## 7. 实际完成情况
