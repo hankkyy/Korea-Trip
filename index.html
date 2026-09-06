@@ -37,6 +37,8 @@ body.short-trip #tab-map .map-reference-note,body.short-trip #tab-map .map-city-
 body.short-trip #tab-itinerary .cal-card,body.short-trip #tab-itinerary .korea-only-itinerary,body.short-trip #tab-itinerary #dayChips,body.short-trip #tab-guide .block-title,body.short-trip #tab-guide .phrase-panel,body.short-trip #tab-guide .tips-stack{display:none}
 body.short-trip #tab-food .food-group{display:none}
 body.short-trip .short-trip-banner{display:block!important}
+body.short-trip.trip-has-hotels #tab-home .journal-head.home-hotels{display:flex}
+body.short-trip.trip-has-hotels #tab-home .grid.home-hotels{display:grid}
 .short-trip-banner{display:none;margin:16px 0;padding:18px;border:1px dashed var(--accent-line,var(--line));border-radius:var(--radius);background:var(--green-l);color:var(--green-d);font-weight:700}
 .empty-state{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:28px 24px;color:var(--muted)}
 .empty-state strong{font-size:18px;color:var(--ink)}
@@ -2510,7 +2512,20 @@ const TRIP_DATA = {
     startAt: '2026-12-18T18:30:00+08:00', transferAt: '2026-12-19T09:00:00+08:00', endAt: '2026-12-20T21:00:00+08:00',
     departLabel: '12/18 下班后', defaultCity: 'hong-kong',
     cities: { 'hong-kong': { name: '香港', lat: 22.3193, lon: 114.1694 } }, heroImages: [],
-    itinerary: []
+    hotels: [{ name: '香港维港凯悦尚萃酒店', en: 'Hyatt Centric Victoria Harbour Hong Kong', date: '12/18–12/20 · 2 晚', checkIn: '12/18 15:00', checkOut: '12/20 12:00', room: '标准客房 · 1 张特大床', roomEn: 'Standard Room · 1 King Bed', address: '香港北角城市花园道 1 号', addressEn: '1 North Point Estate Lane, North Point, Hong Kong', note: '已确认 · 确认号 49970038' }],
+    itinerary: [
+      { day: 1, sortOrder: 1, time: '18:30', title: '深圳 → 香港西九龙', subtitle: '下班后坐高铁去香港', detail: '预留下班通勤、安检和出入境时间；具体车次与座位以购票记录为准。', dayTheme: '下班出发 · 抵达香港', dayCover: 'assets/photos/hero-bg-2.svg' },
+      { day: 1, sortOrder: 2, time: '20:30', title: '入住香港维港凯悦尚萃酒店', subtitle: '北角 · Hyatt Centric Victoria Harbour Hong Kong', detail: '地址：香港北角城市花园道 1 号。确认号 49970038，标准客房，1 张特大床。', dayTheme: '下班出发 · 抵达香港', dayCover: 'assets/photos/hero-bg-2.svg' },
+      { day: 1, sortOrder: 3, time: '21:15', title: '酒店附近海边散步', subtitle: '北角海滨 · 维港夜色', detail: '办理入住后沿北角海滨走一小段，熟悉酒店到港铁站和第二天出发路线；早点休息。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=North+Point+Promenade+Hong+Kong', dayTheme: '下班出发 · 抵达香港', dayCover: 'assets/photos/hero-bg-2.svg' },
+      { day: 2, sortOrder: 1, time: '07:30', title: '酒店出发 → 香港迪士尼', subtitle: '港铁：北角 → 香港站 → 欣澳 → 迪士尼', detail: '全程约 55–75 分钟，建议提前出发，给安检、入园和热门项目排队留时间。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Hong+Kong+Disneyland', dayTheme: '迪士尼一整天', dayCover: 'assets/photos/hero-bg-3.svg' },
+      { day: 2, sortOrder: 2, time: '09:00', title: '香港迪士尼乐园', subtitle: '入园后按当天演出时间表安排', detail: '优先安排想玩的热门项目，再穿插巡游、城堡拍照和园区餐饮；门票、预约和演出时间以官方 App 当天显示为准。', mapUrl: 'https://www.hongkongdisneyland.com/zh-hk/', dayTheme: '迪士尼一整天', dayCover: 'assets/photos/hero-bg-3.svg' },
+      { day: 2, sortOrder: 3, time: '20:30', title: '迪士尼 → 返回酒店', subtitle: '原路乘港铁回北角', detail: '结束后跟随指引前往迪士尼站，换乘至北角；如果看完夜间演出，返程时间会相应延后。', dayTheme: '迪士尼一整天', dayCover: 'assets/photos/hero-bg-3.svg' },
+      { day: 3, sortOrder: 1, time: '09:30', title: '退房 · 寄存行李', subtitle: '酒店退房 12:00 前', detail: '先在酒店办理退房并寄存行李，轻装去市区；回酒店取行李后再前往西九龙。', dayTheme: '尖沙咀 · 中环 · 维港', dayCover: 'assets/photos/hero-bg-4.svg' },
+      { day: 3, sortOrder: 2, time: '10:30', title: '尖沙咀散步', subtitle: '星光大道 · 维港海旁 · 香港文化中心', detail: '从尖沙咀沿海旁慢慢走，适合拍维港、香港岛天际线和钟楼。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Avenue+of+Stars+Hong+Kong', dayTheme: '尖沙咀 · 中环 · 维港', dayCover: 'assets/photos/hero-bg-4.svg' },
+      { day: 3, sortOrder: 3, time: '13:30', title: '中环城市散步', subtitle: '中环街区 · 石板街 · 半山扶梯', detail: '根据体力选择中环街区、石板街和半山扶梯，不必把景点排得太满。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Central+Hong+Kong', dayTheme: '尖沙咀 · 中环 · 维港', dayCover: 'assets/photos/hero-bg-4.svg' },
+      { day: 3, sortOrder: 4, time: '17:30', title: '维多利亚港收尾', subtitle: '天星小轮 / 海旁看日落', detail: '预留吃饭、取行李和前往西九龙的时间，晚上从香港返回深圳。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Victoria+Harbour+Hong+Kong', dayTheme: '尖沙咀 · 中环 · 维港', dayCover: 'assets/photos/hero-bg-4.svg' },
+      { day: 3, sortOrder: 5, time: '20:00', title: '香港 → 深圳', subtitle: '前往香港西九龙乘高铁回程', detail: '具体车次以购票记录为准；建议至少提前 45–60 分钟到达车站，完成安检和出入境手续。', dayTheme: '尖沙咀 · 中环 · 维港', dayCover: 'assets/photos/hero-bg-4.svg' }
+    ]
   },
   'xiamen': {
     id: 'xiamen', name: '厦门周末旅行', brand: 'Xiamen Trip', dates: '2027.01.08–01.10', icon: '🌊', content: 'ready', theme: 'blue', days: 3,
@@ -2596,6 +2611,7 @@ function renderTripChrome() {
     if (meta) meta.textContent = `可乐 & 金鹿 · ${trip.dates}`;
   }
   document.body.classList.toggle('short-trip', trip.id !== 'korea-2026');
+  document.body.classList.toggle('trip-has-hotels', Boolean(trip.hotels?.length));
   const itineraryTitle = $('#itineraryTitle');
   const itineraryHint = $('#itineraryHint');
   if (itineraryTitle) itineraryTitle.textContent = trip.id === 'korea-2026' ? '9 天行程' : '行程安排';
@@ -3075,6 +3091,8 @@ const PHOTO_MATCHERS = [
   { re: /(机场|落地|出发|回国|免税店|换汇|T-money|行李|返程|航站楼)/, src: 'assets/photos/seoul-airport-editorial.png' }
 ];
 function defaultDayArt(day) {
+  if (currentTripData().id === 'hong-kong') return `assets/photos/hero-bg-${Math.min(4, Math.max(2, day + 1))}.svg`;
+  if (currentTripData().id === 'xiamen') return 'assets/photos/hero-bg-4.svg';
   return DAY_ART[day] || 'assets/photos/palace-watercolor.webp';
 }
 function dayThemeFor(items, day) {
@@ -3314,9 +3332,14 @@ function renderConfiguredTripData() {
     if (data[2]) data[2].textContent = flight.duration;
     if (data[3]) data[3].textContent = flight.aircraft;
   });
+  const hotelCards = document.querySelectorAll('#tab-home .grid.home-hotels .board-card');
+  hotelCards.forEach((card) => { card.style.display = 'none'; });
+  const hotelHeading = document.querySelector('#tab-home .journal-head.home-hotels .journal-note');
+  if (hotelHeading) hotelHeading.textContent = trip.id === 'korea-2026' ? '釜山 · 首尔' : (trip.cities ? Object.values(trip.cities).map((city) => city.name).join(' · ') : '住宿');
   trip.hotels?.forEach((hotel, index) => {
-    const card = document.querySelectorAll('#tab-home .board-card')[index];
+    const card = hotelCards[index];
     if (!card) return;
+    card.style.display = 'flex';
     const text = (selector, value) => { const el = card.querySelector(selector); if (el) el.textContent = value; };
     text('.bc-name', hotel.name);
     text('.bc-en', hotel.en);
@@ -4290,7 +4313,8 @@ function renderItinerary(list) {
   $('#itineraryList').innerHTML = Object.keys(byDay).map((d) => {
     const day = Number(d);
     const items = byDay[d].sort((a, b) => a.sortOrder - b.sortOrder);
-    const date = new Date(Date.UTC(2026, 11, 25 + day));
+    const tripStart = new Date(currentTripData().startAt || '2026-01-01T00:00:00+08:00');
+    const date = new Date(Date.UTC(tripStart.getUTCFullYear(), tripStart.getUTCMonth(), tripStart.getUTCDate() + day - 1));
     const dateStr = date.toLocaleDateString('zh-CN', { timeZone: 'Asia/Seoul', month: 'long', day: 'numeric', weekday: 'short' });
     const today = day === todayIdx;
     const dayLabel = `${date.getUTCMonth() + 1}/${date.getUTCDate()}`;
@@ -4357,11 +4381,12 @@ $('#itineraryList').addEventListener('click', (e) => {
   }
 });
 async function initItinerary() {
-  currentItinerary = normalizeItinerary(cache.get('kr_cache_itinerary') || tripSeed(EMBEDDED_ITINERARY));
+  const embedded = EMBEDDED_ITINERARY;
+  currentItinerary = normalizeItinerary(cache.get('kr_cache_itinerary') || embedded);
   renderItinerary(currentItinerary);
   renderDayChips();
   renderCalendar();
-  const list = await apiGet('/itinerary', 'kr_cache_itinerary', tripSeed(EMBEDDED_ITINERARY));
+  const list = await apiGet('/itinerary', 'kr_cache_itinerary', embedded);
   const fresh = normalizeItinerary(list);
   if (JSON.stringify(fresh) !== JSON.stringify(currentItinerary)) {
     currentItinerary = fresh;
