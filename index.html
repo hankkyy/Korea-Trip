@@ -5390,6 +5390,7 @@ function normalizeFileDoc(doc, idx) {
   const attachmentName = String(doc.attachmentName || fileNameFromPath(attachmentUrl) || title || '文件').trim();
   return {
     id: doc.id || doc._id || `doc-${idx + 1}`,
+    tripId: doc.tripId || currentTripData().id,
     kind: 'file',
     sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
     title: title || attachmentName.replace(/\.[^.]+$/, ''),
@@ -5438,6 +5439,17 @@ function shouldKeepFileDoc(doc) {
   const attachment = String(doc.attachmentUrl || '').trim();
   if (!attachment && !note && DOC_LEGACY_TITLES.has(title)) return false;
   return Boolean(doc.id || title || note || attachment);
+}
+function docBelongsToCurrentTrip(doc) {
+  const tripId = currentTripData().id;
+  if (doc?.tripId) return doc.tripId === tripId;
+  const seed = DOC_SEEDS.find((item) => item.id === doc?.id || item.attachmentName === doc?.attachmentName || item.attachmentUrl === doc?.attachmentUrl);
+  if (seed) return seed.tripId === tripId;
+  const text = `${doc?.title || ''} ${doc?.note || ''} ${doc?.attachmentName || ''} ${doc?.attachmentUrl || ''}`;
+  if (tripId === 'korea-2026') return !/安达仕|Andaz Xiamen|维港凯悦|Hyatt Centric|assets\/docs\/(xiamen|hong-kong)/i.test(text);
+  if (tripId === 'hong-kong') return !/韩亚航空|ASTI|首尔酒店|釜山|携程.*机票|assets\/docs\/visa|安达仕|Andaz Xiamen/i.test(text);
+  if (tripId === 'xiamen') return !/韩亚航空|ASTI|首尔酒店|釜山|携程.*机票|assets\/docs\/visa|维港凯悦|Hyatt Centric/i.test(text);
+  return true;
 }
 function seedDocs(payload) {
   const seeds = DOC_SEEDS.filter((seed) => seed.tripId === currentTripData().id);
@@ -5488,12 +5500,10 @@ function attachImage(doc) {
 async function loadDocs() {
   const cached = Array.isArray(cache.get('kr_docs')) ? cache.get('kr_docs') : [];
   const isKoreaTrip = currentTripData().id === 'korea-2026';
-  const shortTripCache = cached.filter((doc) => {
-    const text = `${doc?.id || ''} ${doc?.title || ''} ${doc?.attachmentName || ''} ${doc?.attachmentUrl || ''}`;
-    return !DOC_SEEDS.some((seed) => seed.id === doc?.id) && !/韩亚航空|ASTI|首尔酒店|釜山 ASTI|携程.*机票|assets\/docs\/visa/.test(text);
-  });
+  const scopedCache = cached.filter(docBelongsToCurrentTrip);
+  const shortTripCache = scopedCache.filter((doc) => !DOC_SEEDS.some((seed) => seed.id === doc?.id));
   const cloudDocs = isKoreaTrip ? await apiGet('/docs', 'kr_docs', cached) : null;
-  const source = isKoreaTrip ? (Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : cached) : shortTripCache;
+  const source = (isKoreaTrip ? (Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : scopedCache) : shortTripCache).filter(docBelongsToCurrentTrip);
   const fileSource = (source || []).filter((d) => !d || d.kind === 'file' || !d.kind);
   const essaySource = (source || []).filter((d) => d && d.kind === 'essay');
   const foodSource = (source || []).filter((d) => d && d.kind === 'food');
