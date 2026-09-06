@@ -3809,8 +3809,10 @@ async function fetchWeather(city) {
     `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m` +
     `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max` +
     `&hourly=temperature_2m,weather_code&timezone=Asia%2FSeoul&forecast_days=10`;
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, controller ? { signal: controller.signal } : undefined);
     if (!res.ok) throw new Error('weather request failed');
     const json = await res.json();
     if (!json?.current || !json?.daily?.time || !json?.hourly?.time) throw new Error('weather response incomplete');
@@ -3819,6 +3821,8 @@ async function fetchWeather(city) {
   } catch {
     if (!wxCache[city]) wxCache[city] = makeWxFallback(city);
     return wxCache[city];
+  } finally {
+    if (timer) clearTimeout(timer);
   }
 }
 function renderWeather() {
@@ -3869,6 +3873,9 @@ function renderWeather() {
 async function initWeather() {
   const cityIds = Object.keys(CITIES);
   renderCityTabs(cityIds);
+  // Show a useful local forecast immediately; overseas API access may be slow on some networks.
+  wxCity = wxAuto ? autoCity() : wxCity;
+  renderWeather();
   await Promise.all(cityIds.map(fetchWeather));
   wxCity = wxAuto ? autoCity() : wxCity;
   document.querySelectorAll('#cityTabs .city-tab').forEach((b) => b.classList.toggle('active', b.dataset.city === wxCity));
