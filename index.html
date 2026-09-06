@@ -2556,6 +2556,11 @@ const TRIP_DATA = {
     heroImages: ['assets/photos/real/hong-kong-hyatt-centric-watercolor.jpg', 'assets/photos/real/hong-kong-disneyland-watercolor.jpg', 'assets/photos/real/hong-kong-victoria-harbour-watercolor.jpg'],
     galleryImages: ['assets/photos/real/hong-kong-hyatt-centric-watercolor.jpg', 'assets/photos/real/hong-kong-disneyland-watercolor.jpg', 'assets/photos/real/hong-kong-victoria-harbour-watercolor.jpg', 'assets/photos/real/hong-kong-tsim-sha-tsui-clock-tower.jpg', 'assets/photos/real/hong-kong-tsim-sha-tsui-ferry-pier.jpg', 'assets/photos/real/hong-kong-disneyland.jpg', 'assets/photos/real/hong-kong-victoria-harbour.jpg'],
     dayArt: { 1: 'assets/photos/real/hong-kong-hyatt-centric-watercolor.jpg', 2: 'assets/photos/real/hong-kong-disneyland-watercolor.jpg', 3: 'assets/photos/real/hong-kong-victoria-harbour-watercolor.jpg' },
+    dayGallery: {
+      1: ['assets/photos/real/hong-kong-hyatt-centric-watercolor.jpg', 'assets/photos/real/hong-kong-victoria-harbour-watercolor.jpg'],
+      2: ['assets/photos/real/hong-kong-disneyland-watercolor.jpg', 'assets/photos/real/hong-kong-disneyland.jpg'],
+      3: ['assets/photos/real/hong-kong-victoria-harbour-watercolor.jpg', 'assets/photos/real/hong-kong-tsim-sha-tsui-clock-tower.jpg', 'assets/photos/real/hong-kong-tsim-sha-tsui-ferry-pier.jpg']
+    },
     hotels: [{ name: '香港维港凯悦尚萃酒店', en: 'Hyatt Centric Victoria Harbour Hong Kong', date: '12/18–12/20 · 2 晚', checkIn: '12/18 15:00', checkOut: '12/20 12:00', room: '标准客房 · 1 张特大床', roomEn: 'Standard Room · 1 King Bed', address: '香港北角城市花园道 1 号', addressEn: '1 North Point Estate Lane, North Point, Hong Kong', photo: 'assets/photos/real/hong-kong-hyatt-centric-watercolor.jpg', note: '已确认 · 确认号 49970038' }],
     itinerary: [
       { day: 1, sortOrder: 1, time: '18:30', title: '深圳 → 香港西九龙', subtitle: '下班后坐高铁去香港', detail: '预留下班通勤、安检和出入境时间；具体车次与座位以购票记录为准。', dayTheme: '下班出发 · 抵达香港', dayCover: 'assets/photos/hero-bg-2.svg' },
@@ -2579,6 +2584,11 @@ const TRIP_DATA = {
     heroImages: ['assets/photos/real/xiamen-andaz-watercolor.jpg', 'assets/photos/real/xiamen-gulangyu-watercolor.jpg', 'assets/photos/real/xiamen-jimei-school-village.jpg'],
     galleryImages: ['assets/photos/real/xiamen-andaz-watercolor.jpg', 'assets/photos/real/xiamen-gulangyu-watercolor.jpg', 'assets/photos/real/xiamen-jimei-school-village.jpg', 'assets/photos/real/xiamen-shapowei.jpg', 'assets/photos/real/xiamen-bashi-market.jpg', 'assets/photos/real/xiamen-andaz-exterior.jpg', 'assets/photos/real/xiamen-gulangyu-view.jpg'],
     dayArt: { 1: 'assets/photos/real/xiamen-andaz-watercolor.jpg', 2: 'assets/photos/real/xiamen-gulangyu-watercolor.jpg', 3: 'assets/photos/real/xiamen-jimei-school-village.jpg' },
+    dayGallery: {
+      1: ['assets/photos/real/xiamen-andaz-watercolor.jpg', 'assets/photos/real/xiamen-andaz-exterior.jpg'],
+      2: ['assets/photos/real/xiamen-gulangyu-watercolor.jpg', 'assets/photos/real/xiamen-gulangyu-view.jpg'],
+      3: ['assets/photos/real/xiamen-jimei-school-village.jpg', 'assets/photos/real/xiamen-shapowei.jpg', 'assets/photos/real/xiamen-bashi-market.jpg']
+    },
     hotels: [{ name: '厦门安达仕酒店', en: 'Andaz Xiamen', date: '1/8–1/10 · 2 晚', checkIn: '1/8 15:00', checkOut: '1/10 12:00', room: '豪华客房 · 1 张特大床', roomEn: 'Deluxe Room · 1 King Bed', address: '中国福建省厦门市思明区湖滨东路 101 号', addressEn: '101 Hubin East Road, Siming District, Xiamen 361004, China', photo: 'assets/photos/real/xiamen-andaz-watercolor.jpg', note: '已确认 · 确认号 27226642' }],
     itinerary: [
       { day: 1, sortOrder: 1, time: '18:30', title: '深圳 → 厦门', subtitle: '下班后坐高铁出发', detail: '预留下班通勤、进站安检和换乘时间；具体车次、到达车站和座位以购票记录为准。', dayTheme: '下班出发 · 入住安达仕', dayCover: 'assets/photos/hero-bg-4.svg' },
@@ -3191,20 +3201,29 @@ function dayThemeFor(items, day) {
   const item = items.find((it) => Number(it.day) === Number(day) && it.dayTheme);
   return item?.dayTheme || DAY_THEMES[day] || '';
 }
+function tripPhotoIsValid(src) {
+  if (!src) return false;
+  const tripId = currentTripData().id;
+  if (tripId === 'hong-kong') return String(src).includes('/hong-kong-');
+  if (tripId === 'xiamen') return String(src).includes('/xiamen-');
+  return true;
+}
 function dayCoverFor(items, day) {
   if (currentTripData().dayArt?.[day]) return currentTripData().dayArt[day];
   const item = items.find((it) => Number(it.day) === Number(day) && it.dayCover);
-  return item?.dayCover || defaultDayArt(day);
+  return tripPhotoIsValid(item?.dayCover) ? item.dayCover : defaultDayArt(day);
 }
 function itemPhotoFor(item, day) {
-  if (item && item.photo) return item.photo;
+  if (item && tripPhotoIsValid(item.photo)) return item.photo;
   const text = [item?.title, item?.subtitle, item?.detail].filter(Boolean).join(' ');
   const match = PHOTO_MATCHERS.find((p) => p.re.test(text));
-  return match?.src || dayCoverFor([item].filter(Boolean), day) || defaultDayArt(day);
+  return match && tripPhotoIsValid(match.src) ? match.src : dayCoverFor([item].filter(Boolean), day) || defaultDayArt(day);
 }
-function dayGalleryFor(items, day) {
+function dayGalleryFor(items, day, useConfigured = true) {
+  const configured = useConfigured && currentTripData().dayGallery?.[day];
+  if (configured?.length) return configured.filter(tripPhotoIsValid).slice(0, 3);
   const ordered = [dayCoverFor(items, day), ...items.map((it) => itemPhotoFor(it, day))];
-  return [...new Set(ordered)].filter(Boolean).slice(0, 3);
+  return [...new Set(ordered)].filter((src) => tripPhotoIsValid(src)).slice(0, 3);
 }
 const EMBEDDED_TODOS = [
   { id: 1, emoji: '✈️', title: '订深圳 ⇄ 首尔机票', note: '12/26 02:25 去 · 1/3 22:10 回' },
@@ -4288,7 +4307,7 @@ function refreshItineraryPreview() {
   const rows = dayGalleryFor([
     { photo: cover },
     ...itineraryEditorRows.map((r) => ({ photo: r.photo, title: r.title, subtitle: r.subtitle, detail: r.detail }))
-  ], day);
+  ], day, false);
   if ($('#itPreview')) $('#itPreview').innerHTML = rows.map((src) => `<div class="dc-gimg"><img src="${esc(src)}" alt=""></div>`).join('');
   document.querySelectorAll('#itEditorList .it-row').forEach((rowEl, idx) => {
     const select = rowEl.querySelector('[data-k="photo"]');
