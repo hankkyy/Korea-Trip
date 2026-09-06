@@ -5704,7 +5704,6 @@ function renderDocs() {
         <button class="doc-btn" data-act="edit">${ic('edit')}编辑</button>
         <button class="doc-btn doc-edit-only" data-act="attach">${ic('attach')}${d.attachmentUrl ? '替换文件' : '添加文件'}</button>
         <button class="doc-btn" data-act="open"${d.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
-        <button class="doc-btn" data-act="download"${d.attachmentUrl ? '' : ' disabled'}>${ic('download')}下载</button>
         <button class="doc-btn danger doc-edit-only" data-act="delete">${ic('x')}删除</button>
       </div>
     </article>`;
