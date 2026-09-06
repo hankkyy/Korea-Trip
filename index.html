@@ -2532,7 +2532,22 @@ const TRIP_DATA = {
     startAt: '2027-01-08T18:30:00+08:00', transferAt: '2027-01-09T09:00:00+08:00', endAt: '2027-01-10T21:00:00+08:00',
     departLabel: '1/8 下班后', defaultCity: 'xiamen',
     cities: { xiamen: { name: '厦门', lat: 24.4798, lon: 118.0894 } }, heroImages: [],
-    itinerary: []
+    hotels: [{ name: '厦门安达仕酒店', en: 'Andaz Xiamen', date: '1/8–1/10 · 2 晚', checkIn: '1/8 15:00', checkOut: '1/10 12:00', room: '豪华客房 · 1 张特大床', roomEn: 'Deluxe Room · 1 King Bed', address: '中国福建省厦门市思明区湖滨东路 101 号', addressEn: '101 Hubin East Road, Siming District, Xiamen 361004, China', note: '已确认 · 确认号 27226642' }],
+    itinerary: [
+      { day: 1, sortOrder: 1, time: '18:30', title: '深圳 → 厦门', subtitle: '下班后坐高铁出发', detail: '预留下班通勤、进站安检和换乘时间；具体车次、到达车站和座位以购票记录为准。', dayTheme: '下班出发 · 入住安达仕', dayCover: 'assets/photos/hero-bg-4.svg' },
+      { day: 1, sortOrder: 2, time: '22:00', title: '入住厦门安达仕酒店', subtitle: 'Andaz Xiamen · 湖滨东路', detail: '地址：厦门市思明区湖滨东路 101 号。确认号 27226642，豪华客房，1 张特大床。', dayTheme: '下班出发 · 入住安达仕', dayCover: 'assets/photos/hero-bg-4.svg' },
+      { day: 1, sortOrder: 3, time: '22:30', title: '酒店周边简单熟悉', subtitle: '湖滨东路 · 早点休息', detail: '办理入住后不再安排远距离活动，确认第二天前往鼓浪屿的交通和船票信息。', dayTheme: '下班出发 · 入住安达仕', dayCover: 'assets/photos/hero-bg-4.svg' },
+      { day: 2, sortOrder: 1, time: '08:00', title: '酒店 → 厦鼓码头', subtitle: '打车前往东渡客运码头', detail: '从酒店前往厦鼓码头建议预留约 20–30 分钟，船票和乘船证件按官方购票信息准备。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Xiamen+International+Cruise+Center', dayTheme: '鼓浪屿一整天', dayCover: 'assets/photos/hero-bg-2.svg' },
+      { day: 2, sortOrder: 2, time: '09:00', title: '鼓浪屿漫游', subtitle: '三丘田码头 · 万国建筑 · 日光岩', detail: '上岛后按体力慢慢走，重点看海边、历史建筑和岛上小巷；提前确认返程船班，避免错过末班船。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Gulangyu+Island+Xiamen', dayTheme: '鼓浪屿一整天', dayCover: 'assets/photos/hero-bg-2.svg' },
+      { day: 2, sortOrder: 3, time: '12:30', title: '鼓浪屿岛上午餐', subtitle: '岛上按当天营业情况选择', detail: '午餐不排具体店，优先选择顺路、评价稳定的店，给返程和下午休息留出余量。', dayTheme: '鼓浪屿一整天', dayCover: 'assets/photos/hero-bg-2.svg' },
+      { day: 2, sortOrder: 4, time: '16:30', title: '返回酒店休息', subtitle: '厦鼓码头 → 安达仕酒店', detail: '周末岛上步行较多，回酒店短暂休息后再决定是否去附近吃晚饭。', dayTheme: '鼓浪屿一整天', dayCover: 'assets/photos/hero-bg-2.svg' },
+      { day: 3, sortOrder: 1, time: '09:00', title: '退房 · 寄存行李', subtitle: '酒店退房 12:00 前', detail: '先办理退房并寄存行李，轻装开始当天市区和集美行程，晚上回酒店取行李。', dayTheme: '集美学村 · 沙坡尾 · 八市', dayCover: 'assets/photos/hero-bg-3.svg' },
+      { day: 3, sortOrder: 2, time: '09:30', title: '集美学村', subtitle: '龙舟池 · 嘉庚建筑', detail: '先逛集美学村和龙舟池，沿水岸看闽南建筑与校园风景；从市区出发建议打车，减少换乘。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Jimei+School+Village+Xiamen', dayTheme: '集美学村 · 沙坡尾 · 八市', dayCover: 'assets/photos/hero-bg-3.svg' },
+      { day: 3, sortOrder: 3, time: '11:30', title: '十里长堤', subtitle: '海边步道 · 看海吹风', detail: '从集美学村顺路前往十里长堤，视天气和体力安排停留时间，不必为了走完全程赶行程。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Shili+Changdi+Xiamen', dayTheme: '集美学村 · 沙坡尾 · 八市', dayCover: 'assets/photos/hero-bg-3.svg' },
+      { day: 3, sortOrder: 4, time: '14:30', title: '沙坡尾', subtitle: '避风坞 · 艺术西区 · 海边街区', detail: '回到岛内后逛沙坡尾，安排咖啡、拍照和海边散步，整体节奏放慢。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Shapowei+Xiamen', dayTheme: '集美学村 · 沙坡尾 · 八市', dayCover: 'assets/photos/hero-bg-3.svg' },
+      { day: 3, sortOrder: 5, time: '17:00', title: '八市晚餐', subtitle: '第八市场 · 厦门本地小吃', detail: '最后一站安排八市，吃完再回酒店取行李；根据返程车次，提前留出前往车站的时间。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Eighth+Market+Xiamen', dayTheme: '集美学村 · 沙坡尾 · 八市', dayCover: 'assets/photos/hero-bg-3.svg' },
+      { day: 3, sortOrder: 6, time: '20:00', title: '厦门 → 深圳', subtitle: '取行李后乘高铁返深', detail: '具体车次和返程车站以购票记录为准；建议提前 45–60 分钟到站，周日晚间不把时间排得过满。', dayTheme: '集美学村 · 沙坡尾 · 八市', dayCover: 'assets/photos/hero-bg-3.svg' }
+    ]
   }
 };
 const TRIP_REGISTRY = Object.values(TRIP_DATA);
@@ -4382,12 +4397,14 @@ $('#itineraryList').addEventListener('click', (e) => {
 });
 async function initItinerary() {
   const embedded = EMBEDDED_ITINERARY;
-  currentItinerary = normalizeItinerary(cache.get('kr_cache_itinerary') || embedded);
+  const cached = cache.get('kr_cache_itinerary');
+  const shouldSeedShortTrip = currentTripData().id !== 'korea-2026' && embedded.length > 0;
+  currentItinerary = normalizeItinerary(shouldSeedShortTrip && (!Array.isArray(cached) || cached.length === 0) ? embedded : (cached || embedded));
   renderItinerary(currentItinerary);
   renderDayChips();
   renderCalendar();
   const list = await apiGet('/itinerary', 'kr_cache_itinerary', embedded);
-  const fresh = normalizeItinerary(list);
+  const fresh = normalizeItinerary(shouldSeedShortTrip && list.length === 0 ? embedded : list);
   if (JSON.stringify(fresh) !== JSON.stringify(currentItinerary)) {
     currentItinerary = fresh;
     renderItinerary(currentItinerary);
