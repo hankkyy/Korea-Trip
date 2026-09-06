@@ -33,7 +33,7 @@ body[data-trip-id="xiamen"]{--green:#6FA7C2;--green-d:#47758D;--green-l:#EAF5FA;
 body.short-trip #tab-home .memo-strip,body.short-trip #tab-home .newyear-board,body.short-trip #tab-home .home-hotels,body.short-trip #tab-home .journal-head,body.short-trip #tab-home .journal-grid,body.short-trip #tab-home #ringRow,body.short-trip #tab-home h2.sec-title[style]{display:none}
 body.short-trip #tab-home .journal-toggle{display:none!important}
 body.short-trip #tab-transport .wrap>*:not(.sec-title),body.short-trip #tab-map .map-board{display:none}
-body.short-trip #tab-map .map-reference-note,body.short-trip #tab-map .map-city-tabs,body.short-trip #tab-map .map-reference-groups,body.short-trip #tab-map .map-reference-grid{display:none}
+body.short-trip:not([data-trip-id="xiamen"]) #tab-map .map-reference-note,body.short-trip:not([data-trip-id="xiamen"]) #tab-map .map-city-tabs,body.short-trip:not([data-trip-id="xiamen"]) #tab-map .map-reference-groups,body.short-trip:not([data-trip-id="xiamen"]) #tab-map .map-reference-grid{display:none}
 body.short-trip #tab-itinerary .cal-card,body.short-trip #tab-itinerary .korea-only-itinerary,body.short-trip #tab-itinerary #dayChips,body.short-trip #tab-guide .block-title,body.short-trip #tab-guide .phrase-panel,body.short-trip #tab-guide .tips-stack{display:none}
 body.short-trip #tab-food .food-group{display:none}
 body.short-trip .short-trip-banner{display:block!important}
@@ -1910,6 +1910,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="map-city-tabs" role="tablist" aria-label="选择地图城市">
       <button class="map-city-tab active" type="button" role="tab" aria-selected="true" data-map-reference-city="busan">釜山</button>
       <button class="map-city-tab" type="button" role="tab" aria-selected="false" data-map-reference-city="seoul">首尔</button>
+      <button class="map-city-tab" type="button" role="tab" aria-selected="false" data-map-reference-city="xiamen">厦门</button>
     </div>
     <div class="map-reference-groups">
       <section class="map-reference-group" data-map-reference-group="busan" aria-labelledby="busanMapTitle">
@@ -1935,6 +1936,27 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           <a class="map-reference-card" href="assets/maps/seoul-full-map-v2.jpg" target="_blank" rel="noopener">
             <img src="assets/maps/seoul-full-map-v2.jpg" alt="韩国首尔旅游全景点地图">
             <span class="map-reference-meta"><strong>首尔 · 旅游全景点地图</strong><span>点击查看原图</span></span>
+          </a>
+        </div>
+      </section>
+      <section class="map-reference-group is-hidden" data-map-reference-group="xiamen" aria-labelledby="xiamenMapTitle" hidden>
+        <h3 class="map-group-title" id="xiamenMapTitle">厦门地图</h3>
+        <div class="map-reference-grid">
+          <a class="map-reference-card" href="assets/maps/xiamen-hand-drawn-guide.jpg" target="_blank" rel="noopener">
+            <img src="assets/maps/xiamen-hand-drawn-guide.jpg" alt="厦门手绘旅行地图">
+            <span class="map-reference-meta"><strong>厦门 · 手绘旅行地图</strong><span>点击查看原图</span></span>
+          </a>
+          <a class="map-reference-card" href="assets/maps/xiamen-gulangyu-day-route.jpg" target="_blank" rel="noopener">
+            <img src="assets/maps/xiamen-gulangyu-day-route.jpg" alt="厦门鼓浪屿一日游路线图">
+            <span class="map-reference-meta"><strong>鼓浪屿 · 一日游路线图</strong><span>点击查看原图</span></span>
+          </a>
+          <a class="map-reference-card" href="assets/maps/xiamen-gulangyu-citywalk.jpg" target="_blank" rel="noopener">
+            <img src="assets/maps/xiamen-gulangyu-citywalk.jpg" alt="厦门鼓浪屿 Citywalk 地图">
+            <span class="map-reference-meta"><strong>鼓浪屿 · Citywalk 路线</strong><span>点击查看原图</span></span>
+          </a>
+          <a class="map-reference-card" href="assets/maps/xiamen-four-blocks.jpg" target="_blank" rel="noopener">
+            <img src="assets/maps/xiamen-four-blocks.jpg" alt="厦门分成四个板块旅游地图">
+            <span class="map-reference-meta"><strong>厦门 · 四大板块路线图</strong><span>点击查看原图</span></span>
           </a>
         </div>
       </section>
@@ -2627,6 +2649,11 @@ function renderTripChrome() {
   }
   document.body.classList.toggle('short-trip', trip.id !== 'korea-2026');
   document.body.classList.toggle('trip-has-hotels', Boolean(trip.hotels?.length));
+  const mapSectionTitle = document.querySelector('#tab-map .sec-title');
+  if (mapSectionTitle) mapSectionTitle.innerHTML = `${ic('pin')}${trip.id === 'xiamen' ? '厦门地图' : '双城地图'}`;
+  document.querySelectorAll('[data-map-reference-city]').forEach((tab) => {
+    tab.style.display = trip.id === 'xiamen' && tab.dataset.mapReferenceCity !== 'xiamen' ? 'none' : '';
+  });
   const itineraryTitle = $('#itineraryTitle');
   const itineraryHint = $('#itineraryHint');
   if (itineraryTitle) itineraryTitle.textContent = trip.id === 'korea-2026' ? '9 天行程' : '行程安排';
@@ -3775,10 +3802,9 @@ function initMapReferenceTabs() {
   const tabs = document.querySelectorAll('[data-map-reference-city]');
   const groups = document.querySelectorAll('[data-map-reference-group]');
   if (!tabs.length || !groups.length) return;
-  tabs.forEach((tab) => tab.addEventListener('click', () => {
-    const city = tab.dataset.mapReferenceCity;
+  const activate = (city) => {
     tabs.forEach((item) => {
-      const active = item === tab;
+      const active = item.dataset.mapReferenceCity === city;
       item.classList.toggle('active', active);
       item.setAttribute('aria-selected', String(active));
     });
@@ -3787,7 +3813,9 @@ function initMapReferenceTabs() {
       group.classList.toggle('is-hidden', !visible);
       group.hidden = !visible;
     });
-  }));
+  };
+  tabs.forEach((tab) => tab.addEventListener('click', () => activate(tab.dataset.mapReferenceCity)));
+  activate(currentTripData().id === 'xiamen' ? 'xiamen' : 'busan');
 }
 const LEGEND_COLOR_NAME = {
   '#A7C8CF': '景点', '#D7A0A5': '打卡点', '#E2B96F': '美食购物', '#94A7B8': '交通', '#87938C': '住宿'
