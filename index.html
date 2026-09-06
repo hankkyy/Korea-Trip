@@ -3431,7 +3431,12 @@ function initImageViewer() {
   $('#imageViewerBack')?.addEventListener('click', closeImageViewer);
   $('#imageViewerClose')?.addEventListener('click', closeImageViewer);
   $('#imageViewerDownload')?.addEventListener('click', downloadImageViewer);
-  $('#imageViewer')?.addEventListener('click', (event) => event.stopPropagation());
+  $('#imageViewer')?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target === event.currentTarget || target.classList?.contains('image-viewer-top') || target.classList?.contains('image-viewer-bottom')) {
+      closeImageViewer();
+    }
+  });
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && $('#imageViewer')?.classList.contains('open')) closeImageViewer();
   });
@@ -5263,7 +5268,12 @@ function initDocViewer() {
   });
   $('#docViewerBack')?.addEventListener('click', closeDocViewer);
   $('#docViewerClose')?.addEventListener('click', closeDocViewer);
-  $('#docViewer')?.addEventListener('click', (event) => event.stopPropagation());
+  $('#docViewer')?.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target === event.currentTarget || target.classList?.contains('doc-viewer-top') || target.classList?.contains('doc-viewer-bottom')) {
+      closeDocViewer();
+    }
+  });
   $('#docViewerDownload')?.addEventListener('click', () => activeDocViewer && openDocAttachment(activeDocViewer, 'download'));
   $('#docViewerNewWindow')?.addEventListener('click', () => activeDocViewer && openDocInNewWindow(activeDocViewer));
   $('#docViewerZoomOut')?.addEventListener('click', () => setDocImageScale(docImageScale - .25));
