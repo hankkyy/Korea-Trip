@@ -3417,6 +3417,9 @@ function initImageViewer() {
     openImageViewer(card.getAttribute('href') || image.currentSrc || image.src, title, image.alt);
   });
   $('#imageViewerBackdrop')?.addEventListener('click', closeImageViewer);
+  $('#imageViewerStage')?.addEventListener('click', (event) => {
+    if (event.target === event.currentTarget) closeImageViewer();
+  });
   $('#imageViewerBack')?.addEventListener('click', closeImageViewer);
   $('#imageViewerDownload')?.addEventListener('click', downloadImageViewer);
   $('#imageViewer')?.addEventListener('click', (event) => event.stopPropagation());
@@ -5246,6 +5249,9 @@ function openDocAttachment(doc, mode = 'open') {
 }
 function initDocViewer() {
   $('#docViewerBackdrop')?.addEventListener('click', closeDocViewer);
+  document.querySelector('#docViewer .doc-viewer-stage')?.addEventListener('click', (event) => {
+    if (event.target === event.currentTarget) closeDocViewer();
+  });
   $('#docViewerBack')?.addEventListener('click', closeDocViewer);
   $('#docViewerClose')?.addEventListener('click', closeDocViewer);
   $('#docViewer')?.addEventListener('click', (event) => event.stopPropagation());
