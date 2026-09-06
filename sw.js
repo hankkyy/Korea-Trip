@@ -1,6 +1,6 @@
 // 在璐上 — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'lu-travel-v24';
+const CACHE = 'lu-travel-v25';
 const PRECACHE = [
   '/',
   '/manifest.json',
@@ -29,6 +29,7 @@ const PRECACHE = [
   '/assets/maps/seoul-area-guide.jpg',
   '/assets/maps/seoul-slow-travel-map.jpg',
   '/assets/maps/seoul-full-map-v2.jpg',
+  '/assets/maps/xiamen-gulangyu-citywalk.jpg',
   '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf',
   '/assets/docs/visa/张子豪的韩亚航空官方行程单.pdf',
   '/assets/docs/visa/携程中文版机票行程单.pdf',

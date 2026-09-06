@@ -69,7 +69,7 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 - 旅程配置和基础模板位于 `TRIP_DATA`；记录逐步迁移到 `tripId` 隔离。
 - Vercel：项目名 `lu-travel`；生产域名仍使用 `https://jinlu.cloud/`。
 - CloudBase 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`。
-- Service Worker 当前版本：`lu-travel-v24`。
+- Service Worker 当前版本：`lu-travel-v25`。
 - 发布前 smoke check：`node scripts/verify.mjs`。
 
 ## 7. 实际完成情况
