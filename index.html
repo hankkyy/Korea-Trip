@@ -32,8 +32,7 @@
 }
 body[data-trip-id="hong-kong"]{--green:#9C8CC4;--green-d:#66558E;--green-l:#F1ECFA;--green-xl:#FAF8FE;--ink:#5D4B86;--line:#E8E0F2;--grad:linear-gradient(120deg,#B8A8D8,#8D7AB8)}
 body[data-trip-id="xiamen"]{--green:#6FA7C2;--green-d:#47758D;--green-l:#EAF5FA;--green-xl:#F7FCFE;--ink:#416D82;--line:#DDECF2;--grad:linear-gradient(120deg,#8EC2D8,#649AB6)}
-body.short-trip #tab-home .memo-strip,body.short-trip #tab-home .newyear-board,body.short-trip #tab-home .home-hotels,body.short-trip #tab-home .journal-head,body.short-trip #tab-home .journal-grid,body.short-trip #tab-home #ringRow,body.short-trip #tab-home h2.sec-title[style]{display:none}
-body.short-trip #tab-home .journal-toggle{display:none!important}
+body.short-trip #tab-home .memo-strip,body.short-trip #tab-home .newyear-board,body.short-trip #tab-home .home-hotels,body.short-trip #tab-home #ringRow,body.short-trip #tab-home h2.sec-title[style]{display:none}
 body.short-trip #tab-transport .wrap>*:not(.sec-title),body.short-trip #tab-map .map-board{display:none}
 body.short-trip:not([data-trip-id="xiamen"]):not([data-trip-id="hong-kong"]) #tab-map .map-reference-note,body.short-trip:not([data-trip-id="xiamen"]):not([data-trip-id="hong-kong"]) #tab-map .map-city-tabs,body.short-trip:not([data-trip-id="xiamen"]):not([data-trip-id="hong-kong"]) #tab-map .map-reference-groups,body.short-trip:not([data-trip-id="xiamen"]):not([data-trip-id="hong-kong"]) #tab-map .map-reference-grid{display:none}
 body.short-trip #tab-itinerary .cal-card,body.short-trip #tab-itinerary .korea-only-itinerary,body.short-trip #tab-itinerary #dayChips,body.short-trip #tab-guide .block-title,body.short-trip #tab-guide .phrase-panel,body.short-trip #tab-guide .tips-stack{display:none}
@@ -1796,7 +1795,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
 
     <div class="journal-head">
-      <h2 class="sec-title"><i class="ti" data-ic="map"></i>韩国旅行画册</h2>
+      <h2 class="sec-title" id="journalTitle"><i class="ti" data-ic="map"></i>韩国旅行画册</h2>
       <span class="journal-note" id="journalNote">首尔 · 釜山 · 14 张手帐图片</span>
     </div>
     <div class="journal-grid is-collapsed" id="journalGrid">
@@ -3649,11 +3648,11 @@ function updateJournalMeta() {
   const count = grid.querySelectorAll('.journal-card').length;
   const visibleCount = Math.min(4, count);
   const expanded = toggle.getAttribute('aria-expanded') === 'true';
-  if (document.body.classList.contains('short-trip')) {
-    toggle.style.display = 'none';
-    return;
-  }
-  if (note) note.textContent = `${currentTripData().cities ? Object.values(currentTripData().cities).map((city) => city.name).join(' · ') : ''} · ${count} 张手帐图片`;
+  const trip = currentTripData();
+  const cityNames = trip.cities ? Object.values(trip.cities).map((city) => city.name).join(' · ') : '';
+  const title = $('#journalTitle');
+  if (title) title.lastChild.textContent = `${cityNames || '旅行'}旅行画册`;
+  if (note) note.textContent = `${cityNames} · ${count} 张手帐图片`;
   toggle.style.display = count > visibleCount ? 'flex' : 'none';
   toggle.setAttribute('aria-expanded', String(expanded));
   const label = toggle.querySelector('span');
