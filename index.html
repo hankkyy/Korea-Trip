@@ -2721,9 +2721,9 @@ function tripPhase() {
 }
 function dayIndex() { return Math.min(currentTripData().days || 9, Math.max(1, Math.floor((Date.now() - D1) / 86400000) + 1)); }
 const cache = {
-  key(k) { return String(k).startsWith('kr_') && k !== 'kr_active_trip_id' ? `${k}::${activeTrip().id}` : k; },
-  get(k) { try { return JSON.parse(localStorage.getItem(this.key(k))); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(this.key(k), JSON.stringify(v)); return true; } catch { return false; } }
+  key(k, tripId = activeTrip().id) { return String(k).startsWith('kr_') && k !== 'kr_active_trip_id' ? `${k}::${tripId}` : k; },
+  get(k, tripId) { try { return JSON.parse(localStorage.getItem(this.key(k, tripId))); } catch { return null; } },
+  set(k, v, tripId) { try { localStorage.setItem(this.key(k, tripId), JSON.stringify(v)); return true; } catch { return false; } }
 };
 function activeTrip() {
   const id = storedTripId();
@@ -2955,19 +2955,20 @@ function initTripPicker() {
   }
 }
 async function apiGet(path, cacheKey, fallback) {
+  const tripId = activeTrip().id;
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
   try {
     const joiner = path.includes('?') ? '&' : '?';
-    const res = await fetch(`${API_BASE}${path}${joiner}tripId=${encodeURIComponent(activeTrip().id)}`, controller ? { signal: controller.signal } : undefined);
+    const res = await fetch(`${API_BASE}${path}${joiner}tripId=${encodeURIComponent(tripId)}`, controller ? { signal: controller.signal } : undefined);
     const json = await res.json();
     if (json.success && Array.isArray(json.data)) {
-      cache.set(cacheKey, json.data);
+      cache.set(cacheKey, json.data, tripId);
       return json.data;
     }
     throw new Error(json.error || 'bad response');
   } catch (err) {
-    const cached = cache.get(cacheKey);
+    const cached = cache.get(cacheKey, tripId);
     if (cached) return cached;
     return fallback || [];
   } finally {
@@ -3004,7 +3005,7 @@ async function apiPost(path, body) {
     const res = await fetch(API_BASE + path, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...(body || {}), tripId: activeTrip().id }),
+      body: JSON.stringify({ ...(body || {}), tripId }),
       ...(controller ? { signal: controller.signal } : {})
     });
     const json = await res.json();
@@ -5449,8 +5450,8 @@ function shouldKeepFileDoc(doc) {
   if (!attachment && !note && DOC_LEGACY_TITLES.has(title)) return false;
   return Boolean(doc.id || title || note || attachment);
 }
-function docBelongsToCurrentTrip(doc) {
-  const tripId = currentTripData().id;
+function docBelongsToCurrentTrip(doc, requestedTripId = currentTripData().id) {
+  const tripId = requestedTripId;
   if (doc?.tripId) return doc.tripId === tripId;
   const seed = DOC_SEEDS.find((item) => item.id === doc?.id || item.attachmentName === doc?.attachmentName || item.attachmentUrl === doc?.attachmentUrl);
   if (seed) return seed.tripId === tripId;
@@ -5502,12 +5503,15 @@ function attachImage(doc) {
   input.click();
 }
 async function loadDocs() {
-  const cached = Array.isArray(cache.get('kr_docs')) ? cache.get('kr_docs') : [];
-  const isKoreaTrip = currentTripData().id === 'korea-2026';
-  const scopedCache = cached.filter(docBelongsToCurrentTrip);
+  const tripId = currentTripData().id;
+  const cachedValue = cache.get('kr_docs', tripId);
+  const cached = Array.isArray(cachedValue) ? cachedValue : [];
+  const isKoreaTrip = tripId === 'korea-2026';
+  const scopedCache = cached.filter((doc) => docBelongsToCurrentTrip(doc, tripId));
   const shortTripCache = scopedCache.filter((doc) => !DOC_SEEDS.some((seed) => seed.id === doc?.id));
-  const cloudDocs = isKoreaTrip ? await apiGet('/docs', 'kr_docs', cached) : null;
-  const source = (isKoreaTrip ? (Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : scopedCache) : shortTripCache).filter(docBelongsToCurrentTrip);
+  const cloudDocs = isKoreaTrip ? await apiGet('/docs', 'kr_docs', scopedCache) : null;
+  if (currentTripData().id !== tripId) return;
+  const source = (isKoreaTrip ? (Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : scopedCache) : shortTripCache).filter((doc) => docBelongsToCurrentTrip(doc, tripId));
   const fileSource = (source || []).filter((d) => !d || d.kind === 'file' || !d.kind);
   const essaySource = (source || []).filter((d) => d && d.kind === 'essay');
   const foodSource = (source || []).filter((d) => d && d.kind === 'food');
@@ -5526,7 +5530,7 @@ async function loadDocs() {
   }
 }
 async function persistDocs() {
-  const payload = [...docsData.map(normalizeFileDoc).filter(shouldKeepFileDoc)];
+  const payload = [...docsData.filter((doc) => docBelongsToCurrentTrip(doc)).map(normalizeFileDoc).filter(shouldKeepFileDoc)];
   const legacyRemain = essayRecords.some((item) => !item.passSalt || !item.passHash);
   if (essayLegacyMeta && legacyRemain) payload.push(essayLegacyMeta);
   payload.push(...essayRecords);
@@ -5671,8 +5675,9 @@ function initDocViewer() {
   });
 }
 function renderDocs() {
+  const visibleDocs = docsData.filter((doc) => docBelongsToCurrentTrip(doc));
   const count = $('#docsCount');
-  if (count) count.textContent = String(docsData.length);
+  if (count) count.textContent = String(visibleDocs.length);
   const renderOne = (d) => {
     const isImage = isImagePath(d.attachmentUrl, d.attachmentMime);
     const attachmentLabel = d.attachmentUrl
@@ -5706,8 +5711,8 @@ function renderDocs() {
       </div>
     </article>`;
   };
-  const docsHTML = docsData.length
-    ? docsData.map(renderOne).join('')
+  const docsHTML = visibleDocs.length
+    ? visibleDocs.map(renderOne).join('')
     : `<div class="card doc-empty">还没有文件，点击左侧“新增文件”开始整理。</div>`;
   $('#docsGrid').innerHTML = docsHTML;
 }
