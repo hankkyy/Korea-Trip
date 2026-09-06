@@ -403,9 +403,12 @@ body.viewer-open{overflow:hidden}
 .doc-viewer-back,.doc-viewer-close,.doc-viewer-action{min-height:42px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.11);color:#fff;font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 13px}
 .doc-viewer-back:active,.doc-viewer-close:active,.doc-viewer-action:active{background:rgba(255,255,255,.22);transform:scale(.98)}
 .doc-viewer-close{width:42px;padding:0;font-size:22px;font-weight:500}
-.doc-viewer-stage{min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px 0;touch-action:pan-y pinch-zoom}
+.doc-viewer-stage{min-height:0;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:12px 0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom}
 #docViewerImg{display:none;max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;background:#F6F1E5;box-shadow:0 14px 45px rgba(0,0,0,.28)}
 #docViewerFrame{display:none;width:100%;height:100%;min-height:0;border:0;border-radius:12px;background:#fff;box-shadow:0 14px 45px rgba(0,0,0,.24)}
+.doc-viewer-zoom{display:none;align-items:center;justify-content:center;gap:6px;margin-top:8px}
+.doc-viewer-zoom button{min-width:34px;height:34px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.11);color:#fff;font-size:15px;font-weight:800}
+.doc-viewer-zoom span{min-width:48px;text-align:center;color:rgba(255,255,255,.78);font-size:11px;font-weight:800}
 .doc-viewer-empty{display:none;padding:24px;text-align:center;border:1px dashed rgba(255,255,255,.3);border-radius:16px;color:rgba(255,255,255,.78);font-size:13px;line-height:1.6}
 .doc-viewer-bottom{padding:7px 0 0;text-align:center}
 .doc-viewer-title{font-size:14px;font-weight:900;line-height:1.35;overflow-wrap:anywhere}
@@ -2229,6 +2232,12 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   <div class="doc-viewer-bottom">
     <div class="doc-viewer-title" id="docViewerTitle">文件预览</div>
     <div class="doc-viewer-hint">文件已保留在当前旅程 · 点击返回可回到网页</div>
+    <div class="doc-viewer-zoom" id="docViewerZoom" aria-label="图片缩放">
+      <button type="button" id="docViewerZoomOut" aria-label="缩小">−</button>
+      <span id="docViewerZoomValue">100%</span>
+      <button type="button" id="docViewerZoomIn" aria-label="放大">＋</button>
+      <button type="button" id="docViewerZoomReset">还原</button>
+    </div>
     <div class="doc-viewer-actions">
       <button class="doc-viewer-action" id="docViewerDownload" type="button">下载文件</button>
       <button class="doc-viewer-action" id="docViewerNewWindow" type="button">新窗口打开</button>
@@ -5141,6 +5150,18 @@ function fileCardIcon(doc) {
   return ic(guessDocIcon(doc));
 }
 let activeDocViewer = null;
+let docImageScale = 1;
+function setDocImageScale(value) {
+  docImageScale = Math.min(3, Math.max(1, value));
+  const image = $('#docViewerImg');
+  const label = $('#docViewerZoomValue');
+  if (image) {
+    image.style.maxWidth = 'none';
+    image.style.maxHeight = 'none';
+    image.style.width = `${docImageScale * 100}%`;
+  }
+  if (label) label.textContent = `${Math.round(docImageScale * 100)}%`;
+}
 function docAttachmentUrl(doc) {
   let rawUrl = String(doc?.attachmentUrl || '');
   if (/^(file:|\/Users\/|\/private\/)/.test(rawUrl)) {
@@ -5166,7 +5187,12 @@ function openDocViewer(doc) {
   image.style.display = isImage ? 'block' : 'none';
   frame.style.display = !isImage && isPreviewable ? 'block' : 'none';
   empty.style.display = isPreviewable ? 'none' : 'block';
+  $('#docViewerZoom').style.display = isImage ? 'flex' : 'none';
+  docImageScale = 1;
   image.removeAttribute('src');
+  image.style.width = '';
+  image.style.maxWidth = '';
+  image.style.maxHeight = '';
   frame.removeAttribute('src');
   if (isImage) {
     image.src = url;
@@ -5185,6 +5211,10 @@ function closeDocViewer() {
   $('#docViewer')?.classList.remove('open');
   document.body.classList.remove('doc-viewer-open');
   $('#docViewerImg')?.removeAttribute('src');
+  $('#docViewerImg')?.style.removeProperty('width');
+  $('#docViewerImg')?.style.removeProperty('max-width');
+  $('#docViewerImg')?.style.removeProperty('max-height');
+  $('#docViewerZoom')?.style.removeProperty('display');
   $('#docViewerFrame')?.removeAttribute('src');
   activeDocViewer = null;
 }
@@ -5221,6 +5251,9 @@ function initDocViewer() {
   $('#docViewer')?.addEventListener('click', (event) => event.stopPropagation());
   $('#docViewerDownload')?.addEventListener('click', () => activeDocViewer && openDocAttachment(activeDocViewer, 'download'));
   $('#docViewerNewWindow')?.addEventListener('click', () => activeDocViewer && openDocInNewWindow(activeDocViewer));
+  $('#docViewerZoomOut')?.addEventListener('click', () => setDocImageScale(docImageScale - .25));
+  $('#docViewerZoomIn')?.addEventListener('click', () => setDocImageScale(docImageScale + .25));
+  $('#docViewerZoomReset')?.addEventListener('click', () => setDocImageScale(1));
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && $('#docViewer')?.classList.contains('open')) closeDocViewer();
   });
