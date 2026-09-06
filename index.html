@@ -975,6 +975,8 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 .exp-desc{font-weight:700;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .exp-meta{font-size:11.5px;color:var(--muted);margin-top:1px}
 .exp-cat{display:inline-block;font-size:10px;font-weight:800;color:var(--cc);background:var(--cc-l);border-radius:7px;padding:2px 7px;margin-left:6px}
+.exp-visibility{display:inline-block;margin-left:6px;font-size:10px;font-weight:800;color:#8A6B42;background:#FFF5DF;border-radius:7px;padding:2px 7px}
+.field-hint{margin-top:5px;color:var(--muted);font-size:11px;line-height:1.45}
 .exp-amt{text-align:right;flex-shrink:0}
 .exp-amt .ea-main{font-weight:900;font-size:14.5px}
 .exp-amt .ea-sub{font-size:11px;color:var(--muted)}
@@ -2436,6 +2438,13 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <button class="active" data-v="perPerson">人均（每人该金额）</button>
       <button data-v="total">总额（两人平摊）</button>
     </div>
+  </div>
+  <div class="field"><label>可见范围</label>
+    <div class="seg" id="expVisibilitySeg">
+      <button class="active" data-v="private">隐藏 · 仅自己可见</button>
+      <button data-v="public">公开 · 双方可见并统计</button>
+    </div>
+    <div class="field-hint">隐藏支出只保存在当前设备，不会上传或出现在对方的统计中。</div>
   </div>
   <div class="field"><label>谁付的</label>
     <div class="seg" id="expPayerSeg">
@@ -5121,7 +5130,8 @@ let expenses = [], expensesTimer = null;
 const CATS = ['交通', '住宿', '餐饮', '门票', '购物', '其他'];
 const CAT_COLORS = { '交通': '#A7C8CF', '住宿': '#78AA8B', '餐饮': '#E2B96F', '门票': '#D7A0A5', '购物': '#A9B5BE', '其他': '#B9C4BD' };
 const CAT_ICONS = { '交通': 'train', '住宿': 'hotel', '餐饮': 'food', '门票': 'star', '购物': 'gift', '其他': 'receipt' };
-const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' };
+const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' }, visibilitySeg = { v: 'private' };
+function isPrivateExpense(it) { return it.visibility === 'private'; }
 function itemPerPersonRMB(it) {
   const rate = FX_RATES[it.currency] || 1;
   if (it.splitType === 'perPerson') return it.amount * rate;
@@ -5213,9 +5223,10 @@ function renderExpenses() {
     const isTotal = it.splitType === 'total';
     const cat = expCatOf(it);
     const col = CAT_COLORS[cat];
+    const visibilityLabel = isPrivateExpense(it) ? '<span class="exp-visibility">仅自己可见</span>' : '';
     return `<div class="exp-row" data-id="${esc(it._id || it.clientId)}">
       <span class="exp-ic" style="--eic-c:${col};--eic:${col}1f">${ic(CAT_ICONS[cat])}</span>
-      <span class="exp-main"><span class="exp-desc">${esc(it.desc)}<span class="exp-cat" style="--cc:${col};--cc-l:${col}1f">${cat}</span></span>
+      <span class="exp-main"><span class="exp-desc">${esc(it.desc)}<span class="exp-cat" style="--cc:${col};--cc-l:${col}1f">${cat}</span>${visibilityLabel}</span>
         <div class="exp-meta">${isTotal ? '总额平摊' : '人均'} · ${esc((it.people && it.people[0]) || '')}${it.people && it.people.length > 1 ? ' & ' + esc(it.people[1]) : ''} · ¥${itemPerPersonRMB(it).toFixed(0)}/人</div></span>
       <span class="exp-amt"><span class="ea-main">¥${(it.amount * (FX_RATES[it.currency] || 1)).toFixed(0)}</span>
         <div class="ea-sub">${curSym}${Number(it.amount).toLocaleString()}${isTotal ? ' 总额' : '/人'}</div></span>
@@ -5231,11 +5242,12 @@ window.delExpense = async function (id) {
   await persistExpenses();
 };
 async function persistExpenses() {
-  const payload = expenses.map((e) => ({
+  const payload = expenses.filter((e) => !isPrivateExpense(e)).map((e) => ({
     desc: e.desc, amount: e.amount, currency: e.currency,
-    splitType: e.splitType, people: e.people, category: e.category || '其他', createdAt: e.createdAt
+    splitType: e.splitType, people: e.people, category: e.category || '其他', visibility: 'public', createdAt: e.createdAt
   }));
   cache.set('kr_cache_expenses', expenses);
+  cache.set('kr_private_expenses', expenses.filter(isPrivateExpense));
   try {
     const res = await fetch(`${API_BASE}/expenses?tripId=${encodeURIComponent(activeTrip().id)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: payload, tripId: activeTrip().id }) });
     if (!res.ok) throw new Error('expense save failed');
@@ -5245,12 +5257,14 @@ async function initExpenses() {
   restoreFxRates();
   setFxRateHint();
   const list = await apiGet('/expenses', 'kr_cache_expenses', []);
-  expenses = list;
+  const privateItems = cache.get('kr_private_expenses') || [];
+  expenses = [...privateItems, ...list.filter((item) => !isPrivateExpense(item))];
   renderExpenses();
   refreshFxRates();
   expensesTimer = setInterval(async () => {
     const fresh = await apiGet('/expenses', 'kr_cache_expenses', []);
-    expenses = fresh; renderExpenses();
+    const privateItems = cache.get('kr_private_expenses') || [];
+    expenses = [...privateItems, ...fresh.filter((item) => !isPrivateExpense(item))]; renderExpenses();
   }, 15000);
 }
 function bindSeg(id, seg) {
@@ -5273,12 +5287,13 @@ function initSheet() {
   bindSeg('expSplitSeg', splitSeg);
   bindSeg('expPayerSeg', payerSeg);
   bindSeg('expCatSeg', catSeg);
+  bindSeg('expVisibilitySeg', visibilitySeg);
   $('#expSave').addEventListener('click', async () => {
     const desc = $('#expDesc').value.trim();
     const amount = parseFloat($('#expAmount').value);
     if (!desc || !amount || amount <= 0) { alert('请填写描述和金额'); return; }
     const people = payerSeg.v === '共同' ? ['可乐', '金鹿'] : [payerSeg.v];
-    expenses.unshift({ clientId: 'c' + Date.now(), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, createdAt: Date.now() });
+    expenses.unshift({ clientId: 'c' + Date.now(), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, createdAt: Date.now() });
     $('#expDesc').value = ''; $('#expAmount').value = '';
     renderExpenses();
     closeSheet();
