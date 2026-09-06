@@ -5467,12 +5467,7 @@ function syncSeedDocs(payload) {
     const seed = seedMap.get(doc.id);
     if (!seed) return doc;
     const merged = { ...doc };
-    ['title', 'attachmentUrl', 'attachmentName', 'attachmentType'].forEach((key) => {
-      if (merged[key] !== seed[key]) {
-        merged[key] = seed[key];
-        changed = true;
-      }
-    });
+    // Seeds provide defaults only; never overwrite a user's edited title or attachment.
     if (!merged.sourceKey) merged.sourceKey = seed.id;
     return merged;
   });
