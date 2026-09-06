@@ -2205,6 +2205,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <div id="imageViewer" role="dialog" aria-modal="true" aria-labelledby="imageViewerTitle">
   <div class="image-viewer-top">
     <button class="image-viewer-back" id="imageViewerBack" type="button"><span aria-hidden="true">‹</span>返回画册</button>
+    <button class="image-viewer-close" id="imageViewerClose" type="button" aria-label="关闭原图">×</button>
   </div>
   <div class="image-viewer-stage" id="imageViewerStage">
     <img id="imageViewerImg" alt="">
@@ -3421,6 +3422,7 @@ function initImageViewer() {
     if (event.target === event.currentTarget) closeImageViewer();
   });
   $('#imageViewerBack')?.addEventListener('click', closeImageViewer);
+  $('#imageViewerClose')?.addEventListener('click', closeImageViewer);
   $('#imageViewerDownload')?.addEventListener('click', downloadImageViewer);
   $('#imageViewer')?.addEventListener('click', (event) => event.stopPropagation());
   document.addEventListener('keydown', (event) => {
