@@ -86,6 +86,15 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   .city-tab:not(.active):hover,.trip-option:not(.active):hover,.phrase-toggle:hover{background:var(--green-xl);border-color:rgba(118,169,138,.32)}
   a:hover{color:var(--green-d)}
   .map-reference-card:hover img{transform:scale(1.018)}
+  .bn-btn:not(.active):hover{background:rgba(232,244,234,.72);color:var(--green-d);transform:translateY(-2px)}
+  .list-add-btn:hover,.docs-primary:hover,.food-add-btn:hover,.dc-tool:hover,.tl-edit:hover,.map-actions a:hover,.map-actions button:hover{transform:translateY(-2px);box-shadow:0 7px 16px rgba(63,96,78,.10)}
+  .list-add-btn,.docs-primary,.food-add-btn,.dc-tool,.tl-edit,.map-actions a,.map-actions button,.bn-btn{transition:transform .2s ease,background .2s ease,box-shadow .2s ease,color .2s ease}
+  .l-row:hover,.tl-row:hover{background:rgba(239,247,241,.62)}
+  .day-card:hover .dc-arrow{color:var(--green-d);transform:translateX(2px)}
+  .day-card.open:hover .dc-arrow{transform:translateX(2px) rotate(180deg)}
+  .wx-day:hover,.wx-hour:hover{border-color:rgba(118,169,138,.42);box-shadow:0 8px 18px rgba(63,96,78,.09)}
+  .qcard:hover .qc-ic{transform:rotate(-4deg) scale(1.06)}
+  .flight-card:hover::after{transform:translate(-8px,8px) scale(1.08);transition:transform .45s ease}
 }
 
 /* ============ 通用图标 ============ */
@@ -335,6 +344,7 @@ body.essay-sheet-open #bnav{opacity:0;pointer-events:none;transform:translate(-5
   display:flex;flex-direction:column;
 }
 .journal-card img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:top;filter:saturate(.82) contrast(.93) brightness(1.03);background:#F4F0E8}
+.journal-card img{transition:transform .38s ease}
 .journal-card.wide{grid-column:1 / -1}
 .journal-card.wide img{aspect-ratio:16/10}
 .journal-card.reference{grid-column:span 2;text-decoration:none}
@@ -1309,6 +1319,8 @@ body.doc-viewer-open{overflow:hidden}
 @media(hover:none), (pointer:coarse){
   .card{transition:box-shadow .18s ease,border-color .18s ease}
   .l-row{transition:background-color .18s ease,opacity .18s ease}
+  .list-add-btn:active,.docs-primary:active,.food-add-btn:active,.dc-tool:active,.tl-edit:active,.map-actions a:active,.map-actions button:active,.bn-btn:active{transform:scale(.98)}
+  .l-row:active,.tl-row:active{background:rgba(239,247,241,.62)}
 }
 .docs-page-sub{margin:-8px 0 18px;color:var(--muted);font-size:13px;line-height:1.6}
 .docs-layout{display:grid;gap:16px;align-items:start}
