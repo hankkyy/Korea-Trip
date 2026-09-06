@@ -421,6 +421,8 @@ body.viewer-open{overflow:hidden}
 .doc-viewer-close{width:42px;padding:0;font-size:22px;font-weight:500}
 .doc-viewer-stage{min-height:0;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:12px 0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom}
 #docViewerImg{display:none;max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;background:#F6F1E5;box-shadow:0 14px 45px rgba(0,0,0,.28)}
+#docViewerPages{display:none;width:100%;flex-direction:column;align-items:center;gap:12px;flex:none}
+#docViewerPages .doc-preview-page{display:block;width:100%;height:auto;flex:none;border-radius:10px;background:#F6F1E5;box-shadow:0 14px 45px rgba(0,0,0,.28)}
 #docViewerFrame{display:none;width:100%;height:100%;min-height:0;border:0;border-radius:12px;background:#fff;box-shadow:0 14px 45px rgba(0,0,0,.24)}
 .doc-viewer-zoom{display:none;align-items:center;justify-content:center;gap:6px;margin-top:8px}
 .doc-viewer-zoom button{min-width:34px;height:34px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.11);color:#fff;font-size:15px;font-weight:800}
@@ -436,6 +438,7 @@ body.viewer-open{overflow:hidden}
   .doc-viewer-stage{padding:18px 0}
   #docViewerFrame{max-width:1180px}
   #docViewerImg{max-width:min(1180px,100%);max-height:calc(100dvh - 190px);border-radius:14px}
+  #docViewerPages{max-width:1180px}
 }
 @media(prefers-reduced-motion:reduce){#docViewerBackdrop,#docViewer{transition:none}}
 body.doc-viewer-open{overflow:hidden}
@@ -2307,6 +2310,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   </div>
   <div class="doc-viewer-stage">
     <img id="docViewerImg" alt="">
+    <div id="docViewerPages" aria-label="文件页面预览"></div>
     <iframe id="docViewerFrame" title="文件预览"></iframe>
     <div class="doc-viewer-empty" id="docViewerEmpty">这个文件类型暂不支持站内预览，可以选择下载或在新窗口打开。</div>
   </div>
@@ -5321,6 +5325,21 @@ function guessAttachmentType(file) {
   if (/\.(txt|md)$/i.test(name)) return 'text';
   return file?.type || 'file';
 }
+const DOC_PREVIEW_MAP = {
+  'hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf': ['assets/docs/previews/hong-kong-hyatt-1.jpg', 'assets/docs/previews/hong-kong-hyatt-2.jpg'],
+  'andaz-xiamen-hotel-confirmation.pdf': ['assets/docs/previews/xiamen-andaz-1.jpg', 'assets/docs/previews/xiamen-andaz-2.jpg'],
+  '仇金鹿的韩亚航空官方行程单.pdf': ['assets/docs/previews/korea-flight-lu-1.jpg', 'assets/docs/previews/korea-flight-lu-2.jpg', 'assets/docs/previews/korea-flight-lu-3.jpg'],
+  '张子豪的韩亚航空官方行程单.pdf': ['assets/docs/previews/korea-flight-zhao-1.jpg', 'assets/docs/previews/korea-flight-zhao-2.jpg', 'assets/docs/previews/korea-flight-zhao-3.jpg'],
+  '携程中文版机票行程单.pdf': ['assets/docs/previews/trip-cn-1.jpg', 'assets/docs/previews/trip-cn-2.jpg', 'assets/docs/previews/trip-cn-3.jpg', 'assets/docs/previews/trip-cn-4.jpg'],
+  '携程英文版机票行程单.pdf': ['assets/docs/previews/trip-en-1.jpg', 'assets/docs/previews/trip-en-2.jpg', 'assets/docs/previews/trip-en-3.jpg', 'assets/docs/previews/trip-en-4.jpg'],
+  '釜山ASTI酒店中文版入住凭证.pdf': ['assets/docs/previews/busan-hotel-cn-1.jpg', 'assets/docs/previews/busan-hotel-cn-2.jpg'],
+  '釜山ASTI酒店英文版入住凭证.pdf': ['assets/docs/previews/busan-hotel-en-1.jpg'],
+  '首尔酒店确认单.pdf': ['assets/docs/previews/seoul-hotel-1.jpg', 'assets/docs/previews/seoul-hotel-2.jpg']
+};
+function docPreviewImages(doc) {
+  const name = fileNameFromPath(doc?.attachmentUrl || doc?.attachmentName || '');
+  return Array.isArray(doc?.previewImages) && doc.previewImages.length ? doc.previewImages : (DOC_PREVIEW_MAP[name] || []);
+}
 function normalizeFileDoc(doc, idx) {
   const title = String(doc.title || '').trim();
   const attachmentUrl = doc.attachmentUrl || doc.fileUrl || doc.photo || '';
@@ -5469,11 +5488,16 @@ let docImageScale = 1;
 function setDocImageScale(value) {
   docImageScale = Math.min(3, Math.max(1, value));
   const image = $('#docViewerImg');
+  const pages = $('#docViewerPages');
   const label = $('#docViewerZoomValue');
   if (image) {
     image.style.maxWidth = 'none';
     image.style.maxHeight = 'none';
     image.style.width = `${docImageScale * 100}%`;
+  }
+  if (pages) {
+    pages.style.width = `${docImageScale * 100}%`;
+    pages.querySelectorAll('.doc-preview-page').forEach((page) => { page.style.width = '100%'; });
   }
   if (label) label.textContent = `${Math.round(docImageScale * 100)}%`;
 }
@@ -5492,27 +5516,33 @@ function openDocViewer(doc) {
   const viewer = $('#docViewer');
   const backdrop = $('#docViewerBackdrop');
   const image = $('#docViewerImg');
+  const pages = $('#docViewerPages');
   const frame = $('#docViewerFrame');
   const empty = $('#docViewerEmpty');
   if (!viewer || !backdrop || !image || !frame || !empty) return;
   activeDocViewer = doc;
   const url = docAttachmentUrl(doc);
   const isImage = isImagePath(doc.attachmentUrl, doc.attachmentMime);
+  const previewImages = docPreviewImages(doc);
+  const hasPagePreview = !isImage && previewImages.length > 0;
   const isPreviewable = isImage || doc.attachmentType === 'pdf' || doc.attachmentType === 'text' || doc.attachmentType === 'txt';
   image.style.display = isImage ? 'block' : 'none';
-  frame.style.display = !isImage && isPreviewable ? 'block' : 'none';
+  pages.style.display = hasPagePreview ? 'flex' : 'none';
+  pages.innerHTML = hasPagePreview ? previewImages.map((src, index) => `<img class="doc-preview-page" src="${esc(src)}" alt="${esc(doc.title || '文件')} 第${index + 1}页">`).join('') : '';
+  frame.style.display = !isImage && !hasPagePreview && isPreviewable ? 'block' : 'none';
   empty.style.display = isPreviewable ? 'none' : 'block';
-  $('#docViewerZoom').style.display = isImage ? 'flex' : 'none';
+  $('#docViewerZoom').style.display = isImage || hasPagePreview ? 'flex' : 'none';
   docImageScale = 1;
   image.removeAttribute('src');
   image.style.width = '';
   image.style.maxWidth = '';
   image.style.maxHeight = '';
   frame.removeAttribute('src');
+  pages.style.width = '';
   if (isImage) {
     image.src = url;
     image.alt = doc.title || doc.attachmentName || '文件附件';
-  } else if (isPreviewable) {
+  } else if (!hasPagePreview && isPreviewable) {
     frame.src = url;
   }
   $('#docViewerTitle').textContent = doc.title || doc.attachmentName || '文件预览';
@@ -5526,6 +5556,7 @@ function closeDocViewer() {
   $('#docViewer')?.classList.remove('open');
   document.body.classList.remove('doc-viewer-open');
   $('#docViewerImg')?.removeAttribute('src');
+  $('#docViewerPages') && ($('#docViewerPages').innerHTML = '', $('#docViewerPages').style.display = 'none', $('#docViewerPages').style.width = '');
   $('#docViewerImg')?.style.removeProperty('width');
   $('#docViewerImg')?.style.removeProperty('max-width');
   $('#docViewerImg')?.style.removeProperty('max-height');
