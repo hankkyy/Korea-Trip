@@ -145,8 +145,8 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 
 /* ============ 底部悬浮导航 ============ */
 #bnav{
-  position:fixed;left:50%;transform:translateX(-50%);
-  bottom:calc(10px + env(safe-area-inset-bottom));z-index:950;
+  position:fixed;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translate3d(-50%,0,0);
+  z-index:950;will-change:transform;
   display:flex;gap:2px;max-width:calc(100vw - 20px);overflow-x:auto;padding:6px;
   background:rgba(255,254,251,.94);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
@@ -155,8 +155,8 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   scrollbar-width:none;
 }
 #bnav::-webkit-scrollbar{display:none}
-body.keyboard-open #bnav{opacity:0;pointer-events:none;transform:translate(-50%,120%)}
-body.essay-sheet-open #bnav{opacity:0;pointer-events:none;transform:translate(-50%,120%)}
+body.keyboard-open #bnav{opacity:0;pointer-events:none;transform:translate3d(-50%,120%,0)}
+body.essay-sheet-open #bnav{opacity:0;pointer-events:none;transform:translate3d(-50%,120%,0)}
 .bn-btn{
   flex-shrink:0;min-width:48px;height:52px;padding:0 8px;border-radius:999px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -3479,14 +3479,23 @@ function showTab(name, pushHash = true) {
   }
   if (pushHash && location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
 }
-document.querySelectorAll('.bn-btn').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
+document.querySelectorAll('.bn-btn').forEach((b) => b.addEventListener('click', () => {
+  // A nav tap should dismiss stale mobile keyboard state before switching panels.
+  if (document.activeElement?.matches('input,select,textarea')) document.activeElement.blur();
+  document.body.classList.remove('keyboard-open');
+  showTab(b.dataset.tab);
+}));
 document.querySelectorAll('.qcard-btn').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.goto)));
 $('#ctaPlan').addEventListener('click', () => showTab('itinerary'));
 window.addEventListener('hashchange', () => showTab(location.hash.slice(1) || 'home', false));
 function initKeyboardViewport() {
   const viewport = window.visualViewport;
   if (!viewport) return;
-  const update = () => document.body.classList.toggle('keyboard-open', window.innerHeight - viewport.height > 120);
+  const update = () => {
+    const focusedEditable = document.activeElement?.matches('input,select,textarea');
+    const keyboardLikelyOpen = focusedEditable && window.innerHeight - viewport.height > 120;
+    document.body.classList.toggle('keyboard-open', keyboardLikelyOpen);
+  };
   viewport.addEventListener('resize', update, { passive: true });
   viewport.addEventListener('scroll', update, { passive: true });
   document.addEventListener('focusin', (event) => {
