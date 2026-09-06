@@ -818,6 +818,15 @@ body.doc-viewer-open{overflow:hidden}
 .info-card b{color:var(--green-d)}
 .info-card .ic-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .info-card .ic-links a{font-size:12.5px;font-weight:700;padding:8px 13px;border-radius:10px;background:var(--green-l);color:var(--green-d);min-height:38px;display:inline-flex;align-items:center}
+.trip-transport-extra{display:none}
+body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
+.trip-transport-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.trip-transport-card{padding:15px;border-radius:16px;background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(246,251,247,.96));border:1px solid var(--line);box-shadow:0 8px 24px rgba(63,96,78,.07)}
+.trip-transport-card h3{margin:0 0 7px;color:var(--green-d);font-size:15px;line-height:1.35}
+.trip-transport-card p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.65}
+.trip-transport-card strong{color:var(--text)}
+.trip-transport-card a{color:var(--green-d);font-weight:800;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:600px){.trip-transport-grid{grid-template-columns:1fr}.trip-transport-card{padding:14px}}
 .tip-line{padding:14px 16px;display:flex;gap:10px;align-items:flex-start}
 .tip-line .ti{flex-shrink:0;margin-top:2px}
 .tip-line .tl-txt{font-size:13px;line-height:1.55}
@@ -2004,6 +2013,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   <div class="wrap">
     <h2 class="sec-title"><i class="ti" data-ic="bus"></i>交通</h2>
     <div class="short-trip-banner" aria-live="polite"></div>
+    <div id="tripTransportExtra" class="trip-transport-extra"></div>
 
     <div class="block-title"><i class="ti" data-ic="plane"></i>航班 <span class="st-sub">韩亚航空 · Asiana Airlines</span></div>
     <div class="grid g2">
@@ -3508,7 +3518,40 @@ function updateHeader() {
   const pct = Math.min(100, Math.max(0, (Date.now() - D1) / (TRIP_END - D1) * 100));
   $('#heroProgress').style.width = pct + '%';
 }
+function renderTripTransport() {
+  const panel = $('#tripTransportExtra');
+  if (!panel) return;
+  const setMarkup = (markup) => {
+    panel.innerHTML = markup;
+    panel.querySelectorAll('[data-ic]').forEach((el) => { el.innerHTML = ic(el.dataset.ic); });
+  };
+  const trip = currentTripData();
+  if (trip.id === 'hong-kong') {
+    setMarkup(`
+      <div class="block-title"><i class="ti" data-ic="train"></i>香港交通 · 高铁 + 港铁 + 巴士</div>
+      <div class="trip-transport-grid">
+        <article class="card trip-transport-card"><h3>深圳 ⇄ 香港西九龙 · 广深港高铁</h3><p>周五下班后从深圳出发，抵达<strong>香港西九龙站</strong>后办理出入境，再转港铁前往北角酒店。回程同样从西九龙乘高铁回深圳，车次和证件以购票记录为准。</p></article>
+        <article class="card trip-transport-card"><h3>酒店 ⇄ 迪士尼 · 首选港铁</h3><p>从北角站乘港岛线到<strong>香港站</strong>，步行换乘东涌线至<strong>欣澳站</strong>，再转<strong>迪士尼线</strong>到迪士尼站。全程约 55–75 分钟，九点左右出发更从容。</p></article>
+        <article class="card trip-transport-card"><h3>迪士尼公共巴士 · 备选</h3><p>乐园官方列出的路线包括 <strong>R42（大围）</strong>、<strong>R33（屯门）</strong>、<strong>36（东涌）</strong> 和 <strong>R8（青屿干线转车站）</strong>。这些不是北角直达快线，班次会调整，闭园回酒店仍以港铁最稳妥；可查看<a href="https://www.hongkongdisneyland.com/zh-cn/guest-services/bus/" target="_blank" rel="noopener">官方巴士信息</a>。</p></article>
+        <article class="card trip-transport-card"><h3>尖沙咀 · 中环 · 维港</h3><p>酒店出发可乘港铁到<strong>尖沙咀站</strong>拍照，再经天星小轮到<strong>中环</strong>；也可乘港岛线到中环站，按体力选择步行、叮叮车或短途打车。港铁线路以<a href="https://www.mtr.com.hk/en/customer/services/system_map.html" target="_blank" rel="noopener">官方路线图</a>为准。</p></article>
+      </div>`);
+    return;
+  }
+  if (trip.id === 'xiamen') {
+    setMarkup(`
+      <div class="block-title"><i class="ti" data-ic="train"></i>厦门交通 · 高铁 + 打车 + 地铁</div>
+      <div class="trip-transport-grid">
+        <article class="card trip-transport-card"><h3>深圳 ⇄ 厦门 · 高铁</h3><p>周五下班后乘高铁前往厦门，具体到达<strong>厦门站或厦门北站</strong>以车票为准；到站后直接打车去厦门安达仕酒店，晚间不建议再折返换乘。</p></article>
+        <article class="card trip-transport-card"><h3>岛内短途 · 打车为主</h3><p>厦门岛内景点集中，酒店到沙坡尾、南普陀、八市等常规路程大多可按<strong>约 30 分钟内</strong>规划；高峰、天气和节假日会延长，2 人同行优先用打车节省换乘。</p></article>
+        <article class="card trip-transport-card"><h3>鼓浪屿 · 码头往返</h3><p>从安达仕酒店打车前往<strong>厦鼓码头</strong>，乘船上岛；返岛后直接打车去集美学村，不回酒店折返。船票、码头和班次以官方购票页面为准。</p></article>
+        <article class="card trip-transport-card"><h3>地铁 1 号线 · 集美方向</h3><p>需要避开拥堵时，可优先考虑<strong>地铁 1 号线</strong>：厦门站、镇海路、厦门大学、集美学村等站点适合串联市区和集美；十里长堤附近再根据时间选择打车衔接。</p></article>
+      </div>`);
+    return;
+  }
+  panel.innerHTML = '';
+}
 function renderConfiguredTripData() {
+  renderTripTransport();
   const trip = currentTripData();
   if (trip.content !== 'ready') return;
   trip.flights?.forEach((flight, index) => {
