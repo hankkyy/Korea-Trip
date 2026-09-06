@@ -1304,8 +1304,9 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
   display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:var(--green-l);color:var(--green-d);
   font-size:11px;font-weight:900;letter-spacing:.02em
 }
-.essay-sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.essay-meta-grid{grid-template-columns:1.05fr .85fr 1.3fr}
+.essay-sheet-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.essay-sheet-grid > *{min-width:0}
+.essay-meta-grid{grid-template-columns:minmax(0,1.05fr) minmax(0,.85fr) minmax(0,1.3fr)}
 .essay-photo-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
 .essay-photo-item{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
 .essay-photo-item img{width:100%;height:100%;aspect-ratio:1/1;object-fit:cover}
@@ -1332,7 +1333,7 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 #essaySheet h3{font-size:20px;margin:0 44px 4px 0;color:var(--ink);letter-spacing:-.03em}
 #essaySheet .sheet-sub{font-size:11.5px;color:var(--muted);line-height:1.5;margin:0 0 13px;padding-right:8px}
 #essaySheet textarea,#essaySheet input,#essaySheet select{
-  width:100%;border-radius:13px;border:1.5px solid var(--line);padding:10px 12px;background:var(--bg);
+  width:100%;max-width:100%;min-width:0;border-radius:13px;border:1.5px solid var(--line);padding:10px 12px;background:var(--bg);
   outline:none;resize:vertical;line-height:1.55
 }
 #essaySheet input,#essaySheet select{height:46px;min-height:46px}
@@ -1341,7 +1342,7 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 #essaySheet .field label{margin-bottom:5px}
 #essaySheet .essay-password-note{font-size:11px;line-height:1.4;margin-top:5px}
 #essaySheet textarea:focus,#essaySheet input:focus,#essaySheet select:focus{border-color:var(--green)}
-@media(max-width:430px){
+@media(max-width:560px){
   .food-memory-grid{grid-template-columns:1fr}
   .essay-note{padding:14px}
   .essay-private-row input{min-width:0;width:100%}
@@ -5924,9 +5925,7 @@ function renderEssay() {
               <div class="essay-card-title">${esc(open ? (payload.title || '未命名随笔') : essayOpenLabel(item, idx))}</div>
               <div class="essay-card-sub">${esc(open ? (ESSAY_KIND_LABELS[payload.category] || '随笔') : (ESSAY_KIND_LABELS[item.category] || '私密随笔'))}</div>
             </div>
-            ${open
-              ? `<button class="essay-mini-btn" data-act="edit">${ic('edit')}编辑</button>`
-              : `<button class="essay-mini-btn" data-act="unlock">${ic('lock')}打开</button>`}
+            ${open ? `<button class="essay-mini-btn" data-act="edit">${ic('edit')}编辑</button>` : ''}
           </div>
           ${open
             ? `
