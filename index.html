@@ -77,6 +77,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .panel{display:none;padding:16px 0 8px}
 .panel.active{display:block;animation:rise .35s ease}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes heroDrift{from{transform:scale(1.02)}to{transform:scale(1.07)}}
 .day-card,.journal-card,.flight-card,.doc-card,.food-card,.tip-card,.expense-row{content-visibility:auto;contain-intrinsic-size:280px}
 h2.sec-title{font-size:clamp(19px,4.4vw,24px);font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:14px;letter-spacing:0;color:var(--ink)}
 h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-left:auto}
@@ -91,6 +93,8 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   .city-tab:not(.active):hover,.trip-option:not(.active):hover,.phrase-toggle:hover{background:var(--green-xl);border-color:rgba(118,169,138,.32)}
   a:hover{color:var(--green-d)}
   .map-reference-card:hover img{transform:scale(1.018)}
+  .journal-card:hover img{transform:scale(1.035)}
+  .journal-card:hover .journal-copy{background:linear-gradient(135deg,var(--card),var(--green-xl))}
   .bn-btn:not(.active):hover{background:rgba(232,244,234,.72);color:var(--green-d);transform:translateY(-2px)}
   .list-add-btn:hover,.docs-primary:hover,.food-add-btn:hover,.dc-tool:hover,.tl-edit:hover,.map-actions a:hover,.map-actions button:hover{transform:translateY(-2px);box-shadow:0 7px 16px rgba(63,96,78,.10)}
   .list-add-btn,.docs-primary,.food-add-btn,.dc-tool,.tl-edit,.map-actions a,.map-actions button,.bn-btn{transition:transform .2s ease,background .2s ease,box-shadow .2s ease,color .2s ease}
@@ -99,6 +103,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   .day-card.open:hover .dc-arrow{transform:translateX(2px) rotate(180deg)}
   .wx-day:hover,.wx-hour:hover{border-color:rgba(118,169,138,.42);box-shadow:0 8px 18px rgba(63,96,78,.09)}
   .qcard:hover .qc-ic{transform:rotate(-4deg) scale(1.06)}
+  .qcard:hover{border-color:rgba(118,169,138,.36)}
   .flight-card:hover::after{transform:translate(-8px,8px) scale(1.08);transition:transform .45s ease}
 }
 
@@ -164,6 +169,7 @@ body.essay-sheet-open #bnav{opacity:0;pointer-events:none;transform:translate3d(
 }
 .bn-btn span{line-height:1}
 .bn-btn.active{background:#E8F4EA;color:var(--green-d);box-shadow:inset 0 0 0 1px rgba(118,169,138,.16)}
+.bn-btn.active .ti{animation:softFloat 2.8s ease-in-out infinite}
 @media(min-width:720px){.bn-btn{min-width:60px;padding:0 12px}}
 
 /* ============ 首页 Hero ============ */
@@ -176,7 +182,7 @@ body.essay-sheet-open #bnav{opacity:0;pointer-events:none;transform:translate3d(
   position:absolute;inset:0;background-size:cover;background-position:center bottom;
   transition:opacity 1.6s ease;opacity:0;
 }
-.hero-layer.active{opacity:1}
+.hero-layer.active{opacity:1;animation:heroDrift 9s ease-out both}
 .hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,254,248,.88) 0%,rgba(255,254,248,.24) 48%,rgba(255,254,248,.76) 100%)}
 .hero-inner{
   position:relative;z-index:2;color:var(--ink);text-align:left;padding:34px 24px 42px;
