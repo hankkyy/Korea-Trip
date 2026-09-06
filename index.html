@@ -72,6 +72,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .panel{display:none;padding:16px 0 8px}
 .panel.active{display:block;animation:rise .35s ease}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.day-card,.journal-card,.flight-card,.doc-card,.food-card,.tip-card,.expense-row{content-visibility:auto;contain-intrinsic-size:280px}
 h2.sec-title{font-size:clamp(19px,4.4vw,24px);font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:14px;letter-spacing:0;color:var(--ink)}
 h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-left:auto}
 .block-title{font-size:15px;font-weight:800;margin:24px 0 10px;display:flex;align-items:center;gap:8px;color:var(--text)}
@@ -1302,8 +1303,12 @@ body.doc-viewer-open{overflow:hidden}
   #appHeader,#bnav,.hero-badge,.hero-countdown{backdrop-filter:none;-webkit-backdrop-filter:none}
   #appHeader{background:rgba(250,249,242,.98)}
   #bnav{background:rgba(255,254,251,.98)}
-  .panel.active{animation-duration:.22s}
+  .panel.active{animation:none}
   .reveal{transition-duration:.28s}
+}
+@media(hover:none), (pointer:coarse){
+  .card{transition:box-shadow .18s ease,border-color .18s ease}
+  .l-row{transition:background-color .18s ease,opacity .18s ease}
 }
 .docs-page-sub{margin:-8px 0 18px;color:var(--muted);font-size:13px;line-height:1.6}
 .docs-layout{display:grid;gap:16px;align-items:start}
@@ -3235,7 +3240,8 @@ function showTab(name, pushHash = true) {
   const act = nav?.querySelector('.bn-btn.active');
   if (nav && act) {
     const left = act.offsetLeft - (nav.clientWidth - act.offsetWidth) / 2;
-    nav.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+    const behavior = window.matchMedia('(pointer: coarse)').matches ? 'auto' : 'smooth';
+    nav.scrollTo({ left: Math.max(0, left), behavior });
   }
   if (pushHash && location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
 }
@@ -4438,11 +4444,17 @@ function setupListDrag(container, kind) {
     state.frame = requestAnimationFrame(renderDragFrame);
     const { row, placeholder } = state;
     const over = document.elementFromPoint(state.lastX, state.lastY)?.closest?.('.l-row');
-    if (over && over !== row && container.contains(over)) {
-      const rect = over.getBoundingClientRect();
-      const before = state.lastY < rect.top + rect.height / 2;
-      if (before && placeholder !== over.previousElementSibling) container.insertBefore(placeholder, over);
-      if (!before && placeholder !== over.nextElementSibling) container.insertBefore(placeholder, over.nextSibling);
+    const overId = over?.dataset.id || '';
+    const needsHitCheck = overId !== state.lastOverId || Math.abs(state.lastY - state.lastHitY) > 8;
+    if (needsHitCheck) {
+      state.lastOverId = overId;
+      state.lastHitY = state.lastY;
+      if (over && over !== row && container.contains(over)) {
+        const rect = over.getBoundingClientRect();
+        const before = state.lastY < rect.top + rect.height / 2;
+        if (before && placeholder !== over.previousElementSibling) container.insertBefore(placeholder, over);
+        if (!before && placeholder !== over.nextElementSibling) container.insertBefore(placeholder, over.nextSibling);
+      }
     }
     row.style.transform = `translate3d(${state.lastX - state.offsetX}px, ${state.lastY - state.offsetY}px, 0) scale(1.015)`;
     const edge = 92;
@@ -4502,7 +4514,7 @@ function setupListDrag(container, kind) {
     if (!handle || e.button > 0 || listDragState) return;
     const row = handle.closest('.l-row');
     if (!row) return;
-    const state = { kind, row, handle, pointerId: e.pointerId, startX: e.clientX, startY: e.clientY, lastX: e.clientX, lastY: e.clientY, moved: false, active: false, timer: 0, frame: 0 };
+    const state = { kind, row, handle, pointerId: e.pointerId, startX: e.clientX, startY: e.clientY, lastX: e.clientX, lastY: e.clientY, lastOverId: '', lastHitY: e.clientY, moved: false, active: false, timer: 0, frame: 0 };
     listDragState = state;
     state.timer = setTimeout(() => startDrag(state), LONG_PRESS_MS);
     handle.setPointerCapture?.(e.pointerId);
