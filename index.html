@@ -5456,10 +5456,13 @@ function docBelongsToCurrentTrip(doc, requestedTripId = currentTripData().id) {
 }
 function seedDocs(payload) {
   const seeds = DOC_SEEDS.filter((seed) => seed.tripId === currentTripData().id);
-  const ids = new Set(payload.map((d) => d.id || d.sourceKey || d.attachmentUrl || d.title));
+  const keys = new Set(payload.flatMap((doc) => [doc.id, doc.sourceKey, doc.attachmentUrl, doc.attachmentName].filter(Boolean)));
   seeds.forEach((seed) => {
-    const key = seed.id;
-    if (!ids.has(key)) payload.push({ ...seed });
+    const seedKeys = [seed.id, seed.attachmentUrl, seed.attachmentName];
+    if (!seedKeys.some((key) => keys.has(key))) {
+      payload.push({ ...seed });
+      seedKeys.forEach((key) => keys.add(key));
+    }
   });
   return payload;
 }
@@ -5501,7 +5504,9 @@ async function loadDocs() {
   const cached = Array.isArray(cachedValue) ? cachedValue : [];
   const isKoreaTrip = tripId === 'korea-2026';
   const scopedCache = cached.filter((doc) => docBelongsToCurrentTrip(doc, tripId));
-  const shortTripCache = scopedCache.filter((doc) => !DOC_SEEDS.some((seed) => seed.id === doc?.id));
+  // Keep edited seed records for short trips; filtering them here used to restore
+  // the original hotel confirmation after every refresh.
+  const shortTripCache = scopedCache;
   const cloudDocs = isKoreaTrip ? await apiGet('/docs', 'kr_docs', scopedCache) : null;
   if (currentTripData().id !== tripId) return;
   const source = (isKoreaTrip ? (Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : scopedCache) : shortTripCache).filter((doc) => docBelongsToCurrentTrip(doc, tripId));
@@ -5777,6 +5782,15 @@ async function initDocs() {
     const act = btn.dataset.act;
     if (act === 'edit') {
       const editing = card.classList.toggle('editing');
+      if (!editing) {
+        const titleInput = card.querySelector('.doc-title-input');
+        const noteInput = card.querySelector('.doc-note-input');
+        if (titleInput) doc.title = titleInput.value.trim();
+        if (noteInput) doc.note = noteInput.value.trim();
+        renderDocs();
+        await persistDocs();
+        return;
+      }
       btn.innerHTML = `${ic(editing ? 'check' : 'edit')}${editing ? '完成' : '编辑'}`;
       return;
     } else if (act === 'attach') {
