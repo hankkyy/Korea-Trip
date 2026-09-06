@@ -7,7 +7,7 @@ const root = new URL('../', import.meta.url);
 const html = await readFile(new URL('index.html', root), 'utf8');
 const sw = await readFile(new URL('sw.js', root), 'utf8');
 const baseUrls = [
-  'https://korea-vercel.vercel.app/',
+  'https://lu-travel.vercel.app/',
   'https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/',
   'https://jinlu.cloud/'
 ];

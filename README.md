@@ -53,7 +53,7 @@
 ## 本地检查
 
 ```bash
-cd /Users/hankzhang/Desktop/korea-vercel
+cd /Users/hankzhang/Desktop/lu-travel
 node scripts/verify.mjs
 node --check cloudfunctions/korea-api/index.js
 git diff --check

@@ -1,6 +1,6 @@
 # Agent 交接说明
 
-你正在接手 `/Users/hankzhang/Desktop/korea-vercel` 的「在璐上」多旅行管理 App。先阅读：
+你正在接手 `/Users/hankzhang/Desktop/lu-travel` 的「在璐上」多旅行管理 App。先阅读：
 
 1. `PROJECT_CONTEXT.md`：所有要求、决策、旅行资料和接手上下文的唯一事实源。
 2. `README.md`：项目入口和技术结构。
@@ -36,9 +36,9 @@
 - 后端是 CloudBase HTTP 云函数 `cloudfunctions/korea-api/index.js`。
 - CloudBase 环境：`hanoi-d4gj8vd2q1e7a3dc0`，函数：`korea-api`，集合以 `kr_` 开头。
 - API 地址：`https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
-- Vercel 生产地址：`https://korea-vercel.vercel.app/`。
+- Vercel 项目：`lu-travel`；生产地址：`https://jinlu.cloud/`。
 - 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`；前端或图片修改后必须额外部署 CloudBase 静态包。
-- Service Worker 当前缓存版本：`korea-trip-v23`；改资源后必须递增并验证旧缓存清理。
+- Service Worker 当前缓存版本：`lu-travel-v24`；改资源后必须递增并验证旧缓存清理。
 - 多数数据接口当前是整批替换，存在双设备覆盖风险，这是已知架构缺口。
 - 旅程选择层已有 JSON 导出/导入恢复；后端已提供 `/records/:collection/:docId` 单条更新/删除和 `baseUpdatedAt` 冲突检测，但前端尚未全部接入。
 - 旅程设置已支持成员、时区、城市、封面和从已有旅程复制框架；不要把这误写成完整资料 CRUD。
@@ -50,7 +50,7 @@
 ## 每次修改后必须检查
 
 ```bash
-cd /Users/hankzhang/Desktop/korea-vercel
+cd /Users/hankzhang/Desktop/lu-travel
 node scripts/verify.mjs
 node --check cloudfunctions/korea-api/index.js
 git diff --check

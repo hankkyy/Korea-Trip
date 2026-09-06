@@ -63,13 +63,13 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 
 ## 6. 当前项目事实
 
-- 前端：单文件 `/Users/hankzhang/Desktop/korea-vercel/index.html`，原生 HTML/CSS/JavaScript。
+- 前端：单文件 `/Users/hankzhang/Desktop/lu-travel/index.html`，原生 HTML/CSS/JavaScript。
 - 后端：`cloudfunctions/korea-api/index.js`，CloudBase HTTP 云函数。
 - 数据集合：`kr_itinerary`、`kr_todos`、`kr_checklist`、`kr_bucketlist`、`kr_expenses`、`kr_docs`。
 - 旅程配置和基础模板位于 `TRIP_DATA`；记录逐步迁移到 `tripId` 隔离。
-- Vercel：`https://korea-vercel.vercel.app/`。
+- Vercel：项目名 `lu-travel`；生产域名仍使用 `https://jinlu.cloud/`。
 - CloudBase 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`。
-- Service Worker 当前版本：`korea-trip-v23`。
+- Service Worker 当前版本：`lu-travel-v24`。
 - 发布前 smoke check：`node scripts/verify.mjs`。
 
 ## 7. 实际完成情况
