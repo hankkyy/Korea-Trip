@@ -1034,6 +1034,17 @@ body.doc-viewer-open{overflow:hidden}
 #itSheet.single-item .it-row{padding:0;border:0;box-shadow:none;background:transparent}
 #itSheet.single-item #itAddRow{display:none}
 #itSheet.single-item .it-row-remove{display:none}
+#itSheet.cover-only .it-sheet-sub,#itSheet.cover-only .it-sheet-meta{display:none}
+#itSheet.cover-only .it-topbar{grid-template-columns:1fr;margin-bottom:12px}
+#itSheet.cover-only .it-topbar .field:first-child,#itSheet.cover-only .it-topbar .field:nth-child(2),
+#itSheet.cover-only .it-items-head,#itSheet.cover-only #itEditorList{display:none}
+#itSheet.cover-only .it-preview-field{display:block}
+#itSheet.cover-only .it-actions{margin-top:12px}
+.it-cover-controls{display:flex;align-items:center;gap:6px}
+.it-cover-controls select{min-width:0;flex:1}
+.it-cover-clear{height:46px;flex:0 0 auto;padding:0 11px;border-radius:14px;border:1px solid rgba(221,176,179,.4);background:rgba(221,176,179,.08);color:#A66E72;font-size:11px;font-weight:850;white-space:nowrap}
+.it-cover-clear:hover{background:rgba(221,176,179,.16)}
+.it-cover-clear:active{transform:scale(.97)}
 #itSheet h3{font-size:19px;margin:0 44px 0 0;color:var(--ink);letter-spacing:-.02em}
 .it-sheet-head{
   display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:9px;margin-bottom:10px;
@@ -2422,7 +2433,10 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
     <div class="field">
       <label>当天主图</label>
-      <select id="itCoverSelect"></select>
+      <div class="it-cover-controls">
+        <select id="itCoverSelect"></select>
+        <button id="itCoverClear" class="it-cover-clear" type="button">删除照片</button>
+      </div>
     </div>
   </div>
   <div class="field it-preview-field">
@@ -4246,6 +4260,8 @@ let itineraryEditorDay = 1;
 let itineraryEditorRows = [];
 let itineraryEditorSingleIndex = null;
 let itineraryEditorTargetId = '';
+let itineraryEditorNewRow = false;
+let itineraryEditorCoverOnly = false;
 function updateItineraryEditorMeta() {
   const list = currentItinerary || EMBEDDED_ITINERARY;
   const day = Number($('#itDaySelect')?.value || itineraryEditorDay);
@@ -4285,17 +4301,19 @@ function renderItineraryEditorRows() {
     </div>`;
   }).join('');
 }
-function openItSheet(day, focusRow = null) {
+function openItSheet(day, focusRow = null, newRow = false) {
   itineraryEditorDay = Number(day || 1);
   const list = currentItinerary || EMBEDDED_ITINERARY;
   const dayRows = dayItems(list, itineraryEditorDay);
   itineraryEditorSingleIndex = focusRow != null ? Number(focusRow) : null;
+  itineraryEditorNewRow = Boolean(newRow);
+  itineraryEditorCoverOnly = false;
   const target = itineraryEditorSingleIndex != null ? dayRows[itineraryEditorSingleIndex] : null;
   itineraryEditorTargetId = target?.id || '';
-  itineraryEditorRows = target ? [{ ...target }] : dayRows.map((item) => ({ ...item }));
+  itineraryEditorRows = target ? [{ ...target }] : newRow ? [] : dayRows.map((item) => ({ ...item }));
   if (!itineraryEditorRows.length) itineraryEditorRows = [{ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' }];
   const days = Array.from({ length: 9 }, (_, i) => i + 1);
-  $('#itSheetTitle').textContent = target ? '编辑这一条行程' : `整理 D${itineraryEditorDay} 行程`;
+  $('#itSheetTitle').textContent = target ? '编辑这一条行程' : newRow ? `新增 D${itineraryEditorDay} 行程` : `整理 D${itineraryEditorDay} 行程`;
   $('#itDaySelect').innerHTML = days.map((d) => `<option value="${d}"${d === itineraryEditorDay ? ' selected' : ''}>D${d} · ${dayThemeFor(list, d) || ''}</option>`).join('');
   $('#itThemeInput').value = dayThemeFor(list, itineraryEditorDay);
   $('#itCoverSelect').innerHTML = PHOTO_LIBRARY.map((opt) => `<option value="${esc(opt.value)}"${opt.value === dayCoverFor(list, itineraryEditorDay) ? ' selected' : ''}>${esc(opt.label)}</option>`).join('');
@@ -4303,6 +4321,7 @@ function openItSheet(day, focusRow = null) {
   updateItineraryEditorMeta();
   refreshItineraryPreview();
   $('#itSheet').classList.toggle('single-item', Boolean(target));
+  $('#itSheet').classList.remove('cover-only');
   $('#itBackdrop').classList.add('open');
   $('#itSheet').classList.add('open');
   if (focusRow != null) {
@@ -4312,12 +4331,22 @@ function openItSheet(day, focusRow = null) {
     }, 60);
   }
 }
+function openItCoverSheet(day) {
+  openItSheet(day);
+  itineraryEditorCoverOnly = true;
+  $('#itSheet').classList.add('cover-only');
+  $('#itSheetTitle').textContent = '修改照片';
+  setTimeout(() => $('#itCoverSelect').focus(), 60);
+}
 function closeItSheet() {
   $('#itBackdrop').classList.remove('open');
   $('#itSheet').classList.remove('open');
   $('#itSheet').classList.remove('single-item');
+  $('#itSheet').classList.remove('cover-only');
   itineraryEditorSingleIndex = null;
   itineraryEditorTargetId = '';
+  itineraryEditorNewRow = false;
+  itineraryEditorCoverOnly = false;
 }
 function addItineraryRow() {
   itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
@@ -4341,6 +4370,12 @@ async function commitItinerarySheet() {
   const rows = [...document.querySelectorAll('#itEditorList .it-row')].map(readItineraryRow)
     .filter((row) => row.time || row.title || row.subtitle || row.detail || row.mapUrl || row.photo);
   const source = currentItinerary || EMBEDDED_ITINERARY;
+  if (itineraryEditorCoverOnly) {
+    const next = source.map((item) => Number(item.day) === day ? { ...item, dayCover } : item);
+    await saveItinerary(next);
+    closeItSheet();
+    return;
+  }
   if (itineraryEditorSingleIndex != null) {
     const target = source.find((item) => itineraryEditorTargetId ? item.id === itineraryEditorTargetId : Number(item.day) === day && Number(item.sortOrder) === itineraryEditorSingleIndex + 1);
     if (!target || !rows[0]) return;
@@ -4353,6 +4388,20 @@ async function commitItinerarySheet() {
       dayCover: target.dayCover || dayCoverFor(source, day) || defaultDayArt(day)
     } : item);
     await saveItinerary(next);
+    closeItSheet();
+    return;
+  }
+  if (itineraryEditorNewRow) {
+    const existing = dayItems(source, day);
+    if (!rows[0]) return;
+    const next = {
+      ...rows[0],
+      day,
+      sortOrder: existing.length + 1,
+      dayTheme: dayTheme || dayThemeFor(source, day) || DAY_THEMES[day] || '',
+      dayCover: dayCover || dayCoverFor(source, day) || defaultDayArt(day)
+    };
+    await saveItinerary([...source, next]);
     closeItSheet();
     return;
   }
@@ -4406,6 +4455,10 @@ $('#itCancel').addEventListener('click', closeItSheet);
 $('#itDaySelect').addEventListener('change', (e) => openItSheet(Number(e.target.value || 1)));
 $('#itThemeInput').addEventListener('input', updateItineraryEditorMeta);
 $('#itCoverSelect').addEventListener('change', refreshItineraryPreview);
+$('#itCoverClear').addEventListener('click', () => {
+  $('#itCoverSelect').value = '';
+  refreshItineraryPreview();
+});
 $('#itEditorList').addEventListener('click', (e) => {
   const btn = e.target.closest('[data-act="remove-row"]');
   if (!btn) return;
@@ -4501,7 +4554,7 @@ function renderDayChips() {
 }
 function renderItinerary(list) {
   if (!list.length) {
-    $('#itineraryList').innerHTML = `<div class="card empty-state"><div class="empty-state-icon">✦</div><strong>这段旅程还没有行程</strong><span>先保留空白模板，之后可以从这里逐条新增日期、时间和地点。</span><button class="list-add-btn" type="button" onclick="openItSheet(1)">新增第一条行程</button></div>`;
+    $('#itineraryList').innerHTML = `<div class="card empty-state"><div class="empty-state-icon">✦</div><strong>这段旅程还没有行程</strong><span>先保留空白模板，之后可以从这里逐条新增日期、时间和地点。</span><button class="list-add-btn" type="button" onclick="openItSheet(1, null, true)">新增第一条行程</button></div>`;
     return;
   }
   const todayIdx = (tripPhase() === 'busan' || tripPhase() === 'seoul') ? dayIndex() : -1;
@@ -4532,7 +4585,7 @@ function renderItinerary(list) {
         <div class="dc-tools">
           <button class="dc-tool primary" type="button" data-act="edit-day">编辑本日</button>
           <button class="dc-tool" type="button" data-act="add-item">新增行程</button>
-          <button class="dc-tool" type="button" data-act="switch-cover">换封面</button>
+          <button class="dc-tool" type="button" data-act="switch-cover">修改照片</button>
         </div>
         <div class="dc-gallery">
           ${gallery.map((src) => `<div class="dc-gimg"><img src="${esc(src)}" alt=""></div>`).join('')}
@@ -4565,15 +4618,9 @@ $('#itineraryList').addEventListener('click', (e) => {
   if (act === 'edit-day') {
     openItSheet(day);
   } else if (act === 'add-item') {
-    openItSheet(day);
-    itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
-    renderItineraryEditorRows();
-    refreshItineraryPreview();
-    $('#itBackdrop').classList.add('open');
-    $('#itSheet').classList.add('open');
+    openItSheet(day, null, true);
   } else if (act === 'switch-cover') {
-    openItSheet(day);
-    setTimeout(() => $('#itCoverSelect').focus(), 80);
+    openItCoverSheet(day);
   } else if (act === 'edit-row') {
     openItSheet(day, Number(btn.dataset.row || 0));
   }
