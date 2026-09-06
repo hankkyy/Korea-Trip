@@ -5546,7 +5546,7 @@ function fileCardIcon(doc) {
 let activeDocViewer = null;
 let docImageScale = 1;
 function setDocImageScale(value) {
-  docImageScale = Math.min(3, Math.max(1, value));
+  docImageScale = Math.min(3, Math.max(.5, value));
   const image = $('#docViewerImg');
   const pages = $('#docViewerPages');
   const label = $('#docViewerZoomValue');
@@ -5556,6 +5556,7 @@ function setDocImageScale(value) {
     image.style.width = `${docImageScale * 100}%`;
   }
   if (pages) {
+    pages.style.maxWidth = 'none';
     pages.style.width = `${docImageScale * 100}%`;
     pages.querySelectorAll('.doc-preview-page').forEach((page) => { page.style.width = '100%'; });
   }
@@ -5599,6 +5600,7 @@ function openDocViewer(doc) {
   image.style.maxHeight = '';
   frame.removeAttribute('src');
   pages.style.width = '';
+  pages.style.maxWidth = '';
   if (isImage) {
     image.src = url;
     image.alt = doc.title || doc.attachmentName || '文件附件';
