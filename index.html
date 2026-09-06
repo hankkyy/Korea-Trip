@@ -1040,6 +1040,8 @@ body.doc-viewer-open{overflow:hidden}
 .it-preview-field{display:none}
 .it-preview .dc-gimg{aspect-ratio:1.35/1}
 .it-list{display:flex;flex-direction:column;gap:8px}
+.it-items-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.it-items-head>label{font-size:15px;font-weight:900;color:var(--ink)}
 .it-row{
   padding:10px;border-radius:15px;border:1px solid rgba(231,238,231,.95);
   background:linear-gradient(180deg,rgba(255,255,251,.98),rgba(248,251,247,.95));
@@ -1051,9 +1053,11 @@ body.doc-viewer-open{overflow:hidden}
   padding:5px 9px;border-radius:999px;background:var(--green-l);border:1px solid rgba(118,169,138,.12)
 }
 .it-row-remove{
-  min-height:30px;padding:0 10px;border-radius:999px;border:1px solid rgba(221,176,179,.45);
-  color:#A66E72;background:rgba(221,176,179,.11);font-size:12px;font-weight:800
+  min-height:32px;padding:0 10px;border-radius:10px;border:1px solid rgba(221,176,179,.35);
+  color:#A66E72;background:rgba(221,176,179,.08);font-size:11.5px;font-weight:800;transition:background .18s ease,transform .18s ease
 }
+.it-row-remove:hover{background:rgba(221,176,179,.16)}
+.it-row-remove:active{transform:scale(.97)}
 .it-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
 .it-grid .field{margin-bottom:0}
 .it-grid label{margin-bottom:4px;font-size:11px;letter-spacing:.02em}
@@ -1073,7 +1077,10 @@ body.doc-viewer-open{overflow:hidden}
 .it-actions button{
   min-height:50px;border-radius:16px;padding:0 16px;font-weight:900;font-size:15px
 }
-#itAddRow{background:var(--green-xl);color:var(--green-d);border:1px solid rgba(118,169,138,.18)}
+#itAddRow{min-height:40px;padding:0 13px;border-radius:12px;background:var(--green-xl);color:var(--green-d);border:1px solid rgba(118,169,138,.22);font-size:12.5px;font-weight:900;display:inline-flex;align-items:center;gap:5px;transition:background .18s ease,transform .18s ease}
+#itAddRow:hover{background:var(--green-l)}
+#itAddRow:active{transform:scale(.98)}
+#itAddRow .ic{width:16px;height:16px}
 #itSave{flex:1;background:var(--grad);color:#fff}
 #itCancel{background:var(--card);border:1px solid var(--line);color:var(--muted)}
 @media(min-width:720px){
@@ -2361,9 +2368,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <div class="it-preview" id="itPreview"></div>
   </div>
   <div class="field">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
+    <div class="it-items-head">
       <label style="margin:0">行程条目</label>
-      <button id="itAddRow" class="tap" type="button">+ 添加一条</button>
+      <button id="itAddRow" class="tap" type="button"><i class="ti" data-ic="plus"></i>添加一条行程</button>
     </div>
     <div class="it-list" id="itEditorList"></div>
   </div>
