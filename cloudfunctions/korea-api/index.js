@@ -1,4 +1,5 @@
 const http = require('http');
+const https = require('https');
 const cloudbase = require('@cloudbase/node-sdk');
 
 const app = cloudbase.init({
@@ -10,6 +11,39 @@ const db = app.database();
 
 const PORT = process.env.PORT || 9000;
 const DEFAULT_TRIP_ID = 'korea-2026';
+
+const WEATHER_CITIES = {
+  busan: { latitude: 35.1796, longitude: 129.0756 },
+  seoul: { latitude: 37.5665, longitude: 126.9780 }
+};
+const upstreamCache = new Map();
+
+function fetchJson(url, timeoutMs = 4500) {
+  return new Promise((resolve, reject) => {
+    const request = https.get(url, { headers: { Accept: 'application/json' } }, response => {
+      let body = '';
+      response.setEncoding('utf8');
+      response.on('data', chunk => body += chunk);
+      response.on('end', () => {
+        if (response.statusCode < 200 || response.statusCode >= 300) {
+          reject(new Error(`upstream returned ${response.statusCode}`));
+          return;
+        }
+        try { resolve(JSON.parse(body)); } catch { reject(new Error('upstream returned invalid JSON')); }
+      });
+    });
+    request.setTimeout(timeoutMs, () => request.destroy(new Error('upstream timeout')));
+    request.on('error', reject);
+  });
+}
+
+async function fetchCachedJson(key, url, ttlMs) {
+  const cached = upstreamCache.get(key);
+  if (cached && cached.expiresAt > Date.now()) return cached.value;
+  const value = await fetchJson(url);
+  upstreamCache.set(key, { value, expiresAt: Date.now() + ttlMs });
+  return value;
+}
 
 // 韩国项目使用 kr_ 前缀集合，与河内项目（itinerary/checklist/expenses）互不干扰
 const COL = {
@@ -72,6 +106,26 @@ const server = http.createServer(async (req, res) => {
   const tripId = tripIdFromUrl(url);
 
   try {
+    // Keep weather and exchange-rate requests on the domestic CloudBase origin.
+    if (route === '/weather' && req.method === 'GET') {
+      const city = url.searchParams.get('city') || 'seoul';
+      const coordinates = WEATHER_CITIES[city] || WEATHER_CITIES.seoul;
+      const query = new URLSearchParams({
+        latitude: String(coordinates.latitude),
+        longitude: String(coordinates.longitude),
+        current: 'temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m',
+        daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max',
+        hourly: 'temperature_2m,weather_code',
+        timezone: 'Asia/Seoul',
+        forecast_days: '10'
+      });
+      return json(res, await fetchCachedJson(`weather:${city}`, `https://api.open-meteo.com/v1/forecast?${query}`, 5 * 60 * 1000));
+    }
+
+    if (route === '/fx' && req.method === 'GET') {
+      return json(res, await fetchCachedJson('fx:cny', 'https://open.er-api.com/v6/latest/CNY', 60 * 60 * 1000));
+    }
+
     // GET /itinerary
     if (route === '/itinerary' && req.method === 'GET') {
       const result = await db.collection(COL.itinerary)

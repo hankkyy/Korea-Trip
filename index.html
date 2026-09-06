@@ -13,6 +13,8 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com">
+<link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.tcloudbaseapp.com">
 <style>
 /* ============ 设计令牌 · Korea Travel Journal ============ */
 :root{
@@ -2516,11 +2518,28 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <script>
 /* ================= 常量 ================= */
 const API_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api';
+const DOMESTIC_ASSET_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.tcloudbaseapp.com';
 const FX_RATES = { CNY: 1, USD: 6.73, KRW: 1 / 202.06 };
 const FX_RATES_KEY = 'kr_fx_rates_latest';
-const FX_RATES_URL = 'https://open.er-api.com/v6/latest/CNY';
+const FX_RATES_URL = `${API_BASE}/fx`;
 let FX_UPDATED_AT = '';
 const PEOPLE = ['可乐', '金鹿'];
+
+// Keep images usable on mainland networks when the Vercel asset edge is slow.
+function domesticAssetUrl(src) {
+  if (!src || /^(https?:|data:|blob:)/i.test(src)) return '';
+  return `${DOMESTIC_ASSET_BASE}/${String(src).replace(/^\/+/, '')}`;
+}
+window.addEventListener('error', (event) => {
+  const image = event.target;
+  if (!(image instanceof HTMLImageElement) || image.dataset.domesticFallback === '1') return;
+  const original = image.dataset.primarySrc || image.getAttribute('src');
+  const fallback = domesticAssetUrl(original);
+  if (!fallback || fallback === image.src) return;
+  image.dataset.primarySrc = original;
+  image.dataset.domesticFallback = '1';
+  image.src = fallback;
+}, true);
 
 /* 旅程配置是所有静态旅行资料的唯一入口；新增旅程时只需增加一个配置。 */
 const TRIP_DATA = {
@@ -3805,10 +3824,7 @@ function autoCity() {
 async function fetchWeather(city) {
   const c = CITIES[city];
   if (!c) return null;
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}` +
-    `&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m` +
-    `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max` +
-    `&hourly=temperature_2m,weather_code&timezone=Asia%2FSeoul&forecast_days=10`;
+  const url = `${API_BASE}/weather?city=${encodeURIComponent(city)}`;
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
   try {
