@@ -220,16 +220,16 @@ body.essay-sheet-open #bnav{opacity:0;pointer-events:none;transform:translate3d(
   background-image:linear-gradient(90deg,rgba(255,254,251,.92),rgba(255,254,251,.42)),var(--page-art);
   background-size:cover;background-position:center;box-shadow:var(--shadow);border:1px solid rgba(231,238,231,.9);
 }
-#tab-itinerary{--page-art:url('assets/photos/palace-watercolor.webp')}
-#tab-map{--page-art:url('assets/photos/busan-watercolor.webp')}
-#tab-transport{--page-art:url('assets/photos/seoul-watercolor.webp')}
-#tab-food{--page-art:url('assets/photos/seoul-gwangjang-warm-stalls.webp')}
-#tab-essay{--page-art:url('assets/photos/seoul-night-editorial.webp')}
-#tab-todos{--page-art:url('assets/photos/busan-watercolor.webp')}
-#tab-packing{--page-art:url('assets/photos/palace-watercolor.webp')}
-#tab-expenses{--page-art:url('assets/photos/seoul-watercolor.webp')}
-#tab-docs{--page-art:url('assets/photos/palace-watercolor.webp')}
-#tab-guide{--page-art:url('assets/photos/busan-watercolor.webp')}
+#tab-itinerary{--page-art:var(--trip-art-itinerary,url('assets/photos/palace-watercolor.webp'))}
+#tab-map{--page-art:var(--trip-art-map,url('assets/photos/busan-watercolor.webp'))}
+#tab-transport{--page-art:var(--trip-art-transport,url('assets/photos/seoul-watercolor.webp'))}
+#tab-food{--page-art:var(--trip-art-food,url('assets/photos/seoul-gwangjang-warm-stalls.webp'))}
+#tab-essay{--page-art:var(--trip-art-essay,url('assets/photos/seoul-night-editorial.webp'))}
+#tab-todos{--page-art:var(--trip-art-todos,url('assets/photos/busan-watercolor.webp'))}
+#tab-packing{--page-art:var(--trip-art-packing,url('assets/photos/palace-watercolor.webp'))}
+#tab-expenses{--page-art:var(--trip-art-expenses,url('assets/photos/seoul-watercolor.webp'))}
+#tab-docs{--page-art:var(--trip-art-docs,url('assets/photos/palace-watercolor.webp'))}
+#tab-guide{--page-art:var(--trip-art-guide,url('assets/photos/busan-watercolor.webp'))}
 .panel:not(#tab-home){--accent:var(--green);--accent-d:var(--green-d);--accent-l:var(--green-l);--accent-line:rgba(118,169,138,.22)}
 #tab-itinerary{--accent:var(--blue);--accent-d:var(--blue-d);--accent-l:var(--blue-l);--accent-line:rgba(106,153,164,.24)}
 #tab-map{--accent:#D5B36B;--accent-d:#8A6E36;--accent-l:#FFF7E6;--accent-line:rgba(213,179,107,.28)}
@@ -2587,6 +2587,7 @@ const TRIP_DATA = {
   },
   'hong-kong': {
     id: 'hong-kong', name: '香港周末旅行', brand: 'Hong Kong Trip', dates: '2026.12.18–12.20', icon: '🇭🇰', content: 'ready', theme: 'purple', days: 3,
+    pageArt: { itinerary: 'assets/photos/real/hong-kong-victoria-harbour-watercolor.webp', map: 'assets/photos/real/hong-kong-victoria-peak-watercolor.webp', transport: 'assets/photos/real/hong-kong-star-ferry-watercolor.webp', food: 'assets/photos/real/hong-kong-temple-street-watercolor.webp', essay: 'assets/photos/real/hong-kong-central-skyline-watercolor.webp', todos: 'assets/photos/real/hong-kong-kowloon-waterfront-watercolor.webp', packing: 'assets/photos/real/hong-kong-disneyland-castle-watercolor.webp', expenses: 'assets/photos/real/hong-kong-mong-kok-watercolor.webp', docs: 'assets/photos/real/hong-kong-hyatt-centric-watercolor.webp', guide: 'assets/photos/real/hong-kong-man-mo-temple-watercolor.webp' },
     startAt: '2026-12-18T18:30:00+08:00', transferAt: '2026-12-19T10:00:00+08:00', endAt: '2026-12-20T23:00:00+08:00',
     departLabel: '12/18 下班后', defaultCity: 'hong-kong',
     cities: { 'hong-kong': { name: '香港', lat: 22.3193, lon: 114.1694 } },
@@ -2615,6 +2616,7 @@ const TRIP_DATA = {
   },
   'xiamen': {
     id: 'xiamen', name: '厦门周末旅行', brand: 'Xiamen Trip', dates: '2027.01.08–01.10', icon: '🌊', content: 'ready', theme: 'blue', days: 3, itineraryVersion: 2,
+    pageArt: { itinerary: 'assets/photos/real/xiamen-gulangyu-panoramic-watercolor.webp', map: 'assets/photos/real/xiamen-jimei-campus-watercolor.webp', transport: 'assets/photos/real/xiamen-railway-station-watercolor.webp', food: 'assets/photos/real/xiamen-bashi-market-watercolor.webp', essay: 'assets/photos/real/xiamen-wuyuan-bay-watercolor.webp', todos: 'assets/photos/real/xiamen-shapowei-boats-watercolor.webp', packing: 'assets/photos/real/xiamen-wutong-ferry-watercolor.webp', expenses: 'assets/photos/real/xiamen-zhongshan-road-watercolor.webp', docs: 'assets/photos/real/xiamen-andaz-watercolor.webp', guide: 'assets/photos/real/xiamen-nanputuo-temple-watercolor.webp' },
     startAt: '2027-01-08T18:30:00+08:00', transferAt: '2027-01-09T10:00:00+08:00', endAt: '2027-01-10T22:00:00+08:00',
     departLabel: '1/8 下班后', defaultCity: 'xiamen',
     cities: { xiamen: { name: '厦门', lat: 24.4798, lon: 118.0894 } },
@@ -2732,6 +2734,10 @@ function renderTripChrome() {
     blue: { '--green':'#6FA7C2', '--green-d':'#47758D', '--green-l':'#EAF5FA', '--ink':'#416D82' }
   };
   Object.entries(palettes[trip.theme] || {}).forEach(([key, value]) => document.body.style.setProperty(key, value));
+  const pageArt = trip.pageArt || {};
+  ['itinerary', 'map', 'transport', 'food', 'essay', 'todos', 'packing', 'expenses', 'docs', 'guide'].forEach((panel) => {
+    if (pageArt[panel]) document.body.style.setProperty(`--trip-art-${panel}`, `url('${pageArt[panel]}')`);
+  });
   if (trip.id !== 'korea-2026') {
     const badge = $('.hero-badge');
     const title = $('.hero-inner h1');
@@ -3217,7 +3223,6 @@ const PHOTO_LIBRARY = [
   { value: 'assets/photos/busan-harbor-editorial.webp', label: '釜山海云台 / 胶囊列车', preview: 'assets/photos/busan-harbor-editorial.webp' },
   { value: 'assets/photos/busan-village-editorial.webp', label: '釜山甘川 / 山坡彩屋', preview: 'assets/photos/busan-village-editorial.webp' },
   { value: 'assets/photos/busan-editorial.webp', label: '釜山文艺 / 岸边散步', preview: 'assets/photos/busan-editorial.webp' },
-  { value: 'assets/photos/busan-editorial.webp', label: '釜山文艺 / 轻海岸', preview: 'assets/photos/busan-editorial.webp' },
   { value: 'assets/photos/busan-watercolor.webp', label: '釜山水彩 / 海风', preview: 'assets/photos/busan-watercolor.webp' },
   { value: 'assets/photos/seoul-palace-editorial.webp', label: '首尔景福宫 / 古宫水墨', preview: 'assets/photos/seoul-palace-editorial.webp' },
   { value: 'assets/photos/seoul-palace-quiet-roofs.webp', label: '景福宫 / Winter Gate', preview: 'assets/photos/seoul-palace-quiet-roofs.webp' },
@@ -3234,9 +3239,7 @@ const PHOTO_LIBRARY = [
   { value: 'assets/photos/seoul-airport-editorial.webp', label: '返程机场 / 行李与落日', preview: 'assets/photos/seoul-airport-editorial.webp' },
   { value: 'assets/photos/seoul-marriott-myeongdong-editorial.webp', label: '首尔明洞万怡酒店 / 夜色', preview: 'assets/photos/seoul-marriott-myeongdong-editorial.webp' },
   { value: 'assets/photos/seoul-watercolor.webp', label: '首尔清晨 / 汉江水彩', preview: 'assets/photos/seoul-watercolor.webp' },
-  { value: 'assets/photos/seoul-watercolor.webp', label: '首尔清晨 / 汉江', preview: 'assets/photos/seoul-watercolor.webp' },
   { value: 'assets/photos/seoul-editorial.webp', label: '首尔文艺 / 城市散步', preview: 'assets/photos/seoul-editorial.webp' },
-  { value: 'assets/photos/seoul-editorial.webp', label: '首尔文艺 / 暖色街景', preview: 'assets/photos/seoul-editorial.webp' },
   { value: 'assets/photos/palace-watercolor.webp', label: '景福宫 / 传统水彩', preview: 'assets/photos/palace-watercolor.webp' }
 ];
 const PHOTO_MATCHERS = [
