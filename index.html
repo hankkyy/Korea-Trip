@@ -1359,8 +1359,8 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
   box-sizing:border-box;
 }
 #essaySheet.open{transform:translateY(0)}
-#essaySheet h3{font-size:20px;margin:0 44px 4px 0;color:var(--ink);letter-spacing:-.03em}
-#essaySheet .sheet-sub{font-size:11.5px;color:var(--muted);line-height:1.5;margin:0 0 13px;padding-right:8px}
+#essaySheet h3{font-size:20px;margin:0 44px 5px 0;color:var(--ink);letter-spacing:-.03em}
+#essaySheet .sheet-sub{font-size:12px;color:#76618E;line-height:1.5;margin:0 0 14px;padding:8px 11px;border:1px solid rgba(185,164,208,.22);border-radius:12px;background:linear-gradient(135deg,#F9F5FD,#F4FAF5)}
 #essaySheet textarea,#essaySheet input,#essaySheet select{
   width:100%;max-width:100%;min-width:0;border-radius:13px;border:1.5px solid var(--line);padding:10px 12px;background:var(--bg);
   outline:none;resize:vertical;line-height:1.55
@@ -1371,11 +1371,19 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 #essaySheet .field label{margin-bottom:5px}
 #essaySheet .essay-password-note{font-size:11px;line-height:1.4;margin-top:5px}
 #essaySheet textarea:focus,#essaySheet input:focus,#essaySheet select:focus{border-color:var(--green)}
+.essay-security-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:12px;margin:2px 0 13px;padding:12px;border:1px solid rgba(185,164,208,.2);border-radius:17px;background:linear-gradient(135deg,rgba(249,245,253,.94),rgba(245,250,246,.92))}
+.essay-security-grid .field{margin:0!important}.essay-security-grid .field-hint{font-size:10.5px;line-height:1.4;margin-top:5px;color:var(--muted)}
+.essay-security-grid .essay-password-note{display:none}
+#essayContentInput{min-height:170px;max-height:230px}
+.essay-photo-field{margin-bottom:8px!important;padding:11px 12px;border:1px dashed rgba(118,169,138,.3);border-radius:15px;background:rgba(246,251,245,.72)}
+.essay-photo-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.essay-photo-head label{margin:0!important}.essay-photo-head .tap{min-height:34px;padding:0 11px;border:1px solid rgba(118,169,138,.2);border-radius:10px;background:var(--card);color:var(--green-d);font-size:12px;font-weight:850;white-space:nowrap}
+.essay-photo-field .essay-photo-row{margin-top:8px}.essay-photo-field .essay-photo-empty{padding:9px 10px;background:transparent;border:0;font-size:11.5px}
+#essaySheet .list-sheet-actions{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom));z-index:2;margin:12px -20px 0;padding:11px 20px calc(18px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(255,254,250,0),rgba(255,254,250,.98) 22%)}
 @media(max-width:560px){
   .food-memory-grid{grid-template-columns:1fr}
   .essay-note{padding:14px}
   .essay-private-row input{min-width:0;width:100%}
-  .essay-sheet-grid,.essay-meta-grid{grid-template-columns:1fr}
+  .essay-sheet-grid,.essay-meta-grid,.essay-security-grid{grid-template-columns:1fr}
   .essay-photo-row{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 .sheet-close + h3{margin-top:0}
@@ -1393,6 +1401,7 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
   .sheet-close{top:14px;right:14px;width:38px;height:38px}
   #essaySheet{padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   #essaySheet h3{font-size:19px}
+  #essaySheet .list-sheet-actions{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
   .list-sheet-actions,.it-actions{gap:8px}
   .list-sheet-actions button,.it-actions button{padding:0 12px}
 }
@@ -2610,19 +2619,21 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <input id="essayPlaceInput" placeholder="海云台 / 明洞">
     </div>
   </div>
-  <div class="field"><label>可见范围</label><div class="seg" id="essayVisibilitySeg"><button class="active" data-v="shared">双方可见</button><button data-v="private">仅自己可见</button></div><div class="field-hint">私人随笔只会同步并显示给创建它的账号。</div></div>
-  <div class="field">
-    <label>随笔密码</label>
-    <input id="essayPasswordInput" type="password" placeholder="请输入这篇随笔的密码">
-    <div class="essay-password-note">每篇随笔都必须设置密码；打开时需要输入正确密码。</div>
+  <div class="essay-security-grid">
+    <div class="field"><label>可见范围</label><div class="seg" id="essayVisibilitySeg"><button class="active" data-v="shared">双方可见</button><button data-v="private">仅自己可见</button></div><div class="field-hint">私人随笔只显示给创建它的账号。</div></div>
+    <div class="field">
+      <label>随笔密码</label>
+      <input id="essayPasswordInput" type="password" placeholder="设置这篇随笔的密码">
+      <div class="essay-password-note">每篇随笔都必须设置密码；打开时需要输入正确密码。</div>
+    </div>
   </div>
   <div class="field">
     <label>正文</label>
     <textarea id="essayContentInput" rows="6" placeholder="写下你想留住的那一刻。"></textarea>
   </div>
-  <div class="field">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px">
-      <label style="margin:0">照片</label>
+  <div class="field essay-photo-field">
+    <div class="essay-photo-head">
+      <label>照片</label>
       <button id="essayPhotoAdd" class="tap" type="button">+ 添加照片</button>
     </div>
     <div class="essay-photo-row" id="essayPhotoRow"></div>
@@ -6784,7 +6795,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=56').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=57').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
