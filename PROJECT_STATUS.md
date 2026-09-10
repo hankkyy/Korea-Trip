@@ -57,7 +57,7 @@
 - 2026-09-10 灵感收集箱：新增 `kr_inspirations` protocol 2 数据集，保存小红书分享的链接、分享文字和自动生成的标题，不抓取或复制原帖。首页和顶部提供“收下灵感”；电脑/iPhone 从小红书复制链接后按一次即可入箱，无需分类或填写。`manifest.json` 已声明 Android PWA `share_target`，安装 App 后可直接在小红书分享面板选择「在璐上」，标题、文字和链接会自动入箱。iPhone Safari 尚不支持网页 App 接收系统分享，保留剪贴板一键入口。
 - 密码变更记录：CloudBase 已接受两位所有者提供的新密码；两账号分别在正式站完成登录并被识别为所有者，页面无错误。密码明文不写入项目文档或仓库。
 - 灵感箱集合 `kr_inspirations` 已在 CloudBase 创建并设为 PRIVATE；此前集合未创建导致的 500 已修复，正式所有者读取返回 200。
-- 2026-09-11 全量发布：CloudBase 云函数 `korea-api` 已更新并处于 Active/Available；CloudBase 静态托管 `/korea/index.html` 和 `/korea/sw.js` 的 SHA-256 与本地一致。Vercel 生产部署 `dpl_2LCx7AxJbWqQx3RJfwRVQb45qUjf` 已绑定 `www.jinlu.cloud`。生产访客实测仅显示“行程”导航，行程 GET 200，待办、支出、文件 GET 403，页面错误为 0，Service Worker 已注册。
+- 2026-09-11 全量发布：CloudBase 云函数 `korea-api` 已更新并处于 Active/Available；CloudBase 静态托管已上传新版 `/korea/index.html` 和 `/korea/sw.js`，其版本化页面地址已与本地 SHA-256 一致。Vercel 生产部署 `dpl_EvmNCmYN7FukHGwgLhE8xgFMcEER` 已绑定 `www.jinlu.cloud`。生产访客实测仅显示“行程”导航，行程 GET 200，待办、支出、文件 GET 403，页面错误为 0，Service Worker 已注册。
 - 2026-09-10 全量界面审查：新增 `scripts/ui-audit.mjs`，在 390×844 和 1440×1000 下覆盖 11 个 Tab、支出新建/编辑、行程编辑、待办编辑、随笔编辑、旅程选择/设置、图片/文件预览和美食编辑，共 44 个状态。发现并修复行程弹窗“删除照片”横向溢出，以及旅程设置弹窗不能用 Escape 关闭；按钮文字/无障碍名称、横向溢出、容器溢出和页面错误均通过自动检查。美食编辑态的完成、添加照片、删除为统一等高的三列操作。发布后另修复访客模式的单一“行程”导航继承隐藏状态；访客也会注册静态 Service Worker，但不会启动写入补传或实时同步。
 - 2026-09-11 美食回归：单个“新增收藏”是唯一入口；空状态不再生成第二个加号卡片。编辑态无附件时固定为保存、添加照片、删除三个等高按钮，查看照片只在附件存在且退出编辑后显示。浏览器回归新增三按钮与等高断言；缓存升级为 v54，避免旧 PWA 页面继续显示历史样式。
 
