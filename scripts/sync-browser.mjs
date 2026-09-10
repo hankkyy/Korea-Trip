@@ -143,6 +143,9 @@ try {
   assert((await store.read('/docs', tripId)).data.some(item => item.kind === 'food' && item.title === '跨设备美食收藏测试'));
   await foodCard.locator('[data-act="edit"]').click();
   assert.equal(await foodCard.evaluate(card => card.classList.contains('editing')), false);
+  assert.equal(await foodCard.locator('.food-actions .food-btn:visible').count(), 1);
+  assert.equal(await foodCard.locator('[data-act="delete"]:visible').count(), 0);
+  assert.equal(await foodCard.locator('[data-act="photo"]:visible').count(), 0);
   await foodCard.locator('[data-act="edit"]').click();
   await foodCard.locator('[data-act="delete"]').click();
   assert((await store.read('/docs', tripId)).data.some(item => item.kind === 'food'));

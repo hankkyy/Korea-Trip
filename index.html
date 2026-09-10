@@ -1261,6 +1261,7 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 .food-thumb{position:relative;margin-top:2px}
 .food-thumb img{width:100%;max-height:170px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
 .food-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}
+.food-actions.single-action{grid-template-columns:minmax(0,1fr)}
 .food-card.editing .food-actions{grid-template-columns:minmax(0,.95fr) minmax(0,1.35fr) minmax(0,.95fr)}
 .food-btn{
   width:100%;min-height:46px;padding:0 12px;border-radius:14px;border:1px solid var(--line);background:var(--card);
@@ -6657,11 +6658,11 @@ function renderFood() {
         ? `<div class="food-thumb"><img src="${esc(r.attachmentUrl)}" alt="${esc(r.title)}"></div>`
         : `<div class="food-chip">${ic('image')}<span>${esc(r.attachmentName || '照片')}</span></div>`) : ''}
       <textarea class="food-input" data-act="note" placeholder="备注 / 推荐菜 / 攻略摘录">${esc(r.note || '')}</textarea>
-      <div class="food-actions">
+      <div class="food-actions${editing ? ' editing-actions' : ''}${!editing && !r.attachmentUrl ? ' single-action' : ''}">
         <button class="food-btn food-edit-toggle" type="button" data-act="edit" aria-pressed="${editing}">${ic(editing ? 'check' : 'edit')}${editing ? '完成' : '编辑'}</button>
-        <button class="food-btn food-edit-only" type="button" data-act="photo">${ic('camera')}${r.attachmentUrl ? '换照片' : '添加照片'}</button>
-        ${r.attachmentUrl ? `<button class="food-btn food-read-only" type="button" data-act="open">${ic('image')}查看照片</button>` : ''}
-        <button class="food-btn danger food-edit-only" type="button" data-act="delete">${ic('x')}删除</button>
+        ${editing
+          ? `<button class="food-btn" type="button" data-act="photo">${ic('camera')}${r.attachmentUrl ? '换照片' : '添加照片'}</button><button class="food-btn danger" type="button" data-act="delete">${ic('x')}删除</button>`
+          : (r.attachmentUrl ? `<button class="food-btn food-read-only" type="button" data-act="open">${ic('image')}查看照片</button>` : '')}
       </div>
     </div>`;
   };
@@ -6783,7 +6784,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=55').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=56').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
