@@ -1260,17 +1260,19 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 .food-chip .ic{width:16px;height:16px}
 .food-thumb{position:relative;margin-top:2px}
 .food-thumb img{width:100%;max-height:170px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
-.food-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:2px}
-.food-card.editing .food-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
+.food-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}
+.food-card.editing .food-actions{grid-template-columns:minmax(0,.95fr) minmax(0,1.35fr) minmax(0,.95fr)}
 .food-btn{
-  width:100%;min-height:42px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);
-  font-size:12.5px;font-weight:850;color:var(--text);display:inline-flex;align-items:center;justify-content:center;gap:6px
+  width:100%;min-height:46px;padding:0 12px;border-radius:14px;border:1px solid var(--line);background:var(--card);
+  font-size:13px;font-weight:850;color:var(--text);display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease
 }
-.food-btn .ic{width:16px;height:16px}
+.food-btn .ic{width:17px;height:17px}
 .food-btn:active{transform:translateY(1px);background:var(--line)}
 .food-card.editing .food-edit-toggle{background:var(--green-d);border-color:var(--green-d);color:#fff;box-shadow:0 6px 14px rgba(63,96,78,.16)}
 .food-card.editing .food-read-only{display:none}
-.food-btn.danger{color:#9B6468;background:#FFF8F7;border-color:#EBCFD1}
+.food-btn.danger{color:#9B6468;background:#FFF8F7;border-color:#EBCFD1;box-shadow:none}
+@media(max-width:380px){.food-card.editing .food-actions{grid-template-columns:repeat(3,minmax(0,1fr))}.food-btn{padding:0 8px;font-size:12px}.food-btn .ic{width:16px;height:16px}}
 .essay-note{
   padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,251,.97),rgba(246,250,246,.92));
   border:1px solid rgba(118,169,138,.14);box-shadow:var(--shadow)

@@ -133,6 +133,7 @@ try {
   await page.waitForFunction(() => document.querySelector('#foodBusan .food-card.editing'));
   await page.waitForFunction(() => !JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]').length);
   const foodCard = page.locator('#foodBusan .food-card[data-id]').first();
+  assert.equal(await foodCard.locator('.food-actions .food-btn:visible').count(), 3);
   const actionHeights = await foodCard.locator('.food-actions .food-btn:visible').evaluateAll(buttons => buttons.map(button => Math.round(button.getBoundingClientRect().height)));
   assert.equal(new Set(actionHeights).size, 1);
   await foodCard.locator('[data-act="title"]').fill('跨设备美食收藏测试');
