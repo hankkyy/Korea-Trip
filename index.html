@@ -6771,7 +6771,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=54').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
