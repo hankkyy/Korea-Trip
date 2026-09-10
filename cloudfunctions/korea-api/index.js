@@ -8,9 +8,20 @@ const app = cloudbase.init({
 });
 
 const db = app.database();
+const { createSyncStore } = require('./sync-store');
+const SYNC_COLLECTIONS = {
+  '/itinerary': 'kr_itinerary', '/todos': 'kr_todos', '/checklist': 'kr_checklist',
+  '/bucket-list': 'kr_bucketlist', '/expenses': 'kr_expenses', '/docs': 'kr_docs', '/inspirations': 'kr_inspirations', '/trips': 'kr_trips'
+};
+const syncStore = createSyncStore(db, SYNC_COLLECTIONS);
 
 const PORT = process.env.PORT || 9000;
 const DEFAULT_TRIP_ID = 'korea-2026';
+const MAX_BODY_BYTES = 6 * 1024 * 1024;
+const OWNER_USER_IDS = new Set([
+  '2097823157655728129', // kele
+  '2097823165424365569'  // jinlu
+]);
 
 const WEATHER_CITIES = {
   busan: { latitude: 35.1796, longitude: 129.0756 },
@@ -52,32 +63,66 @@ const COL = {
   expenses: 'kr_expenses',
   bucketList: 'kr_bucketlist',
   todos: 'kr_todos',
-  docs: 'kr_docs'
+  docs: 'kr_docs',
+  trips: 'kr_trips'
 };
 
 function json(res, data, statusCode = 200) {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
+    'Cache-Control': 'no-store'
   });
   res.end(JSON.stringify(data));
+}
+
+function callerFromRequest(req) {
+  const token = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+  try {
+    const payload = JSON.parse(Buffer.from(token.split('.')[1] || '', 'base64url').toString('utf8'));
+    const uid = String(payload.sub || payload.uid || '');
+    if (!uid) throw new Error('missing uid');
+    return { uid, role: OWNER_USER_IDS.has(uid) ? 'owner' : 'visitor' };
+  } catch {}
+  throw Object.assign(new Error('请先登录后再访问旅行资料'), { status: 401 });
+}
+
+function assertAuthorized(req, write = false) {
+  const caller = callerFromRequest(req);
+  if (write && caller.role !== 'owner') {
+    throw Object.assign(new Error('访客只能查看旅行资料，不能修改内容'), { status: 403 });
+  }
+  return caller;
 }
 
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    let size = 0;
+    let tooLarge = false;
+    req.on('data', chunk => {
+      size += chunk.length;
+      if (size > MAX_BODY_BYTES) {
+        tooLarge = true;
+        body = '';
+        return;
+      }
+      if (!tooLarge) body += chunk;
+    });
     req.on('end', () => {
-      try { resolve(JSON.parse(body || '{}')); } catch (err) { reject(err); }
+      if (tooLarge) {
+        reject(Object.assign(new Error('保存内容超过 6MB，请减少附件后重试'), { status: 413 }));
+        return;
+      }
+      try { resolve(JSON.parse(body || '{}')); } catch { reject(Object.assign(new Error('请求内容不是有效 JSON'), { status: 400 })); }
     });
     req.on('error', reject);
   });
 }
 
 function tripIdFromUrl(url) {
-  return String(url.searchParams.get('tripId') || DEFAULT_TRIP_ID).trim() || DEFAULT_TRIP_ID;
+  const tripId = String(url.searchParams.get('tripId') || DEFAULT_TRIP_ID).trim() || DEFAULT_TRIP_ID;
+  if (tripId.length > 120 || !/^[\w:@.-]+$/u.test(tripId)) throw Object.assign(new Error('旅程 ID 无效'), { status: 400 });
+  return tripId;
 }
 
 function belongsToTrip(item, tripId) {
@@ -91,21 +136,18 @@ function scopedItems(items, tripId) {
 const server = http.createServer(async (req, res) => {
   // CORS preflight
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-      'Access-Control-Max-Age': '86400'
-    });
+    // CloudBase's HTTP gateway owns CORS headers. Adding another origin here
+    // creates an invalid combined header such as "site, *" in browsers.
+    res.writeHead(204);
     res.end();
     return;
   }
 
-  const url = new URL(req.url, `http://${req.headers.host}`);
-  const route = url.pathname;
-  const tripId = tripIdFromUrl(url);
-
   try {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const route = url.pathname;
+    const tripId = tripIdFromUrl(url);
+    assertAuthorized(req, req.method !== 'GET');
     // Keep weather and exchange-rate requests on the domestic CloudBase origin.
     if (route === '/weather' && req.method === 'GET') {
       const city = url.searchParams.get('city') || 'seoul';
@@ -126,248 +168,28 @@ const server = http.createServer(async (req, res) => {
       return json(res, await fetchCachedJson('fx:cny', 'https://open.er-api.com/v6/latest/CNY', 60 * 60 * 1000));
     }
 
-    // GET /itinerary
-    if (route === '/itinerary' && req.method === 'GET') {
-      const result = await db.collection(COL.itinerary)
-        .orderBy('day', 'asc')
-        .orderBy('sortOrder', 'asc')
-        .limit(100)
-        .get();
-      return json(res, { success: true, data: scopedItems(result.data, tripId) });
+    const collectionName = SYNC_COLLECTIONS[route];
+    if (collectionName && req.method === 'GET') {
+      return json(res, await syncStore.read(route, tripId));
     }
-
-    // POST /itinerary (batch save: replace all)
-    if (route === '/itinerary' && req.method === 'POST') {
-      const { items } = await readBody(req);
-      if (!Array.isArray(items)) {
-        return json(res, { success: false, error: 'items must be an array' }, 400);
-      }
-
-      const existing = await db.collection(COL.itinerary).get();
-      const removeTasks = scopedItems(existing.data, tripId).map(doc => db.collection(COL.itinerary).doc(doc._id).remove());
-      await Promise.all(removeTasks);
-
-      if (items.length > 0) {
-        const addTasks = items.map(item => db.collection(COL.itinerary).add({ ...item, tripId, updatedAt: Date.now() }));
-        await Promise.all(addTasks);
-      }
-
-      return json(res, { success: true, count: items.length });
-    }
-
-    // GET /bucket-list
-    if (route === '/bucket-list' && req.method === 'GET') {
-      const result = await db.collection(COL.bucketList)
-        .orderBy('id', 'asc')
-        .limit(50)
-        .get();
-      return json(res, { success: true, data: scopedItems(result.data, tripId) });
-    }
-
-    // POST /bucket-list/:docId
-    let match = route.match(/^\/bucket-list\/(.+)$/);
-    if (match && req.method === 'POST') {
-      const docId = match[1];
-      const { done } = await readBody(req);
-      const result = await db.collection(COL.bucketList).doc(docId).update({ done });
-      return json(res, { success: true, updated: result.updated });
-    }
-
-    // GET /todos（预订待办）
-    if (route === '/todos' && req.method === 'GET') {
-      const result = await db.collection(COL.todos)
-        .orderBy('sortOrder', 'asc')
-        .limit(50)
-        .get();
-      return json(res, { success: true, data: scopedItems(result.data, tripId) });
-    }
-
-    // POST /todos (batch save: replace all)
-    if (route === '/todos' && req.method === 'POST') {
-      const { items } = await readBody(req);
-      if (!Array.isArray(items)) {
-        return json(res, { success: false, error: 'items must be an array' }, 400);
-      }
-
-      const existing = await db.collection(COL.todos).get();
-      const removeTasks = scopedItems(existing.data, tripId).map(doc => db.collection(COL.todos).doc(doc._id).remove());
-      await Promise.all(removeTasks);
-
-      if (items.length > 0) {
-        const addTasks = items.map((item, idx) => db.collection(COL.todos).add({
-          id: item.id || `todo-${idx + 1}`,
-          tripId,
-          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : idx + 1,
-          emoji: item.emoji || '📋',
-          title: item.title || '新待办',
-          note: item.note || '',
-          done: Boolean(item.done),
-          updatedAt: Date.now()
-        }));
-        await Promise.all(addTasks);
-      }
-
-      return json(res, { success: true, count: items.length });
-    }
-
-    // POST /todos/:docId
-    match = route.match(/^\/todos\/(.+)$/);
-    if (match && req.method === 'POST') {
-      const docId = match[1];
-      const { done } = await readBody(req);
-      const result = await db.collection(COL.todos).doc(docId).update({ done });
-      return json(res, { success: true, updated: result.updated });
-    }
-
-    // GET /checklist
-    if (route === '/checklist' && req.method === 'GET') {
-      const result = await db.collection(COL.checklist)
-        .orderBy('sortOrder', 'asc')
-        .limit(30)
-        .get();
-      return json(res, { success: true, data: scopedItems(result.data, tripId) });
-    }
-
-    // POST /checklist (batch save: replace all)
-    if (route === '/checklist' && req.method === 'POST') {
-      const { items } = await readBody(req);
-      if (!Array.isArray(items)) {
-        return json(res, { success: false, error: 'items must be an array' }, 400);
-      }
-
-      const existing = await db.collection(COL.checklist).get();
-      const removeTasks = scopedItems(existing.data, tripId).map(doc => db.collection(COL.checklist).doc(doc._id).remove());
-      await Promise.all(removeTasks);
-
-      if (items.length > 0) {
-        const addTasks = items.map((item, idx) => db.collection(COL.checklist).add({
-          id: item.id || `cl-${idx + 1}`,
-          tripId,
-          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : idx + 1,
-          text: item.text || '新行李',
-          note: item.note || '',
-          done: Boolean(item.done),
-          updatedAt: Date.now()
-        }));
-        await Promise.all(addTasks);
-      }
-
-      return json(res, { success: true, count: items.length });
-    }
-
-    // POST /checklist/:docId
-    match = route.match(/^\/checklist\/(.+)$/);
-    if (match && req.method === 'POST') {
-      const docId = match[1];
-      const { done } = await readBody(req);
-      const result = await db.collection(COL.checklist).doc(docId).update({ done });
-      return json(res, { success: true, updated: result.updated });
-    }
-
-    // GET /docs（文件资料：状态、备注、压缩照片）
-    if (route === '/docs' && req.method === 'GET') {
-      const result = await db.collection(COL.docs)
-        .orderBy('sortOrder', 'asc')
-        .limit(200)
-        .get();
-      return json(res, { success: true, data: scopedItems(result.data, tripId) });
-    }
-
-    // POST /docs (batch save: replace all)
-    if (route === '/docs' && req.method === 'POST') {
-      const { items } = await readBody(req);
-      if (!Array.isArray(items)) {
-        return json(res, { success: false, error: 'items must be an array' }, 400);
-      }
-
-      const existing = await db.collection(COL.docs).get();
-      const removeTasks = scopedItems(existing.data, tripId).map(doc => db.collection(COL.docs).doc(doc._id).remove());
-      await Promise.all(removeTasks);
-
-      if (items.length > 0) {
-        const addTasks = items.map((item, idx) => db.collection(COL.docs).add({
-          ...item,
-          tripId,
-          sortOrder: Number.isFinite(Number(item.sortOrder)) ? Number(item.sortOrder) : idx + 1,
-          updatedAt: Date.now()
-        }));
-        await Promise.all(addTasks);
-      }
-
-      return json(res, { success: true, count: items.length });
-    }
-
-    // GET /expenses
-    if (route === '/expenses' && req.method === 'GET') {
-      const result = await db.collection(COL.expenses)
-        .orderBy('createdAt', 'asc')
-        .limit(200)
-        .get();
-      return json(res, { success: true, data: scopedItems(result.data, tripId) });
-    }
-
-    // POST /expenses (batch save: replace all)
-    if (route === '/expenses' && req.method === 'POST') {
-      const { items } = await readBody(req);
-
-      // Replace only the current trip, preserving other trips in the shared collection.
-      const existing = await db.collection(COL.expenses).get();
-      const removeTasks = scopedItems(existing.data, tripId).map(doc =>
-        db.collection(COL.expenses).doc(doc._id).remove()
-      );
-      await Promise.all(removeTasks);
-
-      // Insert new ones
-      if (items && items.length > 0) {
-        const addTasks = items.map(item =>
-          db.collection(COL.expenses).add({ ...item, tripId, createdAt: Date.now() })
-        );
-        await Promise.all(addTasks);
-      }
-
-      return json(res, { success: true, count: items ? items.length : 0 });
-    }
-
-    // 单条同步接口：为逐步替换批量保存保留稳定的 tripId 和乐观版本检查。
-    const recordMatch = route.match(/^\/records\/(itinerary|todos|checklist|bucket-list|expenses|docs)\/([^/]+)$/);
-    if (recordMatch && (req.method === 'POST' || req.method === 'DELETE')) {
-      const collectionName = {
-        itinerary: COL.itinerary,
-        todos: COL.todos,
-        checklist: COL.checklist,
-        'bucket-list': COL.bucketList,
-        expenses: COL.expenses,
-        docs: COL.docs
-      }[recordMatch[1]];
-      const docId = decodeURIComponent(recordMatch[2]);
-      const ref = db.collection(collectionName).doc(docId);
-      const current = await ref.get();
-      const existing = current.data;
-      if (!existing || !belongsToTrip(existing, tripId)) return json(res, { success: false, error: 'record not found' }, 404);
-
-      if (req.method === 'DELETE') {
-        await ref.remove();
-        return json(res, { success: true, deleted: docId });
-      }
-
+    if (collectionName && req.method === 'POST') {
       const body = await readBody(req);
-      if (body.baseUpdatedAt != null && Number(body.baseUpdatedAt) !== Number(existing.updatedAt || 0)) {
-        return json(res, { success: false, conflict: true, error: 'record changed on another device', data: existing }, 409);
-      }
-      const updates = { ...(body.data || body) };
-      delete updates.tripId;
-      delete updates._id;
-      delete updates.baseUpdatedAt;
-      updates.updatedAt = Date.now();
-      await ref.update(updates);
-      return json(res, { success: true, data: { ...existing, ...updates } });
+      // The old implementation read tripId only from the URL, although the
+      // browser sent it in the body: non-Korean saves could overwrite Korea.
+      const writeTrip = String(body.tripId || tripId).trim();
+      if (writeTrip.length > 120 || !/^[\w:@.-]+$/u.test(writeTrip)) throw Object.assign(new Error('旅程 ID 无效'), { status: 400 });
+      if (!Array.isArray(body.items) || body.items.length > 5000) throw Object.assign(new Error('单次保存记录数量无效'), { status: 413 });
+      return json(res, await syncStore.write(route, writeTrip, body));
+    }
+    if (req.method !== 'GET' && /^\/(records|todos|checklist|bucket-list)\//.test(route)) {
+      return json(res, { success: false, error: '请刷新页面后再保存，当前版本已升级' }, 426);
     }
 
     // 404
     json(res, { success: false, error: 'Not found' }, 404);
 
   } catch (err) {
-    json(res, { success: false, error: err.message }, 500);
+    json(res, { success: false, error: err.message, conflict: err.status === 409 }, err.status || 500);
   }
 });
 

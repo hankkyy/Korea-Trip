@@ -13,8 +13,15 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
-<link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com">
+<link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com">
 <link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.tcloudbaseapp.com">
+<script src="https://static.cloudbase.net/cloudbase-js-sdk/3.8.2/cloudbase.full.js"></script>
+<script src="assets/sync-client.js"></script>
+<script>
+  if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+    document.documentElement.classList.add('standalone-mode');
+  }
+</script>
 <style>
 /* ============ 设计令牌 · Korea Travel Journal ============ */
 :root{
@@ -46,6 +53,12 @@ body.short-trip.trip-has-hotels #tab-home .grid.home-hotels{display:grid}
 .empty-state strong{font-size:18px;color:var(--ink)}
 .empty-state-icon{font-size:28px;color:var(--green);line-height:1}
 .empty-state .list-add-btn{margin-top:8px}
+.auth-gate{position:fixed;inset:0;z-index:99999;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);align-items:center;gap:clamp(28px,7vw,96px);padding:max(28px,env(safe-area-inset-top)) max(24px,8vw) max(28px,env(safe-area-inset-bottom));background:radial-gradient(circle at 14% 18%,rgba(134,181,154,.24),transparent 34%),linear-gradient(135deg,#F7FBF8,#FFF9ED)}
+.auth-gate[hidden]{display:none}.auth-gate-copy{max-width:560px;color:var(--green-d)}.auth-gate-copy small{display:block;margin-bottom:12px;font-size:13px;letter-spacing:.16em}.auth-gate-copy strong{display:block;font-family:"Songti SC","STSong",serif;font-size:clamp(42px,7vw,78px);line-height:1}.auth-gate-copy p{max-width:420px;margin:20px 0 0;color:#66776D;line-height:1.8}
+.auth-card{width:min(100%,420px);padding:30px;border:1px solid rgba(114,166,127,.2);border-radius:28px;background:rgba(255,254,250,.92);box-shadow:0 22px 60px rgba(63,96,78,.14);backdrop-filter:blur(18px)}.auth-card h1{margin:0 0 8px;color:var(--green-d);font-size:25px}.auth-card>p{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.6}.auth-field{display:grid;gap:7px;margin:14px 0}.auth-field label{color:var(--green-d);font-size:13px;font-weight:750}.auth-field input{min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:13px;background:#fff;font:inherit;font-size:16px;color:var(--text);outline:none}.auth-field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(114,166,127,.12)}.auth-submit{width:100%;min-height:48px;margin-top:10px;border:0;border-radius:14px;background:var(--green-d);color:white;font:inherit;font-size:15px;font-weight:800}.auth-visitor{width:100%;min-height:44px;margin-top:10px;border:1px solid rgba(64,104,79,.24);border-radius:14px;background:rgba(255,255,255,.64);color:var(--green-d);font:inherit;font-size:14px;font-weight:800}.auth-submit:disabled,.auth-visitor:disabled{opacity:.55}.auth-visitor-note{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.55;text-align:center}.auth-error{min-height:20px;margin:12px 0 0;color:#9B6468;font-size:13px;line-height:1.5}.auth-pending> :not(#authGate):not(script){visibility:hidden}
+body.visitor-mode .food-add-btn,body.visitor-mode .food-edit-toggle,body.visitor-mode .food-edit-only,body.visitor-mode .list-add-btn,body.visitor-mode .l-toggle,body.visitor-mode .l-drag,body.visitor-mode .l-actions,body.visitor-mode .exp-edit,body.visitor-mode .docs-primary,body.visitor-mode .doc-edit-only,body.visitor-mode #tripManageBtn,body.visitor-mode #tripNewBtn,body.visitor-mode #tripImportBtn,body.visitor-mode #tripSettingsSave,body.visitor-mode #tripDeleteBtn,body.visitor-mode #itAddRow,body.visitor-mode .it-row-remove,body.visitor-mode .dc-tools,body.visitor-mode .tl-edit{display:none!important}
+body.visitor-mode .food-card .food-head-fields,body.visitor-mode .food-card>textarea{display:none!important}body.visitor-mode .food-card .food-display-title,body.visitor-mode .food-card .food-meta,body.visitor-mode .food-card .food-note{display:block!important}body.visitor-mode .visitor-mode-note{display:inline-flex}
+@media(max-width:720px){.auth-gate{grid-template-columns:1fr;align-content:center;padding-left:22px;padding-right:22px}.auth-gate-copy{display:none}.auth-card{justify-self:center;padding:25px 22px;border-radius:23px}}
 #dayChips{display:none!important}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:auto;width:100%;overflow-x:hidden}
@@ -146,19 +159,21 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
   padding:4px 11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44vw;
 }
 #tb-time{font-size:12.5px;color:var(--muted);font-weight:700;margin-left:auto;white-space:nowrap}
+#inspirationCollectBtn{min-height:32px;padding:0 10px;border:1px solid rgba(114,166,127,.28);border-radius:999px;background:var(--green-xl);color:var(--green-d);font-size:12px;font-weight:850;white-space:nowrap}.inspiration-box{margin:18px 0 22px;padding:18px;background:linear-gradient(135deg,rgba(255,254,250,.96),rgba(238,248,244,.8));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.inspiration-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.inspiration-head h2{margin:0;font-size:18px;color:var(--ink)}.inspiration-head p{margin:3px 0 0;color:var(--muted);font-size:12px}.inspiration-list{display:grid;gap:8px;margin-top:12px}.inspiration-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:12px;background:rgba(255,255,255,.72);border:1px solid rgba(114,166,127,.16)}.inspiration-item-copy{min-width:0;flex:1}.inspiration-item-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800;color:var(--text);font-size:14px}.inspiration-item-meta{margin-top:2px;color:var(--muted);font-size:11px}.inspiration-open{flex:none;padding:7px 9px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--green-d);font-size:12px;font-weight:800}.inspiration-empty{padding:12px 0 2px;color:var(--muted);font-size:13px}.inspiration-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));z-index:2000;transform:translateX(-50%);padding:10px 15px;border-radius:999px;background:var(--green-d);color:#fff;box-shadow:var(--shadow-lg);font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s ease}.inspiration-toast.show{opacity:1}body.visitor-mode #inspirationCollectBtn{display:none!important}
 
 /* ============ 底部悬浮导航 ============ */
 #bnav{
-  position:fixed;left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));bottom:10px;bottom:calc(10px + env(safe-area-inset-bottom));
+  position:fixed!important;left:50%;bottom:calc(max(10px,env(safe-area-inset-bottom,0px)) + var(--vv-bottom-inset,0px));transform:translate3d(-50%,0,0);
   z-index:950;
-  display:flex;gap:2px;width:auto;max-width:1120px;margin:0 auto;overflow-x:auto;padding:6px;
+  display:flex;gap:2px;width:calc(100vw - 20px);max-width:1120px;box-sizing:border-box;justify-content:center;overflow-x:auto;padding:6px;
   background:rgba(255,254,251,.94);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border:1px solid var(--line);border-radius:999px;
   box-shadow:0 8px 30px rgba(31,64,46,.13);
-  scrollbar-width:none;
+  scrollbar-width:none;scroll-padding-inline:8px;overscroll-behavior-x:contain;transition:opacity .18s ease,visibility .18s ease;
 }
 #bnav::-webkit-scrollbar{display:none}
+body.keyboard-open #bnav,body.essay-sheet-open #bnav{opacity:0;visibility:hidden;pointer-events:none}
 .bn-btn{
   flex-shrink:0;min-width:48px;height:52px;padding:0 8px;border-radius:999px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
@@ -168,6 +183,7 @@ h2.sec-title .st-sub{font-size:12.5px;font-weight:500;color:var(--muted);margin-
 .bn-btn.active{background:#E8F4EA;color:var(--green-d);box-shadow:inset 0 0 0 1px rgba(118,169,138,.16)}
 .bn-btn.active .ti{animation:softFloat 2.8s ease-in-out infinite}
 @media(min-width:720px){.bn-btn{min-width:60px;padding:0 12px}}
+@media(max-width:719px){#bnav{justify-content:flex-start}}
 
 /* ============ 首页 Hero ============ */
 .hero{
@@ -979,8 +995,10 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 .exp-amt{text-align:right;flex-shrink:0}
 .exp-amt .ea-main{font-weight:900;font-size:14.5px}
 .exp-amt .ea-sub{font-size:11px;color:var(--muted)}
-.exp-del{flex-shrink:0;width:38px;height:38px;border-radius:10px;color:var(--muted);display:flex;align-items:center;justify-content:center}
-.exp-del .ic{width:16px;height:16px}
+.exp-actions{display:flex;align-items:center;gap:2px;flex-shrink:0}
+.exp-edit,.exp-del{width:34px;height:34px;border-radius:10px;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.exp-edit .ic,.exp-del .ic{width:16px;height:16px}
+.exp-edit:active{background:var(--bg);color:var(--green-d)}
 .exp-del:active{background:var(--bg);color:var(--pink)}
 
 /* ============ 记账底部弹层 ============ */
@@ -1202,9 +1220,11 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 .food-collection-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .food-collection-head h3{font-size:14px;font-weight:900;color:var(--green-d)}
 .food-add-btn{
-  min-height:34px;padding:0 12px;border-radius:999px;border:1px solid rgba(118,169,138,.22);
-  background:var(--green-xl);color:var(--green-d);font-size:12px;font-weight:900
+  min-height:40px;padding:0 15px;border-radius:13px;border:1px solid rgba(118,169,138,.24);
+  background:var(--green-xl);color:var(--green-d);font-size:12.5px;font-weight:900;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px
 }
+.food-add-btn .ic{width:15px;height:15px}
 .food-add-btn:active{transform:translateY(1px)}
 .food-memory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .food-card{
@@ -1220,6 +1240,7 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 .food-display-title{flex:1;min-width:0;font-size:15px;font-weight:900;line-height:1.35;color:var(--text);overflow-wrap:anywhere}
 .food-card:not(.editing) .food-head-fields,.food-card:not(.editing) textarea.food-input{display:none}
 .food-card.editing .food-display-title{display:none}
+.food-card.editing>.food-meta,.food-card.editing>.food-note{display:none}
 .food-edit-only{display:none}
 .food-card.editing .food-edit-only{display:inline-flex}
 .food-input,.food-select{
@@ -1229,7 +1250,7 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 .food-input:focus,.food-select:focus{border-color:var(--green)}
 .food-select{appearance:none}
 .food-card textarea.food-input{min-height:72px;padding:10px 12px;resize:vertical;line-height:1.55}
-.food-add-card{cursor:pointer}
+.food-empty{grid-column:1/-1;padding:22px 16px;text-align:center;border:1px dashed var(--line);border-radius:15px;background:rgba(255,255,251,.56);color:var(--muted);font-size:12.5px;line-height:1.6}
 .food-meta{font-size:12px;color:var(--muted);line-height:1.5}
 .food-note{font-size:12.5px;color:var(--muted);background:var(--bg);border-radius:12px;padding:8px 12px;line-height:1.55;min-height:20px}
 .food-chip{
@@ -1238,13 +1259,17 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 .food-chip .ic{width:16px;height:16px}
 .food-thumb{position:relative;margin-top:2px}
 .food-thumb img{width:100%;max-height:170px;object-fit:cover;border-radius:var(--radius-s);border:1px solid var(--line)}
-.food-actions{display:flex;gap:8px;flex-wrap:wrap}
+.food-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:2px}
+.food-card.editing .food-actions{grid-template-columns:repeat(3,minmax(0,1fr))}
 .food-btn{
-  min-height:38px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:12.5px;font-weight:800;color:var(--text)
+  width:100%;min-height:42px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  font-size:12.5px;font-weight:850;color:var(--text);display:inline-flex;align-items:center;justify-content:center;gap:6px
 }
 .food-btn .ic{width:16px;height:16px}
-.food-btn:active{background:var(--line)}
-.food-btn.danger{flex:.7;color:#9B6468;background:#F8ECEC;border-color:#EBCFD1}
+.food-btn:active{transform:translateY(1px);background:var(--line)}
+.food-card.editing .food-edit-toggle{background:var(--green-d);border-color:var(--green-d);color:#fff;box-shadow:0 6px 14px rgba(63,96,78,.16)}
+.food-card.editing .food-read-only{display:none}
+.food-btn.danger{color:#9B6468;background:#FFF8F7;border-color:#EBCFD1}
 .essay-note{
   padding:16px;display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,251,.97),rgba(246,250,246,.92));
   border:1px solid rgba(118,169,138,.14);box-shadow:var(--shadow)
@@ -1651,7 +1676,20 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 }
 </style>
 </head>
-<body>
+<body class="auth-pending">
+<section id="authGate" class="auth-gate" aria-label="登录">
+  <div class="auth-gate-copy"><small>KOREA TRIP JOURNAL</small><strong>在璐上</strong><p>可乐与金鹿的旅行资料。登录后，修改会在你们的设备之间安全同步。</p></div>
+  <form id="authForm" class="auth-card">
+    <h1>欢迎回来</h1>
+    <p>使用你自己的账号进入共同旅程。</p>
+    <div class="auth-field"><label for="authUsername">用户名</label><input id="authUsername" name="username" type="text" autocomplete="username" required></div>
+    <div class="auth-field"><label for="authPassword">密码</label><input id="authPassword" name="password" type="password" autocomplete="current-password" required></div>
+    <button id="authSubmit" class="auth-submit" type="submit">登录</button>
+    <button id="visitorSubmit" class="auth-visitor" type="button">以访客身份浏览</button>
+    <p class="auth-visitor-note">访客可以查看共同资料，不能新增、编辑或修改。</p>
+    <p id="authError" class="auth-error" role="alert" aria-live="polite"></p>
+  </form>
+</section>
 
 <!-- 顶部 App 头 -->
 <header id="appHeader">
@@ -1659,6 +1697,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <button class="brand" id="tripSwitcher" type="button" aria-label="切换旅程" aria-haspopup="dialog"><i class="ti" data-ic="leaf"></i>Korea Trip</button>
     <span id="tb-phase">…</span>
     <span id="tb-time"></span>
+    <button id="inspirationCollectBtn" type="button"><i class="ti" data-ic="plus"></i>收下灵感</button>
   </div>
 </header>
 
@@ -1680,6 +1719,10 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
 
     <button id="ctaPlan"><i class="ti" data-ic="map"></i>开始规划旅程</button>
+    <section class="inspiration-box" aria-labelledby="inspirationTitle">
+      <div class="inspiration-head"><div><h2 id="inspirationTitle">灵感收集箱</h2><p>在小红书点“复制链接”，回到这里一按就收好。</p></div></div>
+      <div id="inspirationList" class="inspiration-list"></div>
+    </section>
     <div class="short-trip-banner" aria-live="polite"></div>
 
     <div class="qcards">
@@ -2059,7 +2102,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         </div>
         <div class="flight-date">12/26 · 02:25 起飞 → 06:50 到达</div>
         <div class="flight-data">
-          <div class="flight-data-item"><span>座位号</span><strong>可乐 34G · 金鹿 34H</strong></div>
+          <div class="flight-data-item"><span>座位号</span><strong>可乐 34G · 仇金璐 34H</strong></div>
           <div class="flight-data-item"><span>预订号</span><strong>DM3UK6</strong></div>
           <div class="flight-data-item"><span>飞行时长</span><strong>03小时25分</strong></div>
           <div class="flight-data-item"><span>机型</span><strong>空客 A330-300（大）</strong></div>
@@ -2087,7 +2130,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         </div>
         <div class="flight-date">1/3 · 22:10 起飞 → 1/4 01:15 到达</div>
         <div class="flight-data">
-          <div class="flight-data-item"><span>座位号</span><strong>可乐 38G · 金鹿 38H</strong></div>
+          <div class="flight-data-item"><span>座位号</span><strong>可乐 38G · 仇金璐 38H</strong></div>
           <div class="flight-data-item"><span>预订号</span><strong>DM3UK6</strong></div>
           <div class="flight-data-item"><span>飞行时长</span><strong>04小时05分</strong></div>
           <div class="flight-data-item"><span>机型</span><strong>空客 A330-300（大）</strong></div>
@@ -2106,7 +2149,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
     <div class="flight-source-note">
       <span>预订号 DM3UK6</span>
-      <span>张子豪票号 9884869687272 · 仇金鹿票号 9884869687271</span>
+      <span>张子豪票号 9884869687272 · 仇金璐票号 9884869687271</span>
       <span>登机口和登机时间以正式登机牌及航司值机页面为准</span>
     </div>
 
@@ -2170,14 +2213,14 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <div class="food-collection">
         <div class="food-collection-head">
           <h3>釜山收藏</h3>
-          <button class="food-add-btn" type="button" data-act="newfood" data-city="busan">+ 新增</button>
+          <button class="food-add-btn" type="button" data-act="newfood" data-city="busan"><i class="ti" data-ic="plus"></i>新增收藏</button>
         </div>
         <div class="food-memory-grid" id="foodBusan"></div>
       </div>
       <div class="food-collection">
         <div class="food-collection-head">
           <h3>首尔收藏</h3>
-          <button class="food-add-btn" type="button" data-act="newfood" data-city="seoul">+ 新增</button>
+          <button class="food-add-btn" type="button" data-act="newfood" data-city="seoul"><i class="ti" data-ic="plus"></i>新增收藏</button>
         </div>
         <div class="food-memory-grid" id="foodSeoul"></div>
       </div>
@@ -2343,6 +2386,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
 <!-- 证件/文件预览器：站内保留返回网页和文件操作 -->
 <div id="docViewerBackdrop"></div>
+<div id="inspirationToast" class="inspiration-toast" role="status" aria-live="polite"></div>
 <div id="docViewer" role="dialog" aria-modal="true" aria-labelledby="docViewerTitle">
   <div class="doc-viewer-top">
     <button class="doc-viewer-back" id="docViewerBack" type="button"><span aria-hidden="true">‹</span>返回文件</button>
@@ -2383,6 +2427,11 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </button>
     <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic">🇭🇰</span><span class="trip-option-copy"><span class="trip-option-title">香港旅行</span><span class="trip-option-meta">Hong Kong Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
     <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic">🌊</span><span class="trip-option-copy"><span class="trip-option-title">厦门旅行</span><span class="trip-option-meta">Xiamen Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
+  </div>
+  <div class="list-toolbar">
+    <button id="tripExportBtn" type="button" class="list-add-btn">导出备份</button>
+    <button type="button" class="list-add-btn" onclick="recoverSyncConflicts()">备份后读取最新版本</button>
+    <button id="authLogoutBtn" type="button" class="list-add-btn">退出账号</button>
   </div>
 </div>
 
@@ -2441,10 +2490,10 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   </div>
   <div class="field"><label>可见范围</label>
     <div class="seg" id="expVisibilitySeg">
-      <button class="active" data-v="private">隐藏 · 仅自己可见</button>
-      <button data-v="public">公开 · 双方可见并统计</button>
+      <button class="active" data-v="public">公开 · 双方可见并统计</button>
+      <button data-v="private">隐藏 · 同步保留</button>
     </div>
-    <div class="field-hint">隐藏支出只保存在当前设备，不会上传或出现在对方的统计中。</div>
+    <div class="field-hint">隐藏支出仍会同步到其他设备，只是不进入默认统计。</div>
   </div>
   <div class="field"><label>谁付的</label>
     <div class="seg" id="expPayerSeg">
@@ -2582,12 +2631,111 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
 <script>
 /* ================= 常量 ================= */
-const API_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api';
+const API_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com/korea-api';
+const CLOUDBASE_PUBLISHABLE_KEY = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjlkMWRjMzFlLWI0ZDAtNDQ4Yi1hNzZmLWIwY2M2M2Q4MTQ5OCJ9.eyJpc3MiOiJodHRwczovL2hhbm9pLWQ0Z2o4dmQycTFlN2EzZGMwLmFwLXNoYW5naGFpLnRjYi1hcGkudGVuY2VudGNsb3VkYXBpLmNvbSIsInN1YiI6ImFub24iLCJhdWQiOiJoYW5vaS1kNGdqOHZkMnExZTdhM2RjMCIsImV4cCI6NDA4NjQ4NDYwMiwiaWF0IjoxNzgyODAxNDAyLCJub25jZSI6IjcyMng2S2VuUm5TMXFCM2xuRERWU0EiLCJhdF9oYXNoIjoiNzIyeDZLZW5SblMxcUIzbG5ERFZTQSIsIm5hbWUiOiJBbm9ueW1vdXMiLCJzY29wZSI6ImFub255bW91cyIsInByb2plY3RfaWQiOiJoYW5vaS1kNGdqOHZkMnExZTdhM2RjMCIsIm1ldGEiOnsicGxhdGZvcm0iOiJQdWJsaXNoYWJsZUtleSJ9LCJ1c2VyX3R5cGUiOiIiLCJjbGllbnRfdHlwZSI6ImNsaWVudF91c2VyIiwiaXNfc3lzdGVtX2FkbWluIjpmYWxzZX0.VLjYWcK8zfnIYQ74T5XWnLj1NA7NAxX6eMwIkJqZnO9RsAgLSArkttB6UMchfZplexGhe4K9DoHmzeQ1Lyxd07AWxygxnVG1nZX66u9DEm9vPWtijIEZqGQ7h6f5iFGtqtmRfp1IXW1lcXff9m6piNGQcydZHYnazOp4Baht8tVEPMb9lWczyh9eNSJH9yzcjk-NPul4UtYczZqzRPobxo-ki4zoDxvd4VVF8t8hvBZzaAdwuvRvQ-F81hxKhp4xRRRakGcMOzPq7Y3ccj-pEg5b9xiD52vyjewO_vloguuz5kes-JhAJLosxt51MAmULkz0HxnX7Fy_UCpmzX5n_Q';
 const FX_RATES = { CNY: 1, USD: 6.73, KRW: 1 / 202.06 };
 const FX_RATES_KEY = 'kr_fx_rates_latest';
 const FX_RATES_URL = `${API_BASE}/fx`;
 let FX_UPDATED_AT = '';
 const PEOPLE = ['可乐', '金鹿'];
+let cloudApp = null;
+let cloudAuth = null;
+let accessRole = 'owner';
+const OWNER_UIDS = new Set(['2097823157655728129', '2097823165424365569']);
+const VISITOR_SESSION_KEY = 'kr_visitor_session';
+let resolveAuthReady;
+const authReady = new Promise((resolve) => { resolveAuthReady = resolve; });
+function isVisitor() { return accessRole === 'visitor'; }
+function ownerOnly(message = '访客只能查看旅行资料，不能修改内容。') {
+  if (!isVisitor()) return true;
+  alert(message);
+  return false;
+}
+function applyAccessRole(session) {
+  accessRole = session?.user?.is_anonymous || !OWNER_UIDS.has(String(session?.user?.id || '')) ? 'visitor' : 'owner';
+  document.body.classList.toggle('visitor-mode', isVisitor());
+}
+function revealAuthenticatedApp(session) {
+  applyAccessRole(session);
+  document.body.classList.remove('auth-pending');
+  const gate = document.getElementById('authGate');
+  if (gate) gate.hidden = true;
+  resolveAuthReady();
+}
+async function currentAuthSession() {
+  if (!cloudAuth) return null;
+  const { data, error } = await cloudAuth.getSession();
+  if (error) throw error;
+  const session = data?.session;
+  return session || null;
+}
+async function authenticatedFetch(input, init = {}) {
+  await authReady;
+  const session = await currentAuthSession();
+  if (!session?.access_token) throw new Error('登录已失效，请重新打开页面登录');
+  const headers = new Headers(init.headers || {});
+  headers.set('Authorization', `Bearer ${session.access_token}`);
+  return fetch(input, { ...init, headers });
+}
+function initAuthentication() {
+  const form = document.getElementById('authForm');
+  const errorEl = document.getElementById('authError');
+  const submit = document.getElementById('authSubmit');
+  const visitorSubmit = document.getElementById('visitorSubmit');
+  try {
+    if (!window.cloudbase?.init) throw new Error('登录组件加载失败，请检查网络后刷新');
+    cloudApp = window.cloudbase.init({ env: 'hanoi-d4gj8vd2q1e7a3dc0', accessKey: CLOUDBASE_PUBLISHABLE_KEY });
+    cloudAuth = cloudApp.auth();
+  } catch (error) {
+    errorEl.textContent = error.message;
+  }
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!cloudAuth) { errorEl.textContent = '登录组件尚未加载，请检查网络后刷新。'; return; }
+    submit.disabled = true;
+    errorEl.textContent = '';
+    try {
+      const username = document.getElementById('authUsername').value.trim();
+      const password = document.getElementById('authPassword').value;
+      const { error } = await cloudAuth.signInWithPassword({ username, password });
+      if (error) throw error;
+      const session = await currentAuthSession();
+      if (!session) throw new Error('登录未完成，请重试');
+      sessionStorage.removeItem(VISITOR_SESSION_KEY);
+      document.getElementById('authPassword').value = '';
+      revealAuthenticatedApp(session);
+    } catch (error) {
+      errorEl.textContent = error?.message || '用户名或密码不正确。';
+    } finally { submit.disabled = false; }
+  });
+  visitorSubmit.addEventListener('click', async () => {
+    if (!cloudAuth) { errorEl.textContent = '登录组件尚未加载，请检查网络后刷新。'; return; }
+    visitorSubmit.disabled = true; errorEl.textContent = '';
+    try {
+      const { error } = await cloudAuth.signInAnonymously();
+      if (error) throw error;
+      const session = await currentAuthSession();
+      if (!session?.user?.is_anonymous) throw new Error('访客登录未完成，请重试');
+      sessionStorage.setItem(VISITOR_SESSION_KEY, '1');
+      revealAuthenticatedApp(session);
+    } catch (error) { errorEl.textContent = error?.message || '访客入口暂不可用，请稍后重试。'; }
+    finally { visitorSubmit.disabled = false; }
+  });
+  currentAuthSession().then((session) => {
+    if (session && (!session.user?.is_anonymous || sessionStorage.getItem(VISITOR_SESSION_KEY) === '1')) revealAuthenticatedApp(session);
+  }).catch((error) => { errorEl.textContent = error?.message || '登录状态读取失败。'; });
+}
+initAuthentication();
+const VISITOR_WRITE_ACTIONS = new Set(['add-item', 'attach', 'delete', 'drag', 'edit', 'edit-day', 'edit-row', 'newfood', 'photo', 'remove-photo', 'remove-row', 'switch-cover', 'toggle', 'up']);
+document.addEventListener('click', (event) => {
+  if (!isVisitor()) return;
+  const action = event.target.closest('[data-act]')?.dataset.act;
+  const control = event.target.closest('#todoAdd,#checklistAdd,#essayAddBtn,#docsNewBtn,#tripManageBtn,#tripNewBtn,#tripImportBtn,#expSave,#itAddRow,#listSave,#listDelete,#essaySave,#essayDelete,#tripSettingsSave,#tripDeleteBtn,.list-add-btn,.exp-edit');
+  if (!VISITOR_WRITE_ACTIONS.has(action) && !control) return;
+  event.preventDefault(); event.stopImmediatePropagation();
+  ownerOnly();
+}, true);
+function displayPersonName(name) { return String(name || '').trim() === '仇金璐' ? '金鹿' : String(name || '').trim(); }
 
 window.addEventListener('error', (event) => {
   const image = event.target;
@@ -2613,8 +2761,8 @@ const TRIP_DATA = {
       { title: '冬季限定', note: '滑冰场、冬日市集、节日菜单和只在冬天出现的体验。', status: '持续收集' }
     ],
     flights: [
-      { no: 'OZ372', from: 'SZX', fromName: '深圳宝安 T3', to: 'ICN', toName: '首尔仁川 T2', date: '12/26 · 02:25 起飞 → 06:50 到达', seats: '可乐 34G\\n金鹿 34H', airline: '韩亚航空 · Asiana Airlines', booking: 'DM3UK6', duration: '03小时25分', aircraft: '空客 A330-300（大）' },
-      { no: 'OZ371', from: 'ICN', fromName: '首尔仁川 T2', to: 'SZX', toName: '深圳宝安 T3', date: '1/3 · 22:10 起飞 → 1/4 01:15 到达', seats: '可乐 38G\\n金鹿 38H', airline: '韩亚航空 · Asiana Airlines', booking: 'DM3UK6', duration: '04小时05分', aircraft: '空客 A330-300（大）' }
+      { no: 'OZ372', from: 'SZX', fromName: '深圳宝安 T3', to: 'ICN', toName: '首尔仁川 T2', date: '12/26 · 02:25 起飞 → 06:50 到达', seats: '可乐 34G\\n仇金璐 34H', airline: '韩亚航空 · Asiana Airlines', booking: 'DM3UK6', duration: '03小时25分', aircraft: '空客 A330-300（大）' },
+      { no: 'OZ371', from: 'ICN', fromName: '首尔仁川 T2', to: 'SZX', toName: '深圳宝安 T3', date: '1/3 · 22:10 起飞 → 1/4 01:15 到达', seats: '可乐 38G\\n仇金璐 38H', airline: '韩亚航空 · Asiana Airlines', booking: 'DM3UK6', duration: '04小时05分', aircraft: '空客 A330-300（大）' }
     ],
     hotels: [
       { name: '釜山站ASTI酒店', en: 'ASTI Hotel Busan Station', date: '12/26 - 12/29 · 3 晚', checkIn: '12/26 15:00 后', checkOut: '12/29 11:00 前', room: '景城标准双人床房', roomEn: 'Standard Double Room · City View', address: '韩国釜山广域市东区中央大路214番街7-8号', addressEn: '7-8 Jungang-daero 214beon-gil, Dong-gu, Busan 48733', note: '已确认 · 确认号 26492778 · 订单号 1128150678962700' },
@@ -2687,11 +2835,41 @@ const TRIP_DATA = {
 };
 const TRIP_REGISTRY = Object.values(TRIP_DATA);
 const ACTIVE_TRIP_KEY = 'kr_active_trip_id';
+const ACTIVE_TRIP_MIGRATION_KEY = 'kr_active_trip_migration_v2';
 const CUSTOM_TRIPS_KEY = 'kr_custom_trips';
 function storedTripId() {
-  try { return localStorage.getItem(ACTIVE_TRIP_KEY) || TRIP_REGISTRY[0].id; } catch { return TRIP_REGISTRY[0].id; }
+  try {
+    // Existing devices may have retained a test trip locally. Align them once
+    // with the shared Korea trip; later manual trip switches remain persistent.
+    if (!localStorage.getItem(ACTIVE_TRIP_MIGRATION_KEY)) {
+      localStorage.setItem(ACTIVE_TRIP_KEY, 'korea-2026');
+      localStorage.setItem(ACTIVE_TRIP_MIGRATION_KEY, '1');
+    }
+    return localStorage.getItem(ACTIVE_TRIP_KEY) || TRIP_REGISTRY[0].id;
+  } catch { return TRIP_REGISTRY[0].id; }
 }
-function customTrips() { try { return JSON.parse(localStorage.getItem(CUSTOM_TRIPS_KEY) || '[]'); } catch { return []; } }
+function customTrips() {
+  try {
+    const trips = JSON.parse(localStorage.getItem(CUSTOM_TRIPS_KEY) || '[]');
+    return Array.isArray(trips) ? trips.filter((trip) => trip && trip.id) : [];
+  } catch { return []; }
+}
+async function syncCustomTrips() {
+  const local = customTrips();
+  const remote = await apiGet('/trips', 'kr_cache_custom_trips', []);
+  const merged = new Map();
+  [...remote, ...local].forEach((trip) => {
+    if (!trip?.id) return;
+    const previous = merged.get(trip.id);
+    if (!previous || Number(trip.updatedAt || 0) >= Number(previous.updatedAt || 0)) merged.set(trip.id, trip);
+  });
+  const items = [...merged.values()];
+  if (JSON.stringify(items) !== JSON.stringify(remote) && items.length) await apiPost('/trips', { items });
+  if (JSON.stringify(items) !== JSON.stringify(local)) {
+    try { localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(items)); } catch {}
+  }
+  return items;
+}
 function allTrips() {
   const merged = new Map(TRIP_REGISTRY.map((trip) => [trip.id, trip]));
   customTrips().forEach((trip) => {
@@ -2734,6 +2912,7 @@ const PHOTO_FALLBACK = 'linear-gradient(135deg,#EEF7EF,#F1F9F9,#FFF9ED)';
 /* ================= 工具 ================= */
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const newRecordId = (prefix) => `${prefix}-${crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
 const fmtKR = (fmt) => new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Seoul', ...fmt });
 const pad = (n) => String(n).padStart(2, '0');
 function dl(ms) {
@@ -2750,10 +2929,97 @@ function tripPhase() {
 }
 function dayIndex() { return Math.min(currentTripData().days || 9, Math.max(1, Math.floor((Date.now() - D1) / 86400000) + 1)); }
 const cache = {
-  key(k, tripId = activeTrip().id) { return String(k).startsWith('kr_') && k !== 'kr_active_trip_id' ? `${k}::${tripId}` : k; },
+  key(k, tripId = activeTrip().id) {
+    const globalKeys = new Set(['kr_active_trip_id', 'kr_cache_custom_trips']);
+    return String(k).startsWith('kr_') && !globalKeys.has(k) ? `${k}::${tripId}` : k;
+  },
   get(k, tripId) { try { return JSON.parse(localStorage.getItem(this.key(k, tripId))); } catch { return null; } },
   set(k, v, tripId) { try { localStorage.setItem(this.key(k, tripId), JSON.stringify(v)); return true; } catch { return false; } }
 };
+function scopeTripItems(items, tripId, allowLegacy = false) {
+  if (!Array.isArray(items)) return [];
+  return items.filter((item) => item && (item.tripId === tripId || (allowLegacy && !item.tripId)));
+}
+const CLOUDBASE_ENV = 'hanoi-d4gj8vd2q1e7a3dc0';
+const DIRECT_COLLECTIONS = {
+  '/itinerary': 'kr_itinerary',
+  '/bucket-list': 'kr_bucketlist',
+  '/todos': 'kr_todos',
+  '/checklist': 'kr_checklist',
+  '/expenses': 'kr_expenses',
+  '/docs': 'kr_docs',
+  '/inspirations': 'kr_inspirations',
+  '/trips': 'kr_trips'
+};
+let liveSyncStarted = false;
+let liveSyncFallbackTimer = null;
+let liveSyncFallbackBusy = false;
+const liveAppliedSnapshots = new Map();
+function applyLiveDataset(path, items, tripId, force = false) {
+  if (!Array.isArray(items)) return;
+  if (!force && syncClient.pending(path, tripId)) return;
+  if (!force && document.querySelector('[role="dialog"].open')) return;
+  if (!force && ['/todos', '/checklist'].includes(path) && Date.now() - listLocalChangeAt < 2500) return;
+  if (!force && path === '/bucket-list' && Date.now() - bucketLocalChangeAt < 2500) return;
+  const currentTrip = activeTrip().id;
+  if (tripId !== currentTrip) return;
+  items = path === '/trips' ? items : scopeTripItems(items, tripId);
+  const snapshotKey = `${path}::${tripId}`;
+  const snapshot = JSON.stringify(items);
+  if (liveAppliedSnapshots.get(snapshotKey) === snapshot) return;
+  if (path === '/itinerary') {
+    currentItinerary = normalizeItinerary(items);
+    cache.set('kr_cache_itinerary', currentItinerary, tripId);
+    renderItinerary(currentItinerary); renderDayChips(); renderCalendar(); renderNextUp();
+  } else if (path === '/todos' && (force || Date.now() - listLocalChangeAt >= 2500)) {
+    todoItems = sortByOrder(items.map(normalizeTodo)); cache.set('kr_cache_todos', todoItems, tripId); renderTodos();
+  } else if (path === '/bucket-list' && (force || Date.now() - bucketLocalChangeAt >= 2500)) {
+    bucketItems = items; cache.set('kr_cache_bucketlist', bucketItems, tripId); renderBucket();
+  } else if (path === '/checklist' && (force || Date.now() - listLocalChangeAt >= 2500)) {
+    checklistItems = sortByOrder(items.map(normalizeChecklistItem)); cache.set('kr_cache_checklist', checklistItems, tripId); renderChecklist();
+  } else if (path === '/expenses') {
+    const privateItems = cache.get('kr_private_expenses', tripId) || [];
+    expenses = mergeExpenses(items, privateItems); cache.set('kr_cache_expenses', items, tripId); renderExpenses();
+  } else if (path === '/docs') {
+    docsData = items.filter(doc => !doc.kind || doc.kind === 'file').map(normalizeFileDoc).filter(shouldKeepFileDoc);
+    essayRecords = items.filter(doc => doc.kind === 'essay').map(normalizeEssayVault);
+    foodRecords = items.filter(doc => doc.kind === 'food').map(normalizeFoodRecord);
+    essayLegacyMeta = items.find(doc => doc.kind === 'essay-meta') || null;
+    cache.set('kr_docs', items, tripId); renderDocs(); renderEssay(); renderFood();
+  } else if (path === '/inspirations') {
+    inspirationItems = items.map(normalizeInspiration).sort((a, b) => b.createdAt - a.createdAt);
+    cache.set('kr_cache_inspirations', inspirationItems, tripId); renderInspirations();
+  } else if (path === '/trips') {
+    const custom = items.filter((trip) => trip?.id).map(({ _id, _openid, _createTime, _updateTime, ...trip }) => trip);
+    localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom)); renderTripPicker();
+  }
+  liveAppliedSnapshots.set(snapshotKey, snapshot);
+}
+async function startLiveSync() {
+  if (liveSyncStarted) return;
+  liveSyncStarted = true;
+  // Use the HTTP API as the canonical cross-device channel. Direct SDK
+  // watchers can report an empty snapshot on mobile before auth settles and
+  // overwrite valid data with zero items.
+  startLiveSyncFallback();
+}
+function startLiveSyncFallback() {
+  if (liveSyncFallbackTimer) return;
+  liveSyncFallbackTimer = setInterval(async () => {
+    if (liveSyncFallbackBusy || document.hidden) return;
+    liveSyncFallbackBusy = true;
+    try {
+      const tripId = activeTrip().id;
+      if (document.querySelector('[role="dialog"].open')) return;
+      await Promise.all(Object.keys(DIRECT_COLLECTIONS).map(async (path) => {
+        try {
+          const items = await syncClient.read(path, tripId);
+          if (items !== null) applyLiveDataset(path, items, tripId);
+        } catch (error) { console.warn('自动刷新暂不可用', path, error.message); }
+      }));
+    } finally { liveSyncFallbackBusy = false; }
+  }, 10000);
+}
 function activeTrip() {
   const id = storedTripId();
   return allTrips().find((trip) => trip.id === id) || TRIP_REGISTRY[0];
@@ -2856,7 +3122,7 @@ function closeTripSettings() {
   $('#tripSettingsSheet')?.classList.remove('open');
   tripSettingsId = null;
 }
-function saveTripSettings() {
+async function saveTripSettings() {
   const name = $('#tripNameInput').value.trim();
   const brand = $('#tripBrandInput').value.trim() || name;
   const startAt = $('#tripStartInput').value ? `${$('#tripStartInput').value}:00+08:00` : '';
@@ -2865,22 +3131,25 @@ function saveTripSettings() {
   const previous = tripSettingsId ? allTrips().find((trip) => trip.id === tripSettingsId) : null;
   const template = !previous && $('#tripTemplateInput').value ? allTrips().find((trip) => trip.id === $('#tripTemplateInput').value) : null;
   const base = previous || template || {};
-  const id = tripSettingsId || `trip-${Date.now()}`;
+  const id = tripSettingsId || newRecordId('trip');
   const cityNames = $('#tripCityInput').value.split(/[、,，]/).map((value) => value.trim()).filter(Boolean);
   const cityList = cityNames.length ? cityNames : [name];
   const cities = Object.fromEntries(cityList.map((city, index) => [index ? `city-${index + 1}` : 'main', { name: city, lat: 0, lon: 0 }]));
-  const draft = { ...base, id, name, brand, dates: `${startAt.slice(0, 10)}–${endAt.slice(0, 10)}`, startAt, endAt, transferAt: base.transferAt || startAt, newYearAt: base.newYearAt || endAt, days: Math.max(1, Math.ceil((new Date(endAt) - new Date(startAt)) / 86400000)), defaultCity: base.defaultCity || Object.keys(cities)[0], cities, heroImages: base.heroImages || [], itinerary: base.itinerary || [], content: 'ready', theme: $('#tripThemeInput').value, members: $('#tripMembersInput').value.split(/[、,，]/).map((value) => value.trim()).filter(Boolean), timezone: $('#tripTimezoneInput').value.trim() || 'Asia/Shanghai', cover: $('#tripCoverInput').value.trim() };
+  const draft = { ...base, id, name, brand, dates: `${startAt.slice(0, 10)}–${endAt.slice(0, 10)}`, startAt, endAt, transferAt: base.transferAt || startAt, newYearAt: base.newYearAt || endAt, days: Math.max(1, Math.ceil((new Date(endAt) - new Date(startAt)) / 86400000)), defaultCity: base.defaultCity || Object.keys(cities)[0], cities, heroImages: base.heroImages || [], itinerary: base.itinerary || [], content: 'ready', theme: $('#tripThemeInput').value, members: $('#tripMembersInput').value.split(/[、,，]/).map((value) => value.trim()).filter(Boolean), timezone: $('#tripTimezoneInput').value.trim() || 'Asia/Shanghai', cover: $('#tripCoverInput').value.trim(), updatedAt: Date.now() };
   const custom = customTrips().filter((trip) => trip.id !== id);
   custom.push(draft);
   localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom));
+  await apiPost('/trips', { items: custom });
   localStorage.setItem(ACTIVE_TRIP_KEY, id);
   closeTripSettings();
   window.location.reload();
 }
-function deleteTripSettings() {
+async function deleteTripSettings() {
   if (!tripSettingsId || TRIP_REGISTRY.some((trip) => trip.id === tripSettingsId)) return;
-  if (!confirm('删除这段旅程及其本机入口？云端资料不会自动删除。')) return;
-  localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(customTrips().filter((trip) => trip.id !== tripSettingsId)));
+  if (!confirm('删除这段旅程入口？该旅程的行程资料会保留，之后仍可用同一 ID 恢复。')) return;
+  const custom = customTrips().filter((trip) => trip.id !== tripSettingsId);
+  localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom));
+  await apiPost('/trips', { items: custom });
   localStorage.setItem(ACTIVE_TRIP_KEY, 'korea-2026');
   closeTripSettings();
   window.location.reload();
@@ -2893,7 +3162,12 @@ function exportTripBackup() {
   const trip = activeTrip();
   const cacheData = {};
   backupKeysForTrip(trip.id).forEach((key) => { cacheData[key] = localStorage.getItem(key); });
-  const payload = { format: 'zaishang-trip-backup', version: 1, exportedAt: new Date().toISOString(), trip, cacheData };
+  let pendingWrites = [];
+  try {
+    const queue = JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]');
+    pendingWrites = Array.isArray(queue) ? queue.filter(item => item?.tripId === trip.id && Array.isArray(item.items)) : [];
+  } catch {}
+  const payload = { format: 'zaishang-trip-backup', version: 1, exportedAt: new Date().toISOString(), trip, cacheData, pendingWrites };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -2901,6 +3175,12 @@ function exportTripBackup() {
   link.download = `${trip.id}-backup-${new Date().toISOString().slice(0, 10)}.json`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function recoverSyncConflicts() {
+  if (!confirm('先保留本机修改的备份，再读取已同步的最新版本。未同步的修改会留在备份中，是否继续？')) return;
+  exportTripBackup();
+  if (syncClient.archiveConflicts(activeTrip().id)) window.location.reload();
+  else alert('当前旅程没有需要处理的同步冲突。');
 }
 function importTripBackup(file) {
   if (!file) return;
@@ -2917,6 +3197,29 @@ function importTripBackup(file) {
         const targetKey = key.endsWith(sourceSuffix) ? `${key.slice(0, -sourceSuffix.length)}::${activeTrip().id}` : '';
         if (targetKey) localStorage.setItem(targetKey, value);
       });
+      if (Array.isArray(payload.pendingWrites) && payload.pendingWrites.length) {
+        const targetTripId = activeTrip().id;
+        const allowedPaths = new Set(Object.keys(DIRECT_COLLECTIONS).filter((path) => path !== '/trips'));
+        let queue = [];
+        try {
+          const savedQueue = JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]');
+          if (Array.isArray(savedQueue)) queue = savedQueue.filter((item) => item?.tripId !== targetTripId);
+        } catch {}
+        const restored = payload.pendingWrites.filter((item) => allowedPaths.has(item?.path) && Array.isArray(item.items)).map((item) => ({
+          ...item,
+          id: String(item.id || newRecordId('restored')),
+          key: `${item.path}::${targetTripId}`,
+          tripId: targetTripId,
+          blocked: true,
+          error: '从备份恢复，确认内容后再处理同步冲突'
+        }));
+        localStorage.setItem('kr_sync_queue_v2', JSON.stringify([...queue, ...restored]));
+        const cacheKeyByPath = {
+          '/itinerary': 'kr_cache_itinerary', '/todos': 'kr_cache_todos', '/checklist': 'kr_cache_checklist',
+          '/bucket-list': 'kr_cache_bucketlist', '/expenses': 'kr_cache_expenses', '/docs': 'kr_docs'
+        };
+        restored.forEach((item) => cache.set(cacheKeyByPath[item.path], item.items, targetTripId));
+      }
       if (payload.trip.id === activeTrip().id) {
         const custom = customTrips().filter((trip) => trip.id !== payload.trip.id);
         if (!TRIP_REGISTRY.some((trip) => trip.id === payload.trip.id)) {
@@ -2981,76 +3284,129 @@ function initTripPicker() {
   $('#tripSettingsCancel')?.addEventListener('click', closeTripSettings);
   $('#tripDeleteBtn')?.addEventListener('click', deleteTripSettings);
   $('#tripExportBtn')?.addEventListener('click', exportTripBackup);
+  $('#authLogoutBtn')?.addEventListener('click', async () => {
+    try { await cloudAuth?.signOut(); } finally { window.location.reload(); }
+  });
   $('#tripImportBtn')?.addEventListener('click', () => $('#tripImportInput')?.click());
   $('#tripImportInput')?.addEventListener('change', (event) => importTripBackup(event.target.files?.[0]));
   if (!localStorage.getItem(ACTIVE_TRIP_KEY)) {
     setTimeout(openTripPicker, 180);
   }
 }
-async function apiGet(path, cacheKey, fallback) {
-  const tripId = activeTrip().id;
-  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  const timer = controller ? setTimeout(() => controller.abort(), 3500) : null;
-  try {
-    const joiner = path.includes('?') ? '&' : '?';
-    const res = await fetch(`${API_BASE}${path}${joiner}tripId=${encodeURIComponent(tripId)}`, controller ? { signal: controller.signal } : undefined);
-    const json = await res.json();
-    if (json.success && Array.isArray(json.data)) {
-      cache.set(cacheKey, json.data, tripId);
-      return json.data;
+const syncWarnings = new Set();
+const syncClient = createSyncClient({
+  storage: localStorage, fetcher: authenticatedFetch, baseUrl: API_BASE,
+  online: () => navigator.onLine !== false,
+  onStatus(path, state, tripId, message) {
+    if (tripId !== activeTrip().id) return;
+    const kind = path === '/todos' ? 'todos' : path === '/checklist' ? 'checklist' : null;
+    if (kind) setListSync(kind, state === 'saved' ? 'saved' : state === 'conflict' ? 'error' : 'saving', state === 'saved' ? '已同步' : state === 'conflict' ? '修改已保留，需要处理冲突' : '已保存，待同步');
+    if (state === 'conflict' && !syncWarnings.has(path)) {
+      syncWarnings.add(path);
+      alert((message || '另一台设备修改了这份清单') + '。你的修改已保留，请在旅程菜单导出备份；不会覆盖其他设备的数据。');
     }
-    throw new Error(json.error || 'bad response');
-  } catch (err) {
-    const cached = cache.get(cacheKey, tripId);
-    if (cached) return cached;
-    return fallback || [];
-  } finally {
-    if (timer) clearTimeout(timer);
   }
+});
+async function apiGet(path, cacheKey, fallback, tripId = activeTrip().id) {
+  try {
+    const fresh = await syncClient.read(path, tripId);
+    if (fresh !== null) {
+      cache.set(cacheKey, fresh, tripId);
+      return fresh;
+    }
+  } catch (error) { console.warn('读取暂不可用，保留已保存内容', path, error.message); }
+  const pending = syncClient.pending(path, tripId);
+  if (pending) return pending.items;
+  const cached = cache.get(cacheKey, tripId);
+  return Array.isArray(cached) ? cached : (fallback || []);
 }
 const OFFLINE_QUEUE_KEY = 'kr_offline_write_queue';
 function readOfflineQueue() { try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]'); } catch { return []; } }
-function queueOfflineWrite(path, body, tripId = activeTrip().id) {
-  const queue = readOfflineQueue();
-  queue.push({ id: `${Date.now()}-${Math.random().toString(16).slice(2)}`, path, body, tripId, queuedAt: Date.now() });
-  try { localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue.slice(-40))); } catch {}
-}
-async function flushOfflineQueue() {
-  if (typeof navigator !== 'undefined' && navigator.onLine === false) return;
-  const queue = readOfflineQueue();
-  if (!queue.length) return;
-  const pending = [];
-  for (const item of queue) {
-    try {
-      const res = await fetch(API_BASE + item.path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...(item.body || {}), tripId: item.tripId }) });
-      const json = await res.json();
-      if (!res.ok || !json.success) throw new Error('sync failed');
-    } catch { pending.push(item); }
-  }
-  try { localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(pending)); } catch {}
-}
+async function flushOfflineQueue() { return isVisitor() ? undefined : syncClient.flush(); }
 async function apiPost(path, body) {
+  if (!ownerOnly()) throw new Error('访客不能保存修改');
   const tripId = activeTrip().id;
-  if (typeof navigator !== 'undefined' && navigator.onLine === false) { queueOfflineWrite(path, body, tripId); return { success: true, queued: true }; }
-  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
+  const result = await syncClient.write(path, tripId, body.items);
+  if (Array.isArray(result.data) && !result.queued && !result.conflict) applyLiveDataset(path, result.data, tripId, true);
+  return result;
+}
+
+/* ================= 灵感收集箱 ================= */
+let inspirationItems = [];
+function sourceUrlFromText(text) {
+  const match = String(text || '').match(/https?:\/\/[^\s，。；）】]+/i);
+  return match ? match[0] : '';
+}
+function normalizeInspiration(item, idx = 0) {
+  const sourceText = String(item.sourceText || item.text || '').trim().slice(0, 4000);
+  const sourceUrl = String(item.sourceUrl || item.url || sourceUrlFromText(sourceText)).trim();
+  const stripped = sourceText.replace(/https?:\/\/[^\s，。；）】]+/ig, '').replace(/^(复制|打开).{0,20}[：:]/, '').trim();
+  return {
+    id: item.id || item._id || `inspiration-${idx + 1}`,
+    tripId: item.tripId || activeTrip().id,
+    kind: 'inspiration',
+    title: String(item.title || stripped.split(/\n/)[0] || '小红书旅行灵感').trim().slice(0, 100),
+    sourceUrl,
+    sourceText,
+    createdAt: Number(item.createdAt) || Date.now(),
+    updatedAt: Number(item.updatedAt) || Date.now()
+  };
+}
+function inspirationTime(value) {
+  return new Date(value).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
+}
+function renderInspirations() {
+  const container = $('#inspirationList');
+  if (!container) return;
+  const items = inspirationItems.filter((item) => item.tripId === activeTrip().id).slice(0, 4);
+  container.innerHTML = items.length ? items.map((item) => `<article class="inspiration-item"><div class="inspiration-item-copy"><div class="inspiration-item-title">${esc(item.title)}</div><div class="inspiration-item-meta">小红书灵感 · ${inspirationTime(item.createdAt)}</div></div>${item.sourceUrl ? `<a class="inspiration-open" href="${esc(item.sourceUrl)}" target="_blank" rel="noopener">打开原帖</a>` : ''}</article>`).join('') : '<div class="inspiration-empty">看到想去的店或攻略，复制链接后点右上角“收下灵感”。</div>';
+}
+function showInspirationToast(message) {
+  const toast = $('#inspirationToast');
+  if (!toast) return;
+  toast.textContent = message; toast.classList.add('show');
+  clearTimeout(showInspirationToast.timer);
+  showInspirationToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+async function saveInspiration(raw, suppliedTitle = '') {
+  if (!ownerOnly()) return false;
+  const text = String(raw || '').trim();
+  const sourceUrl = sourceUrlFromText(text);
+  if (!text && !sourceUrl) throw new Error('没有发现可收集的分享内容');
+  const candidate = normalizeInspiration({ id: newRecordId('idea'), tripId: activeTrip().id, title: suppliedTitle, sourceText: text, sourceUrl, createdAt: Date.now(), updatedAt: Date.now() });
+  const duplicate = inspirationItems.find((item) => item.tripId === candidate.tripId && item.sourceUrl && item.sourceUrl === candidate.sourceUrl);
+  if (duplicate) { showInspirationToast('这条灵感已经收好啦'); return true; }
+  inspirationItems = [candidate, ...inspirationItems];
+  cache.set('kr_cache_inspirations', inspirationItems, activeTrip().id); renderInspirations();
+  await apiPost('/inspirations', { items: inspirationItems.filter((item) => item.tripId === activeTrip().id) });
+  showInspirationToast('已收进灵感箱');
+  return true;
+}
+async function collectClipboardInspiration() {
   try {
-    const res = await fetch(API_BASE + path, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...(body || {}), tripId }),
-      ...(controller ? { signal: controller.signal } : {})
-    });
-    const json = await res.json();
-    if (!json.success) throw Object.assign(new Error(json.error || 'bad response'), { remote: true });
-    return json;
-  } catch (err) {
-    if (err.remote) throw err;
-    queueOfflineWrite(path, body, tripId);
-    return { success: true, queued: true };
-  } finally {
-    if (timer) clearTimeout(timer);
-  }
+    if (!navigator.clipboard?.readText) throw new Error('请先在小红书点“复制链接”');
+    const text = await navigator.clipboard.readText();
+    await saveInspiration(text);
+  } catch (error) { alert(error?.message || '没有读到分享内容。请在小红书点“复制链接”后再试一次。'); }
+}
+async function initInspirations() {
+  const tripId = activeTrip().id;
+  const cached = cache.get('kr_cache_inspirations', tripId) || [];
+  inspirationItems = cached.map(normalizeInspiration).filter((item) => item.tripId === tripId);
+  renderInspirations();
+  const fresh = await apiGet('/inspirations', 'kr_cache_inspirations', inspirationItems, tripId);
+  if (activeTrip().id !== tripId) return;
+  inspirationItems = fresh.map(normalizeInspiration).sort((a, b) => b.createdAt - a.createdAt);
+  cache.set('kr_cache_inspirations', inspirationItems, tripId); renderInspirations();
+  $('#inspirationCollectBtn')?.addEventListener('click', collectClipboardInspiration);
+}
+async function captureSharedInspiration() {
+  const query = new URLSearchParams(location.search);
+  const shared = [query.get('title'), query.get('text'), query.get('url')].filter(Boolean).join('\n').trim();
+  if (!shared || isVisitor()) return;
+  history.replaceState({}, '', `${location.pathname}${location.hash || '#home'}`);
+  try { await saveInspiration(shared, query.get('title') || ''); }
+  catch (error) { console.warn('分享内容暂未收集', error.message); }
 }
 
 /* ================= 手绘线条图标 ================= */
@@ -3521,14 +3877,20 @@ $('#ctaPlan').addEventListener('click', () => showTab('itinerary'));
 window.addEventListener('hashchange', () => showTab(location.hash.slice(1) || 'home', false));
 function initKeyboardViewport() {
   const viewport = window.visualViewport;
-  if (!viewport) return;
+  const updateBottomInset = () => {
+    const visualBottom = viewport ? viewport.height + viewport.offsetTop : window.innerHeight;
+    const inset = Math.max(0, Math.round(window.innerHeight - visualBottom));
+    document.documentElement.style.setProperty('--vv-bottom-inset', `${inset}px`);
+  };
   const update = () => {
     const focusedEditable = document.activeElement?.matches('input,select,textarea');
-    const keyboardLikelyOpen = Boolean(focusedEditable && window.innerHeight - viewport.height > 120);
+    const keyboardLikelyOpen = Boolean(focusedEditable && viewport && window.innerHeight - viewport.height > 120);
     document.body.classList.toggle('keyboard-open', keyboardLikelyOpen);
+    updateBottomInset();
   };
-  viewport.addEventListener('resize', update, { passive: true });
-  viewport.addEventListener('scroll', update, { passive: true });
+  viewport?.addEventListener('resize', update, { passive: true });
+  viewport?.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
   document.addEventListener('focusin', (event) => {
     if (window.matchMedia('(max-width: 767px)').matches && event.target.matches('input,select,textarea')) document.body.classList.add('keyboard-open');
   });
@@ -3930,7 +4292,7 @@ async function fetchWeather(city) {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
   try {
-    const res = await fetch(url, controller ? { signal: controller.signal } : undefined);
+    const res = await authenticatedFetch(url, controller ? { signal: controller.signal } : undefined);
     if (!res.ok) throw new Error('weather request failed');
     const json = await res.json();
     if (!json?.current || !json?.daily?.time || !json?.hourly?.time) throw new Error('weather response incomplete');
@@ -4299,6 +4661,8 @@ function catOf(it) {
 }
 function sanitizeItineraryItem(item, fallbackDay = 1, fallbackSort = 1) {
   return {
+    id: item.id || item.clientId || item._id || newRecordId('it'),
+    tripId: item.tripId || currentTripData().id,
     day: Number(item.day || fallbackDay),
     sortOrder: Number(item.sortOrder || fallbackSort),
     time: String(item.time || '').trim(),
@@ -4308,7 +4672,9 @@ function sanitizeItineraryItem(item, fallbackDay = 1, fallbackSort = 1) {
     mapUrl: String(item.mapUrl || '').trim(),
     photo: String(item.photo || '').trim(),
     dayTheme: String(item.dayTheme || '').trim(),
-    dayCover: String(item.dayCover || '').trim()
+    dayCover: String(item.dayCover || '').trim(),
+    createdAt: Number(item.createdAt) || Date.now(),
+    updatedAt: Number(item.updatedAt) || Date.now()
   };
 }
 function normalizeItinerary(list) {
@@ -4364,7 +4730,7 @@ function renderItineraryEditorRows() {
   const list = itineraryEditorRows.length ? itineraryEditorRows : [{ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' }];
   $('#itEditorList').innerHTML = list.map((row, idx) => {
     const photo = row.photo || '';
-    return `<div class="it-row" data-idx="${idx}">
+    return `<div class="it-row" data-idx="${idx}" data-id="${esc(row.id || '')}">
       <div class="it-row-top">
         <div class="it-row-title">${itineraryEditorSingleIndex != null ? '编辑这一条' : `条目 ${idx + 1}`}</div>
         <button class="it-row-remove" type="button" data-act="remove-row">删除</button>
@@ -4437,18 +4803,20 @@ function closeItSheet() {
   itineraryEditorCoverOnly = false;
 }
 function addItineraryRow() {
-  itineraryEditorRows.push({ time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
+  itineraryEditorRows.push({ id: newRecordId('it'), time: '', title: '', subtitle: '', detail: '', mapUrl: '', photo: '' });
   renderItineraryEditorRows();
 }
 function readItineraryRow(rowEl) {
   const get = (k) => rowEl.querySelector(`[data-k="${k}"]`)?.value || '';
   return {
+    id: rowEl.dataset.id || newRecordId('it'),
     time: get('time').trim(),
     title: get('title').trim(),
     subtitle: get('subtitle').trim(),
     detail: get('detail').trim(),
     mapUrl: get('mapUrl').trim(),
-    photo: get('photo').trim()
+    photo: get('photo').trim(),
+    updatedAt: Date.now()
   };
 }
 async function commitItinerarySheet() {
@@ -4473,7 +4841,8 @@ async function commitItinerarySheet() {
       day,
       sortOrder: target.sortOrder,
       dayTheme: target.dayTheme || dayThemeFor(source, day) || DAY_THEMES[day] || '',
-      dayCover: target.dayCover || dayCoverFor(source, day) || defaultDayArt(day)
+      dayCover: target.dayCover || dayCoverFor(source, day) || defaultDayArt(day),
+      updatedAt: Date.now()
     } : item);
     await saveItinerary(next);
     closeItSheet();
@@ -4484,6 +4853,7 @@ async function commitItinerarySheet() {
     if (!rows[0]) return;
     const next = {
       ...rows[0],
+      id: rows[0].id || newRecordId('it'),
       day,
       sortOrder: existing.length + 1,
       dayTheme: dayTheme || dayThemeFor(source, day) || DAY_THEMES[day] || '',
@@ -4496,11 +4866,13 @@ async function commitItinerarySheet() {
   const base = source.filter((item) => Number(item.day) !== day);
   const next = rows.length ? rows.map((row, idx) => ({
     ...row,
+    id: row.id || newRecordId('it'),
     day,
     sortOrder: idx + 1,
     dayTheme: dayTheme || DAY_THEMES[day] || '',
     dayCover: dayCover || defaultDayArt(day)
   })) : [{
+    id: newRecordId('it'),
     day,
     sortOrder: 1,
     time: '',
@@ -4775,12 +5147,13 @@ async function saveListSheet() {
   let item = id ? cfg.items.find((x) => x.id == id) : null;
   if (!item) {
     item = kind === 'todos'
-      ? normalizeTodo({ id: `todo-${Date.now()}`, title, note, done: false }, cfg.items.length)
-      : normalizeChecklistItem({ id: `cl-${Date.now()}`, text: title, note, done: false }, cfg.items.length);
+      ? normalizeTodo({ id: newRecordId('todo'), title, note, done: false, createdAt: Date.now(), updatedAt: Date.now() }, cfg.items.length)
+      : normalizeChecklistItem({ id: newRecordId('cl'), text: title, note, done: false, createdAt: Date.now(), updatedAt: Date.now() }, cfg.items.length);
     cfg.items.push(item);
   }
   item[cfg.titleKey] = title;
   item.note = note;
+  item.updatedAt = Date.now();
   cfg.render();
   closeListSheet();
   await cfg.persist();
@@ -4913,12 +5286,15 @@ $('#listDelete').addEventListener('click', deleteListSheetItem);
 let todoItems = [], todoTimer = null;
 function normalizeTodo(t, idx) {
   return {
-    id: t.id || t.clientId || `todo-${Date.now()}-${idx}`,
+    id: t.id || t.clientId || t._id || newRecordId('todo'),
+    tripId: t.tripId || currentTripData().id,
     sortOrder: Number.isFinite(Number(t.sortOrder)) ? Number(t.sortOrder) : idx + 1,
     emoji: t.emoji || '📋',
     title: t.title || '新待办',
     note: t.note || '',
-    done: Boolean(t.done)
+    done: Boolean(t.done),
+    createdAt: Number(t.createdAt) || Date.now(),
+    updatedAt: Number(t.updatedAt) || Date.now()
   };
 }
 function sortByOrder(items) {
@@ -4934,8 +5310,8 @@ async function persistTodos() {
   const payload = todoItems.map(normalizeTodo);
   cache.set('kr_cache_todos', payload);
   try {
-    await apiPost('/todos', { items: payload });
-    setListSync('todos', 'saved', '已同步');
+    const result = await apiPost('/todos', { items: payload });
+    setListSync('todos', result?.conflict ? 'error' : 'saved', result?.conflict ? '修改已保留，需要处理冲突' : result?.queued ? '已保存，待同步' : '已同步');
   } catch {
     setListSync('todos', 'error', '同步失败，已先存本机');
   }
@@ -4964,7 +5340,7 @@ async function handleTodoAction(action, id) {
   const idx = todoItems.findIndex((t) => t.id == id);
   const item = todoItems[idx];
   if (!item) return;
-  if (action === 'toggle') item.done = !item.done;
+  if (action === 'toggle') { item.done = !item.done; item.updatedAt = Date.now(); }
   if (action === 'drag') return;
   if (action === 'edit') { openListSheet('todos', id); return; }
   if (action === 'delete') {
@@ -4990,11 +5366,7 @@ async function initTodos() {
     if (Date.now() - listLocalChangeAt < 2500 || $('#listSheet').classList.contains('open')) return;
     todoItems = sortByOrder(fresh.map(normalizeTodo)); renderTodos();
   });
-  todoTimer = setInterval(async () => {
-    if (Date.now() - listLocalChangeAt < 2500 || $('#listSheet').classList.contains('open')) return;
-    const fresh = await apiGet('/todos', 'kr_cache_todos', tripSeed(EMBEDDED_TODOS));
-    todoItems = sortByOrder(fresh.map(normalizeTodo)); renderTodos();
-  }, 10000);
+  todoTimer = null;
 }
 
 /* ================= 打卡清单 ================= */
@@ -5016,14 +5388,12 @@ window.toggleBucket = async function (el) {
   if (!item) return;
   const prev = item.done;
   item.done = !item.done;
+  item.updatedAt = Date.now();
   bucketLocalChangeAt = Date.now();
   cache.set('kr_cache_bucketlist', bucketItems);
   renderBucket();
   try {
-    if (String(id).length > 20) {
-      const res = await fetch(`${API_BASE}/bucket-list/${id}?tripId=${encodeURIComponent(activeTrip().id)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ done: item.done, tripId: activeTrip().id }) });
-      if (!res.ok) throw new Error('bucket update failed');
-    }
+    await apiPost('/bucket-list', { items: bucketItems });
   } catch {
     item.done = prev;
     cache.set('kr_cache_bucketlist', bucketItems);
@@ -5037,22 +5407,21 @@ async function initBucket() {
     if (Date.now() - bucketLocalChangeAt < 2500) return;
     bucketItems = fresh; renderBucket();
   });
-  bucketTimer = setInterval(async () => {
-    if (Date.now() - bucketLocalChangeAt < 2500) return;
-    const fresh = await apiGet('/bucket-list', 'kr_cache_bucketlist', tripSeed(EMBEDDED_BUCKET));
-    bucketItems = fresh; renderBucket();
-  }, 10000);
+  bucketTimer = null;
 }
 
 /* ================= 行李清单 ================= */
 let checklistItems = [], checklistTimer = null;
 function normalizeChecklistItem(i, idx) {
   return {
-    id: i.id || i.clientId || `cl-${Date.now()}-${idx}`,
+    id: i.id || i.clientId || i._id || newRecordId('cl'),
+    tripId: i.tripId || currentTripData().id,
     sortOrder: Number.isFinite(Number(i.sortOrder)) ? Number(i.sortOrder) : idx + 1,
     text: i.text || '新行李',
     note: i.note || '',
-    done: Boolean(i.done)
+    done: Boolean(i.done),
+    createdAt: Number(i.createdAt) || Date.now(),
+    updatedAt: Number(i.updatedAt) || Date.now()
   };
 }
 async function persistChecklist() {
@@ -5062,8 +5431,8 @@ async function persistChecklist() {
   const payload = checklistItems.map(normalizeChecklistItem);
   cache.set('kr_cache_checklist', payload);
   try {
-    await apiPost('/checklist', { items: payload });
-    setListSync('checklist', 'saved', '已同步');
+    const result = await apiPost('/checklist', { items: payload });
+    setListSync('checklist', result?.conflict ? 'error' : 'saved', result?.conflict ? '修改已保留，需要处理冲突' : result?.queued ? '已保存，待同步' : '已同步');
   } catch {
     setListSync('checklist', 'error', '同步失败，已先存本机');
   }
@@ -5092,7 +5461,7 @@ async function handleChecklistAction(action, id) {
   const idx = checklistItems.findIndex((i) => i.id == id);
   const item = checklistItems[idx];
   if (!item) return;
-  if (action === 'toggle') item.done = !item.done;
+  if (action === 'toggle') { item.done = !item.done; item.updatedAt = Date.now(); }
   if (action === 'drag') return;
   if (action === 'edit') { openListSheet('checklist', id); return; }
   if (action === 'delete') {
@@ -5118,11 +5487,7 @@ async function initChecklist() {
     if (Date.now() - listLocalChangeAt < 2500 || $('#listSheet').classList.contains('open')) return;
     checklistItems = sortByOrder(fresh.map(normalizeChecklistItem)); renderChecklist();
   });
-  checklistTimer = setInterval(async () => {
-    if (Date.now() - listLocalChangeAt < 2500 || $('#listSheet').classList.contains('open')) return;
-    const fresh = await apiGet('/checklist', 'kr_cache_checklist', tripSeed(EMBEDDED_CHECKLIST));
-    checklistItems = sortByOrder(fresh.map(normalizeChecklistItem)); renderChecklist();
-  }, 10000);
+  checklistTimer = null;
 }
 
 /* ================= 记账 ================= */
@@ -5130,8 +5495,22 @@ let expenses = [], expensesTimer = null;
 const CATS = ['交通', '住宿', '餐饮', '门票', '购物', '其他'];
 const CAT_COLORS = { '交通': '#A7C8CF', '住宿': '#78AA8B', '餐饮': '#E2B96F', '门票': '#D7A0A5', '购物': '#A9B5BE', '其他': '#B9C4BD' };
 const CAT_ICONS = { '交通': 'train', '住宿': 'hotel', '餐饮': 'food', '门票': 'star', '购物': 'gift', '其他': 'receipt' };
-const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' }, visibilitySeg = { v: 'private' };
+const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' }, visibilitySeg = { v: 'public' };
 function isPrivateExpense(it) { return it.visibility === 'private'; }
+function expenseKey(it) {
+  return String(it?.clientId || it?.id || it?._id || `${it?.desc || ''}|${it?.amount || ''}|${it?.currency || ''}|${it?.createdAt || ''}`).trim();
+}
+function mergeExpenses(remoteItems = [], localItems = []) {
+  const seen = new Set();
+  const out = [];
+  [...remoteItems, ...localItems].forEach((item) => {
+    const key = expenseKey(item);
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    out.push(item);
+  });
+  return out;
+}
 function itemPerPersonRMB(it) {
   const rate = FX_RATES[it.currency] || 1;
   if (it.splitType === 'perPerson') return it.amount * rate;
@@ -5158,7 +5537,7 @@ async function refreshFxRates() {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
   try {
-    const res = await fetch(FX_RATES_URL, controller ? { signal: controller.signal } : undefined);
+    const res = await authenticatedFetch(FX_RATES_URL, controller ? { signal: controller.signal } : undefined);
     const data = await res.json();
     const usdPerCny = Number(data?.rates?.USD);
     const krwPerCny = Number(data?.rates?.KRW);
@@ -5223,14 +5602,17 @@ function renderExpenses() {
     const isTotal = it.splitType === 'total';
     const cat = expCatOf(it);
     const col = CAT_COLORS[cat];
-    const visibilityLabel = isPrivateExpense(it) ? '<span class="exp-visibility">仅自己可见</span>' : '';
+    const visibilityLabel = isPrivateExpense(it) ? '<span class="exp-visibility">隐藏</span>' : '';
     return `<div class="exp-row" data-id="${esc(it._id || it.clientId)}">
       <span class="exp-ic" style="--eic-c:${col};--eic:${col}1f">${ic(CAT_ICONS[cat])}</span>
       <span class="exp-main"><span class="exp-desc">${esc(it.desc)}<span class="exp-cat" style="--cc:${col};--cc-l:${col}1f">${cat}</span>${visibilityLabel}</span>
-        <div class="exp-meta">${isTotal ? '总额平摊' : '人均'} · ${esc((it.people && it.people[0]) || '')}${it.people && it.people.length > 1 ? ' & ' + esc(it.people[1]) : ''} · ¥${itemPerPersonRMB(it).toFixed(0)}/人</div></span>
+        <div class="exp-meta">${isTotal ? '总额平摊' : '人均'} · ${esc(displayPersonName(it.people && it.people[0]))}${it.people && it.people.length > 1 ? ' & ' + esc(displayPersonName(it.people[1])) : ''} · ¥${itemPerPersonRMB(it).toFixed(0)}/人</div></span>
       <span class="exp-amt"><span class="ea-main">¥${(it.amount * (FX_RATES[it.currency] || 1)).toFixed(0)}</span>
         <div class="ea-sub">${curSym}${Number(it.amount).toLocaleString()}${isTotal ? ' 总额' : '/人'}</div></span>
-      <button class="exp-del" onclick="delExpense('${esc(it._id || it.clientId)}')">${ic('x')}</button>
+      <span class="exp-actions">
+        <button class="exp-edit" type="button" aria-label="编辑支出" onclick="editExpense('${esc(it._id || it.clientId)}')">${ic('edit')}</button>
+        <button class="exp-del" type="button" aria-label="删除支出" onclick="delExpense('${esc(it._id || it.clientId)}')">${ic('x')}</button>
+      </span>
     </div>`;
   }).join('') || '<div style="padding:22px;text-align:center;color:var(--muted);font-size:13px">暂无记录</div>';
 }
@@ -5241,31 +5623,50 @@ window.delExpense = async function (id) {
   renderExpenses();
   await persistExpenses();
 };
+let editingExpenseId = null;
+function setExpenseSegment(id, seg, value) {
+  seg.v = value;
+  document.querySelectorAll(`#${id} button`).forEach((button) => {
+    button.classList.toggle('active', button.dataset.v === value);
+  });
+}
+window.editExpense = function (id) {
+  const item = expenses.find((expense) => (expense._id || expense.clientId) == id);
+  if (!item) return;
+  editingExpenseId = id;
+  $('#expSheetTitle').textContent = '编辑支出';
+  $('#expSave').textContent = '保存修改';
+  $('#expDesc').value = item.desc || '';
+  $('#expAmount').value = item.amount ?? '';
+  setExpenseSegment('expCatSeg', catSeg, expCatOf(item));
+  setExpenseSegment('expCurSeg', curSeg, item.currency || 'KRW');
+  setExpenseSegment('expSplitSeg', splitSeg, item.splitType || 'perPerson');
+  setExpenseSegment('expVisibilitySeg', visibilitySeg, item.visibility || 'public');
+  setExpenseSegment('expPayerSeg', payerSeg, item.people?.length === 1 ? displayPersonName(item.people[0]) : '共同');
+  openSheet();
+};
 async function persistExpenses() {
-  const payload = expenses.filter((e) => !isPrivateExpense(e)).map((e) => ({
-    desc: e.desc, amount: e.amount, currency: e.currency,
-    splitType: e.splitType, people: e.people, category: e.category || '其他', visibility: 'public', createdAt: e.createdAt
+  const payload = expenses.map((e) => ({
+    clientId: e.clientId || e.id || e._id || expenseKey(e), desc: e.desc, amount: e.amount, currency: e.currency,
+    tripId: e.tripId || currentTripData().id, splitType: e.splitType, people: (e.people || []).map(displayPersonName), category: e.category || '其他',
+    visibility: e.visibility || 'public', createdAt: e.createdAt || Date.now(), updatedAt: e.updatedAt || Date.now()
   }));
   cache.set('kr_cache_expenses', expenses);
-  cache.set('kr_private_expenses', expenses.filter(isPrivateExpense));
-  try {
-    const res = await fetch(`${API_BASE}/expenses?tripId=${encodeURIComponent(activeTrip().id)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: payload, tripId: activeTrip().id }) });
-    if (!res.ok) throw new Error('expense save failed');
-  } catch { /* 下次同步会再试 */ }
+  await apiPost('/expenses', { items: payload });
 }
 async function initExpenses() {
   restoreFxRates();
   setFxRateHint();
   const list = await apiGet('/expenses', 'kr_cache_expenses', []);
-  const privateItems = cache.get('kr_private_expenses') || [];
-  expenses = [...privateItems, ...list.filter((item) => !isPrivateExpense(item))];
+  const privateItems = cache.get('kr_private_expenses', activeTrip().id) || [];
+  expenses = mergeExpenses(list, privateItems);
   renderExpenses();
+  if (privateItems.length) {
+    cache.set('kr_private_expenses', []);
+    persistExpenses().catch(() => {});
+  }
   refreshFxRates();
-  expensesTimer = setInterval(async () => {
-    const fresh = await apiGet('/expenses', 'kr_cache_expenses', []);
-    const privateItems = cache.get('kr_private_expenses') || [];
-    expenses = [...privateItems, ...fresh.filter((item) => !isPrivateExpense(item))]; renderExpenses();
-  }, 15000);
+  expensesTimer = null;
 }
 function bindSeg(id, seg) {
   document.querySelectorAll(`#${id} button`).forEach((b) => b.addEventListener('click', () => {
@@ -5274,6 +5675,17 @@ function bindSeg(id, seg) {
   }));
 }
 window.openSheet = function () {
+  if (editingExpenseId == null) {
+    $('#expSheetTitle').textContent = '记一笔';
+    $('#expSave').textContent = '保存';
+    setExpenseSegment('expCatSeg', catSeg, '餐饮');
+    setExpenseSegment('expCurSeg', curSeg, 'KRW');
+    setExpenseSegment('expSplitSeg', splitSeg, 'perPerson');
+    setExpenseSegment('expVisibilitySeg', visibilitySeg, 'public');
+    setExpenseSegment('expPayerSeg', payerSeg, '共同');
+    $('#expDesc').value = '';
+    $('#expAmount').value = '';
+  }
   $('#sheetBackdrop').classList.add('open');
   $('#expSheet').classList.add('open');
   setTimeout(() => $('#expDesc').focus(), 320);
@@ -5281,6 +5693,9 @@ window.openSheet = function () {
 window.closeSheet = function () {
   $('#sheetBackdrop').classList.remove('open');
   $('#expSheet').classList.remove('open');
+  editingExpenseId = null;
+  $('#expSheetTitle').textContent = '记一笔';
+  $('#expSave').textContent = '保存';
 };
 function initSheet() {
   bindSeg('expCurSeg', curSeg);
@@ -5293,8 +5708,12 @@ function initSheet() {
     const amount = parseFloat($('#expAmount').value);
     if (!desc || !amount || amount <= 0) { alert('请填写描述和金额'); return; }
     const people = payerSeg.v === '共同' ? ['可乐', '金鹿'] : [payerSeg.v];
-    expenses.unshift({ clientId: 'c' + Date.now(), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, createdAt: Date.now() });
-    $('#expDesc').value = ''; $('#expAmount').value = '';
+    if (editingExpenseId != null) {
+      const item = expenses.find((expense) => (expense._id || expense.clientId) == editingExpenseId);
+      if (item) Object.assign(item, { desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, updatedAt: Date.now() });
+    } else {
+      expenses.unshift({ clientId: newRecordId('expense'), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, createdAt: Date.now(), updatedAt: Date.now() });
+    }
     renderExpenses();
     closeSheet();
     await persistExpenses();
@@ -5302,18 +5721,20 @@ function initSheet() {
 }
 
 /* ================= 文件 / 随笔（同步 + 本地兜底） ================= */
+const PRIVATE_STORAGE_ROOT = 'cloud://hanoi-d4gj8vd2q1e7a3dc0.6861-hanoi-d4gj8vd2q1e7a3dc0-1448781892/private';
+const privateFile = (path) => `${PRIVATE_STORAGE_ROOT}/${path}`;
 const DOC_SEEDS = [
-  { tripId: 'korea-2026', id: 'seed-trip-zh', kind: 'file', sortOrder: 1, title: '携程中文版机票行程单', attachmentUrl: '/assets/docs/visa/携程中文版机票行程单.pdf', attachmentName: '携程中文版机票行程单.pdf', attachmentType: 'pdf', note: '去程航班信息' },
-  { tripId: 'korea-2026', id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf', attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', note: '英文版行程单' },
-  { tripId: 'korea-2026', id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/张子豪的韩亚航空官方行程单.pdf', attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', note: '12/26 深夜出发' },
-  { tripId: 'korea-2026', id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金鹿的韩亚航空官方行程单', attachmentUrl: '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf', attachmentName: '仇金鹿的韩亚航空官方行程单.pdf', attachmentType: 'pdf', note: '12/26 深夜出发' },
-  { tripId: 'korea-2026', id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证（中文）', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店中文版入住凭证.pdf', attachmentName: '釜山ASTI酒店中文版入住凭证.pdf', attachmentType: 'pdf', note: '釜山站旁住宿' },
-  { tripId: 'korea-2026', id: 'seed-busan-hotel-en', kind: 'file', sortOrder: 6, title: '釜山 ASTI 酒店入住凭证（英文）', attachmentUrl: '/assets/docs/visa/釜山ASTI酒店英文版入住凭证.pdf', attachmentName: '釜山ASTI酒店英文版入住凭证.pdf', attachmentType: 'pdf', note: '釜山站旁住宿' },
-  { tripId: 'korea-2026', id: 'seed-seoul-hotel', kind: 'file', sortOrder: 7, title: '首尔酒店确认单', attachmentUrl: '/assets/docs/visa/首尔酒店确认单.pdf', attachmentName: '首尔酒店确认单.pdf', attachmentType: 'pdf', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' },
-  { tripId: 'hong-kong', id: 'seed-hong-kong-hotel', kind: 'file', sortOrder: 1, title: '香港维港凯悦尚萃酒店确认函', attachmentUrl: '/assets/docs/hong-kong/hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf', attachmentName: 'hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf', attachmentType: 'pdf', note: 'Hyatt Centric Victoria Harbour Hong Kong · 确认号 49970038' },
-  { tripId: 'xiamen', id: 'seed-xiamen-hotel', kind: 'file', sortOrder: 1, title: '厦门安达仕酒店确认函', attachmentUrl: '/assets/docs/xiamen/andaz-xiamen-hotel-confirmation.pdf', attachmentName: 'andaz-xiamen-hotel-confirmation.pdf', attachmentType: 'pdf', note: 'Andaz Xiamen · 确认号 27226642' }
+  { tripId: 'korea-2026', id: 'seed-trip-zh', kind: 'file', sortOrder: 1, title: '携程中文版机票行程单', attachmentUrl: privateFile('korea/visa/携程中文版机票行程单.pdf'), attachmentName: '携程中文版机票行程单.pdf', attachmentType: 'pdf', note: '去程航班信息' },
+  { tripId: 'korea-2026', id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: privateFile('korea/visa/携程英文版机票行程单.pdf'), attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', note: '英文版行程单' },
+  { tripId: 'korea-2026', id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: privateFile('korea/visa/张子豪的韩亚航空官方行程单.pdf'), attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', note: '12/26 深夜出发' },
+  { tripId: 'korea-2026', id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金璐的韩亚航空官方行程单', attachmentUrl: privateFile('korea/visa/仇金璐的韩亚航空官方行程单.pdf'), attachmentName: '仇金璐的韩亚航空官方行程单.pdf', attachmentType: 'pdf', note: '12/26 深夜出发' },
+  { tripId: 'korea-2026', id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证（中文）', attachmentUrl: privateFile('korea/visa/釜山ASTI酒店中文版入住凭证.pdf'), attachmentName: '釜山ASTI酒店中文版入住凭证.pdf', attachmentType: 'pdf', note: '釜山站旁住宿' },
+  { tripId: 'korea-2026', id: 'seed-busan-hotel-en', kind: 'file', sortOrder: 6, title: '釜山 ASTI 酒店入住凭证（英文）', attachmentUrl: privateFile('korea/visa/釜山ASTI酒店英文版入住凭证.pdf'), attachmentName: '釜山ASTI酒店英文版入住凭证.pdf', attachmentType: 'pdf', note: '釜山站旁住宿' },
+  { tripId: 'korea-2026', id: 'seed-seoul-hotel', kind: 'file', sortOrder: 7, title: '首尔明洞万怡酒店入住凭证', attachmentUrl: privateFile('korea/visa/首尔明洞万怡酒店入住凭证.pdf'), attachmentName: '首尔明洞万怡酒店入住凭证.pdf', attachmentType: 'pdf', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' },
+  { tripId: 'hong-kong', id: 'seed-hong-kong-hotel', kind: 'file', sortOrder: 1, title: '香港维港凯悦尚萃酒店确认函', attachmentUrl: privateFile('hong-kong/docs/hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf'), attachmentName: 'hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf', attachmentType: 'pdf', note: 'Hyatt Centric Victoria Harbour Hong Kong · 确认号 49970038' },
+  { tripId: 'xiamen', id: 'seed-xiamen-hotel', kind: 'file', sortOrder: 1, title: '厦门安达仕酒店确认函', attachmentUrl: privateFile('xiamen/docs/andaz-xiamen-hotel-confirmation.pdf'), attachmentName: 'andaz-xiamen-hotel-confirmation.pdf', attachmentType: 'pdf', note: 'Andaz Xiamen · 确认号 27226642' }
 ];
-const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 金鹿', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
+const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 仇金璐', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
 const ESSAY_KIND_LABELS = { diary: '日记', guide: '攻略摘录', food: '美食' };
 let docsData = [];
 let essayRecords = [];
@@ -5416,15 +5837,15 @@ function guessAttachmentType(file) {
   return file?.type || 'file';
 }
 const DOC_PREVIEW_MAP = {
-  'hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf': ['assets/docs/previews/hong-kong-hyatt-1.jpg', 'assets/docs/previews/hong-kong-hyatt-2.jpg'],
-  'andaz-xiamen-hotel-confirmation.pdf': ['assets/docs/previews/xiamen-andaz-1.jpg', 'assets/docs/previews/xiamen-andaz-2.jpg'],
-  '仇金鹿的韩亚航空官方行程单.pdf': ['assets/docs/previews/korea-flight-lu-1.jpg', 'assets/docs/previews/korea-flight-lu-2.jpg', 'assets/docs/previews/korea-flight-lu-3.jpg'],
-  '张子豪的韩亚航空官方行程单.pdf': ['assets/docs/previews/korea-flight-zhao-1.jpg', 'assets/docs/previews/korea-flight-zhao-2.jpg', 'assets/docs/previews/korea-flight-zhao-3.jpg'],
-  '携程中文版机票行程单.pdf': ['assets/docs/previews/trip-cn-1.jpg', 'assets/docs/previews/trip-cn-2.jpg', 'assets/docs/previews/trip-cn-3.jpg', 'assets/docs/previews/trip-cn-4.jpg'],
-  '携程英文版机票行程单.pdf': ['assets/docs/previews/trip-en-1.jpg', 'assets/docs/previews/trip-en-2.jpg', 'assets/docs/previews/trip-en-3.jpg', 'assets/docs/previews/trip-en-4.jpg'],
-  '釜山ASTI酒店中文版入住凭证.pdf': ['assets/docs/previews/busan-hotel-cn-1.jpg', 'assets/docs/previews/busan-hotel-cn-2.jpg'],
-  '釜山ASTI酒店英文版入住凭证.pdf': ['assets/docs/previews/busan-hotel-en-1.jpg'],
-  '首尔酒店确认单.pdf': ['assets/docs/previews/seoul-hotel-1.jpg', 'assets/docs/previews/seoul-hotel-2.jpg']
+  'hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf': ['hong-kong-hyatt-1.jpg', 'hong-kong-hyatt-2.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
+  'andaz-xiamen-hotel-confirmation.pdf': ['xiamen-andaz-1.jpg', 'xiamen-andaz-2.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
+  '仇金璐的韩亚航空官方行程单.pdf': ['korea-flight-lu-1.jpg', 'korea-flight-lu-2.jpg', 'korea-flight-lu-3.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
+  '张子豪的韩亚航空官方行程单.pdf': ['korea-flight-zhao-1.jpg', 'korea-flight-zhao-2.jpg', 'korea-flight-zhao-3.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
+  '携程中文版机票行程单.pdf': ['trip-cn-1.jpg', 'trip-cn-2.jpg', 'trip-cn-3.jpg', 'trip-cn-4.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
+  '携程英文版机票行程单.pdf': ['trip-en-1.jpg', 'trip-en-2.jpg', 'trip-en-3.jpg', 'trip-en-4.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
+  '釜山ASTI酒店中文版入住凭证.pdf': ['busan-hotel-cn-1.jpg', 'busan-hotel-cn-2.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
+  '釜山ASTI酒店英文版入住凭证.pdf': [privateFile('korea/previews/busan-hotel-en-1.jpg')],
+  '首尔明洞万怡酒店入住凭证.pdf': ['seoul-hotel-1.jpg', 'seoul-hotel-2.jpg'].map((name) => privateFile(`korea/previews/${name}`))
 };
 function docPreviewImages(doc) {
   const name = fileNameFromPath(doc?.attachmentUrl || doc?.attachmentName || '');
@@ -5445,18 +5866,23 @@ function normalizeFileDoc(doc, idx) {
     attachmentName,
     attachmentType: doc.attachmentType || (isImagePath(attachmentUrl, doc.attachmentMime || '') ? 'image' : 'pdf'),
     attachmentMime: doc.attachmentMime || '',
-    sourceKey: doc.sourceKey || attachmentUrl || title || `doc-${idx + 1}`
+    sourceKey: doc.sourceKey || attachmentUrl || title || `doc-${idx + 1}`,
+    createdAt: Number(doc.createdAt) || Date.now(),
+    updatedAt: Number(doc.updatedAt) || 0
   };
 }
 function normalizeEssayVault(doc, idx) {
   return {
     id: doc.id || doc._id || `essay-${idx + 1}`,
+    tripId: doc.tripId || currentTripData().id,
     kind: String(doc.kind || 'essay'),
+    category: doc.category || 'diary',
     sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
     payloadEnc: doc.payloadEnc || doc.contentEnc || '',
     payloadIv: doc.payloadIv || doc.contentIv || '',
     passSalt: doc.passSalt || '',
     passHash: doc.passHash || '',
+    createdAt: Number(doc.createdAt) || Date.now(),
     updatedAt: Number(doc.updatedAt) || Date.now()
   };
 }
@@ -5466,6 +5892,7 @@ function normalizeFoodRecord(doc, idx) {
   const attachmentUrl = doc.attachmentUrl || doc.photoUrl || doc.fileUrl || doc.photo || '';
   return {
     id: doc.id || doc._id || `food-${idx + 1}`,
+    tripId: doc.tripId || currentTripData().id,
     kind: 'food',
     city,
     sortOrder: Number.isFinite(Number(doc.sortOrder)) ? Number(doc.sortOrder) : idx + 1,
@@ -5476,7 +5903,9 @@ function normalizeFoodRecord(doc, idx) {
     attachmentName: String(doc.attachmentName || fileNameFromPath(attachmentUrl) || '美食照片').trim(),
     attachmentType: doc.attachmentType || (isImagePath(attachmentUrl, doc.attachmentMime || '') ? 'image' : 'image'),
     attachmentMime: doc.attachmentMime || '',
-    sourceKey: doc.sourceKey || attachmentUrl || title || `food-${idx + 1}`
+    sourceKey: doc.sourceKey || attachmentUrl || title || `food-${idx + 1}`,
+    createdAt: Number(doc.createdAt) || Date.now(),
+    updatedAt: Number(doc.updatedAt) || Date.now()
   };
 }
 function shouldKeepFileDoc(doc) {
@@ -5518,6 +5947,30 @@ function syncSeedDocs(payload) {
     const merged = { ...doc };
     // Seeds provide defaults only; never overwrite a user's edited title or attachment.
     if (!merged.sourceKey) merged.sourceKey = seed.id;
+    // Bundled confirmations moved to authenticated private storage. Migrate only
+    // the known bundled path; user-selected replacement attachments stay intact.
+    if (/^\/?assets\/docs\//.test(String(merged.attachmentUrl || '')) && merged.attachmentName === seed.attachmentName) {
+      merged.attachmentUrl = seed.attachmentUrl;
+      merged.updatedAt = Date.now();
+      changed = true;
+    }
+    // Correct the old name once, but leave any other custom title untouched.
+    if (seed.id === 'seed-flight-lu' && merged.title === '仇金鹿的韩亚航空官方行程单') {
+      merged.title = seed.title;
+      changed = true;
+    }
+    if (seed.id === 'seed-flight-lu' && merged.attachmentUrl === '/assets/docs/visa/仇金鹿的韩亚航空官方行程单.pdf') {
+      merged.attachmentUrl = seed.attachmentUrl;
+      merged.attachmentName = seed.attachmentName;
+      changed = true;
+    }
+    if (seed.id === 'seed-seoul-hotel' && (merged.title === '首尔酒店确认单' || merged.attachmentUrl === '/assets/docs/visa/首尔酒店确认单.pdf')) {
+      merged.title = seed.title;
+      merged.attachmentUrl = seed.attachmentUrl;
+      merged.attachmentName = seed.attachmentName;
+      merged.updatedAt = Date.now();
+      changed = true;
+    }
     return merged;
   });
   return { payload: next, changed };
@@ -5535,6 +5988,7 @@ function attachImage(doc) {
       doc.attachmentMime = mime;
       doc.attachmentType = 'image';
       doc.attachmentName = file.name;
+      doc.updatedAt = Date.now();
       renderFood();
       persistDocs();
     });
@@ -5545,14 +5999,17 @@ async function loadDocs() {
   const tripId = currentTripData().id;
   const cachedValue = cache.get('kr_docs', tripId);
   const cached = Array.isArray(cachedValue) ? cachedValue : [];
-  const isKoreaTrip = tripId === 'korea-2026';
   const scopedCache = cached.filter((doc) => docBelongsToCurrentTrip(doc, tripId));
+  const hasPendingDocsSync = Boolean(syncClient.pending('/docs', tripId));
   // Keep edited seed records for short trips; filtering them here used to restore
   // the original hotel confirmation after every refresh.
   const shortTripCache = scopedCache;
-  const cloudDocs = isKoreaTrip ? await apiGet('/docs', 'kr_docs', scopedCache) : null;
+  // A failed save means local edits are newer than the last cloud snapshot.
+  // Do not let a stale GET overwrite those edits before the queue is flushed.
+  const cloudDocs = await apiGet('/docs', 'kr_docs', scopedCache);
   if (currentTripData().id !== tripId) return;
-  const source = (isKoreaTrip ? (Array.isArray(cloudDocs) && cloudDocs.length ? cloudDocs : scopedCache) : shortTripCache).filter((doc) => docBelongsToCurrentTrip(doc, tripId));
+  const source = (Array.isArray(cloudDocs) ? cloudDocs : shortTripCache)
+    .filter((doc) => docBelongsToCurrentTrip(doc, tripId));
   const fileSource = (source || []).filter((d) => !d || d.kind === 'file' || !d.kind);
   const essaySource = (source || []).filter((d) => d && d.kind === 'essay');
   const foodSource = (source || []).filter((d) => d && d.kind === 'food');
@@ -5566,16 +6023,17 @@ async function loadDocs() {
   essayUnlockedPasswords = new Map();
   cache.set('kr_docs', [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords, ...foodRecords]);
   const needSeedSync = seededSync.changed || docsData.length !== fileSource.length || seedDocs(fileSource.map(normalizeFileDoc)).length !== docsData.length;
-  if (needSeedSync || (source || []).length !== docsData.length + essayRecords.length + foodRecords.length + (essayLegacyMeta ? 1 : 0)) {
+  if (!hasPendingDocsSync && syncClient.revision('/docs', tripId) != null && (needSeedSync || (source || []).length !== docsData.length + essayRecords.length + foodRecords.length + (essayLegacyMeta ? 1 : 0))) {
     apiPost('/docs', { items: [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords, ...foodRecords] }).catch(() => {});
   }
 }
 async function persistDocs() {
-  const payload = [...docsData.filter((doc) => docBelongsToCurrentTrip(doc)).map(normalizeFileDoc).filter(shouldKeepFileDoc)];
+  const payload = [...docsData.filter((doc) => docBelongsToCurrentTrip(doc)).map((doc, idx) => normalizeFileDoc(doc, idx)).filter(shouldKeepFileDoc)];
   const legacyRemain = essayRecords.some((item) => !item.passSalt || !item.passHash);
   if (essayLegacyMeta && legacyRemain) payload.push(essayLegacyMeta);
   payload.push(...essayRecords);
   payload.push(...foodRecords);
+  docsData = payload.filter((doc) => doc.kind === 'file');
   if (!cache.set('kr_docs', payload)) alert('本地缓存已满：请删掉几条记录后再试。');
   try {
     await apiPost('/docs', { items: payload });
@@ -5588,6 +6046,7 @@ function fileCardIcon(doc) {
 }
 let activeDocViewer = null;
 let docImageScale = 1;
+const privateUrlCache = new Map();
 function setDocImageScale(value) {
   docImageScale = Math.min(3, Math.max(.5, value));
   const image = $('#docViewerImg');
@@ -5613,9 +6072,22 @@ function docAttachmentUrl(doc) {
     const bundled = DOC_SEEDS.find((seed) => seed.attachmentName === fileName);
     if (bundled) rawUrl = bundled.attachmentUrl;
   }
-  return rawUrl.startsWith('data:') ? rawUrl : encodeURI(rawUrl);
+  return rawUrl.startsWith('data:') || rawUrl.startsWith('cloud://') ? rawUrl : encodeURI(rawUrl);
 }
-function openDocViewer(doc) {
+async function resolvePrivateUrl(url) {
+  if (!String(url).startsWith('cloud://')) return url;
+  const cached = privateUrlCache.get(url);
+  if (cached?.expiresAt > Date.now()) return cached.url;
+  await authReady;
+  if (!cloudApp?.getTempFileURL) throw new Error('私密文件服务暂不可用');
+  const result = await cloudApp.getTempFileURL({ fileList: [{ fileID: url, maxAge: 3600 }] });
+  const entry = result?.fileList?.[0];
+  const tempUrl = entry?.tempFileURL || entry?.download_url;
+  if (!tempUrl) throw new Error(entry?.code || '私密文件链接生成失败');
+  privateUrlCache.set(url, { url: tempUrl, expiresAt: Date.now() + 50 * 60 * 1000 });
+  return tempUrl;
+}
+async function openDocViewer(doc) {
   if (!doc?.attachmentUrl) return;
   const viewer = $('#docViewer');
   const backdrop = $('#docViewerBackdrop');
@@ -5625,9 +6097,17 @@ function openDocViewer(doc) {
   const empty = $('#docViewerEmpty');
   if (!viewer || !backdrop || !image || !frame || !empty) return;
   activeDocViewer = doc;
-  const url = docAttachmentUrl(doc);
+  let url;
+  let previewImages;
+  try {
+    url = await resolvePrivateUrl(docAttachmentUrl(doc));
+    previewImages = await Promise.all(docPreviewImages(doc).map(resolvePrivateUrl));
+  } catch (error) {
+    alert(error?.message || '文件暂时无法打开，请稍后重试。');
+    activeDocViewer = null;
+    return;
+  }
   const isImage = isImagePath(doc.attachmentUrl, doc.attachmentMime);
-  const previewImages = docPreviewImages(doc);
   const hasPagePreview = !isImage && previewImages.length > 0;
   const isPreviewable = isImage || doc.attachmentType === 'pdf' || doc.attachmentType === 'text' || doc.attachmentType === 'txt';
   image.style.display = isImage ? 'block' : 'none';
@@ -5669,20 +6149,27 @@ function closeDocViewer() {
   $('#docViewerFrame')?.removeAttribute('src');
   activeDocViewer = null;
 }
-function openDocInNewWindow(doc) {
+async function openDocInNewWindow(doc) {
   if (!doc?.attachmentUrl) return;
+  const popup = window.open('about:blank', '_blank');
+  let url;
+  try { url = await resolvePrivateUrl(docAttachmentUrl(doc)); }
+  catch (error) { if (popup) popup.close(); alert(error?.message || '文件暂时无法打开，请稍后重试。'); return; }
+  if (popup) { popup.opener = null; popup.location.replace(url); return; }
   const a = document.createElement('a');
-  a.href = docAttachmentUrl(doc);
+  a.href = url;
   a.rel = 'noopener';
   a.target = '_blank';
   document.body.appendChild(a);
   a.click();
   a.remove();
 }
-function openDocAttachment(doc, mode = 'open') {
+async function openDocAttachment(doc, mode = 'open') {
   if (!doc?.attachmentUrl) return;
-  const url = docAttachmentUrl(doc);
-  if (mode === 'open') { openDocViewer(doc); return; }
+  if (mode === 'open') { await openDocViewer(doc); return; }
+  let url;
+  try { url = await resolvePrivateUrl(docAttachmentUrl(doc)); }
+  catch (error) { alert(error?.message || '文件暂时无法打开，请稍后重试。'); return; }
   const a = document.createElement('a');
   a.href = url;
   a.rel = 'noopener';
@@ -5786,13 +6273,14 @@ function attachFile(doc) {
   input.onchange = () => {
     const file = input.files && input.files[0];
     if (!file) return;
-    if (file.size > 12 * 1024 * 1024) { alert('文件太大（>12MB），先压缩或换一份'); return; }
+    if (!file.type.startsWith('image/') && file.size > 1500 * 1024) { alert('文件太大（>1.5MB）。当前离线同步会保存完整附件，请先压缩文件。'); return; }
     readAttachment(file, (dataUrl, mime) => {
       doc.attachmentUrl = dataUrl;
       doc.attachmentMime = mime;
       doc.attachmentType = guessAttachmentType(file);
       doc.attachmentName = file.name;
       if (!doc.title) doc.title = file.name.replace(/\.[^.]+$/, '');
+      doc.updatedAt = Date.now();
       renderDocs();
       persistDocs();
     });
@@ -5803,8 +6291,10 @@ function docById(id) { return docsData.find((d) => d.id == id); }
 async function initDocs() {
   await loadDocs();
   renderDocs();
+  renderFood();
+  renderEssay();
   $('#docsNewBtn').addEventListener('click', async () => {
-    docsData.unshift(normalizeFileDoc({ id: `doc-${Date.now()}`, kind: 'file', title: '', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1 }, 0));
+    docsData.unshift(normalizeFileDoc({ id: newRecordId('doc'), kind: 'file', title: '', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1, createdAt: Date.now(), updatedAt: Date.now() }, 0));
     docsData = docsData.map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
     renderDocs();
     const firstCard = $('#docsGrid .doc-card');
@@ -5831,6 +6321,7 @@ async function initDocs() {
         const noteInput = card.querySelector('.doc-note-input');
         if (titleInput) doc.title = titleInput.value.trim();
         if (noteInput) doc.note = noteInput.value.trim();
+        doc.updatedAt = Date.now();
         renderDocs();
         await persistDocs();
         return;
@@ -5861,6 +6352,7 @@ async function initDocs() {
     if (!doc) return;
     if (title) doc.title = title.value.trim();
     if (note) doc.note = note.value.trim();
+    doc.updatedAt = Date.now();
     renderDocs();
     await persistDocs();
   });
@@ -6025,7 +6517,8 @@ async function saveEssaySheet() {
   const useExistingSalt = Boolean(existing?.passSalt && existing.passHash && !inputPassword);
   const sealed = await essayEncryptWithPassword(payload, password, useExistingSalt ? existing.passSalt : '');
   const base = {
-    id: existing?.id || `essay-${Date.now()}`,
+    id: existing?.id || newRecordId('essay'),
+    tripId: existing?.tripId || currentTripData().id,
     kind: 'essay',
     sortOrder: Number.isFinite(Number(existing?.sortOrder)) ? Number(existing.sortOrder) : Date.now(),
     category: payload.category,
@@ -6124,19 +6617,16 @@ function initEssay() {
     else renderEssay();
   });
 }
+const foodEditingIds = new Set();
 function renderFood() {
   const grouped = {
     busan: foodRecords.filter((r) => r.city === 'busan'),
     seoul: foodRecords.filter((r) => r.city === 'seoul')
   };
-  const renderAdd = (city) => `<button class="card food-card food-add-card" type="button" data-act="newfood" data-city="${city}">
-    <div class="food-ic">${ic('plus')}</div>
-    <div class="food-meta">新增一条 ${city === 'busan' ? '釜山' : '首尔'} 美食收藏</div>
-    <div class="food-note">可以写店名、地点、推荐菜，顺手加一张照片。</div>
-  </button>`;
   const renderOne = (r) => {
     const isImage = isImagePath(r.attachmentUrl, r.attachmentMime);
-    return `<div class="card food-card" data-id="${esc(r.id)}">
+    const editing = foodEditingIds.has(r.id);
+    return `<div class="card food-card${editing ? ' editing' : ''}" data-id="${esc(r.id)}">
       <div class="food-top">
         <span class="food-ic">${ic('food')}</span>
         <div class="food-display-title">${esc(r.title || '未命名美食')}</div>
@@ -6158,61 +6648,71 @@ function renderFood() {
         : `<div class="food-chip">${ic('image')}<span>${esc(r.attachmentName || '照片')}</span></div>`) : ''}
       <textarea class="food-input" data-act="note" placeholder="备注 / 推荐菜 / 攻略摘录">${esc(r.note || '')}</textarea>
       <div class="food-actions">
-        <button class="food-btn" type="button" data-act="edit">${ic('edit')}编辑</button>
+        <button class="food-btn food-edit-toggle" type="button" data-act="edit" aria-pressed="${editing}">${ic(editing ? 'check' : 'edit')}${editing ? '完成' : '编辑'}</button>
         <button class="food-btn food-edit-only" type="button" data-act="photo">${ic('camera')}${r.attachmentUrl ? '换照片' : '添加照片'}</button>
-        <button class="food-btn" type="button" data-act="open"${r.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
+        ${r.attachmentUrl ? `<button class="food-btn food-read-only" type="button" data-act="open">${ic('image')}查看照片</button>` : ''}
         <button class="food-btn danger food-edit-only" type="button" data-act="delete">${ic('x')}删除</button>
       </div>
     </div>`;
   };
-  $('#foodBusan').innerHTML = renderAdd('busan') + (grouped.busan.length ? grouped.busan.map(renderOne).join('') : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">还没有釜山收藏，先点上面的“新增”。</div>`);
-  $('#foodSeoul').innerHTML = renderAdd('seoul') + (grouped.seoul.length ? grouped.seoul.map(renderOne).join('') : `<div class="card" style="padding:14px 16px;color:var(--muted);font-size:12.5px">还没有首尔收藏，先点上面的“新增”。</div>`);
+  $('#foodBusan').innerHTML = grouped.busan.length ? grouped.busan.map(renderOne).join('') : `<div class="food-empty">还没有釜山收藏，点右上角“新增收藏”开始记录。</div>`;
+  $('#foodSeoul').innerHTML = grouped.seoul.length ? grouped.seoul.map(renderOne).join('') : `<div class="food-empty">还没有首尔收藏，点右上角“新增收藏”开始记录。</div>`;
 }
 function toggleFood(id) {
   const el = document.getElementById(id);
   if (el) el.classList.toggle('open');
 }
 function initFood() {
+  const setEditing = (card, editing) => {
+    if (!card) return;
+    const id = card.dataset.id;
+    if (editing) foodEditingIds.add(id);
+    else foodEditingIds.delete(id);
+    card.classList.toggle('editing', editing);
+    const editButton = card.querySelector('[data-act="edit"]');
+    if (editButton) {
+      editButton.innerHTML = `${ic(editing ? 'check' : 'edit')}${editing ? '完成' : '编辑'}`;
+      editButton.setAttribute('aria-pressed', String(editing));
+    }
+  };
+  const addFood = async (city) => {
+    const targetCity = city === 'seoul' ? 'seoul' : 'busan';
+    const item = normalizeFoodRecord({
+      id: newRecordId('food'), kind: 'food', city: targetCity,
+      title: '', place: '', note: '', attachmentUrl: '', attachmentName: '',
+      sortOrder: 1, createdAt: Date.now(), updatedAt: Date.now()
+    }, 0);
+    foodRecords.unshift(item);
+    foodRecords = foodRecords.map((record, index) => ({ ...record, sortOrder: index + 1 }));
+    foodEditingIds.add(item.id);
+    renderFood();
+    const card = document.querySelector(`#food${targetCity === 'busan' ? 'Busan' : 'Seoul'} .food-card[data-id="${item.id}"]`);
+    card?.querySelector('.food-input[data-act="title"]')?.focus();
+    await persistDocs();
+  };
+  document.querySelectorAll('.food-add-btn[data-act="newfood"]').forEach((button) => {
+    button.addEventListener('click', () => addFood(button.dataset.city));
+  });
   const bind = (container, city) => {
     if (!container) return;
     container.addEventListener('click', async (e) => {
       const btn = e.target.closest('[data-act]');
       if (!btn) return;
-      const add = btn.dataset.act === 'newfood';
-      if (add) {
-        const targetCity = btn.dataset.city === 'seoul' ? 'seoul' : city;
-        const item = normalizeFoodRecord({
-          id: `food-${Date.now()}`,
-          kind: 'food',
-          city: targetCity,
-          title: '',
-          place: '',
-          note: '',
-          attachmentUrl: '',
-          attachmentName: '',
-          sortOrder: 1
-        }, 0);
-        foodRecords.unshift(item);
-        foodRecords = foodRecords.map((r, idx) => ({ ...r, sortOrder: idx + 1 }));
-        renderFood();
-        await persistDocs();
-        const focus = document.querySelector(`#food${targetCity === 'busan' ? 'Busan' : 'Seoul'} .food-card[data-id="${item.id}"] .food-input[data-act="title"]`);
-        if (focus) focus.focus();
-        return;
-      }
       const card = e.target.closest('.food-card');
       const item = card ? foodRecords.find((r) => r.id === card.dataset.id) : null;
       if (!item) return;
       const act = btn.dataset.act;
       if (act === 'edit') {
-        const editing = card.classList.toggle('editing');
-        btn.innerHTML = `${ic(editing ? 'check' : 'edit')}${editing ? '完成' : '编辑'}`;
+        const editing = !card.classList.contains('editing');
+        setEditing(card, editing);
+        if (!editing) renderFood();
       } else if (act === 'photo') {
         attachImage(item);
       } else if (act === 'open') {
         openDocAttachment(item, 'open');
       } else if (act === 'delete') {
         if (!confirm('删除这条美食收藏？')) return;
+        foodEditingIds.delete(item.id);
         foodRecords = foodRecords.filter((r) => r.id !== item.id).map((r, idx) => ({ ...r, sortOrder: idx + 1 }));
         renderFood();
         await persistDocs();
@@ -6232,8 +6732,13 @@ function initFood() {
       if (place) item.place = place.value.trim();
       if (note) item.note = note.value.trim();
       if (citySel) item.city = citySel.value === 'seoul' ? 'seoul' : 'busan';
+      item.updatedAt = Date.now();
       foodRecords = foodRecords.map((r) => (r.id === item.id ? { ...item } : r)).sort((a, b) => a.sortOrder - b.sortOrder);
-      renderFood();
+      if (citySel) {
+        renderFood();
+        const moved = document.querySelector(`#food${item.city === 'busan' ? 'Busan' : 'Seoul'} .food-card[data-id="${item.id}"]`);
+        moved?.querySelector(`[data-act="city"]`)?.focus();
+      }
       await persistDocs();
     });
   };
@@ -6272,10 +6777,19 @@ function initSW() {
   }
   window.addEventListener('online', flushOfflineQueue);
   if (navigator.onLine !== false) setTimeout(flushOfflineQueue, 900);
+  // Keep retrying failed writes while the app remains open. A one-time retry
+  // on startup is not enough when the backend recovers after page load.
+  setInterval(flushOfflineQueue, 15000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) flushOfflineQueue();
+  });
+  setTimeout(startLiveSync, 1200);
 }
 
 /* ================= 启动 ================= */
-(function boot() {
+(async function boot() {
+  await Promise.all([authReady, syncClient.ready]);
+  const tripsSync = syncCustomTrips().catch((error) => console.warn('旅程目录暂时无法同步', error.message));
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   renderTripChrome();
   renderConfiguredTripData();
@@ -6295,6 +6809,8 @@ function initSW() {
   initBucket();
   initChecklist();
   initExpenses();
+  await initInspirations();
+  await captureSharedInspiration();
   initDocs();
   initEssay();
   initDocViewer();
@@ -6309,6 +6825,7 @@ function initSW() {
   initSheet();
   initTripPicker();
   initSW();
+  tripsSync.then(() => renderTripPicker());
   // 初始 Tab（支持分享链接直达：/#itinerary 等）
   const initial = location.hash.slice(1) || 'home';
   showTab(initial, false);

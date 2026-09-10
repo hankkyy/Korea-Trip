@@ -1,0 +1,11 @@
+.git/
+.vercel/
+.env*
+artifacts/
+cloudfunctions/
+config/
+scripts/
+assets/docs/
+assets/photos/source/
+*.md
+*.docx

@@ -1,5 +1,7 @@
 # Agent 交接说明
 
+2026-09-10 用户明确指定：多设备、多用户的数据一致性和持久化是零号优先级，高于新功能、界面和发布速度。动态数据权威来源是 `kr_sync_state`，旧 `kr_*` 集合只作迁移备份，禁止恢复先删后插。前端入口为 `assets/sync-client.js`，HTTP 返回 `protocol: 2`，SW v52。当前已实现两个实名账号登录、固定 UID 服务端授权、IndexedDB 队列、不可变快照、幂等回执、30 版历史与按记录三方合并。不同记录自动合并；同一记录冲突保留本机并提示备份，尚无页面内冲突选择器和真实 iPhone/iPad 双设备验收。
+
 你正在接手 `/Users/hankzhang/Desktop/lu-travel` 的「在璐上」多旅行管理 App。先阅读：
 
 1. `PROJECT_CONTEXT.md`：所有要求、决策、旅行资料和接手上下文的唯一事实源。
@@ -35,32 +37,39 @@
 - 前端是单文件 `index.html`，原生 HTML/CSS/JavaScript。
 - 后端是 CloudBase HTTP 云函数 `cloudfunctions/korea-api/index.js`。
 - CloudBase 环境：`hanoi-d4gj8vd2q1e7a3dc0`，函数：`korea-api`，集合以 `kr_` 开头。
-- API 地址：`https://hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com/korea-api`。
+- API 地址：`https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com/korea-api`。
 - Vercel 项目：`lu-travel`；生产地址：`https://jinlu.cloud/`。
 - 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`；前端或图片修改后必须额外部署 CloudBase 静态包。
-- Service Worker 当前缓存版本：`lu-travel-v25`；改资源后必须递增并验证旧缓存清理。
-- 多数数据接口当前是整批替换，存在双设备覆盖风险，这是已知架构缺口。
-- 旅程选择层已有 JSON 导出/导入恢复；后端已提供 `/records/:collection/:docId` 单条更新/删除和 `baseUpdatedAt` 冲突检测，但前端尚未全部接入。
+- 2026-09-10 最新 Vercel 部署 ID 是 `dpl_9u47wm8niUeXPjEEepsBYaYezeGS`，已绑定 `www.jinlu.cloud`；CloudBase 通过静态托管直传 `/korea/index.html`、`/korea/assets/sync-client.js`、`/korea/sw.js`、`/korea/manifest.json`。两入口文件哈希一致，线上烟雾检查和浏览器回归均通过。
+- Service Worker 当前缓存版本：`lu-travel-v52`；改资源后必须递增并验证旧缓存清理。
+- 灵感箱为 `kr_inspirations`；Android PWA 分享目标参数为 `title`、`text`、`url`，自动保存前必须保持所有者登录。iPhone 没有 Web Share Target，用剪贴板收集入口。
+- 动态列表通过 HTTP protocol 2 提交整份不可变快照，带事务版本、幂等请求、30 版历史和稳定 ID 三方合并；不同记录并发修改自动合并，同一记录冲突保留本机。
+- API 读取需要 CloudBase 登录：可乐、金鹿为两个固定所有者，匿名访客可读取公开旅行数据但不能写入，私有文件仍只向所有者签发临时链接。两位所有者的新密码已成功写入并通过正式站登录验证；不要把明文密码写入项目资料。敏感 PDF 和预览不应出现在静态部署包、Git 新增内容或 Service Worker 缓存。
+- 旅程选择层已有 JSON 导出/导入和冲突备份恢复；它们是应急工具，不能替代 IndexedDB 持久队列、身份授权和正常冲突处理。
 - 旅程设置已支持成员、时区、城市、封面和从已有旅程复制框架；不要把这误写成完整资料 CRUD。
 
 ## 开发顺序
 
-优先完成 V1.4 旅程设置和 V1.5 资料 CRUD，再做 V1.6 离线同步，最后做 V1.7 质量保障。每次只做可验证的小批次，先查看现有代码和脏工作区，不要覆盖用户已有修改。
+继续完善 P0：把固定双账号授权升级为旅程成员模型，增加页面内冲突选择和版本恢复，再做真实 iPhone/iPad 双设备与中韩运营商验收。金鹿历史美食收藏未在云端、旧集合或现存历史中找到，只有她原设备未清理的缓存仍可能恢复；不要让她清缓存或卸载。P0 达标后再继续资料 CRUD 和视觉功能。
 
 ## 每次修改后必须检查
 
 ```bash
 cd /Users/hankzhang/Desktop/lu-travel
 node scripts/verify.mjs
+node scripts/sync-test.mjs
+node scripts/sync-browser.mjs
 node --check cloudfunctions/korea-api/index.js
+node --check cloudfunctions/korea-api/sync-store.js
+node --check assets/sync-client.js
 git diff --check
 ```
 
-`scripts/verify.mjs` 当前会检查 3 个线上入口、Service Worker、所有缓存资源、4 个 API、天气接口和关键页面标记。它只能证明网络层和静态资源基本可达，不能替代真实中国大陆/韩国网络及 iPhone/iPad 真机点击验收。还要检查 11 个 Tab、旅程切换、Safe Area、弹层、输入、滚动、拖动、键盘、横竖屏、删除确认、站内 viewer 返回、断网编辑、恢复同步，以及 Vercel/CloudBase 国内入口版本一致性。
+`scripts/verify.mjs` 在没有 token 时应确认受保护 API 返回 401；提供测试 token 才执行完整 API 协议检查。`sync-test.mjs` 与 `sync-browser.mjs` 覆盖同步、全部动态数据族和浏览器交互，但不能替代真实中国大陆/韩国网络及 iPhone/iPad 双用户双设备验收。还要确认 Vercel 与 CloudBase 国内入口版本一致。
 
 ## 安全红线
 
-绝不能提交或输出任何 `.env.local`、`VERCEL_OIDC_TOKEN`、CloudBase 密钥、`.git`、`.vercel` 或用户私密资料。证件和机票 PDF 属于敏感文件，只能按现有静态资源和隐私规则处理。
+绝不能提交或输出任何 `.env.local`、`VERCEL_OIDC_TOKEN`、CloudBase 密钥、`.git`、`.vercel`、账号密码或用户私密资料。证件、机票和酒店凭证只允许保存在 CloudBase 私有存储中，页面用临时签名地址访问。
 
 ## 文档更新要求
 

@@ -1,6 +1,6 @@
 # 在璐上项目唯一事实源
 
-更新时间：2026-09-05
+更新时间：2026-09-10
 
 > 给用户、开发者和后续 agent 看的总交接文档。若其他文档与本文件冲突，先以当前源码为准，再更新文档，不得把计划写成已完成。
 
@@ -13,6 +13,8 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 ## 2. 长期产品目标
 
 从一次性的韩国旅行网页，升级为可长期使用的多旅行管理 PWA：每段旅程独立保存行程、交通、酒店、地图、照片、文件、美食、随笔、待办、行李、支出和锦囊；支持弱网和离线；以后可以随时修改变化的资料，不再依赖 agent 改硬编码。
+
+数据一致性和持久化是零号优先级，高于旅程设置、资料 CRUD、视觉和其他新功能。两名用户从不同设备编辑时，已确认的数据不能丢失、重复、串旅程或被静默覆盖；本机待同步数据必须持久保存，真实冲突必须保留双方版本。
 
 ## 3. 已确认的旅程
 
@@ -55,7 +57,7 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 ## 5. 网络、离线和安全红线
 
 - 中国大陆、韩国、美国都必须有可用访问路径；不能依赖单一 Google/Naver/Kakao 外链。
-- 图片和 PDF 优先存本地 `assets/`，并纳入 Service Worker；地图提供 Apple Maps 主入口及其他备用入口和坐标。
+- 非敏感图片可存 `assets/` 并纳入 Service Worker；证件、机票和酒店凭证必须放在 CloudBase 私有存储，登录后获取临时链接，不能进入公开部署包或公共缓存。地图提供 Apple Maps 主入口及其他备用入口和坐标。
 - 首屏先用内置数据/localStorage，网络回来后再覆盖同步；天气、地图和 API 失败不能导致白屏。
 - 目前线上静态资源 smoke check 已通过，但尚未完成真实中国大陆/韩国运营商和 iPhone/iPad 真机验收。
 - 不提交 `.env.local`、OIDC token、CloudBase 密钥、`.git`、`.vercel` 或用户私密资料。
@@ -65,34 +67,37 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 
 - 前端：单文件 `/Users/hankzhang/Desktop/lu-travel/index.html`，原生 HTML/CSS/JavaScript。
 - 后端：`cloudfunctions/korea-api/index.js`，CloudBase HTTP 云函数。
-- 数据集合：`kr_itinerary`、`kr_todos`、`kr_checklist`、`kr_bucketlist`、`kr_expenses`、`kr_docs`。
+- 动态数据权威集合：`kr_sync_state`；旧 `kr_itinerary`、`kr_todos`、`kr_checklist`、`kr_bucketlist`、`kr_expenses`、`kr_docs` 仅保留作迁移与恢复依据。
 - 旅程配置和基础模板位于 `TRIP_DATA`；记录逐步迁移到 `tripId` 隔离。
 - Vercel：项目名 `lu-travel`；生产域名仍使用 `https://jinlu.cloud/`。
 - CloudBase 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`。
-- Service Worker 当前版本：`lu-travel-v25`。
-- 发布前 smoke check：`node scripts/verify.mjs`。
+- Service Worker 当前版本：`lu-travel-v52`。
+- 2026-09-10 全量发布：Vercel `dpl_9u47wm8niUeXPjEEepsBYaYezeGS`（`www.jinlu.cloud`）已就绪；CloudBase `/korea` 静态入口已直传最新 `index.html`、`assets/sync-client.js`、`sw.js`、`manifest.json`。两入口文件哈希与本地一致，线上烟雾检查和浏览器回归通过。
+- 灵感箱：`kr_inspirations` 使用既有 protocol 2 同步。桌面和 iPhone 通过剪贴板一键收集；Android 已安装 PWA 可以从系统分享面板自动接收标题、文字与 URL。
+- 权限：`kele` 和 `jinlu` 是固定所有者。访客通过匿名登录进入只读模式；云函数允许已认证会话读取，但只允许这两个所有者 UID 写入。两位所有者的新密码已成功写入并在正式站验证；密码明文不存入项目资料。
+- 发布前检查：`node scripts/verify.mjs`、`node --test scripts/sync-test.mjs`、`node scripts/sync-browser.mjs`。
 
 ## 7. 实际完成情况
 
-已完成或基本完成：11 Tab、基础多旅程选择、韩国画册和地图、站内 viewer、删除确认、编辑入口、待办/行李拖动、航班/酒店信息、人民币支出、基础 PWA/离线缓存、CloudBase 基础同步、线上资源检查脚本。
+已完成或基本完成：11 Tab、基础多旅程选择、韩国画册和地图、站内 viewer、删除确认、编辑入口、待办/行李拖动、航班/酒店信息、人民币支出、PWA/离线缓存、两个正式账号登录、CloudBase 私有文件、统一 protocol 2 同步和自动回归脚本。
 
-部分完成：香港和厦门只有基础三日模板；航班/酒店/画册/地图/天气/跨年活动仍以配置为主；离线有缓存和队列但多数 API 是整批替换；移动端有 CSS 优化但未真机逐页验收。
+部分完成：香港和厦门只有基础三日模板；航班/酒店/画册/地图/天气/跨年活动仍以配置为主；动态列表仍按整份列表提交，但服务端会按稳定记录 ID 做三方合并，不同记录可自动合并，同一记录冲突会保留本机版本；移动端有 CSS 优化但未真机逐页验收。
 
-未完成：完整资料 CRUD、多旅程归档、IndexedDB 前端数据层、单条同步的完整前端接入和冲突处理、E2E 测试、错误监控和真实地区/设备验收。旅程设置已补成员、城市、时区、封面和复制已有旅程框架；当前已增加 JSON 导出/导入恢复和后端单条更新/删除接口，但仍属于基础版。
+未完成：完整资料 CRUD、多旅程归档、通用旅程成员权限模型、逐条/逐字段同步、可在页面内选择双方版本的冲突解决器、版本回滚界面、集中错误监控和真实 iPhone/iPad/地区验收。当前只授权两个固定账号；已有 JSON 导出/导入、冲突归档和最近 30 个服务端版本，但恢复演练仍需产品化。
 
 ## 8. 下一步优先级
 
-1. 先完成真实可访问性验收：Vercel/CloudBase 入口、缓存资源、天气、API、离线首屏，并请用户在中国大陆手机/iPad 实测。
-2. 完成 V1.4 旅程设置：成员、城市、时区、封面、空状态、无刷新切换。
-3. 完成 V1.5 航班、酒店、活动、地图、画册、天气的页面化 CRUD。
-4. 完成 V1.6 IndexedDB、单条 CRUD、离线队列、幂等、版本和冲突处理。
-5. 完成 V1.7 E2E、错误监控、真机和网络环境验收。
+1. **P0 数据保障**：把固定双账号授权升级为通用旅程成员模型；继续推进逐条变更、页面内冲突处理和版本恢复演练。金鹿历史美食收藏在云端、旧集合和历史快照中均未找到，只能继续检查她原设备尚未清理的缓存。
+2. **P0 验收**：自动化已覆盖两账号、多个标签页、断网、响应丢失、重开、删除及全部动态数据族；继续补真实双设备、旅程切换升级/回滚和 iPhone/iPad 真机验收。
+3. 完成真实地区可访问性验收：Vercel/CloudBase 入口、缓存资源、天气、API、离线首屏，并请用户在中国大陆、韩国的手机/iPad 实测。
+4. 数据保障通过后，再继续旅程设置和航班、酒店、活动、地图、画册、天气的页面化 CRUD。
+5. 最后继续视觉完善、错误监控和其他体验优化；任何新功能必须同时满足 P0 数据写入和恢复要求。
 
 ## 9. Agent 工作协议
 
 - 开始前先读本文件、`PROJECT_STATUS.md` 和 `REQUIREMENTS.md`，再看源码。
 - 先检查工作区，不覆盖用户已有改动；手工编辑只能使用 `apply_patch`。
-- 每次完成后运行 `node scripts/verify.mjs`、`node --check cloudfunctions/korea-api/index.js`、`git diff --check`。
+- 每次完成后运行 `node scripts/verify.mjs`、`node scripts/sync-test.mjs`、`node scripts/sync-browser.mjs`、后端与同步客户端 `node --check`、`git diff --check`。
 - 任何不能验证的内容必须写成“未验证”，不能说“应该没问题”。
 - 每次代码改动同步更新 `PROJECT_STATUS.md`；涉及需求或部署时同步更新 `README.md` 和 `HANDOFF_PROMPT.md`。
 - 如果功能涉及 CloudBase 部署，先验证资源和权限，再部署函数；前端 Vercel 和 CloudBase 国内静态入口必须都更新。

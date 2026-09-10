@@ -1,9 +1,10 @@
 // 在璐上 — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'lu-travel-v28';
+const CACHE = 'lu-travel-v52';
 const PRECACHE = [
   '/',
   '/manifest.json',
+  '/assets/sync-client.js',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
   '/assets/photos/busan-watercolor.webp',
@@ -30,7 +31,8 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   // API 请求不缓存，直连
-  if (url.hostname === 'hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com') return;
+  if (url.hostname === 'hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com'
+    || url.hostname === 'hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com') return;
 
   // 页面导航：网络优先，失败回退缓存（离线打开 App 壳）
   if (e.request.mode === 'navigate') {
@@ -51,7 +53,7 @@ self.addEventListener('fetch', (e) => {
     caches.match(e.request).then((cached) => {
       const fetched = fetch(e.request)
         .then((res) => {
-          if (res.ok) {
+          if (res.ok || res.type === 'opaque') {
             const copy = res.clone();
             caches.open(CACHE).then((c) => c.put(e.request, copy));
           }
