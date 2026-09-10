@@ -9,6 +9,7 @@ const app = cloudbase.init({
 
 const db = app.database();
 const { createSyncStore } = require('./sync-store');
+const { allowRead, visibleItems, protectPrivateWrite } = require('./privacy');
 const SYNC_COLLECTIONS = {
   '/itinerary': 'kr_itinerary', '/todos': 'kr_todos', '/checklist': 'kr_checklist',
   '/bucket-list': 'kr_bucketlist', '/expenses': 'kr_expenses', '/docs': 'kr_docs', '/inspirations': 'kr_inspirations', '/trips': 'kr_trips'
@@ -147,7 +148,7 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const route = url.pathname;
     const tripId = tripIdFromUrl(url);
-    assertAuthorized(req, req.method !== 'GET');
+    const caller = assertAuthorized(req, req.method !== 'GET');
     // Keep weather and exchange-rate requests on the domestic CloudBase origin.
     if (route === '/weather' && req.method === 'GET') {
       const city = url.searchParams.get('city') || 'seoul';
@@ -170,7 +171,9 @@ const server = http.createServer(async (req, res) => {
 
     const collectionName = SYNC_COLLECTIONS[route];
     if (collectionName && req.method === 'GET') {
-      return json(res, await syncStore.read(route, tripId));
+      allowRead(route, caller);
+      const result = await syncStore.read(route, tripId);
+      return json(res, { ...result, data: visibleItems(route, result.data, caller) });
     }
     if (collectionName && req.method === 'POST') {
       const body = await readBody(req);
@@ -179,7 +182,10 @@ const server = http.createServer(async (req, res) => {
       const writeTrip = String(body.tripId || tripId).trim();
       if (writeTrip.length > 120 || !/^[\w:@.-]+$/u.test(writeTrip)) throw Object.assign(new Error('旅程 ID 无效'), { status: 400 });
       if (!Array.isArray(body.items) || body.items.length > 5000) throw Object.assign(new Error('单次保存记录数量无效'), { status: 413 });
-      return json(res, await syncStore.write(route, writeTrip, body));
+      const current = await syncStore.read(route, writeTrip);
+      const items = protectPrivateWrite(route, body.items, current.data, caller);
+      const result = await syncStore.write(route, writeTrip, { ...body, items });
+      return json(res, { ...result, data: visibleItems(route, result.data, caller) });
     }
     if (req.method !== 'GET' && /^\/(records|todos|checklist|bucket-list)\//.test(route)) {
       return json(res, { success: false, error: '请刷新页面后再保存，当前版本已升级' }, 426);

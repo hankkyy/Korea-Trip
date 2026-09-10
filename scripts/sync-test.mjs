@@ -7,6 +7,7 @@ import { memoryDb, paths } from './sync-fixtures.mjs';
 const require = createRequire(import.meta.url);
 const { createSyncStore } = require('../cloudfunctions/korea-api/sync-store.js');
 const { createSyncClient } = require('../assets/sync-client.js');
+const { allowRead, visibleItems, protectPrivateWrite } = require('../cloudfunctions/korea-api/privacy.js');
 function storage() { const data = new Map(); return { getItem: key => data.get(key) || null, setItem: (key, value) => data.set(key, value), keys: () => data.keys() }; }
 const deferred = () => { let resolve; const promise = new Promise(r => { resolve = r; }); return { promise, resolve }; };
 export function fetchFor(store, hook = async () => {}) {
@@ -130,4 +131,21 @@ test('corrupt local sync state is quarantined instead of preventing startup', as
   const client = createClient(fetchFor(store), disk);
   assert.deepEqual(await client.read('/todos', 'korea'), []);
   assert.equal([...disk.keys()].some(key => key.startsWith('kr_sync_queue_v2_corrupt_')), true);
+});
+test('visitors only receive itinerary data and owners cannot alter each other private records', () => {
+  const kele = { uid: 'kele-id', role: 'owner' };
+  const jinlu = { uid: 'jinlu-id', role: 'owner' };
+  const visitor = { uid: 'visitor-id', role: 'visitor' };
+  assert.doesNotThrow(() => allowRead('/itinerary', visitor));
+  assert.throws(() => allowRead('/docs', visitor), { status: 403 });
+  const records = [
+    { clientId: 'shared', visibility: 'shared' },
+    { clientId: 'kele-private', visibility: 'private', ownerId: kele.uid },
+    { clientId: 'jinlu-private', visibility: 'private', ownerId: jinlu.uid }
+  ];
+  assert.deepEqual(visibleItems('/expenses', records, kele).map(item => item.clientId), ['shared', 'kele-private']);
+  assert.deepEqual(visibleItems('/docs', records, jinlu).map(item => item.clientId), ['shared', 'jinlu-private']);
+  const saved = protectPrivateWrite('/expenses', [{ clientId: 'shared', visibility: 'shared' }], records, kele);
+  assert.deepEqual(saved.map(item => item.clientId), ['shared', 'jinlu-private']);
+  assert.throws(() => protectPrivateWrite('/expenses', [{ clientId: 'jinlu-private', visibility: 'shared' }], records, kele), { status: 403 });
 });

@@ -57,6 +57,7 @@ body.short-trip.trip-has-hotels #tab-home .grid.home-hotels{display:grid}
 .auth-gate[hidden]{display:none}.auth-gate-copy{max-width:560px;color:var(--green-d)}.auth-gate-copy small{display:block;margin-bottom:12px;font-size:13px;letter-spacing:.16em}.auth-gate-copy strong{display:block;font-family:"Songti SC","STSong",serif;font-size:clamp(42px,7vw,78px);line-height:1}.auth-gate-copy p{max-width:420px;margin:20px 0 0;color:#66776D;line-height:1.8}
 .auth-card{width:min(100%,420px);padding:30px;border:1px solid rgba(114,166,127,.2);border-radius:28px;background:rgba(255,254,250,.92);box-shadow:0 22px 60px rgba(63,96,78,.14);backdrop-filter:blur(18px)}.auth-card h1{margin:0 0 8px;color:var(--green-d);font-size:25px}.auth-card>p{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.6}.auth-field{display:grid;gap:7px;margin:14px 0}.auth-field label{color:var(--green-d);font-size:13px;font-weight:750}.auth-field input{min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:13px;background:#fff;font:inherit;font-size:16px;color:var(--text);outline:none}.auth-field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(114,166,127,.12)}.auth-submit{width:100%;min-height:48px;margin-top:10px;border:0;border-radius:14px;background:var(--green-d);color:white;font:inherit;font-size:15px;font-weight:800}.auth-visitor{width:100%;min-height:44px;margin-top:10px;border:1px solid rgba(64,104,79,.24);border-radius:14px;background:rgba(255,255,255,.64);color:var(--green-d);font:inherit;font-size:14px;font-weight:800}.auth-submit:disabled,.auth-visitor:disabled{opacity:.55}.auth-visitor-note{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.55;text-align:center}.auth-error{min-height:20px;margin:12px 0 0;color:#9B6468;font-size:13px;line-height:1.5}.auth-pending> :not(#authGate):not(script){visibility:hidden}
 body.visitor-mode .food-add-btn,body.visitor-mode .food-edit-toggle,body.visitor-mode .food-edit-only,body.visitor-mode .list-add-btn,body.visitor-mode .l-toggle,body.visitor-mode .l-drag,body.visitor-mode .l-actions,body.visitor-mode .exp-edit,body.visitor-mode .docs-primary,body.visitor-mode .doc-edit-only,body.visitor-mode #tripManageBtn,body.visitor-mode #tripNewBtn,body.visitor-mode #tripImportBtn,body.visitor-mode #tripSettingsSave,body.visitor-mode #tripDeleteBtn,body.visitor-mode #itAddRow,body.visitor-mode .it-row-remove,body.visitor-mode .dc-tools,body.visitor-mode .tl-edit{display:none!important}
+body.visitor-mode main>.panel:not(#tab-itinerary),body.visitor-mode #bnav .bn-btn:not([data-tab="itinerary"]),body.visitor-mode footer{display:none!important}body.visitor-mode #bnav{justify-content:center;visibility:visible!important}body.visitor-mode #bnav .bn-btn[data-tab="itinerary"]{display:flex!important;visibility:visible!important}body.visitor-mode #tab-itinerary{display:block!important}
 body.visitor-mode .food-card .food-head-fields,body.visitor-mode .food-card>textarea{display:none!important}body.visitor-mode .food-card .food-display-title,body.visitor-mode .food-card .food-meta,body.visitor-mode .food-card .food-note{display:block!important}body.visitor-mode .visitor-mode-note{display:inline-flex}
 @media(max-width:720px){.auth-gate{grid-template-columns:1fr;align-content:center;padding-left:22px;padding-right:22px}.auth-gate-copy{display:none}.auth-card{justify-self:center;padding:25px 22px;border-radius:23px}}
 #dayChips{display:none!important}
@@ -1099,8 +1100,8 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
 #itSheet.cover-only .it-items-head,#itSheet.cover-only #itEditorList{display:none}
 #itSheet.cover-only .it-preview-field{display:block}
 #itSheet.cover-only .it-actions{margin-top:12px}
-.it-cover-controls{display:flex;align-items:center;gap:6px}
-.it-cover-controls select{min-width:0;flex:1}
+.it-cover-controls{display:flex;min-width:0;align-items:center;gap:6px}
+.it-cover-controls select{width:100%;min-width:0;flex:1}
 .it-cover-clear{height:46px;flex:0 0 auto;padding:0 11px;border-radius:14px;border:1px solid rgba(221,176,179,.4);background:rgba(221,176,179,.08);color:#A66E72;font-size:11px;font-weight:850;white-space:nowrap}
 .it-cover-clear:hover{background:rgba(221,176,179,.16)}
 .it-cover-clear:active{transform:scale(.97)}
@@ -1118,9 +1119,9 @@ body.short-trip #tab-transport .wrap>.trip-transport-extra{display:block}
   color:var(--green-d);font-size:11.5px;font-weight:900;letter-spacing:.01em
 }
 .it-topbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:10px}
-.it-topbar .field{margin-bottom:0}
+.it-topbar .field{min-width:0;margin-bottom:0}
 .it-topbar input,.it-topbar select{
-  height:46px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,251,.98),rgba(246,250,246,.96))
+  width:100%;height:46px;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,251,.98),rgba(246,250,246,.96))
 }
 .it-preview{margin-top:8px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .it-preview-field{display:none}
@@ -1846,7 +1847,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           <div class="bc-detail"><span class="bc-detail-label">房型</span><span class="bc-detail-value">景城标准双人床房<small>Standard Double Room · City View</small></span></div>
           <div class="bc-detail"><span class="bc-detail-label">酒店地址</span><span class="bc-detail-value">韩国釜山广域市东区中央大路214番街7-8号<small>7-8 Jungang-daero 214beon-gil, Dong-gu, Busan 48733</small></span></div>
         </div>
-        <div class="bc-note">已确认 · 确认号 26492778 · 订单号 1128150678962700</div>
+        <div class="bc-note">已确认 · 详细凭证仅旅行成员可见</div>
       </div>
       <div class="card board-card">
         <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.webp" alt="首尔明洞万怡酒店 手绘酒店外观">
@@ -1858,7 +1859,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           <div class="bc-detail"><span class="bc-detail-label">房型</span><span class="bc-detail-value">Premier 客房<small>Premier Guest Room</small></span></div>
           <div class="bc-detail"><span class="bc-detail-label">酒店地址</span><span class="bc-detail-value">韩国首尔特别市中区南大门路9号<small>9 Namdaemun-ro, Jung-gu, Seoul 04526</small></span></div>
         </div>
-        <div class="bc-note">已确认 · 确认号 #93241473</div>
+        <div class="bc-note">已确认 · 详细凭证仅旅行成员可见</div>
       </div>
     </div>
 
@@ -1979,7 +1980,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           <div class="bc-detail"><span class="bc-detail-label">房型</span><span class="bc-detail-value">景城标准双人床房<small>Standard Double Room · City View</small></span></div>
           <div class="bc-detail"><span class="bc-detail-label">酒店地址</span><span class="bc-detail-value">韩国釜山广域市东区中央大路214番街7-8号<small>7-8 Jungang-daero 214beon-gil, Dong-gu, Busan 48733</small></span></div>
         </div>
-        <div class="bc-note">已确认 · 确认号 26492778 · 订单号 1128150678962700</div>
+        <div class="bc-note">已确认 · 详细凭证仅旅行成员可见</div>
       </div>
       <div class="card board-card">
         <img class="bc-photo" src="assets/photos/seoul-marriott-myeongdong-editorial.webp" alt="首尔明洞万怡酒店 手绘酒店外观">
@@ -1991,7 +1992,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
           <div class="bc-detail"><span class="bc-detail-label">房型</span><span class="bc-detail-value">Premier 客房<small>Premier Guest Room</small></span></div>
           <div class="bc-detail"><span class="bc-detail-label">酒店地址</span><span class="bc-detail-value">韩国首尔特别市中区南大门路9号<small>9 Namdaemun-ro, Jung-gu, Seoul 04526</small></span></div>
         </div>
-        <div class="bc-note">已确认 · 确认号 #93241473</div>
+        <div class="bc-note">已确认 · 详细凭证仅旅行成员可见</div>
       </div>
     </div>
     </div>
@@ -2103,7 +2104,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <div class="flight-date">12/26 · 02:25 起飞 → 06:50 到达</div>
         <div class="flight-data">
           <div class="flight-data-item"><span>座位号</span><strong>可乐 34G · 仇金璐 34H</strong></div>
-          <div class="flight-data-item"><span>预订号</span><strong>DM3UK6</strong></div>
+          <div class="flight-data-item"><span>预订号</span><strong>仅旅行成员可见</strong></div>
           <div class="flight-data-item"><span>飞行时长</span><strong>03小时25分</strong></div>
           <div class="flight-data-item"><span>机型</span><strong>空客 A330-300（大）</strong></div>
         </div>
@@ -2131,7 +2132,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
         <div class="flight-date">1/3 · 22:10 起飞 → 1/4 01:15 到达</div>
         <div class="flight-data">
           <div class="flight-data-item"><span>座位号</span><strong>可乐 38G · 仇金璐 38H</strong></div>
-          <div class="flight-data-item"><span>预订号</span><strong>DM3UK6</strong></div>
+          <div class="flight-data-item"><span>预订号</span><strong>仅旅行成员可见</strong></div>
           <div class="flight-data-item"><span>飞行时长</span><strong>04小时05分</strong></div>
           <div class="flight-data-item"><span>机型</span><strong>空客 A330-300（大）</strong></div>
         </div>
@@ -2148,8 +2149,8 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       </div>
     </div>
     <div class="flight-source-note">
-      <span>预订号 DM3UK6</span>
-      <span>张子豪票号 9884869687272 · 仇金璐票号 9884869687271</span>
+      <span>预订信息仅旅行成员可见</span>
+      <span>票号与值机资料仅旅行成员可见</span>
       <span>登机口和登机时间以正式登机牌及航司值机页面为准</span>
     </div>
 
@@ -2490,10 +2491,10 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   </div>
   <div class="field"><label>可见范围</label>
     <div class="seg" id="expVisibilitySeg">
-      <button class="active" data-v="public">公开 · 双方可见并统计</button>
-      <button data-v="private">隐藏 · 同步保留</button>
+      <button class="active" data-v="shared">双方可见</button>
+      <button data-v="private">仅自己可见</button>
     </div>
-    <div class="field-hint">隐藏支出仍会同步到其他设备，只是不进入默认统计。</div>
+    <div class="field-hint">仅自己可见的支出不会显示给另一位账号，也不会显示给访客。</div>
   </div>
   <div class="field"><label>谁付的</label>
     <div class="seg" id="expPayerSeg">
@@ -2606,6 +2607,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <input id="essayPlaceInput" placeholder="海云台 / 明洞">
     </div>
   </div>
+  <div class="field"><label>可见范围</label><div class="seg" id="essayVisibilitySeg"><button class="active" data-v="shared">双方可见</button><button data-v="private">仅自己可见</button></div><div class="field-hint">私人随笔只会同步并显示给创建它的账号。</div></div>
   <div class="field">
     <label>随笔密码</label>
     <input id="essayPasswordInput" type="password" placeholder="请输入这篇随笔的密码">
@@ -2641,6 +2643,7 @@ const PEOPLE = ['可乐', '金鹿'];
 let cloudApp = null;
 let cloudAuth = null;
 let accessRole = 'owner';
+let currentUserId = '';
 const OWNER_UIDS = new Set(['2097823157655728129', '2097823165424365569']);
 const VISITOR_SESSION_KEY = 'kr_visitor_session';
 let resolveAuthReady;
@@ -2652,7 +2655,8 @@ function ownerOnly(message = '访客只能查看旅行资料，不能修改内�
   return false;
 }
 function applyAccessRole(session) {
-  accessRole = session?.user?.is_anonymous || !OWNER_UIDS.has(String(session?.user?.id || '')) ? 'visitor' : 'owner';
+  currentUserId = String(session?.user?.id || '');
+  accessRole = session?.user?.is_anonymous || !OWNER_UIDS.has(currentUserId) ? 'visitor' : 'owner';
   document.body.classList.toggle('visitor-mode', isVisitor());
 }
 function revealAuthenticatedApp(session) {
@@ -2761,12 +2765,12 @@ const TRIP_DATA = {
       { title: '冬季限定', note: '滑冰场、冬日市集、节日菜单和只在冬天出现的体验。', status: '持续收集' }
     ],
     flights: [
-      { no: 'OZ372', from: 'SZX', fromName: '深圳宝安 T3', to: 'ICN', toName: '首尔仁川 T2', date: '12/26 · 02:25 起飞 → 06:50 到达', seats: '可乐 34G\\n仇金璐 34H', airline: '韩亚航空 · Asiana Airlines', booking: 'DM3UK6', duration: '03小时25分', aircraft: '空客 A330-300（大）' },
-      { no: 'OZ371', from: 'ICN', fromName: '首尔仁川 T2', to: 'SZX', toName: '深圳宝安 T3', date: '1/3 · 22:10 起飞 → 1/4 01:15 到达', seats: '可乐 38G\\n仇金璐 38H', airline: '韩亚航空 · Asiana Airlines', booking: 'DM3UK6', duration: '04小时05分', aircraft: '空客 A330-300（大）' }
+      { no: 'OZ372', from: 'SZX', fromName: '深圳宝安 T3', to: 'ICN', toName: '首尔仁川 T2', date: '12/26 · 02:25 起飞 → 06:50 到达', seats: '座位信息仅旅行成员可见', airline: '韩亚航空 · Asiana Airlines', booking: '仅旅行成员可见', duration: '03小时25分', aircraft: '空客 A330-300（大）' },
+      { no: 'OZ371', from: 'ICN', fromName: '首尔仁川 T2', to: 'SZX', toName: '深圳宝安 T3', date: '1/3 · 22:10 起飞 → 1/4 01:15 到达', seats: '座位信息仅旅行成员可见', airline: '韩亚航空 · Asiana Airlines', booking: '仅旅行成员可见', duration: '04小时05分', aircraft: '空客 A330-300（大）' }
     ],
     hotels: [
-      { name: '釜山站ASTI酒店', en: 'ASTI Hotel Busan Station', date: '12/26 - 12/29 · 3 晚', checkIn: '12/26 15:00 后', checkOut: '12/29 11:00 前', room: '景城标准双人床房', roomEn: 'Standard Double Room · City View', address: '韩国釜山广域市东区中央大路214番街7-8号', addressEn: '7-8 Jungang-daero 214beon-gil, Dong-gu, Busan 48733', note: '已确认 · 确认号 26492778 · 订单号 1128150678962700' },
-      { name: '首尔明洞万怡酒店', en: 'Courtyard by Marriott Seoul Myeongdong', date: '12/29 - 1/3 · 5 晚', checkIn: '12/29 15:00', checkOut: '1/3 11:00', room: 'Premier 客房', roomEn: 'Premier Guest Room', address: '韩国首尔特别市中区南大门路9号', addressEn: '9 Namdaemun-ro, Jung-gu, Seoul 04526', note: '已确认 · 确认号 #93241473' }
+      { name: '釜山站ASTI酒店', en: 'ASTI Hotel Busan Station', date: '12/26 - 12/29 · 3 晚', checkIn: '12/26 15:00 后', checkOut: '12/29 11:00 前', room: '景城标准双人床房', roomEn: 'Standard Double Room · City View', address: '韩国釜山广域市东区中央大路214番街7-8号', addressEn: '7-8 Jungang-daero 214beon-gil, Dong-gu, Busan 48733', note: '已确认 · 详细凭证在私密文件夹' },
+      { name: '首尔明洞万怡酒店', en: 'Courtyard by Marriott Seoul Myeongdong', date: '12/29 - 1/3 · 5 晚', checkIn: '12/29 15:00', checkOut: '1/3 11:00', room: 'Premier 客房', roomEn: 'Premier Guest Room', address: '韩国首尔特别市中区南大门路9号', addressEn: '9 Namdaemun-ro, Jung-gu, Seoul 04526', note: '已确认 · 详细凭证在私密文件夹' }
     ],
     content: 'ready'
   },
@@ -2784,10 +2788,10 @@ const TRIP_DATA = {
       2: ['assets/photos/real/hong-kong-disneyland-castle-watercolor.webp', 'assets/photos/real/hong-kong-disneyland-watercolor.webp', 'assets/photos/real/hong-kong-avenue-of-stars-watercolor.webp'],
       3: ['assets/photos/real/hong-kong-central-skyline-watercolor.webp', 'assets/photos/real/hong-kong-temple-street-watercolor.webp', 'assets/photos/real/hong-kong-man-mo-temple-watercolor.webp']
     },
-    hotels: [{ name: '香港维港凯悦尚萃酒店', en: 'Hyatt Centric Victoria Harbour Hong Kong', date: '12/18–12/20 · 2 晚', checkIn: '12/18 15:00', checkOut: '12/20 12:00', room: '标准客房 · 1 张特大床', roomEn: 'Standard Room · 1 King Bed', address: '香港北角城市花园道 1 号', addressEn: '1 North Point Estate Lane, North Point, Hong Kong', photo: 'assets/photos/real/hong-kong-hyatt-centric-watercolor.webp', note: '已确认 · 确认号 49970038' }],
+    hotels: [{ name: '香港维港凯悦尚萃酒店', en: 'Hyatt Centric Victoria Harbour Hong Kong', date: '12/18–12/20 · 2 晚', checkIn: '12/18 15:00', checkOut: '12/20 12:00', room: '标准客房 · 1 张特大床', roomEn: 'Standard Room · 1 King Bed', address: '香港北角城市花园道 1 号', addressEn: '1 North Point Estate Lane, North Point, Hong Kong', photo: 'assets/photos/real/hong-kong-hyatt-centric-watercolor.webp', note: '已确认 · 详细凭证在私密文件夹' }],
     itinerary: [
       { day: 1, sortOrder: 1, time: '18:30', title: '深圳 → 香港西九龙', subtitle: '下班后坐高铁去香港', detail: '预留下班通勤、安检和出入境时间；具体车次与座位以购票记录为准。', dayTheme: '下班出发 · 抵达香港', dayCover: 'assets/photos/hero-bg-2.svg' },
-      { day: 1, sortOrder: 2, time: '20:30', title: '入住香港维港凯悦尚萃酒店', subtitle: '北角 · Hyatt Centric Victoria Harbour Hong Kong', detail: '地址：香港北角城市花园道 1 号。确认号 49970038，标准客房，1 张特大床。', dayTheme: '下班出发 · 抵达香港', dayCover: 'assets/photos/hero-bg-2.svg' },
+      { day: 1, sortOrder: 2, time: '20:30', title: '入住香港维港凯悦尚萃酒店', subtitle: '北角 · Hyatt Centric Victoria Harbour Hong Kong', detail: '抵达后办理入住；详细凭证仅旅行成员可见。', dayTheme: '下班出发 · 抵达香港', dayCover: 'assets/photos/hero-bg-2.svg' },
       { day: 1, sortOrder: 3, time: '21:15', title: '酒店附近海边散步', subtitle: '北角海滨 · 维港夜色', detail: '办理入住后沿北角海滨走一小段，熟悉酒店到港铁站和第二天出发路线；早点休息。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=North+Point+Promenade+Hong+Kong', dayTheme: '下班出发 · 抵达香港', dayCover: 'assets/photos/hero-bg-2.svg' },
       { day: 2, sortOrder: 1, time: '10:00', title: '酒店出发 → 香港迪士尼', subtitle: '港铁：北角 → 香港站 → 欣澳 → 迪士尼', detail: '早上留出起床、化妆和收拾时间，十点左右从酒店出发；全程约 55–75 分钟，抵达后从容入园。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Hong+Kong+Disneyland', dayTheme: '迪士尼一整天', dayCover: 'assets/photos/hero-bg-3.svg' },
       { day: 2, sortOrder: 2, time: '11:00', title: '香港迪士尼乐园', subtitle: '入园后按当天演出时间表安排', detail: '不用赶早场，优先安排想玩的热门项目，再穿插巡游、城堡拍照和园区餐饮；当天一直玩到闭园。', mapUrl: 'https://www.hongkongdisneyland.com/zh-hk/', dayTheme: '迪士尼一整天', dayCover: 'assets/photos/hero-bg-3.svg' },
@@ -2813,10 +2817,10 @@ const TRIP_DATA = {
       2: ['assets/photos/real/xiamen-gulangyu-panoramic-watercolor.webp', 'assets/photos/real/xiamen-jimei-campus-watercolor.webp', 'assets/photos/real/xiamen-wuyuan-bay-watercolor.webp'],
       3: ['assets/photos/real/xiamen-shapowei-boats-watercolor.webp', 'assets/photos/real/xiamen-nanputuo-temple-watercolor.webp', 'assets/photos/real/xiamen-bashi-market-watercolor.webp']
     },
-    hotels: [{ name: '厦门安达仕酒店', en: 'Andaz Xiamen', date: '1/8–1/10 · 2 晚', checkIn: '1/8 15:00', checkOut: '1/10 12:00', room: '豪华客房 · 1 张特大床', roomEn: 'Deluxe Room · 1 King Bed', address: '中国福建省厦门市思明区湖滨东路 101 号', addressEn: '101 Hubin East Road, Siming District, Xiamen 361004, China', photo: 'assets/photos/real/xiamen-andaz-watercolor.webp', note: '已确认 · 确认号 27226642' }],
+    hotels: [{ name: '厦门安达仕酒店', en: 'Andaz Xiamen', date: '1/8–1/10 · 2 晚', checkIn: '1/8 15:00', checkOut: '1/10 12:00', room: '豪华客房 · 1 张特大床', roomEn: 'Deluxe Room · 1 King Bed', address: '中国福建省厦门市思明区湖滨东路 101 号', addressEn: '101 Hubin East Road, Siming District, Xiamen 361004, China', photo: 'assets/photos/real/xiamen-andaz-watercolor.webp', note: '已确认 · 详细凭证在私密文件夹' }],
     itinerary: [
       { day: 1, sortOrder: 1, time: '18:30', title: '深圳 → 厦门', subtitle: '下班后坐高铁出发', detail: '预留下班通勤、进站安检和换乘时间；具体车次、到达车站和座位以购票记录为准。', dayTheme: '下班出发 · 入住安达仕', dayCover: 'assets/photos/hero-bg-4.svg' },
-      { day: 1, sortOrder: 2, time: '22:00', title: '入住厦门安达仕酒店', subtitle: 'Andaz Xiamen · 湖滨东路', detail: '地址：厦门市思明区湖滨东路 101 号。确认号 27226642，豪华客房，1 张特大床。', dayTheme: '下班出发 · 入住安达仕', dayCover: 'assets/photos/hero-bg-4.svg' },
+      { day: 1, sortOrder: 2, time: '22:00', title: '入住厦门安达仕酒店', subtitle: 'Andaz Xiamen · 湖滨东路', detail: '抵达后办理入住；详细凭证仅旅行成员可见。', dayTheme: '下班出发 · 入住安达仕', dayCover: 'assets/photos/hero-bg-4.svg' },
       { day: 1, sortOrder: 3, time: '22:30 起', title: '酒店周边简单熟悉', subtitle: '湖滨东路 · 早点休息 · 八市宵夜备选', detail: '办理入住后不安排远距离活动，先确认第二天前往鼓浪屿的交通和船票信息；如果还有精力，可以晚一点去八市吃海鲜、逛夜市，吃完再回酒店。', dayTheme: '下班出发 · 入住安达仕', dayCover: 'assets/photos/hero-bg-4.svg' },
       { day: 2, sortOrder: 1, time: '10:00', title: '酒店 → 厦鼓码头', subtitle: '起床收拾后打车前往东渡客运码头', detail: '不用赶早，预留化妆收拾和早餐时间；从酒店打车前往厦鼓码头约 20–30 分钟，船票和乘船证件按官方购票信息准备。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Xiamen+International+Cruise+Center', dayTheme: '鼓浪屿半日 · 集美夜景', dayCover: 'assets/photos/hero-bg-2.svg' },
       { day: 2, sortOrder: 2, time: '11:00', title: '鼓浪屿漫游', subtitle: '三丘田码头 · 万国建筑 · 日光岩', detail: '上午不用排得太满，上岛后集中游览海边、历史建筑和岛上小巷，控制在半天内，留出午餐和返程缓冲。', mapUrl: 'https://www.google.com/maps/search/?api=1&query=Gulangyu+Island+Xiamen', dayTheme: '鼓浪屿半日 · 集美夜景', dayCover: 'assets/photos/hero-bg-2.svg' },
@@ -3529,7 +3533,7 @@ const KOREA_ITINERARY = [
   { day: 4, sortOrder: 1, time: '10:00', title: '太宗台', subtitle: '灯塔 + 悬崖海景', detail: '观光小火车代步，天气好能看到对马岛。', mapUrl: 'https://map.naver.com/p/search/태종대' },
   { day: 4, sortOrder: 2, time: '14:00', title: '酒店退房 → 釜山站', subtitle: '取行李出发', detail: '买点釜山特产带上车吃。' },
   { day: 4, sortOrder: 3, time: '18:30', title: 'KTX 釜山 → 首尔', subtitle: '车程约 2.5–3h', detail: '按现在的节奏晚一点北上；车上补觉，21 点前后到首尔站。' },
-  { day: 4, sortOrder: 4, time: '21:30', title: '入住 首尔明洞万怡酒店', subtitle: '明洞 · 官方 15:00 可入住', detail: '确认号 #93241473；如果晚到就直接办理入住，离明洞和首尔站都比较顺。' },
+  { day: 4, sortOrder: 4, time: '21:30', title: '入住 首尔明洞万怡酒店', subtitle: '明洞 · 官方 15:00 可入住', detail: '如果晚到就直接办理入住，详细凭证仅旅行成员可见。' },
   { day: 4, sortOrder: 5, time: '22:00', title: '明洞夜宵 / 踩点', subtitle: '小吃 + 便利店', detail: '如果体力够就浅逛一下，别把第二天古宫行程拖太晚。', mapUrl: 'https://map.naver.com/p/search/명동교자' },
   { day: 5, sortOrder: 1, time: '09:00', title: '景福宫', subtitle: '穿韩服进宫免门票', detail: '光化门附近韩服租赁店，穿上韩服穿越古宫。', mapUrl: 'https://map.naver.com/p/search/경복궁' },
   { day: 5, sortOrder: 2, time: '11:00', title: '北村韩屋村', subtitle: '韩屋小巷', detail: '坡上拍照经典机位，注意居民区保持安静。', mapUrl: 'https://map.naver.com/p/search/북촌한옥마을' },
@@ -3845,6 +3849,7 @@ const SPOTS = {
 const TABS = ['home', 'itinerary', 'transport', 'map', 'food', 'essay', 'todos', 'packing', 'guide', 'docs', 'expenses'];
 let mapInited = false;
 function showTab(name, pushHash = true) {
+  if (isVisitor() && name !== 'itinerary') name = 'itinerary';
   if (!TABS.includes(name)) name = 'home';
   document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + name));
   document.querySelectorAll('.bn-btn').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
@@ -5495,7 +5500,7 @@ let expenses = [], expensesTimer = null;
 const CATS = ['交通', '住宿', '餐饮', '门票', '购物', '其他'];
 const CAT_COLORS = { '交通': '#A7C8CF', '住宿': '#78AA8B', '餐饮': '#E2B96F', '门票': '#D7A0A5', '购物': '#A9B5BE', '其他': '#B9C4BD' };
 const CAT_ICONS = { '交通': 'train', '住宿': 'hotel', '餐饮': 'food', '门票': 'star', '购物': 'gift', '其他': 'receipt' };
-const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' }, visibilitySeg = { v: 'public' };
+const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' }, visibilitySeg = { v: 'shared' };
 function isPrivateExpense(it) { return it.visibility === 'private'; }
 function expenseKey(it) {
   return String(it?.clientId || it?.id || it?._id || `${it?.desc || ''}|${it?.amount || ''}|${it?.currency || ''}|${it?.createdAt || ''}`).trim();
@@ -5641,7 +5646,7 @@ window.editExpense = function (id) {
   setExpenseSegment('expCatSeg', catSeg, expCatOf(item));
   setExpenseSegment('expCurSeg', curSeg, item.currency || 'KRW');
   setExpenseSegment('expSplitSeg', splitSeg, item.splitType || 'perPerson');
-  setExpenseSegment('expVisibilitySeg', visibilitySeg, item.visibility || 'public');
+  setExpenseSegment('expVisibilitySeg', visibilitySeg, item.visibility === 'private' ? 'private' : 'shared');
   setExpenseSegment('expPayerSeg', payerSeg, item.people?.length === 1 ? displayPersonName(item.people[0]) : '共同');
   openSheet();
 };
@@ -5649,7 +5654,8 @@ async function persistExpenses() {
   const payload = expenses.map((e) => ({
     clientId: e.clientId || e.id || e._id || expenseKey(e), desc: e.desc, amount: e.amount, currency: e.currency,
     tripId: e.tripId || currentTripData().id, splitType: e.splitType, people: (e.people || []).map(displayPersonName), category: e.category || '其他',
-    visibility: e.visibility || 'public', createdAt: e.createdAt || Date.now(), updatedAt: e.updatedAt || Date.now()
+    visibility: e.visibility === 'private' ? 'private' : 'shared', ownerId: e.visibility === 'private' ? (e.ownerId || currentUserId) : undefined,
+    createdAt: e.createdAt || Date.now(), updatedAt: e.updatedAt || Date.now()
   }));
   cache.set('kr_cache_expenses', expenses);
   await apiPost('/expenses', { items: payload });
@@ -5659,7 +5665,7 @@ async function initExpenses() {
   setFxRateHint();
   const list = await apiGet('/expenses', 'kr_cache_expenses', []);
   const privateItems = cache.get('kr_private_expenses', activeTrip().id) || [];
-  expenses = mergeExpenses(list, privateItems);
+  expenses = mergeExpenses(list, privateItems).map((item) => item.visibility === 'private' && !item.ownerId ? { ...item, visibility: 'shared' } : item);
   renderExpenses();
   if (privateItems.length) {
     cache.set('kr_private_expenses', []);
@@ -5681,7 +5687,7 @@ window.openSheet = function () {
     setExpenseSegment('expCatSeg', catSeg, '餐饮');
     setExpenseSegment('expCurSeg', curSeg, 'KRW');
     setExpenseSegment('expSplitSeg', splitSeg, 'perPerson');
-    setExpenseSegment('expVisibilitySeg', visibilitySeg, 'public');
+    setExpenseSegment('expVisibilitySeg', visibilitySeg, 'shared');
     setExpenseSegment('expPayerSeg', payerSeg, '共同');
     $('#expDesc').value = '';
     $('#expAmount').value = '';
@@ -5710,9 +5716,9 @@ function initSheet() {
     const people = payerSeg.v === '共同' ? ['可乐', '金鹿'] : [payerSeg.v];
     if (editingExpenseId != null) {
       const item = expenses.find((expense) => (expense._id || expense.clientId) == editingExpenseId);
-      if (item) Object.assign(item, { desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, updatedAt: Date.now() });
+      if (item) Object.assign(item, { desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, ownerId: visibilitySeg.v === 'private' ? currentUserId : undefined, updatedAt: Date.now() });
     } else {
-      expenses.unshift({ clientId: newRecordId('expense'), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, createdAt: Date.now(), updatedAt: Date.now() });
+      expenses.unshift({ clientId: newRecordId('expense'), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, ownerId: visibilitySeg.v === 'private' ? currentUserId : undefined, createdAt: Date.now(), updatedAt: Date.now() });
     }
     renderExpenses();
     closeSheet();
@@ -5723,17 +5729,9 @@ function initSheet() {
 /* ================= 文件 / 随笔（同步 + 本地兜底） ================= */
 const PRIVATE_STORAGE_ROOT = 'cloud://hanoi-d4gj8vd2q1e7a3dc0.6861-hanoi-d4gj8vd2q1e7a3dc0-1448781892/private';
 const privateFile = (path) => `${PRIVATE_STORAGE_ROOT}/${path}`;
-const DOC_SEEDS = [
-  { tripId: 'korea-2026', id: 'seed-trip-zh', kind: 'file', sortOrder: 1, title: '携程中文版机票行程单', attachmentUrl: privateFile('korea/visa/携程中文版机票行程单.pdf'), attachmentName: '携程中文版机票行程单.pdf', attachmentType: 'pdf', note: '去程航班信息' },
-  { tripId: 'korea-2026', id: 'seed-trip-en', kind: 'file', sortOrder: 2, title: '携程英文版机票行程单', attachmentUrl: privateFile('korea/visa/携程英文版机票行程单.pdf'), attachmentName: '携程英文版机票行程单.pdf', attachmentType: 'pdf', note: '英文版行程单' },
-  { tripId: 'korea-2026', id: 'seed-flight-zhao', kind: 'file', sortOrder: 3, title: '张子豪的韩亚航空官方行程单', attachmentUrl: privateFile('korea/visa/张子豪的韩亚航空官方行程单.pdf'), attachmentName: '张子豪的韩亚航空官方行程单.pdf', attachmentType: 'pdf', note: '12/26 深夜出发' },
-  { tripId: 'korea-2026', id: 'seed-flight-lu', kind: 'file', sortOrder: 4, title: '仇金璐的韩亚航空官方行程单', attachmentUrl: privateFile('korea/visa/仇金璐的韩亚航空官方行程单.pdf'), attachmentName: '仇金璐的韩亚航空官方行程单.pdf', attachmentType: 'pdf', note: '12/26 深夜出发' },
-  { tripId: 'korea-2026', id: 'seed-busan-hotel', kind: 'file', sortOrder: 5, title: '釜山 ASTI 酒店入住凭证（中文）', attachmentUrl: privateFile('korea/visa/釜山ASTI酒店中文版入住凭证.pdf'), attachmentName: '釜山ASTI酒店中文版入住凭证.pdf', attachmentType: 'pdf', note: '釜山站旁住宿' },
-  { tripId: 'korea-2026', id: 'seed-busan-hotel-en', kind: 'file', sortOrder: 6, title: '釜山 ASTI 酒店入住凭证（英文）', attachmentUrl: privateFile('korea/visa/釜山ASTI酒店英文版入住凭证.pdf'), attachmentName: '釜山ASTI酒店英文版入住凭证.pdf', attachmentType: 'pdf', note: '釜山站旁住宿' },
-  { tripId: 'korea-2026', id: 'seed-seoul-hotel', kind: 'file', sortOrder: 7, title: '首尔明洞万怡酒店入住凭证', attachmentUrl: privateFile('korea/visa/首尔明洞万怡酒店入住凭证.pdf'), attachmentName: '首尔明洞万怡酒店入住凭证.pdf', attachmentType: 'pdf', note: '首尔明洞万怡酒店 / Courtyard by Marriott Seoul Myeongdong' },
-  { tripId: 'hong-kong', id: 'seed-hong-kong-hotel', kind: 'file', sortOrder: 1, title: '香港维港凯悦尚萃酒店确认函', attachmentUrl: privateFile('hong-kong/docs/hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf'), attachmentName: 'hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf', attachmentType: 'pdf', note: 'Hyatt Centric Victoria Harbour Hong Kong · 确认号 49970038' },
-  { tripId: 'xiamen', id: 'seed-xiamen-hotel', kind: 'file', sortOrder: 1, title: '厦门安达仕酒店确认函', attachmentUrl: privateFile('xiamen/docs/andaz-xiamen-hotel-confirmation.pdf'), attachmentName: 'andaz-xiamen-hotel-confirmation.pdf', attachmentType: 'pdf', note: 'Andaz Xiamen · 确认号 27226642' }
-];
+// Travel documents are loaded from the authenticated data service. Keeping seed
+// filenames here would disclose document metadata to anyone downloading the app.
+const DOC_SEEDS = [];
 const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 仇金璐', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
 const ESSAY_KIND_LABELS = { diary: '日记', guide: '攻略摘录', food: '美食' };
 let docsData = [];
@@ -5745,6 +5743,7 @@ let essayUnlockedPasswords = new Map();
 let essayEditingId = null;
 let essayDraftPhotos = [];
 let essayFilter = 'all';
+const essayVisibilitySeg = { v: 'shared' };
 
 function base64FromBytes(bytes) {
   let bin = '';
@@ -5836,17 +5835,7 @@ function guessAttachmentType(file) {
   if (/\.(txt|md)$/i.test(name)) return 'text';
   return file?.type || 'file';
 }
-const DOC_PREVIEW_MAP = {
-  'hyatt-centric-victoria-harbour-hong-kong-confirmation.pdf': ['hong-kong-hyatt-1.jpg', 'hong-kong-hyatt-2.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
-  'andaz-xiamen-hotel-confirmation.pdf': ['xiamen-andaz-1.jpg', 'xiamen-andaz-2.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
-  '仇金璐的韩亚航空官方行程单.pdf': ['korea-flight-lu-1.jpg', 'korea-flight-lu-2.jpg', 'korea-flight-lu-3.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
-  '张子豪的韩亚航空官方行程单.pdf': ['korea-flight-zhao-1.jpg', 'korea-flight-zhao-2.jpg', 'korea-flight-zhao-3.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
-  '携程中文版机票行程单.pdf': ['trip-cn-1.jpg', 'trip-cn-2.jpg', 'trip-cn-3.jpg', 'trip-cn-4.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
-  '携程英文版机票行程单.pdf': ['trip-en-1.jpg', 'trip-en-2.jpg', 'trip-en-3.jpg', 'trip-en-4.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
-  '釜山ASTI酒店中文版入住凭证.pdf': ['busan-hotel-cn-1.jpg', 'busan-hotel-cn-2.jpg'].map((name) => privateFile(`korea/previews/${name}`)),
-  '釜山ASTI酒店英文版入住凭证.pdf': [privateFile('korea/previews/busan-hotel-en-1.jpg')],
-  '首尔明洞万怡酒店入住凭证.pdf': ['seoul-hotel-1.jpg', 'seoul-hotel-2.jpg'].map((name) => privateFile(`korea/previews/${name}`))
-};
+const DOC_PREVIEW_MAP = {};
 function docPreviewImages(doc) {
   const name = fileNameFromPath(doc?.attachmentUrl || doc?.attachmentName || '');
   return Array.isArray(doc?.previewImages) && doc.previewImages.length ? doc.previewImages : (DOC_PREVIEW_MAP[name] || []);
@@ -5882,6 +5871,8 @@ function normalizeEssayVault(doc, idx) {
     payloadIv: doc.payloadIv || doc.contentIv || '',
     passSalt: doc.passSalt || '',
     passHash: doc.passHash || '',
+    visibility: doc.visibility === 'private' && doc.ownerId ? 'private' : 'shared',
+    ownerId: doc.ownerId || '',
     createdAt: Number(doc.createdAt) || Date.now(),
     updatedAt: Number(doc.updatedAt) || Date.now()
   };
@@ -6451,6 +6442,7 @@ function openEssaySheet(entry = null) {
   $('#essayPlaceInput').value = entry?.place || '';
   $('#essayContentInput').value = entry?.content || '';
   $('#essayPasswordInput').value = '';
+  setExpenseSegment('essayVisibilitySeg', essayVisibilitySeg, entry?.visibility === 'private' ? 'private' : 'shared');
   renderEssayDraftPhotos();
   $('#essayBackdrop').classList.add('open');
   $('#essaySheet').classList.add('open');
@@ -6465,6 +6457,7 @@ function closeEssaySheet() {
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;
   if ($('#tripPickerSheet').classList.contains('open')) closeTripPicker();
+  else if ($('#tripSettingsSheet').classList.contains('open')) closeTripSettings();
   else if ($('#essaySheet').classList.contains('open')) closeEssaySheet();
   else if ($('#listSheet').classList.contains('open')) closeListSheet();
   else if ($('#itSheet').classList.contains('open')) closeItSheet();
@@ -6526,6 +6519,8 @@ async function saveEssaySheet() {
     passHash: sealed.hash,
     payloadEnc: sealed.data,
     payloadIv: sealed.iv,
+    visibility: essayVisibilitySeg.v,
+    ownerId: essayVisibilitySeg.v === 'private' ? currentUserId : undefined,
     createdAt: existing?.createdAt || Date.now(),
     updatedAt: Date.now()
   };
@@ -6541,6 +6536,7 @@ async function saveEssaySheet() {
   await persistDocs();
 }
 function initEssay() {
+  bindSeg('essayVisibilitySeg', essayVisibilitySeg);
   $('#essayAddBtn').addEventListener('click', () => {
     openEssaySheet();
   });
@@ -6594,7 +6590,7 @@ function initEssay() {
       else renderEssay();
       return;
     }
-    if (btn.dataset.act === 'edit') openEssaySheet({ ...essayOpenPayloads.get(item.id), id: item.id, category: item.category, sortOrder: item.sortOrder, createdAt: item.createdAt });
+    if (btn.dataset.act === 'edit') openEssaySheet({ ...essayOpenPayloads.get(item.id), id: item.id, category: item.category, visibility: item.visibility, ownerId: item.ownerId, sortOrder: item.sortOrder, createdAt: item.createdAt });
     if (btn.dataset.act === 'delete') {
       if (!confirm('删除这篇随笔？')) return;
       essayRecords = essayRecords.filter((it) => it.id !== item.id);
@@ -6771,10 +6767,11 @@ if (window.innerWidth < 768) {
 }
 
 /* ================= SW ================= */
-function initSW() {
+function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
+  if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
   if (navigator.onLine !== false) setTimeout(flushOfflineQueue, 900);
   // Keep retrying failed writes while the app remains open. A one-time retry
@@ -6789,13 +6786,19 @@ function initSW() {
 /* ================= 启动 ================= */
 (async function boot() {
   await Promise.all([authReady, syncClient.ready]);
-  const tripsSync = syncCustomTrips().catch((error) => console.warn('旅程目录暂时无法同步', error.message));
+  const tripsSync = isVisitor() ? Promise.resolve() : syncCustomTrips().catch((error) => console.warn('旅程目录暂时无法同步', error.message));
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   renderTripChrome();
   renderConfiguredTripData();
   updateHeader();
   updateRings();
   renderNextUp();
+  if (isVisitor()) {
+    initSW(true);
+    initItinerary();
+    showTab('itinerary', false);
+    return;
+  }
   let lastNextUpRender = 0;
   setInterval(() => {
     updateHeader();

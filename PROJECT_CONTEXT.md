@@ -71,10 +71,10 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 - 旅程配置和基础模板位于 `TRIP_DATA`；记录逐步迁移到 `tripId` 隔离。
 - Vercel：项目名 `lu-travel`；生产域名仍使用 `https://jinlu.cloud/`。
 - CloudBase 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`。
-- Service Worker 当前版本：`lu-travel-v52`。
-- 2026-09-10 全量发布：已验证的 Vercel 生产部署 `dpl_14kxwSiW1kRpq5ctsS25aREKjPUY`（`www.jinlu.cloud`）已就绪；CloudBase `/korea` 静态入口已直传最新 `index.html`、`assets/sync-client.js`、`sw.js`、`manifest.json`。两入口文件哈希与本地一致，线上烟雾检查和浏览器回归通过。
+- Service Worker 当前版本：`lu-travel-v53`。
+- 2026-09-11 全量发布：CloudBase 云函数权限、`/korea/index.html` 与 `/korea/sw.js` 已发布；静态文件哈希与本地一致。已验证的 Vercel 生产部署 `dpl_2LCx7AxJbWqQx3RJfwRVQb45qUjf`（`www.jinlu.cloud`）已就绪。生产匿名会话实测仅可见行程，行程为 200，待办、支出、文件为 403，Service Worker 已注册且页面无错误。
 - 灵感箱：`kr_inspirations` 使用既有 protocol 2 同步。桌面和 iPhone 通过剪贴板一键收集；Android 已安装 PWA 可以从系统分享面板自动接收标题、文字与 URL。
-- 权限：`kele` 和 `jinlu` 是固定所有者。访客通过匿名登录进入只读模式；云函数允许已认证会话读取，但只允许这两个所有者 UID 写入。两位所有者的新密码已成功写入并在正式站验证；密码明文不存入项目资料。
+- 权限：`kele` 和 `jinlu` 是固定所有者。访客通过匿名登录后只可读取总览行程；函数拒绝其读取待办、行李、支出、文件、美食、随笔、灵感箱和旅程管理，也拒绝所有写入。支出、随笔逐条提供双方可见或仅创建者可见；后者由服务端 `ownerId` 强制隔离。两位所有者的新密码已成功写入并在正式站验证；密码明文不存入项目资料。
 - 发布前检查：`node scripts/verify.mjs`、`node --test scripts/sync-test.mjs`、`node scripts/sync-browser.mjs`。
 
 ## 7. 实际完成情况
@@ -97,7 +97,7 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 
 - 开始前先读本文件、`PROJECT_STATUS.md` 和 `REQUIREMENTS.md`，再看源码。
 - 先检查工作区，不覆盖用户已有改动；手工编辑只能使用 `apply_patch`。
-- 每次完成后运行 `node scripts/verify.mjs`、`node scripts/sync-test.mjs`、`node scripts/sync-browser.mjs`、后端与同步客户端 `node --check`、`git diff --check`。
+- 每次完成后运行 `node scripts/verify.mjs`、`node scripts/sync-test.mjs`、`node scripts/sync-browser.mjs`、`node scripts/ui-audit.mjs`、后端与同步客户端 `node --check`、`git diff --check`。
 - 任何不能验证的内容必须写成“未验证”，不能说“应该没问题”。
 - 每次代码改动同步更新 `PROJECT_STATUS.md`；涉及需求或部署时同步更新 `README.md` 和 `HANDOFF_PROMPT.md`。
 - 如果功能涉及 CloudBase 部署，先验证资源和权限，再部署函数；前端 Vercel 和 CloudBase 国内静态入口必须都更新。

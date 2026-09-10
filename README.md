@@ -42,7 +42,7 @@
 ## 技术结构
 
 - 前端：单文件 `index.html`，原生 HTML/CSS/JavaScript。
-- 后端：CloudBase HTTP 云函数 `cloudfunctions/korea-api/index.js`。可乐和金鹿拥有读写权限；访客以匿名会话只读访问，服务端拒绝其任何写入。
+- 后端：CloudBase HTTP 云函数 `cloudfunctions/korea-api/index.js`。可乐和金鹿拥有读写权限；访客以匿名会话只能阅读总览行程，服务端拒绝其访问其他数据和任何写入。支出、随笔可逐条设为双方可见或仅创建者可见。
 - 数据库：CloudBase NoSQL，集合使用 `kr_` 前缀，并通过 `tripId` 隔离旅程。
 - 部署：Vercel 生产站 + CloudBase 国内静态入口；两边都要同步。
 - 离线：`sw.js` 缓存 App 壳与非敏感静态资源；动态写入队列和版本同时持久化到 localStorage 与 IndexedDB。
@@ -63,7 +63,7 @@ git diff --check
 python3 -m http.server 8766
 ```
 
-`scripts/verify.mjs` 会检查线上入口、Service Worker、公开缓存资源、受保护 API、天气接口和页面关键标记；未提供测试 token 时，API 的预期结果是 401。`sync-browser.mjs` 覆盖 11 个 Tab、所有动态数据族、离线/IndexedDB 恢复和重载。自动检查不能替代真实中国大陆、韩国运营商和 iPhone/iPad 真机验收。发布前必须同时更新 Vercel 和 CloudBase 国内入口。
+`scripts/verify.mjs` 会检查线上入口、Service Worker、公开缓存资源、受保护 API、天气接口和页面关键标记；未提供测试 token 时，API 的预期结果是 401。`sync-browser.mjs` 覆盖 11 个 Tab、所有动态数据族、离线/IndexedDB 恢复和重载；`ui-audit.mjs` 审查手机和桌面端的页面、编辑弹层与预览窗口。自动检查不能替代真实中国大陆、韩国运营商和 iPhone/iPad 真机验收。发布前必须同时更新 Vercel 和 CloudBase 国内入口。
 
 ## 安全
 

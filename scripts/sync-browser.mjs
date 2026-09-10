@@ -23,7 +23,8 @@ const db = memoryDb({
   'kr_todos/a': { id: 'todo-a', title: '测试待办', done: false, tripId },
   'kr_todos/b': { id: 'todo-a', title: '测试待办', done: false, tripId },
   'kr_expenses/a': { clientId: 'expense-a', desc: '测试支出', amount: 100, currency: 'CNY', splitType: 'perPerson', tripId },
-  'kr_checklist/a': { id: 'cl-a', text: '测试行李', done: false, tripId }
+  'kr_checklist/a': { id: 'cl-a', text: '测试行李', done: false, tripId },
+  'kr_docs/a': { id: 'doc-a', kind: 'file', title: '测试文件', note: '浏览器回归', tripId }
 });
 const store = createSyncStore(db, paths);
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
@@ -195,7 +196,7 @@ try {
     if (url.hostname === '127.0.0.1') return route.continue();
     const path = url.pathname.replace('/korea-api', '');
     if (!paths[path]) return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
-    if (request.method() === 'POST') return route.fulfill({ status: 403, contentType: 'application/json', body: JSON.stringify({ success: false, error: '访客只能查看旅行资料，不能修改内容' }) });
+    if (request.method() === 'POST' || path !== '/itinerary') return route.fulfill({ status: 403, contentType: 'application/json', body: JSON.stringify({ success: false, error: '此资料仅旅行成员可见' }) });
     return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(await store.read(path, url.searchParams.get('tripId'))) });
   });
   const visitorPage = await visitorContext.newPage();
@@ -204,6 +205,8 @@ try {
   await visitorPage.locator('#visitorSubmit').click();
   await visitorPage.waitForFunction(() => document.body.classList.contains('visitor-mode'));
   await visitorPage.evaluate(() => showTab('food', false));
+  assert.equal(await visitorPage.locator('#tab-itinerary.active').count(), 1);
+  assert.equal(await visitorPage.locator('#bnav .bn-btn:visible').count(), 1);
   assert.equal(await visitorPage.locator('.food-add-btn:visible').count(), 0);
   assert.equal(await visitorPage.locator('#todoAdd:visible').count(), 0);
   assert.equal(await visitorPage.locator('#inspirationCollectBtn:visible').count(), 0);
