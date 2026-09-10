@@ -57,7 +57,7 @@
 - 2026-09-10 灵感收集箱：新增 `kr_inspirations` protocol 2 数据集，保存小红书分享的链接、分享文字和自动生成的标题，不抓取或复制原帖。首页和顶部提供“收下灵感”；电脑/iPhone 从小红书复制链接后按一次即可入箱，无需分类或填写。`manifest.json` 已声明 Android PWA `share_target`，安装 App 后可直接在小红书分享面板选择「在璐上」，标题、文字和链接会自动入箱。iPhone Safari 尚不支持网页 App 接收系统分享，保留剪贴板一键入口。
 - 密码变更记录：CloudBase 已接受两位所有者提供的新密码；两账号分别在正式站完成登录并被识别为所有者，页面无错误。密码明文不写入项目文档或仓库。
 - 灵感箱集合 `kr_inspirations` 已在 CloudBase 创建并设为 PRIVATE；此前集合未创建导致的 500 已修复，正式所有者读取返回 200。
-- 2026-09-10 全量发布：Vercel `dpl_9u47wm8niUeXPjEEepsBYaYezeGS` 已就绪并绑定 `www.jinlu.cloud`；CloudBase 静态托管 `/korea` 同步更新 `index.html`、`assets/sync-client.js`、`sw.js`、`manifest.json`。两入口上述文件 SHA-256 与本地一致，Service Worker 为 `lu-travel-v52`；发布后线上烟雾检查和 11 个 Tab 浏览器回归均通过，未发现页面错误。生产实测访客 GET `/docs` 为 200、POST `/docs` 为 403，写入控件隐藏；页面已确认 PWA 分享声明和灵感箱存在。
+- 2026-09-10 全量发布：已验证的 Vercel 生产部署 `dpl_14kxwSiW1kRpq5ctsS25aREKjPUY` 已绑定 `www.jinlu.cloud`；CloudBase 静态托管 `/korea` 同步更新 `index.html`、`assets/sync-client.js`、`sw.js`、`manifest.json`。两入口上述文件 SHA-256 与本地一致，Service Worker 为 `lu-travel-v52`；发布后线上烟雾检查和 11 个 Tab 浏览器回归均通过，未发现页面错误。生产实测访客 GET `/docs` 为 200、POST `/docs` 为 403，写入控件隐藏；页面已确认 PWA 分享声明和灵感箱存在。
 
 ## B. 部分完成，不能当作完成
 

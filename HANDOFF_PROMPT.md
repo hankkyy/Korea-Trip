@@ -40,7 +40,7 @@
 - API 地址：`https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com/korea-api`。
 - Vercel 项目：`lu-travel`；生产地址：`https://jinlu.cloud/`。
 - 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`；前端或图片修改后必须额外部署 CloudBase 静态包。
-- 2026-09-10 最新 Vercel 部署 ID 是 `dpl_9u47wm8niUeXPjEEepsBYaYezeGS`，已绑定 `www.jinlu.cloud`；CloudBase 通过静态托管直传 `/korea/index.html`、`/korea/assets/sync-client.js`、`/korea/sw.js`、`/korea/manifest.json`。两入口文件哈希一致，线上烟雾检查和浏览器回归均通过。
+- 2026-09-10 已验证的 Vercel 生产部署为 `dpl_14kxwSiW1kRpq5ctsS25aREKjPUY`，已绑定 `www.jinlu.cloud`；CloudBase 通过静态托管直传 `/korea/index.html`、`/korea/assets/sync-client.js`、`/korea/sw.js`、`/korea/manifest.json`。两入口文件哈希一致，线上烟雾检查和浏览器回归均通过。
 - Service Worker 当前缓存版本：`lu-travel-v52`；改资源后必须递增并验证旧缓存清理。
 - 灵感箱为 `kr_inspirations`；Android PWA 分享目标参数为 `title`、`text`、`url`，自动保存前必须保持所有者登录。iPhone 没有 Web Share Target，用剪贴板收集入口。
 - 动态列表通过 HTTP protocol 2 提交整份不可变快照，带事务版本、幂等请求、30 版历史和稳定 ID 三方合并；不同记录并发修改自动合并，同一记录冲突保留本机。

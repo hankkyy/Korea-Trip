@@ -72,7 +72,7 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 - Vercel：项目名 `lu-travel`；生产域名仍使用 `https://jinlu.cloud/`。
 - CloudBase 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`。
 - Service Worker 当前版本：`lu-travel-v52`。
-- 2026-09-10 全量发布：Vercel `dpl_9u47wm8niUeXPjEEepsBYaYezeGS`（`www.jinlu.cloud`）已就绪；CloudBase `/korea` 静态入口已直传最新 `index.html`、`assets/sync-client.js`、`sw.js`、`manifest.json`。两入口文件哈希与本地一致，线上烟雾检查和浏览器回归通过。
+- 2026-09-10 全量发布：已验证的 Vercel 生产部署 `dpl_14kxwSiW1kRpq5ctsS25aREKjPUY`（`www.jinlu.cloud`）已就绪；CloudBase `/korea` 静态入口已直传最新 `index.html`、`assets/sync-client.js`、`sw.js`、`manifest.json`。两入口文件哈希与本地一致，线上烟雾检查和浏览器回归通过。
 - 灵感箱：`kr_inspirations` 使用既有 protocol 2 同步。桌面和 iPhone 通过剪贴板一键收集；Android 已安装 PWA 可以从系统分享面板自动接收标题、文字与 URL。
 - 权限：`kele` 和 `jinlu` 是固定所有者。访客通过匿名登录进入只读模式；云函数允许已认证会话读取，但只允许这两个所有者 UID 写入。两位所有者的新密码已成功写入并在正式站验证；密码明文不存入项目资料。
 - 发布前检查：`node scripts/verify.mjs`、`node --test scripts/sync-test.mjs`、`node scripts/sync-browser.mjs`。
