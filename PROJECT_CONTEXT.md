@@ -71,7 +71,7 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 - 旅程配置和基础模板位于 `TRIP_DATA`；记录逐步迁移到 `tripId` 隔离。
 - Vercel：项目名 `lu-travel`；生产域名仍使用 `https://jinlu.cloud/`。
 - CloudBase 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`。
-- Service Worker 当前版本：`lu-travel-v69`；CloudBase Web SDK 随站点发布于 `assets/vendor/cloudbase.full.js`，登录不再依赖外部 CDN。页面启动不等待 IndexedDB，iPhone/PWA 的 IndexedDB 操作 1.5 秒超时后降级为 localStorage 与内存缓存，避免动态数据一直停在加载状态。灵感自动提示只会针对离开页面后新复制的有效小红书 URL。
+- Service Worker 当前版本：`lu-travel-v70`；CloudBase Web SDK 随站点发布于 `assets/vendor/cloudbase.full.js`，登录不再依赖外部 CDN。页面启动不等待 IndexedDB，iPhone/PWA 的 IndexedDB 操作 1.5 秒超时后降级为 localStorage 与内存缓存，避免动态数据一直停在加载状态。灵感箱采用手动单按钮新建，不读取剪贴板或上传图片。
 - 2026-09-11 全量发布：CloudBase 云函数权限、`/korea/index.html` 与 `/korea/sw.js` 已发布；静态页可通过版本化地址立即获得新内容。已验证的 Vercel 生产部署 `dpl_EvmNCmYN7FukHGwgLhE8xgFMcEER`（`www.jinlu.cloud`）已就绪。生产匿名会话实测仅可见行程，行程为 200，待办、支出、文件为 403，Service Worker 已注册且页面无错误。
 - 2026-09-11 v68：CloudBase 已同步发布 `index.html`、`sw.js` 和 `assets/sync-client.js`；Vercel 生产部署为 `dpl_DMNfhCGheUrnSzH1Hn8hDh44im44`。模拟 iPhone/PWA IndexedDB 挂起后，正式站首页动态天气仍正常呈现。
 - 灵感箱：`kr_inspirations` 使用既有 protocol 2 同步。首页展示双列灵感卡片墙；所有者可主动上传一张截图作封面。桌面和 iPhone 读取剪贴板后先给出可编辑的标题、归类、地点和备注确认卡，Android 已安装 PWA 可从系统分享面板接收标题、文字与 URL，并打开同一张确认卡。
