@@ -1,10 +1,11 @@
 // 在璐上 — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'lu-travel-v63';
+const CACHE = 'lu-travel-v65';
 const PRECACHE = [
   '/',
   '/manifest.json',
   '/assets/sync-client.js',
+  '/assets/vendor/cloudbase.full.js',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
   '/assets/photos/busan-watercolor.webp',

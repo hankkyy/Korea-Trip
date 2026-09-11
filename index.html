@@ -15,7 +15,7 @@
 <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com">
 <link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.tcloudbaseapp.com">
-<script src="https://static.cloudbase.net/cloudbase-js-sdk/3.8.2/cloudbase.full.js"></script>
+<script>if (!window.cloudbase) document.write('<script src="assets/vendor/cloudbase.full.js"><\/script>');</script>
 <script src="assets/sync-client.js"></script>
 <script>
   if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
@@ -7006,7 +7006,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=63').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=65').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
