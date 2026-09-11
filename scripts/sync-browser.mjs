@@ -146,8 +146,6 @@ try {
   assert.equal(await foodCard.locator('.food-actions .food-btn:visible').count(), 1);
   assert.equal(await foodCard.locator('[data-act="delete"]:visible').count(), 0);
   assert.equal(await foodCard.locator('[data-act="photo"]:visible').count(), 0);
-  await foodCard.locator('[data-act="edit"]').click();
-  await foodCard.locator('[data-act="delete"]').click();
   assert((await store.read('/docs', tripId)).data.some(item => item.kind === 'food'));
   console.log('Browser phase: food saved and delete confirmation checked');
 
@@ -171,7 +169,18 @@ try {
   assert((await store.read('/docs', tripId)).data.some(item => item.kind === 'file' && item.title === '文件标题保存测试'));
   await page.evaluate(() => saveInspiration('釜山烤肉攻略 https://www.xiaohongshu.com/explore/browser-test', '釜山烤肉攻略'));
   assert.equal((await store.read('/inspirations', tripId)).data.length, 1);
+  await page.evaluate(() => showTab('home', false));
   assert.equal(await page.locator('#inspirationList .inspiration-item').count(), 1);
+  await page.locator('[data-idea-edit]').click();
+  await page.locator('#inspirationTitleInput').fill('釜山烤肉晚餐备选');
+  await page.locator('#inspirationCategoryInput').selectOption('food');
+  await page.locator('#inspirationPlaceInput').fill('釜山 · 西面');
+  await page.locator('#inspirationNoteInput').fill('留给 12/29 晚餐。');
+  await page.locator('#inspirationSaveBtn').click();
+  await page.waitForFunction(() => !JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]').length);
+  const editedIdea = (await store.read('/inspirations', tripId)).data.find(item => item.title === '釜山烤肉晚餐备选');
+  assert.equal(editedIdea.place, '釜山 · 西面');
+  assert.equal(editedIdea.note, '留给 12/29 晚餐。');
   const sharedPage = await context.newPage();
   await sharedPage.goto(`http://127.0.0.1:${server.address().port}/?title=${encodeURIComponent('分享面板自动收集')}&url=${encodeURIComponent('https://www.xiaohongshu.com/explore/share-target-test')}#home`);
   await sharedPage.waitForFunction(() => document.querySelector('#inspirationList')?.textContent.includes('分享面板自动收集'));

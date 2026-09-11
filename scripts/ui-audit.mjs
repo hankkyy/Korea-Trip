@@ -107,7 +107,8 @@ async function runViewport(label, viewport) {
       ['trip-settings', () => openTripSettings(activeTrip())],
       ['image-viewer', () => openImageViewer('assets/photos/busan-watercolor.webp', '釜山图片预览')],
       ['document-viewer', () => openDocViewer({ title: '图片文件预览', attachmentUrl: 'assets/photos/busan-watercolor.webp', attachmentType: 'image/webp' })],
-      ['food-editor', () => { showTab('food', false); document.querySelector('.food-add-btn[data-city="busan"]').click(); }]
+      ['food-editor', () => { showTab('food', false); document.querySelector('.food-add-btn[data-city="busan"]').click(); }],
+      ['inspiration-editor', () => { showTab('home', false); openInspirationSheet({ sourceText: '首尔弘大烤肉攻略 https://www.xiaohongshu.com/explore/ui-audit', sourceUrl: 'https://www.xiaohongshu.com/explore/ui-audit' }); }]
     ];
     for (const [windowName, open] of windows) {
       await page.evaluate(open);
@@ -124,5 +125,5 @@ async function runViewport(label, viewport) {
 try {
   await runViewport('mobile', { width: 390, height: 844 });
   await runViewport('desktop', { width: 1440, height: 1000 });
-  console.log(`UI audit passed: 44 tab and dialog states captured in ${output}`);
+  console.log(`UI audit passed: 46 tab and dialog states captured in ${output}`);
 } finally { server.close(); }
