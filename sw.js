@@ -1,19 +1,12 @@
 // 在璐上 — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'lu-travel-v71';
-const PRECACHE = [
-  '/',
-  '/manifest.json',
-  '/assets/sync-client.js',
-  '/assets/vendor/cloudbase.full.js',
-  '/assets/icons/icon-192.png',
-  '/assets/icons/icon-512.png',
-  '/assets/photos/busan-watercolor.webp',
-  '/assets/photos/palace-watercolor.webp',
-  '/assets/photos/seoul-night-editorial.webp',
-  '/assets/photos/real/hong-kong-disneyland-watercolor.webp',
-  '/assets/photos/real/xiamen-gulangyu-watercolor.webp'
-];
+const CACHE = 'lu-travel-v72';
+// The CloudBase mirror is mounted at /korea/, while the primary site is at /.
+// Cache this worker's own shell so a root-scoped legacy worker cannot return
+// a stale build for the mirror.
+const SCOPE_PATH = new URL(self.registration.scope).pathname;
+const APP_SHELL = SCOPE_PATH === '/korea/' ? '/korea/index.html' : '/';
+const PRECACHE = [APP_SHELL];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -41,10 +34,10 @@ self.addEventListener('fetch', (e) => {
       fetch(e.request)
         .then((res) => {
           const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put('/', copy));
+          caches.open(CACHE).then((c) => c.put(APP_SHELL, copy));
           return res;
         })
-        .catch(() => caches.match('/'))
+        .catch(() => caches.match(APP_SHELL))
     );
     return;
   }

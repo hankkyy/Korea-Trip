@@ -7020,7 +7020,9 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=71').catch(() => {});
+    // The CloudBase mirror has its own subpath and therefore its own cache scope.
+    const appBase = /^\/korea(?:\/|$)/.test(location.pathname) ? '/korea/' : '/';
+    navigator.serviceWorker.register(`${appBase}sw.js?v=72`, { scope: appBase }).catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
