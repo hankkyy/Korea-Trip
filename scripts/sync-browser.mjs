@@ -188,6 +188,7 @@ try {
   await page.waitForFunction(() => !JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]').length);
   assert.equal((await store.read('/inspirations', tripId)).data.length, 1);
   assert.equal(await page.locator('#inspirationList .inspiration-item').count(), 1);
+  assert.equal(await page.locator('#inspirationList .inspiration-item').getByText('小红书 ↗').count(), 0);
   await page.locator('[data-idea-edit]').click();
   await page.locator('#inspirationTitleInput').fill('釜山烤肉晚餐备选');
   await page.locator('#inspirationCategoryInput').selectOption('food');

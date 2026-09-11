@@ -29,6 +29,7 @@ const store = createSyncStore(memoryDb({
   'kr_todos/a': { id: 'todo-a', title: '确认交通卡余额', note: '出发前一天提醒', done: false, tripId },
   'kr_checklist/a': { id: 'packing-a', text: '护照与银行卡', note: '放随身包', done: false, tripId },
   'kr_expenses/a': { clientId: 'expense-a', desc: 'KTX 车票', amount: 59800, currency: 'KRW', splitType: 'perPerson', people: ['可乐', '金鹿'], category: '交通', visibility: 'shared', tripId },
+  'kr_inspirations/a': { id: 'idea-a', title: '小红书旅行灵感', category: 'todo', sourceUrl: 'https://www.xiaohongshu.com/explore/ui-audit', tripId, createdAt: 1 },
   'kr_docs/a': { id: 'food-a', kind: 'food', title: '南浦洞猪肉汤饭', city: 'busan', place: '釜山', note: '午餐备选', tripId },
   'kr_docs/b': { id: 'doc-a', kind: 'file', title: '旅行凭证示例', note: '站内预览', tripId }
 }), paths);

@@ -28,7 +28,7 @@
 - 前端：单文件原生应用 [index.html](./index.html)，无框架构建步骤。
 - 同步后端：CloudBase HTTP 云函数 [cloudfunctions/korea-api/index.js](./cloudfunctions/korea-api/index.js)，数据协议为 protocol 2。
 - 权威动态数据：CloudBase `kr_sync_state`；旧 `kr_*` 集合只用于迁移与恢复，不得恢复“先删后插”的旧写入方式。
-- 离线：Service Worker `lu-travel-v78`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
+- 离线：Service Worker `lu-travel-v79`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
 - 发布：Vercel 生产入口 `https://www.jinlu.cloud/`，以及 CloudBase 根入口和 `/korea/` 镜像。两个 CloudBase 路径必须各自注册作用域正确的 Service Worker，避免页面壳互相污染。
 
 ## 数据可靠性原则
