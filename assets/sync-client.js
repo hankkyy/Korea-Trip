@@ -11,28 +11,61 @@
     let durableWrites = Promise.resolve();
     const owner = root.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
     const key = (path, tripId) => `${path}::${path === '/trips' ? 'global' : tripId}`;
-    const dbPromise = root.indexedDB ? new Promise((resolve, reject) => {
-      const request = root.indexedDB.open('lu-travel-sync', 1);
-      request.onupgradeneeded = () => request.result.createObjectStore('state');
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    }).catch(() => null) : Promise.resolve(null);
+    // Safari's IndexedDB can occasionally leave an open or transaction pending
+    // (especially for an installed web app after an interrupted restore). Local
+    // persistence is an enhancement: it must never hold up the whole trip UI.
+    const dbPromise = root.indexedDB ? new Promise((resolve) => {
+      let settled = false;
+      const finish = (value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(value);
+      };
+      const timer = setTimeout(() => finish(null), 1500);
+      try {
+        const request = root.indexedDB.open('lu-travel-sync', 1);
+        request.onupgradeneeded = () => request.result.createObjectStore('state');
+        request.onsuccess = () => finish(request.result);
+        request.onerror = request.onblocked = () => finish(null);
+      } catch { finish(null); }
+    }) : Promise.resolve(null);
     async function durableGet(name) {
       const db = await dbPromise;
       if (!db) return null;
       return new Promise(resolve => {
-        const request = db.transaction('state').objectStore('state').get(name);
-        request.onsuccess = () => resolve(typeof request.result === 'string' ? request.result : null);
-        request.onerror = () => resolve(null);
+        let settled = false;
+        const finish = (value) => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          resolve(value);
+        };
+        const timer = setTimeout(() => finish(null), 1500);
+        try {
+          const request = db.transaction('state').objectStore('state').get(name);
+          request.onsuccess = () => finish(typeof request.result === 'string' ? request.result : null);
+          request.onerror = () => finish(null);
+        } catch { finish(null); }
       });
     }
     async function durablePut(name, raw) {
       const db = await dbPromise;
       if (!db) return;
       await new Promise(resolve => {
-        const transaction = db.transaction('state', 'readwrite');
-        transaction.objectStore('state').put(raw, name);
-        transaction.oncomplete = transaction.onerror = transaction.onabort = () => resolve();
+        let settled = false;
+        const finish = () => {
+          if (settled) return;
+          settled = true;
+          clearTimeout(timer);
+          resolve();
+        };
+        const timer = setTimeout(finish, 1500);
+        try {
+          const transaction = db.transaction('state', 'readwrite');
+          transaction.objectStore('state').put(raw, name);
+          transaction.oncomplete = transaction.onerror = transaction.onabort = finish;
+        } catch { finish(); }
       });
     }
     const load = (name, fallback) => {

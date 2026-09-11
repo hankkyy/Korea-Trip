@@ -96,6 +96,10 @@ async function runViewport(label, viewport) {
       await page.waitForTimeout(80);
       await auditPage(page, `${label}-${tab}`);
     }
+    await page.evaluate(() => { showTab('home', false); document.documentElement.classList.add('standalone-mode'); });
+    await page.waitForTimeout(80);
+    await auditPage(page, `${label}-standalone-home`);
+    await page.evaluate(() => document.documentElement.classList.remove('standalone-mode'));
     const windows = [
       ['expense-new', () => openSheet()],
       ['expense-edit', () => editExpense('expense-a')],
@@ -125,5 +129,5 @@ async function runViewport(label, viewport) {
 try {
   await runViewport('mobile', { width: 390, height: 844 });
   await runViewport('desktop', { width: 1440, height: 1000 });
-  console.log(`UI audit passed: 46 tab and dialog states captured in ${output}`);
+  console.log(`UI audit passed: 48 tab and dialog states captured in ${output}`);
 } finally { server.close(); }
