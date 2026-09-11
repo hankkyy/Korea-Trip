@@ -47,6 +47,7 @@ await context.route('**/*', async route => {
   const request = route.request(); const url = new URL(request.url());
   if (url.hostname === '127.0.0.1') return route.continue();
   const path = url.pathname.replace('/korea-api', '');
+  if (path === '/files/url') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, url: `https://private.example.test/download?file=${encodeURIComponent(url.searchParams.get('fileID'))}`, expiresAt: Date.now() + 840000 }) });
   if (!paths[path]) return route.fulfill({ status: 200, contentType: url.pathname.endsWith('.js') ? 'text/javascript' : 'application/json', body: '{}' });
   assert.equal(request.headers().authorization, 'Bearer browser-test-token');
   if (offline) return route.abort('internetdisconnected');
@@ -60,7 +61,7 @@ await context.route('**/*', async route => {
 });
 const page = await context.newPage();
 page.on('pageerror', error => errors.push(error.message));
-page.on('dialog', dialog => dialog.dismiss());
+page.on('dialog', dialog => dialog.type() === 'beforeunload' ? dialog.accept() : dialog.dismiss());
 try {
   await page.goto(`http://127.0.0.1:${server.address().port}/#todos`);
   await page.waitForFunction(() => document.querySelectorAll('#todosList .l-row').length === 1);
@@ -231,7 +232,8 @@ try {
     const request = route.request(); const url = new URL(request.url());
     if (url.hostname === '127.0.0.1') return route.continue();
     const path = url.pathname.replace('/korea-api', '');
-    if (!paths[path]) return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    if (path === '/files/url') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, url: `https://private.example.test/download?file=${encodeURIComponent(url.searchParams.get('fileID'))}`, expiresAt: Date.now() + 840000 }) });
+  if (!paths[path]) return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
     if (request.method() === 'POST' || path !== '/itinerary') return route.fulfill({ status: 403, contentType: 'application/json', body: JSON.stringify({ success: false, error: '此资料仅旅行成员可见' }) });
     return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(await store.read(path, url.searchParams.get('tripId'))) });
   });

@@ -13,3 +13,9 @@ npm-debug.log*
 # 隐私
 签证文件/
 artifacts/
+
+# Private travel credentials remain on this device, never in a release or new commit
+assets/docs/
+Korea_Visa_Itinerary_2026-2027.docx
+assets/photos/source/
+assets/photos/generated/

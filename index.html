@@ -1710,6 +1710,8 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 .inspiration-item::before{content:'';position:absolute;right:-25px;top:-30px;width:108px;height:108px;border:1px solid rgba(255,255,255,.58);border-radius:50%;background:rgba(255,255,255,.25)}
 .inspiration-item[data-tone="mint"]{background:linear-gradient(145deg,#e8f7ef,#f8fcf7);border-color:#cce7d5}.inspiration-item[data-tone="peach"]{background:linear-gradient(145deg,#fff0e8,#fffaf6);border-color:#f1d6c8}.inspiration-item[data-tone="lilac"]{background:linear-gradient(145deg,#f2edff,#fbf9ff);border-color:#dfd3f3}.inspiration-item[data-tone="sky"]{background:linear-gradient(145deg,#eaf7ff,#f8fcff);border-color:#cde4f0}.inspiration-item[data-tone="lemon"]{background:linear-gradient(145deg,#fff8d9,#fffdf4);border-color:#eee1af}.inspiration-item[data-tone="rose"]{background:linear-gradient(145deg,#ffecef,#fff9fa);border-color:#f0d0d7}
 .inspiration-open-card{position:relative;display:block;min-width:0;max-width:100%;color:inherit;text-decoration:none;cursor:pointer;overflow:hidden}.inspiration-card-top{display:flex;align-items:flex-start;gap:10px;min-width:0}.inspiration-card-mark{display:grid;place-items:center;flex:none;width:33px;height:33px;border-radius:11px;background:rgba(255,255,255,.62);color:var(--green-d);font-size:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}.inspiration-item-title{padding:1px 31px 0 0;white-space:normal;overflow-wrap:anywhere;overflow:visible;text-overflow:clip;font-size:15px;line-height:1.36;letter-spacing:-.01em}.inspiration-card-bottom{position:relative;display:flex;align-items:flex-end;justify-content:flex-end;gap:8px;min-width:0}.inspiration-item-meta{display:flex;flex-wrap:wrap;gap:5px;margin:0;color:#587061;font-size:11px;font-weight:800}.inspiration-meta-pill{padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.53);border:1px solid rgba(255,255,255,.62)}.inspiration-item-note{display:-webkit-box;min-height:0;margin:8px 0 0;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#667a6c;font-size:12px;line-height:1.45}.inspiration-open-hint{color:var(--green-d);font-weight:800;white-space:nowrap}.inspiration-edit-button{display:inline-flex;align-items:center;flex:none;min-height:30px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:#587061;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}.inspiration-edit-button:hover{background:rgba(255,255,255,.5)}.inspiration-open-card:focus-visible,.inspiration-edit-button:focus-visible{outline:3px solid rgba(78,126,91,.38);outline-offset:3px}@media(max-width:900px){.inspiration-list{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.inspiration-list{grid-template-columns:minmax(0,1fr);gap:10px}.inspiration-item{min-height:142px;padding:15px}.inspiration-open-hint{white-space:normal}}
+#globalSyncStatus{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 14px;background:#fff4d7;color:#654b19;border:1px solid #ead5a4;border-radius:14px;font-size:12px;line-height:1.5;z-index:100;pointer-events:none}
+#globalSyncStatus[hidden]{display:none}
 </style>
 </head>
 <body class="auth-pending">
@@ -2693,6 +2695,7 @@ let currentUserId = '';
 const OWNER_UIDS = new Set(['2097823157655728129', '2097823165424365569']);
 const VISITOR_SESSION_KEY = 'kr_visitor_session';
 let resolveAuthReady;
+let appWasAuthenticated = false;
 const authReady = new Promise((resolve) => { resolveAuthReady = resolve; });
 function isVisitor() { return accessRole === 'visitor'; }
 function ownerOnly(message = '访客只能查看旅行资料，不能修改内容。') {
@@ -2706,6 +2709,8 @@ function applyAccessRole(session) {
   document.body.classList.toggle('visitor-mode', isVisitor());
 }
 function revealAuthenticatedApp(session) {
+  if (appWasAuthenticated) { window.location.reload(); return; }
+  appWasAuthenticated = true;
   applyAccessRole(session);
   document.body.classList.remove('auth-pending');
   const gate = document.getElementById('authGate');
@@ -2933,15 +2938,11 @@ function customTrips() {
 async function syncCustomTrips() {
   const local = customTrips();
   const remote = await apiGet('/trips', 'kr_cache_custom_trips', []);
-  const merged = new Map();
-  [...remote, ...local].forEach((trip) => {
-    if (!trip?.id) return;
-    const previous = merged.get(trip.id);
-    if (!previous || Number(trip.updatedAt || 0) >= Number(previous.updatedAt || 0)) merged.set(trip.id, trip);
-  });
-  const items = [...merged.values()];
-  if (JSON.stringify(items) !== JSON.stringify(remote) && items.length) await apiPost('/trips', { items });
+  // A deleted remote trip must not be resurrected from an old local cache.
+  // Unsent edits are already returned by apiGet from the persistent queue.
+  const items = remote;
   if (JSON.stringify(items) !== JSON.stringify(local)) {
+    if (local.length) cache.set('kr_custom_trips_before_refresh', local);
     try { localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(items)); } catch {}
   }
   return items;
@@ -3032,17 +3033,18 @@ let liveSyncFallbackTimer = null;
 let liveSyncFallbackBusy = false;
 const liveAppliedSnapshots = new Map();
 function applyLiveDataset(path, items, tripId, force = false) {
-  if (!Array.isArray(items)) return;
-  if (!force && syncClient.pending(path, tripId)) return;
-  if (!force && document.querySelector('[role="dialog"].open')) return;
-  if (!force && ['/todos', '/checklist'].includes(path) && Date.now() - listLocalChangeAt < 2500) return;
-  if (!force && path === '/bucket-list' && Date.now() - bucketLocalChangeAt < 2500) return;
+  if (!Array.isArray(items)) return false;
+  if (document.activeElement?.matches('input, textarea, select') && !document.activeElement.closest('#authGate')) return false;
+  if (!force && syncClient.pending(path, tripId)) return false;
+  if (!force && document.querySelector('[role="dialog"].open')) return false;
+  if (!force && ['/todos', '/checklist'].includes(path) && Date.now() - listLocalChangeAt < 2500) return false;
+  if (!force && path === '/bucket-list' && Date.now() - bucketLocalChangeAt < 2500) return false;
   const currentTrip = activeTrip().id;
-  if (tripId !== currentTrip) return;
+  if (tripId !== currentTrip) return false;
   items = path === '/trips' ? items : scopeTripItems(items, tripId);
   const snapshotKey = `${path}::${tripId}`;
   const snapshot = JSON.stringify(items);
-  if (liveAppliedSnapshots.get(snapshotKey) === snapshot) return;
+  if (liveAppliedSnapshots.get(snapshotKey) === snapshot) return true;
   if (path === '/itinerary') {
     currentItinerary = normalizeItinerary(items);
     cache.set('kr_cache_itinerary', currentItinerary, tripId);
@@ -3054,7 +3056,7 @@ function applyLiveDataset(path, items, tripId, force = false) {
   } else if (path === '/checklist' && (force || Date.now() - listLocalChangeAt >= 2500)) {
     checklistItems = sortByOrder(items.map(normalizeChecklistItem)); cache.set('kr_cache_checklist', checklistItems, tripId); renderChecklist();
   } else if (path === '/expenses') {
-    const privateItems = cache.get('kr_private_expenses', tripId) || [];
+    const privateItems = visibleCachedItems('/expenses', cache.get('kr_private_expenses', tripId) || []);
     expenses = mergeExpenses(items, privateItems); cache.set('kr_cache_expenses', items, tripId); renderExpenses();
   } else if (path === '/docs') {
     docsData = items.filter(doc => !doc.kind || doc.kind === 'file').map(normalizeFileDoc).filter(shouldKeepFileDoc);
@@ -3070,6 +3072,8 @@ function applyLiveDataset(path, items, tripId, force = false) {
     localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom)); renderTripPicker();
   }
   liveAppliedSnapshots.set(snapshotKey, snapshot);
+  hydratePrivateImages(document);
+  return true;
 }
 async function startLiveSync() {
   if (liveSyncStarted) return;
@@ -3092,8 +3096,7 @@ async function refreshLiveDatasets() {
     const tripId = activeTrip().id;
     await Promise.all(Object.keys(DIRECT_COLLECTIONS).map(async (path) => {
       try {
-        const items = await syncClient.read(path, tripId);
-        if (items !== null) applyLiveDataset(path, items, tripId);
+        await syncClient.read(path, tripId, items => applyLiveDataset(path, items, tripId));
       } catch (error) { console.warn('自动刷新暂不可用', path, error.message); }
     }));
   } finally { liveSyncFallbackBusy = false; }
@@ -3242,7 +3245,7 @@ function exportTripBackup() {
   backupKeysForTrip(trip.id).forEach((key) => { cacheData[key] = localStorage.getItem(key); });
   let pendingWrites = [];
   try {
-    const queue = JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]');
+    const queue = syncClient.queue();
     pendingWrites = Array.isArray(queue) ? queue.filter(item => item?.tripId === trip.id && Array.isArray(item.items)) : [];
   } catch {}
   const payload = { format: 'zaishang-trip-backup', version: 1, exportedAt: new Date().toISOString(), trip, cacheData, pendingWrites };
@@ -3254,10 +3257,10 @@ function exportTripBackup() {
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-function recoverSyncConflicts() {
+async function recoverSyncConflicts() {
   if (!confirm('先保留本机修改的备份，再读取已同步的最新版本。未同步的修改会留在备份中，是否继续？')) return;
   exportTripBackup();
-  if (syncClient.archiveConflicts(activeTrip().id)) window.location.reload();
+  if (await syncClient.archiveConflicts(activeTrip().id)) window.location.reload();
   else alert('当前旅程没有需要处理的同步冲突。');
 }
 function importTripBackup(file) {
@@ -3363,6 +3366,7 @@ function initTripPicker() {
   $('#tripDeleteBtn')?.addEventListener('click', deleteTripSettings);
   $('#tripExportBtn')?.addEventListener('click', exportTripBackup);
   $('#authLogoutBtn')?.addEventListener('click', async () => {
+    if (syncClient.queue().length) { alert('还有未同步修改，请先联网同步或导出备份，再退出账号。'); return; }
     const button = $('#authLogoutBtn');
     if (!cloudAuth) { alert('登录组件未准备好，暂时无法退出。请刷新后重试。'); return; }
     button.disabled = true;
@@ -3383,11 +3387,29 @@ function initTripPicker() {
     setTimeout(openTripPicker, 180);
   }
 }
+window.addEventListener('beforeunload', event => {
+  if (syncClient.queue().length) { event.preventDefault(); event.returnValue = ''; }
+});
 const syncWarnings = new Set();
+function renderSyncStatus() {
+  let status = document.getElementById('globalSyncStatus');
+  if (!status) {
+    status = document.createElement('div'); status.id = 'globalSyncStatus';
+    status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+    document.body.appendChild(status);
+  }
+  const pending = syncClient.queue().filter(item => item.tripId === activeTrip().id);
+  status.hidden = isVisitor() || !pending.length;
+  status.textContent = pending.some(item => item.blocked)
+    ? '有修改尚未同步：请在旅程菜单处理冲突或导出备份'
+    : `还有 ${pending.length} 项修改待同步，请勿清除网站数据`;
+}
+
 const syncClient = createSyncClient({
   storage: localStorage, fetcher: authenticatedFetch, baseUrl: API_BASE,
   online: () => navigator.onLine !== false,
   onStatus(path, state, tripId, message) {
+    renderSyncStatus();
     if (tripId !== activeTrip().id) return;
     const kind = path === '/todos' ? 'todos' : path === '/checklist' ? 'checklist' : null;
     if (kind) setListSync(kind, state === 'saved' ? 'saved' : state === 'conflict' ? 'error' : 'saving', state === 'saved' ? '已同步' : state === 'conflict' ? '修改已保留，需要处理冲突' : '已保存，待同步');
@@ -3397,6 +3419,10 @@ const syncClient = createSyncClient({
     }
   }
 });
+function visibleCachedItems(path, items) {
+  if (isVisitor() && path !== '/itinerary') return [];
+  return items.filter(item => !['/docs', '/expenses'].includes(path) || item.visibility !== 'private' || item.ownerId === currentUserId);
+}
 async function apiGet(path, cacheKey, fallback, tripId = activeTrip().id) {
   try {
     const fresh = await syncClient.read(path, tripId);
@@ -3406,18 +3432,22 @@ async function apiGet(path, cacheKey, fallback, tripId = activeTrip().id) {
     }
   } catch (error) { console.warn('读取暂不可用，保留已保存内容', path, error.message); }
   const pending = syncClient.pending(path, tripId);
-  if (pending) return pending.items;
+  if (pending) return visibleCachedItems(path, pending.items);
   const cached = cache.get(cacheKey, tripId);
-  return Array.isArray(cached) ? cached : (fallback || []);
+  return visibleCachedItems(path, Array.isArray(cached) ? cached : (fallback || []));
 }
 const OFFLINE_QUEUE_KEY = 'kr_offline_write_queue';
 function readOfflineQueue() { try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]'); } catch { return []; } }
-async function flushOfflineQueue() { return isVisitor() ? undefined : syncClient.flush(); }
+async function flushOfflineQueue() {
+  if (isVisitor()) return;
+  await syncClient.flush(); renderSyncStatus();
+}
 async function apiPost(path, body) {
   if (!ownerOnly()) throw new Error('访客不能保存修改');
   const tripId = activeTrip().id;
-  const result = await syncClient.write(path, tripId, body.items);
-  if (Array.isArray(result.data) && !result.queued && !result.conflict) applyLiveDataset(path, result.data, tripId, true);
+  let result;
+  try { result = await syncClient.write(path, tripId, body.items, items => applyLiveDataset(path, items, tripId, true)); }
+  catch (error) { renderSyncStatus(); alert(error.message); throw error; }
   return result;
 }
 
@@ -6257,6 +6287,27 @@ function syncSeedDocs(payload) {
   });
   return { payload: next, changed };
 }
+async function uploadPrivateAttachment(dataUrl, mime, name, tripId) {
+  if (!navigator.onLine) throw new Error('附件需要联网上传，原文件已保留。文字修改仍可离线保存。');
+  const extensions = { pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt: 'text/plain', md: 'text/markdown' };
+  mime = extensions[String(name).split('.').pop().toLowerCase()] || mime;
+  const response = await authenticatedFetch(`${API_BASE}/files/upload?tripId=${encodeURIComponent(tripId)}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ base64: dataUrl.split(',')[1], mime })
+  });
+  const result = await response.json();
+  if (!response.ok || !result.success) throw new Error(result.error || '上传未完成，原附件已保留');
+  return result;
+}
+function hydratePrivateImages(container) {
+  container?.querySelectorAll('img[data-private-src]').forEach(async image => {
+    try { image.src = await resolvePrivateUrl(image.dataset.privateSrc); }
+    catch { image.alt = '图片暂不可用，请联网后重试'; }
+  });
+}
+function attachmentImageAttributes(url) {
+  return String(url).startsWith('cloud://') ? `data-private-src="${esc(url)}"` : `src="${esc(url)}"`;
+}
 function attachImage(doc) {
   const input = document.createElement('input');
   input.type = 'file';
@@ -6265,13 +6316,20 @@ function attachImage(doc) {
     const file = input.files && input.files[0];
     if (!file) return;
     if (file.size > 12 * 1024 * 1024) { alert('图片太大（>12MB），先压缩或换一张'); return; }
-    readAttachment(file, (dataUrl, mime) => {
-      doc.attachmentUrl = dataUrl;
+    readAttachment(file, async (dataUrl, mime) => {
+      const tripId = activeTrip().id;
+      let uploaded;
+      try { uploaded = await uploadPrivateAttachment(dataUrl, mime, file.name, tripId); }
+      catch (error) { alert(error.message || '上传失败，原附件已保留'); return; }
+      if (activeTrip().id !== tripId) return;
+      doc = [...docsData, ...foodRecords].find(item => item.id === doc.id);
+      if (!doc) { alert('这条记录已被删除，上传的文件未绑定。'); return; }
+      doc.attachmentUrl = uploaded.fileID;
       doc.attachmentMime = mime;
       doc.attachmentType = 'image';
       doc.attachmentName = file.name;
       doc.updatedAt = Date.now();
-      renderFood();
+      renderFood(); hydratePrivateImages(document);
       persistDocs();
     });
   };
@@ -6316,11 +6374,11 @@ async function persistDocs() {
   payload.push(...essayRecords);
   payload.push(...foodRecords);
   docsData = payload.filter((doc) => doc.kind === 'file');
-  if (!cache.set('kr_docs', payload)) alert('本地缓存已满：请删掉几条记录后再试。');
+  if (!cache.set('kr_docs', payload)) alert('本机缓存空间不足，正在尝试持久队列保存；请勿清除网站数据。');
   try {
     await apiPost('/docs', { items: payload });
   } catch {
-    alert('内容已先保存到本机，稍后网络恢复再打开一次就会继续同步。');
+    alert('保存未完成，请保持页面打开，并在旅程菜单导出备份后重试。');
   }
 }
 function fileCardIcon(doc) {
@@ -6365,13 +6423,11 @@ async function resolvePrivateUrl(url) {
   const cached = privateUrlCache.get(url);
   if (cached?.expiresAt > Date.now()) return cached.url;
   await authReady;
-  if (!cloudApp?.getTempFileURL) throw new Error('私密文件服务暂不可用');
-  const result = await cloudApp.getTempFileURL({ fileList: [{ fileID: url, maxAge: 3600 }] });
-  const entry = result?.fileList?.[0];
-  const tempUrl = entry?.tempFileURL || entry?.download_url;
-  if (!tempUrl) throw new Error(entry?.code || '私密文件链接生成失败');
-  privateUrlCache.set(url, { url: tempUrl, expiresAt: Date.now() + 50 * 60 * 1000 });
-  return tempUrl;
+  const response = await authenticatedFetch(`${API_BASE}/files/url?tripId=${encodeURIComponent(activeTrip().id)}&fileID=${encodeURIComponent(url)}`, { cache: 'no-store' });
+  const result = await response.json();
+  if (!response.ok || !result.success || !result.url) throw new Error(result.error || '私密文件链接生成失败');
+  privateUrlCache.set(url, { url: result.url, expiresAt: result.expiresAt });
+  return result.url;
 }
 async function openDocViewer(doc) {
   if (!doc?.attachmentUrl) return;
@@ -6501,7 +6557,7 @@ function renderDocs() {
       : '未添加附件';
     const attachmentMarkup = d.attachmentUrl
       ? (isImage
-        ? `<div class="doc-attachment doc-attachment-image"><img src="${esc(d.attachmentUrl)}" alt="${esc(d.title || '文件附件')}"></div>`
+        ? `<div class="doc-attachment doc-attachment-image"><img ${attachmentImageAttributes(d.attachmentUrl)} alt="${esc(d.title || '文件附件')}"></div>`
         : `<div class="doc-attachment">${ic('file')}<span>${esc(d.attachmentName || '附件')}</span></div>`)
       : `<div class="doc-attachment doc-attachment-empty">${ic('attach')}<span>还没有添加附件</span></div>`;
     return `<article class="card doc-card" data-id="${esc(d.id)}">
@@ -6530,6 +6586,7 @@ function renderDocs() {
     ? visibleDocs.map(renderOne).join('')
     : `<div class="card doc-empty">还没有文件，点击左侧“新增文件”开始整理。</div>`;
   $('#docsGrid').innerHTML = docsHTML;
+  hydratePrivateImages($('#docsGrid'));
 }
 function readAttachment(file, cb) {
   if (file.type.startsWith('image/')) {
@@ -6559,15 +6616,22 @@ function attachFile(doc) {
   input.onchange = () => {
     const file = input.files && input.files[0];
     if (!file) return;
-    if (!file.type.startsWith('image/') && file.size > 1500 * 1024) { alert('文件太大（>1.5MB）。当前离线同步会保存完整附件，请先压缩文件。'); return; }
-    readAttachment(file, (dataUrl, mime) => {
-      doc.attachmentUrl = dataUrl;
+    if (file.size > (file.type.startsWith('image/') ? 12 : 4) * 1024 * 1024) { alert('图片原文件上限 12MB，其他文件上限 4MB，请先压缩。'); return; }
+    readAttachment(file, async (dataUrl, mime) => {
+      const tripId = activeTrip().id;
+      let uploaded;
+      try { uploaded = await uploadPrivateAttachment(dataUrl, mime, file.name, tripId); }
+      catch (error) { alert(error.message || '上传失败，原附件已保留'); return; }
+      if (activeTrip().id !== tripId) return;
+      doc = [...docsData, ...foodRecords].find(item => item.id === doc.id);
+      if (!doc) { alert('这条记录已被删除，上传的文件未绑定。'); return; }
+      doc.attachmentUrl = uploaded.fileID;
       doc.attachmentMime = mime;
       doc.attachmentType = guessAttachmentType(file);
       doc.attachmentName = file.name;
       if (!doc.title) doc.title = file.name.replace(/\.[^.]+$/, '');
       doc.updatedAt = Date.now();
-      renderDocs();
+      renderDocs(); hydratePrivateImages(document);
       persistDocs();
     });
   };
@@ -6577,7 +6641,7 @@ function docById(id) { return docsData.find((d) => d.id == id); }
 async function initDocs() {
   await loadDocs();
   renderDocs();
-  renderFood();
+  renderFood(); hydratePrivateImages(document);
   renderEssay();
   $('#docsNewBtn').addEventListener('click', async () => {
     docsData.unshift(normalizeFileDoc({ id: newRecordId('doc'), kind: 'file', title: '', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1, createdAt: Date.now(), updatedAt: Date.now() }, 0));
@@ -6936,7 +7000,7 @@ function renderFood() {
       <div class="food-meta">${esc(r.city === 'busan' ? '釜山收藏' : '首尔收藏')} · ${esc(r.place || '未填地点')}</div>
       <div class="food-note">${esc(r.note) || '写一句为什么想去吃，或者要点什么。'}</div>
       ${r.attachmentUrl ? (isImage
-        ? `<div class="food-thumb"><img src="${esc(r.attachmentUrl)}" alt="${esc(r.title)}"></div>`
+        ? `<div class="food-thumb"><img ${attachmentImageAttributes(r.attachmentUrl)} alt="${esc(r.title)}"></div>`
         : `<div class="food-chip">${ic('image')}<span>${esc(r.attachmentName || '照片')}</span></div>`) : ''}
       <textarea class="food-input" data-act="note" placeholder="备注 / 推荐菜 / 攻略摘录">${esc(r.note || '')}</textarea>
       <div class="food-actions${editing ? ' editing-actions' : ''}${!editing && !r.attachmentUrl ? ' single-action' : ''}">
@@ -6949,6 +7013,7 @@ function renderFood() {
   };
   $('#foodBusan').innerHTML = grouped.busan.length ? grouped.busan.map(renderOne).join('') : `<div class="food-empty">还没有釜山收藏，点右上角“新增收藏”开始记录。</div>`;
   $('#foodSeoul').innerHTML = grouped.seoul.length ? grouped.seoul.map(renderOne).join('') : `<div class="food-empty">还没有首尔收藏，点右上角“新增收藏”开始记录。</div>`;
+  hydratePrivateImages($('#foodBusan')); hydratePrivateImages($('#foodSeoul'));
 }
 function toggleFood(id) {
   const el = document.getElementById(id);
@@ -6977,7 +7042,7 @@ function initFood() {
     foodRecords.unshift(item);
     foodRecords = foodRecords.map((record, index) => ({ ...record, sortOrder: index + 1 }));
     foodEditingIds.add(item.id);
-    renderFood();
+    renderFood(); hydratePrivateImages(document);
     const card = document.querySelector(`#food${targetCity === 'busan' ? 'Busan' : 'Seoul'} .food-card[data-id="${item.id}"]`);
     card?.querySelector('.food-input[data-act="title"]')?.focus();
     await persistDocs();
@@ -7006,7 +7071,7 @@ function initFood() {
         if (!confirm('删除这条美食收藏？')) return;
         foodEditingIds.delete(item.id);
         foodRecords = foodRecords.filter((r) => r.id !== item.id).map((r, idx) => ({ ...r, sortOrder: idx + 1 }));
-        renderFood();
+        renderFood(); hydratePrivateImages(document);
         await persistDocs();
       }
     });
@@ -7027,7 +7092,7 @@ function initFood() {
       item.updatedAt = Date.now();
       foodRecords = foodRecords.map((r) => (r.id === item.id ? { ...item } : r)).sort((a, b) => a.sortOrder - b.sortOrder);
       if (citySel) {
-        renderFood();
+        renderFood(); hydratePrivateImages(document);
         const moved = document.querySelector(`#food${item.city === 'busan' ? 'Busan' : 'Seoul'} .food-card[data-id="${item.id}"]`);
         moved?.querySelector(`[data-act="city"]`)?.focus();
       }
@@ -7067,7 +7132,7 @@ function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
     // The CloudBase mirror has its own subpath and therefore its own cache scope.
     const appBase = /^\/korea(?:\/|$)/.test(location.pathname) ? '/korea/' : '/';
-    navigator.serviceWorker.register(`${appBase}sw.js?v=77`, { scope: appBase }).catch(() => {});
+    navigator.serviceWorker.register(`${appBase}sw.js?v=78`, { scope: appBase }).catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
@@ -7123,7 +7188,7 @@ function initSW(visitor = false) {
   initDocs();
   initEssay();
   initDocViewer();
-  renderFood();
+  renderFood(); hydratePrivateImages(document);
   initFood();
   renderEssay();
   renderPhrases();

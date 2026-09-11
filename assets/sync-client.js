@@ -51,25 +51,28 @@
     }
     async function durablePut(name, raw) {
       const db = await dbPromise;
-      if (!db) return;
-      await new Promise(resolve => {
+      if (!db) return false;
+      return new Promise(resolve => {
         let settled = false;
-        const finish = () => {
+        const finish = (ok = false) => {
           if (settled) return;
           settled = true;
           clearTimeout(timer);
-          resolve();
+          resolve(ok);
         };
         const timer = setTimeout(finish, 1500);
         try {
           const transaction = db.transaction('state', 'readwrite');
           transaction.objectStore('state').put(raw, name);
-          transaction.oncomplete = transaction.onerror = transaction.onabort = finish;
+          transaction.oncomplete = () => finish(true);
+          transaction.onerror = transaction.onabort = () => finish(false);
         } catch { finish(); }
       });
     }
     const load = (name, fallback) => {
-      const raw = memory.has(name) ? memory.get(name) : storage.getItem(name);
+      let raw;
+      try { raw = storage.getItem(name); } catch {}
+      if (raw == null) raw = memory.get(name);
       if (!raw) return fallback;
       try { return JSON.parse(raw); }
       catch {
@@ -80,36 +83,43 @@
     const save = (name, data) => {
       const raw = JSON.stringify(data);
       memory.set(name, raw);
-      try { storage.setItem(name, raw); } catch {}
-      durableWrites = durableWrites.then(() => durablePut(name, raw));
-      return durableWrites;
+      let localSaved = false;
+      try { storage.setItem(name, raw); localSaved = true; } catch {}
+      const task = durableWrites.then(async () => {
+        const durableSaved = await durablePut(name, raw);
+        if (!localSaved && !durableSaved) throw new Error('设备存储不可用，修改尚未持久保存。请保持页面打开并导出备份。');
+      });
+      durableWrites = task.catch(() => {});
+      return task;
     };
     const queue = () => {
       const value = load(queueKey, []);
       return Array.isArray(value) ? value : [];
     };
-    if (!storage.getItem('kr_sync_legacy_imported_v2')) {
-      const legacyValue = load('kr_offline_write_queue', []);
-      const legacy = Array.isArray(legacyValue) ? legacyValue : [];
-      const existing = queue();
-      for (const item of legacy) {
-        if (!Array.isArray(item.body?.items) || existing.some(entry => entry.key === key(item.path, item.tripId))) continue;
-        existing.push({ id: `legacy-${item.id}`, key: key(item.path, item.tripId), path: item.path, tripId: item.tripId, items: item.body.items });
-      }
-      save(queueKey, existing);
-      storage.setItem('kr_sync_legacy_imported_v2', '1');
-    }
     const ready = (async () => {
       for (const name of [queueKey, stateKey]) {
         let localRaw = null;
         try {
-          localRaw = memory.get(name) || storage.getItem(name);
+          localRaw = storage.getItem(name);
           if (localRaw) JSON.parse(localRaw);
-        } catch { localRaw = null; }
+        } catch {
+          load(name, null); // quarantine malformed local data
+          localRaw = null;
+        }
         const raw = localRaw || await durableGet(name);
         if (!raw) continue;
         memory.set(name, raw);
         if (!localRaw) try { storage.setItem(name, raw); } catch {}
+      }
+      if (!load('kr_sync_legacy_imported_v2', false)) {
+        const legacyValue = load('kr_offline_write_queue', []);
+        const existing = queue();
+        for (const item of Array.isArray(legacyValue) ? legacyValue : []) {
+          if (!Array.isArray(item.body?.items) || existing.some(entry => entry.key === key(item.path, item.tripId))) continue;
+          existing.push({ id: `legacy-${item.id}`, key: key(item.path, item.tripId), path: item.path, tripId: item.tripId, items: item.body.items });
+        }
+        if (existing.length) await save(queueKey, existing);
+        try { storage.setItem('kr_sync_legacy_imported_v2', 'true'); } catch {}
       }
     })();
     const pending = (path, tripId) => queue().filter(item => item.key === key(path, tripId)).at(-1);
@@ -117,7 +127,7 @@
     // older list. Only revisions actually read/saved by this tab are baselines.
     const revision = (path, tripId) => knownRevisions.get(key(path, tripId));
     function setRevision(itemKey, value, displayed = true) {
-      const states = load(stateKey, {}); states[itemKey] = value; save(stateKey, states);
+      const states = load(stateKey, {}); states[itemKey] = value; save(stateKey, states).catch(() => {});
       if (displayed) knownRevisions.set(itemKey, value);
     }
     async function request(path, tripId, body) {
@@ -133,7 +143,7 @@
         return result;
       } finally { clearTimeout(timer); }
     }
-    async function read(path, tripId) {
+    async function read(path, tripId, accept = () => true) {
       await ready;
       const itemKey = key(path, tripId);
       const epoch = epochs.get(itemKey) || 0;
@@ -144,8 +154,21 @@
       if (pending(path, tripId) || epoch !== (epochs.get(itemKey) || 0)) return null;
       const prior = revision(path, tripId);
       if (prior != null && result.revision < prior) return null;
+      if (!accept(result.data)) return null;
       setRevision(itemKey, result.revision);
       return result.data;
+    }
+    function rebaseEntry(entry, before, remote, nextRevision) {
+      const id = item => String(item.clientId ?? item.id);
+      const map = items => new Map(items.map(item => [id(item), item]));
+      const base = map(before), local = map(entry.items), merged = map(remote);
+      // Only reapply edits made after the submitted snapshot. Preserve remote additions.
+      for (const recordId of new Set([...base.keys(), ...local.keys()])) {
+        if (JSON.stringify(base.get(recordId)) === JSON.stringify(local.get(recordId))) continue;
+        if (local.has(recordId)) merged.set(recordId, local.get(recordId));
+        else merged.delete(recordId);
+      }
+      return { ...entry, items: [...merged.values()], baseRevision: nextRevision };
     }
     async function runFlush() {
       await ready;
@@ -166,12 +189,12 @@
             protocol: 2, mutationId: item.id, baseRevision: item.baseRevision,
             tripId: item.tripId, items: item.items
           });
-          writeResults.set(item.id, result);
-          setRevision(item.key, result.revision, item.owner === owner);
+          writeResults.set(item.key, result);
+          setRevision(item.key, result.revision, false);
           // Read the current queue again: new edits may have arrived while awaiting HTTP.
           const current = queue().filter(entry => entry.id !== item.id).map(entry =>
             entry.key === item.key && entry.owner === item.owner && entry.baseRevision === item.baseRevision
-              ? { ...entry, baseRevision: result.revision } : entry);
+              ? rebaseEntry(entry, item.items, result.data, result.revision) : entry);
           await save(queueKey, current);
           onStatus(item.path, current.some(entry => entry.key === item.key) ? 'pending' : 'saved', item.tripId);
         } catch (error) {
@@ -189,7 +212,7 @@
         ? root.navigator.locks.request('kr-sync-flush-v2', run) : run()).finally(() => { flushing = null; });
       return flushing;
     }
-    async function write(path, tripId, items) {
+    async function write(path, tripId, items, accept = () => true) {
       await ready;
       const itemKey = key(path, tripId);
       epochs.set(itemKey, (epochs.get(itemKey) || 0) + 1);
@@ -197,9 +220,13 @@
       const entry = {
         id: root.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`,
         key: itemKey, path, tripId, owner: prior?.owner || owner, items: JSON.parse(JSON.stringify(items)),
+        displayItems: JSON.parse(JSON.stringify(items)),
         baseRevision: prior?.owner === owner ? prior.baseRevision : revision(path, tripId),
         ...(prior?.blocked ? { blocked: true, error: prior.error } : {})
       };
+      if (prior?.owner === owner && prior.displayItems) {
+        entry.items = rebaseEntry(entry, prior.displayItems, prior.items, prior.baseRevision).items;
+      }
       // On reload, edits are based on the pending snapshot shown by read().
       if (prior && revision(path, tripId) == null) entry.baseRevision = prior.baseRevision;
       else entry.owner = owner;
@@ -207,18 +234,21 @@
       onStatus(path, 'pending', tripId);
       await flush();
       const remaining = pending(path, tripId);
-      const saved = writeResults.get(entry.id);
-      writeResults.delete(entry.id);
+      const saved = writeResults.get(entry.key);
+      if (!remaining && saved) {
+        const displayed = accept(saved.data);
+        if (displayed || !saved.merged && !saved.duplicate) setRevision(itemKey, saved.revision);
+      }
       return { success: true, queued: Boolean(remaining), conflict: Boolean(remaining?.blocked), ...(Array.isArray(saved?.data) ? { data: saved.data } : {}) };
     }
-    function archiveConflicts(tripId) {
+    async function archiveConflicts(tripId) {
       const items = queue().filter(item => item.tripId === tripId && item.blocked);
       if (!items.length) return false;
-      save(`kr_sync_conflict_backup::${tripId}`, { savedAt: Date.now(), items });
-      save(queueKey, queue().filter(item => !items.some(saved => saved.id === item.id)));
+      await save(`kr_sync_conflict_backup::${tripId}`, { savedAt: Date.now(), items });
+      await save(queueKey, queue().filter(item => !items.some(saved => saved.id === item.id)));
       return true;
     }
-    return { read, write, flush, pending, revision, archiveConflicts, ready, settled: () => durableWrites };
+    return { read, write, flush, pending, revision, archiveConflicts, queue, ready, settled: () => durableWrites };
   }
   if (typeof module !== 'undefined' && module.exports) module.exports = { createSyncClient };
   else root.createSyncClient = createSyncClient;

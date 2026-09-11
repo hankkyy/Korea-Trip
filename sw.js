@@ -1,60 +1,37 @@
-// 在璐上 — Service Worker
-// 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'lu-travel-v77';
-// The CloudBase mirror is mounted at /korea/, while the primary site is at /.
-// Cache this worker's own shell so a root-scoped legacy worker cannot return
-// a stale build for the mirror.
+// 在璐上 — only public, same-origin application resources belong in offline cache.
+const VERSION = 'lu-travel-v78';
 const SCOPE_PATH = new URL(self.registration.scope).pathname;
+const CACHE = `${VERSION}:${SCOPE_PATH}`;
 const APP_SHELL = SCOPE_PATH === '/korea/' ? '/korea/index.html' : '/';
-const PRECACHE = [APP_SHELL];
-
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting())
-  );
+const PUBLIC_ASSET = /\.(?:js|css|webp|png|jpg|jpeg|svg|woff2?|ico)$/i;
+self.addEventListener('install', event => {
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll([
+    APP_SHELL, '/assets/sync-client.js', '/assets/vendor/cloudbase.full.js'
+  ])).then(() => self.skipWaiting()));
 });
-
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+self.addEventListener('activate', event => {
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key =>
+    key.startsWith('lu-travel-') && key !== CACHE &&
+    (!key.includes(':') || key.endsWith(`:${SCOPE_PATH}`))
+  ).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
-
-self.addEventListener('fetch', (e) => {
-  const url = new URL(e.request.url);
-  // API 请求不缓存，直连
-  if (url.hostname === 'hanoi-d4gj8vd2q1e7a3dc0.service.tcloudbase.com'
-    || url.hostname === 'hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com') return;
-
-  // 页面导航：网络优先，失败回退缓存（离线打开 App 壳）
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      fetch(e.request)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(APP_SHELL, copy));
-          return res;
-        })
-        .catch(() => caches.match(APP_SHELL))
-    );
-    return;
-  }
-
-  // 静态资源：缓存优先 + 后台更新
-  e.respondWith(
-    caches.match(e.request).then((cached) => {
-      const fetched = fetch(e.request)
-        .then((res) => {
-          if (res.ok || res.type === 'opaque') {
-            const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put(e.request, copy));
-          }
-          return res;
-        })
-        .catch(() => cached);
-      return cached || fetched;
-    })
-  );
+self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (/\/(?:private|docs|api)\//.test(url.pathname) || url.searchParams.has('sign')) return;
+  if (SCOPE_PATH === '/' && url.pathname.startsWith('/korea/')) return;
+  const navigation = event.request.mode === 'navigate' && [SCOPE_PATH, APP_SHELL, `${SCOPE_PATH}index.html`].includes(url.pathname);
+  const asset = url.pathname.startsWith('/assets/') && PUBLIC_ASSET.test(url.pathname) || url.pathname === '/manifest.json';
+  if (!navigation && !asset) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    const key = navigation ? APP_SHELL : event.request;
+    try {
+      const response = await fetch(event.request);
+      if (response.ok && response.type !== 'opaque') await cache.put(key, response.clone());
+      return response;
+    } catch {
+      return await cache.match(key) || new Response('离线时无法读取此资源，请联网重试。', { status: 503 });
+    }
+  })());
 });

@@ -9,7 +9,9 @@ const sw = await readFile(new URL('sw.js', root), 'utf8');
 const baseUrls = [
   'https://lu-travel.vercel.app/',
   'https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/',
-  'https://jinlu.cloud/'
+  'https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.tcloudbaseapp.com/korea/',
+  'https://jinlu.cloud/',
+  'https://www.jinlu.cloud/'
 ];
 const apiBase = 'https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com/korea-api';
 const testToken = process.env.LU_TRAVEL_TEST_TOKEN || '';
@@ -40,7 +42,7 @@ for (const path of assetPaths) {
   await check(`资源 ${path}`, `${baseUrls[0]}${path}`);
 }
 
-const syncPaths = ['/itinerary', '/todos', '/checklist', '/docs', '/expenses', '/bucket-list'];
+const syncPaths = ['/itinerary', '/todos', '/checklist', '/docs', '/expenses', '/bucket-list', '/inspirations', '/trips'];
 for (const path of syncPaths) {
   const res = await check(
     `API ${path}`,
@@ -62,6 +64,15 @@ for (const path of syncPaths) {
       failures.push(`API ${path}: JSON 无法解析 (${error.message})`);
     }
   }
+}
+
+for (const path of ['/files/url?fileID=cloud%3A%2F%2Finvalid', '/files/upload']) {
+  await check(
+    `私有文件 API ${path}`,
+    `${apiBase}${path.includes('?') ? path + '&' : path + '?'}tripId=korea-2026`,
+    (response) => response.status === 401,
+    path === '/files/upload' ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' } : {}
+  );
 }
 
 await check('天气 API', 'https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.978&current=temperature_2m&timezone=Asia%2FSeoul');

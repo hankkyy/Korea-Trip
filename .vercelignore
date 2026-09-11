@@ -5,7 +5,8 @@ artifacts/
 cloudfunctions/
 config/
 scripts/
-assets/docs/
-assets/photos/source/
+assets/docs/**
+assets/photos/source/**
 *.md
 *.docx
+assets/photos/generated/**

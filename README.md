@@ -28,12 +28,12 @@
 - 前端：单文件原生应用 [index.html](./index.html)，无框架构建步骤。
 - 同步后端：CloudBase HTTP 云函数 [cloudfunctions/korea-api/index.js](./cloudfunctions/korea-api/index.js)，数据协议为 protocol 2。
 - 权威动态数据：CloudBase `kr_sync_state`；旧 `kr_*` 集合只用于迁移与恢复，不得恢复“先删后插”的旧写入方式。
-- 离线：Service Worker `lu-travel-v77`，配合 localStorage、IndexedDB 持久队列和前台/轮询同步。
+- 离线：Service Worker `lu-travel-v78`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
 - 发布：Vercel 生产入口 `https://www.jinlu.cloud/`，以及 CloudBase 根入口和 `/korea/` 镜像。两个 CloudBase 路径必须各自注册作用域正确的 Service Worker，避免页面壳互相污染。
 
 ## 数据可靠性原则
 
-数据一致性与持久化高于界面和新功能。每次修改先持久化进本机写入队列，再由服务端做版本检查、幂等处理、不可变历史和三方合并。不同记录的并发修改可自动合并；同一记录的真实冲突不会静默覆盖，当前会保留本机版本供备份恢复。
+数据一致性与持久化高于界面和新功能。每次修改先持久化进本机写入队列，再由服务端做版本检查、幂等处理、不可变历史和三方合并。不同记录的并发修改可自动合并；同一记录的真实冲突不会静默覆盖，当前会保留本机版本供备份恢复。页面会在存在待同步或冲突数据时持续显示提示，退出和关闭页面也会拦截提醒。
 
 这不是“所有场景已完全解决”的声明：当前仍是整份列表快照协议，尚未有页面内冲突选择器、通用成员模型或真实双设备弱网全矩阵验收。完整的现状与边界见 [PROJECT_STATUS.md](./PROJECT_STATUS.md)。
 
@@ -41,7 +41,9 @@
 
 证件、机票和酒店凭证不进入公开静态包、Vercel、Service Worker 缓存或公开 Git 仓库。历史内置 PDF 位于 CloudBase 私有存储；旧数据中已废弃的 `/assets/docs/` 地址，会按已知文件名迁移为私有文件 ID 后再请求临时链接。
 
-当前用户手动上传的附件仍以内嵌 data URL 随同步数据保存，非图片限制为 1.5 MB。这与私有文件的服务端临时授权尚未统一，是当前文件系统的主要待修复项；不要把它描述成已完成的共享私有上传能力。
+用户手动上传的附件会先上传到 CloudBase PRIVATE 存储；同步记录只保存 `cloud://` 文件 ID、名称、MIME 与大小等元数据。预览和下载由 `korea-api` 校验共同所有者与 `tripId` 后签发 15 分钟临时地址。附件上传需要联网，单个文件保存上限为 4 MB；图片选择阶段允许到 12 MB并会在浏览器压缩后上传。上传失败不会替换原附件。
+
+完整上线审计结论、修复清单和人工验收项见 [RELEASE_AUDIT.md](./RELEASE_AUDIT.md)。
 
 ## 本地验证
 

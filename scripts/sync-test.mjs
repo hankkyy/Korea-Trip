@@ -149,3 +149,68 @@ test('visitors only receive itinerary data and owners cannot alter each other pr
   assert.deepEqual(saved.map(item => item.clientId), ['shared', 'jinlu-private']);
   assert.throws(() => protectPrivateWrite('/expenses', [{ clientId: 'jinlu-private', visibility: 'shared' }], records, kele), { status: 403 });
 });
+test('a refresh not displayed must not advance the edit baseline', async () => {
+  const store = createSyncStore(memoryDb(), paths), fetcher = fetchFor(store);
+  const a = createClient(fetcher), b = createClient(fetcher);
+  await a.read('/todos', 'korea'); await b.read('/todos', 'korea');
+  await a.write('/todos', 'korea', [{ id: 'a', done: true }]);
+  assert.equal(await b.read('/todos', 'korea', () => false), null);
+  await b.write('/todos', 'korea', [{ id: 'b', done: true }]);
+  assert.equal((await store.read('/todos', 'korea')).data.length, 2);
+});
+test('edits queued during merged response retain remote additions', async () => {
+  const store = createSyncStore(memoryDb(), paths), fetcher = fetchFor(store), gate = deferred(), started = deferred();
+  const a = createClient(fetcher);
+  let delay = true;
+  const b = createClient(async (url, init) => {
+    const response = await fetcher(url, init);
+    if (init.body && delay) { delay = false; started.resolve(); await gate.promise; }
+    return response;
+  });
+  await a.read('/todos', 'korea'); await b.read('/todos', 'korea');
+  await a.write('/todos', 'korea', [{ id: 'a', done: true }]);
+  const first = b.write('/todos', 'korea', [{ id: 'b', done: false }]);
+  await started.promise;
+  const second = b.write('/todos', 'korea', [{ id: 'b', done: true }]);
+  await b.settled(); gate.resolve(); await Promise.all([first, second]);
+  const items = (await store.read('/todos', 'korea')).data;
+  assert.equal(items.length, 2); assert.equal(items.find(item => item.id === 'b').done, true);
+});
+test('shared-origin offline queues survive writes from both tabs', async () => {
+  const store = createSyncStore(memoryDb(), paths), disk = storage(), fetcher = fetchFor(store);
+  let online = true;
+  const make = () => createSyncClient({ storage: disk, fetcher, baseUrl: 'https://sync.test', online: () => online });
+  const a = make(), b = make();
+  await a.read('/todos', 'korea'); await b.read('/docs', 'korea'); online = false;
+  await a.write('/todos', 'korea', [{ id: 'a' }]); await b.write('/docs', 'korea', [{ id: 'b' }]);
+  assert.equal(a.queue().length, 2); online = true; await a.flush();
+  assert.equal((await store.read('/todos', 'korea')).data.length, 1);
+  assert.equal((await store.read('/docs', 'korea')).data.length, 1);
+});
+test('storage failure never reports a durable successful save', async () => {
+  const store = createSyncStore(memoryDb(), paths);
+  const client = createClient(fetchFor(store), { getItem: () => null, setItem: () => { throw new Error('quota'); } });
+  await client.read('/todos', 'korea');
+  await assert.rejects(client.write('/todos', 'korea', [{ id: 'a' }]), /存储不可用/);
+  assert.equal(client.queue().length, 1);
+  assert.deepEqual((await store.read('/todos', 'korea')).data, []);
+});
+test('private files authorize both owners, deny visitors/cross-trip, and preserve stable upload IDs', async () => {
+  const { createFileService, ROOT } = require('../cloudfunctions/korea-api/files.js');
+  const saved = new Map();
+  const files = createFileService({
+    uploadFile: async ({ cloudPath, fileContent }) => { saved.set(cloudPath, fileContent); return { fileID: ROOT + cloudPath }; },
+    getTempFileURL: async ({ fileList }) => ({ fileList: fileList.map(item => ({ fileID: item.fileID, tempFileURL: 'https://signed.test/file', code: 'SUCCESS' })) })
+  });
+  const a = { uid: 'a', role: 'owner' }, b = { uid: 'b', role: 'owner' }, visitor = { role: 'visitor' };
+  const body = { mime: 'application/pdf', base64: Buffer.from('%PDF-1.4 test').toString('base64') };
+  const uploaded = await files.upload(body, 'korea-2026', a);
+  assert.equal(uploaded.fileID, (await files.upload(body, 'korea-2026', a)).fileID);
+  assert.equal(saved.size, 1);
+  assert.equal((await files.resolve(uploaded.fileID, 'korea-2026', b)).success, true);
+  await assert.rejects(files.resolve(uploaded.fileID, 'hong-kong', b), { status: 403 });
+  await assert.rejects(files.resolve(uploaded.fileID, 'korea-2026', visitor), { status: 403 });
+  await assert.rejects(files.upload(body, 'korea-2026', visitor), { status: 403 });
+  await assert.rejects(files.upload({ ...body, mime: 'text/html' }, 'korea-2026', a), { status: 400 });
+  await assert.rejects(files.resolve(ROOT + 'private/shared/korea-2026/../secret.pdf', 'korea-2026', a), { status: 403 });
+});

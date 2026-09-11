@@ -15,6 +15,7 @@ const SYNC_COLLECTIONS = {
   '/bucket-list': 'kr_bucketlist', '/expenses': 'kr_expenses', '/docs': 'kr_docs', '/inspirations': 'kr_inspirations', '/trips': 'kr_trips'
 };
 const syncStore = createSyncStore(db, SYNC_COLLECTIONS);
+const fileService = require('./files').createFileService(app);
 
 const PORT = process.env.PORT || 9000;
 const DEFAULT_TRIP_ID = 'korea-2026';
@@ -76,12 +77,14 @@ function json(res, data, statusCode = 200) {
   res.end(JSON.stringify(data));
 }
 
+// CloudBase gateway MUST validate Bearer signatures first (invoke: auth != null).
+// This parser only maps an already verified identity; never expose the raw HTTP port.
 function callerFromRequest(req) {
   const token = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   try {
     const payload = JSON.parse(Buffer.from(token.split('.')[1] || '', 'base64url').toString('utf8'));
     const uid = String(payload.sub || payload.uid || '');
-    if (!uid) throw new Error('missing uid');
+    if (!uid || !Number.isFinite(payload.exp) || payload.exp * 1000 <= Date.now()) throw new Error('expired or missing uid');
     return { uid, role: OWNER_USER_IDS.has(uid) ? 'owner' : 'visitor' };
   } catch {}
   throw Object.assign(new Error('请先登录后再访问旅行资料'), { status: 401 });
@@ -149,6 +152,12 @@ const server = http.createServer(async (req, res) => {
     const route = url.pathname;
     const tripId = tripIdFromUrl(url);
     const caller = assertAuthorized(req, req.method !== 'GET');
+    if (route === '/files/upload' && req.method === 'POST') {
+      return json(res, await fileService.upload(await readBody(req), tripId, caller));
+    }
+    if (route === '/files/url' && req.method === 'GET') {
+      return json(res, await fileService.resolve(url.searchParams.get('fileID'), tripId, caller));
+    }
     // Keep weather and exchange-rate requests on the domestic CloudBase origin.
     if (route === '/weather' && req.method === 'GET') {
       const city = url.searchParams.get('city') || 'seoul';

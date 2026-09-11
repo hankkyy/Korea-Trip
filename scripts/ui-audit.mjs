@@ -55,7 +55,7 @@ async function auditPage(page, name) {
     return problems;
   });
   assert.deepEqual(issues, [], `${name}: ${issues.join('; ')}`);
-  await page.screenshot({ path: resolve(output, `${nameFor(name)}.png`), fullPage: false });
+  await page.screenshot({ path: resolve(output, `${nameFor(name)}.png`), fullPage: false, animations: 'disabled' });
 }
 
 async function runViewport(label, viewport) {
@@ -74,6 +74,7 @@ async function runViewport(label, viewport) {
     const request = route.request(); const url = new URL(request.url());
     if (url.hostname === '127.0.0.1') return route.continue();
     const path = url.pathname.replace('/korea-api', '');
+    if (path === '/files/url') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, url: `https://private.example.test/download?file=${encodeURIComponent(url.searchParams.get('fileID'))}`, expiresAt: Date.now() + 840000 }) });
     if (!paths[path]) return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
     try {
       const data = request.method() === 'POST'
@@ -85,7 +86,7 @@ async function runViewport(label, viewport) {
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  page.on('dialog', dialog => dialog.dismiss());
+  page.on('dialog', dialog => dialog.type() === 'beforeunload' ? dialog.accept() : dialog.dismiss());
   try {
     await page.goto(`http://127.0.0.1:${server.address().port}/#home`);
     await page.waitForFunction(() => document.querySelector('#tab-home.active') && typeof showTab === 'function');
@@ -127,7 +128,9 @@ async function runViewport(label, viewport) {
 }
 
 try {
+  await runViewport('small-mobile', { width: 320, height: 667 });
+  await runViewport('tablet', { width: 768, height: 1024 });
   await runViewport('mobile', { width: 390, height: 844 });
   await runViewport('desktop', { width: 1440, height: 1000 });
-  console.log(`UI audit passed: 48 tab and dialog states captured in ${output}`);
+  console.log(`UI audit passed: 96 tab and dialog states captured in ${output}`);
 } finally { server.close(); }
