@@ -3415,6 +3415,8 @@ let inspirationEditingId = null;
 let inspirationDraftCover = '';
 let clipboardInspirationText = '';
 let ignoredClipboardFingerprint = '';
+let clipboardBaselineFingerprint = '';
+let inspirationPageWasHidden = false;
 function sourceUrlFromText(text) {
   const match = String(text || '').match(/https?:\/\/[^\s，。；）】]+/i);
   return match ? match[0] : '';
@@ -3565,6 +3567,7 @@ async function collectClipboardInspiration() {
   try {
     if (!navigator.clipboard?.readText) throw new Error('请先在小红书点“复制链接”');
     const text = await navigator.clipboard.readText();
+    clipboardBaselineFingerprint = inspirationFingerprint(text);
     hideClipboardSuggestion();
     analyzeInspirationText(text);
   } catch (error) {
@@ -3591,7 +3594,7 @@ function hideClipboardSuggestion(ignore = false) {
   if (prompt) prompt.hidden = true;
   clipboardInspirationText = '';
 }
-async function checkClipboardSuggestion() {
+async function checkClipboardSuggestion(shouldPrompt = false) {
   if (isVisitor() || !navigator.clipboard?.readText) return;
   try {
     if (navigator.permissions?.query) {
@@ -3600,7 +3603,10 @@ async function checkClipboardSuggestion() {
     } else return;
     const text = (await navigator.clipboard.readText()).trim();
     const fingerprint = inspirationFingerprint(text);
-    if (!text || fingerprint === ignoredClipboardFingerprint || !looksLikeInspiration(text)) return;
+    if (!clipboardBaselineFingerprint) { clipboardBaselineFingerprint = fingerprint; return; }
+    const changed = fingerprint !== clipboardBaselineFingerprint;
+    clipboardBaselineFingerprint = fingerprint;
+    if (!shouldPrompt || !changed || !text || fingerprint === ignoredClipboardFingerprint || !looksLikeInspiration(text)) return;
     const sourceUrl = sourceUrlFromText(text);
     if (inspirationItems.some((item) => item.tripId === activeTrip().id && item.sourceUrl && item.sourceUrl === sourceUrl)) return;
     showClipboardSuggestion(text);
@@ -3637,8 +3643,16 @@ async function initInspirations() {
   $('#inspirationCoverRemoveBtn')?.addEventListener('click', () => { inspirationDraftCover = ''; renderInspirationCoverDraft(); });
   $('#inspirationClipboardAddBtn')?.addEventListener('click', () => { const text = clipboardInspirationText; hideClipboardSuggestion(); analyzeInspirationText(text); });
   $('#inspirationClipboardDismissBtn')?.addEventListener('click', () => hideClipboardSuggestion(true));
-  setTimeout(checkClipboardSuggestion, 650);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(checkClipboardSuggestion, 350); });
+  // First read only records the current clipboard. A reminder appears only after
+  // the user has left this page and returned with a changed clipboard value.
+  setTimeout(() => checkClipboardSuggestion(false), 650);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) inspirationPageWasHidden = true;
+    else if (inspirationPageWasHidden) {
+      inspirationPageWasHidden = false;
+      setTimeout(() => checkClipboardSuggestion(true), 350);
+    }
+  });
 }
 async function captureSharedInspiration() {
   const query = new URLSearchParams(location.search);
@@ -7006,7 +7020,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=65').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=66').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
