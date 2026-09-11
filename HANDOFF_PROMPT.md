@@ -1,7 +1,7 @@
 # 在璐上接手与发布手册
 
 更新时间：2026-09-11
-当前源码基线：2026-09-11 上线候选；Service Worker：`lu-travel-v78`
+当前实现基线：`767b3ab`；Service Worker：`lu-travel-v78`
 
 ## 先读
 
