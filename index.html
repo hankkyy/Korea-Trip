@@ -3074,20 +3074,22 @@ async function startLiveSync() {
 }
 function startLiveSyncFallback() {
   if (liveSyncFallbackTimer) return;
-  liveSyncFallbackTimer = setInterval(async () => {
-    if (liveSyncFallbackBusy || document.hidden) return;
-    liveSyncFallbackBusy = true;
-    try {
-      const tripId = activeTrip().id;
-      if (document.querySelector('[role="dialog"].open')) return;
-      await Promise.all(Object.keys(DIRECT_COLLECTIONS).map(async (path) => {
-        try {
-          const items = await syncClient.read(path, tripId);
-          if (items !== null) applyLiveDataset(path, items, tripId);
-        } catch (error) { console.warn('自动刷新暂不可用', path, error.message); }
-      }));
-    } finally { liveSyncFallbackBusy = false; }
-  }, 10000);
+  refreshLiveDatasets();
+  liveSyncFallbackTimer = setInterval(refreshLiveDatasets, 4000);
+}
+async function refreshLiveDatasets() {
+  if (liveSyncFallbackBusy || document.hidden || isVisitor()) return;
+  if (document.querySelector('[role="dialog"].open')) return;
+  liveSyncFallbackBusy = true;
+  try {
+    const tripId = activeTrip().id;
+    await Promise.all(Object.keys(DIRECT_COLLECTIONS).map(async (path) => {
+      try {
+        const items = await syncClient.read(path, tripId);
+        if (items !== null) applyLiveDataset(path, items, tripId);
+      } catch (error) { console.warn('自动刷新暂不可用', path, error.message); }
+    }));
+  } finally { liveSyncFallbackBusy = false; }
 }
 function activeTrip() {
   const id = storedTripId();
@@ -7018,7 +7020,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=70').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=71').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
@@ -7027,7 +7029,10 @@ function initSW(visitor = false) {
   // on startup is not enough when the backend recovers after page load.
   setInterval(flushOfflineQueue, 15000);
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) flushOfflineQueue();
+    if (!document.hidden) {
+      flushOfflineQueue();
+      refreshLiveDatasets();
+    }
   });
   setTimeout(startLiveSync, 1200);
 }
