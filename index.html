@@ -2689,6 +2689,20 @@ function revealAuthenticatedApp(session) {
   if (gate) gate.hidden = true;
   resolveAuthReady();
 }
+function revealLoggedOutGate() {
+  currentUserId = '';
+  accessRole = 'visitor';
+  sessionStorage.removeItem(VISITOR_SESSION_KEY);
+  closeTripPicker?.();
+  document.body.classList.remove('visitor-mode', 'auth-pending');
+  const gate = document.getElementById('authGate');
+  if (gate) gate.hidden = false;
+  const error = document.getElementById('authError');
+  if (error) error.textContent = '';
+  const form = document.getElementById('authForm');
+  form?.reset();
+  setTimeout(() => document.getElementById('authUsername')?.focus(), 80);
+}
 async function currentAuthSession() {
   if (!cloudAuth) return null;
   const { data, error } = await cloudAuth.getSession();
@@ -3324,7 +3338,19 @@ function initTripPicker() {
   $('#tripDeleteBtn')?.addEventListener('click', deleteTripSettings);
   $('#tripExportBtn')?.addEventListener('click', exportTripBackup);
   $('#authLogoutBtn')?.addEventListener('click', async () => {
-    try { await cloudAuth?.signOut(); } finally { window.location.reload(); }
+    const button = $('#authLogoutBtn');
+    if (!cloudAuth) { alert('登录组件未准备好，暂时无法退出。请刷新后重试。'); return; }
+    button.disabled = true;
+    button.textContent = '退出中…';
+    try {
+      const result = await cloudAuth.signOut();
+      if (result?.error) throw result.error;
+      revealLoggedOutGate();
+    } catch (error) {
+      alert(error?.message || '退出失败，请检查网络后重试。');
+      button.disabled = false;
+      button.textContent = '退出账号';
+    }
   });
   $('#tripImportBtn')?.addEventListener('click', () => $('#tripImportInput')?.click());
   $('#tripImportInput')?.addEventListener('change', (event) => importTripBackup(event.target.files?.[0]));
@@ -6892,7 +6918,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=58').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=59').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);

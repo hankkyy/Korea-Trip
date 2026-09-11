@@ -1,6 +1,6 @@
 # Agent 交接说明
 
-2026-09-10 用户明确指定：多设备、多用户的数据一致性和持久化是零号优先级，高于新功能、界面和发布速度。动态数据权威来源是 `kr_sync_state`，旧 `kr_*` 集合只作迁移备份，禁止恢复先删后插。前端入口为 `assets/sync-client.js`，HTTP 返回 `protocol: 2`，SW v58 已发布。当前已实现两个实名账号登录、固定 UID 服务端授权、IndexedDB 队列、不可变快照、幂等回执、30 版历史与按记录三方合并。不同记录自动合并；同一记录冲突保留本机并提示备份，尚无页面内冲突选择器和真实 iPhone/iPad 双设备验收。
+2026-09-10 用户明确指定：多设备、多用户的数据一致性和持久化是零号优先级，高于新功能、界面和发布速度。动态数据权威来源是 `kr_sync_state`，旧 `kr_*` 集合只作迁移备份，禁止恢复先删后插。前端入口为 `assets/sync-client.js`，HTTP 返回 `protocol: 2`，SW v59 已发布。当前已实现两个实名账号登录、固定 UID 服务端授权、IndexedDB 队列、不可变快照、幂等回执、30 版历史与按记录三方合并。不同记录自动合并；同一记录冲突保留本机并提示备份，尚无页面内冲突选择器和真实 iPhone/iPad 双设备验收。
 
 你正在接手 `/Users/hankzhang/Desktop/lu-travel` 的「在璐上」多旅行管理 App。先阅读：
 
@@ -41,7 +41,7 @@
 - Vercel 项目：`lu-travel`；生产地址：`https://jinlu.cloud/`。
 - 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`；前端或图片修改后必须额外部署 CloudBase 静态包。
 - 2026-09-11 已验证的 Vercel 生产部署为 `dpl_EvmNCmYN7FukHGwgLhE8xgFMcEER`，已绑定 `www.jinlu.cloud`；CloudBase 已更新函数及静态托管 `/korea/index.html`、`/korea/sw.js`。静态版本化页面哈希一致，生产匿名会话实测行程 200、待办/支出/文件 403、单一行程导航与 Service Worker 均正常。
-- Service Worker 当前缓存版本：`lu-travel-v58`；改资源后必须递增并验证旧缓存清理。
+- Service Worker 当前缓存版本：`lu-travel-v59`；改资源后必须递增并验证旧缓存清理。
 - 灵感箱为 `kr_inspirations`；入口在首页收集箱，剪贴板内容会打开可编辑的确认卡。Android PWA 分享目标参数为 `title`、`text`、`url`，自动保存前必须保持所有者登录。iPhone 没有 Web Share Target，用剪贴板收集入口。
 - 动态列表通过 HTTP protocol 2 提交整份不可变快照，带事务版本、幂等请求、30 版历史和稳定 ID 三方合并；不同记录并发修改自动合并，同一记录冲突保留本机。
 - API 读取需要 CloudBase 登录：可乐、金鹿为两个固定所有者。匿名访客只可读取总览行程；函数必须拒绝其读取待办、行李、支出、文件、美食、随笔、灵感箱和旅程管理，并拒绝其所有写入。支出、随笔的 `private` 记录必须带创建者 `ownerId` 并由函数过滤、保护，不能让另一位所有者通过整表同步删除。两位所有者的新密码已成功写入并通过正式站登录验证；不要把明文密码写入项目资料。敏感 PDF 和预览不应出现在静态部署包、Git 新增内容或 Service Worker 缓存。

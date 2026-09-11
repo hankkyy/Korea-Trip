@@ -31,12 +31,12 @@ const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const viewport = process.env.DESKTOP_VIEWPORT ? { width: 1440, height: 1000 } : { width: 390, height: 844 };
 const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
 await context.addInitScript(() => {
-  const session = { access_token: 'browser-test-token', user: { id: '2097823157655728129', is_anonymous: false } };
+  let session = { access_token: 'browser-test-token', user: { id: '2097823157655728129', is_anonymous: false } };
   window.cloudbase = { init: () => ({ auth: () => ({
     getSession: async () => ({ data: { session }, error: null }),
     signInWithPassword: async () => ({ data: { session }, error: null }),
     signInAnonymously: async () => ({ data: { session }, error: null }),
-    signOut: async () => ({ error: null })
+    signOut: async () => { session = null; return { error: null }; }
   }) }) };
 });
 const errors = []; let offline = false;
@@ -194,6 +194,10 @@ try {
   assert.equal(await page.getByText('跨设备美食收藏测试', { exact: true }).count(), 1);
   assert.equal((await page.evaluate(() => essayRecords.length)), 1);
   assert.deepEqual(errors, []);
+  await page.evaluate(async () => { await cloudAuth.signOut(); revealLoggedOutGate(); });
+  await page.waitForFunction(() => !document.querySelector('#authGate')?.hidden);
+  assert.equal(await page.locator('#authGate').isVisible(), true);
+  assert.equal(await page.locator('#tripPickerSheet.open').count(), 0);
   const visitorContext = await browser.newContext({ viewport, serviceWorkers: 'block' });
   await visitorContext.addInitScript(() => {
     const session = { access_token: 'visitor-test-token', user: { id: 'visitor-user', is_anonymous: true } };
