@@ -3485,7 +3485,7 @@ async function saveInspiration(raw, suppliedTitle = '') {
 function openInspirationSheet(entry = null) {
   if (!ownerOnly()) return;
   const item = entry ? normalizeInspiration(entry) : normalizeInspiration({ id: newRecordId('idea'), tripId: activeTrip().id, createdAt: Date.now(), updatedAt: Date.now() });
-  inspirationEditingId = entry?.id || null;
+  inspirationEditingId = inspirationItems.some((saved) => saved.id === entry?.id) ? entry.id : null;
   $('#inspirationSheetTitle').textContent = inspirationEditingId ? '编辑灵感' : '收集灵感';
   $('#inspirationTitleInput').value = item.title;
   $('#inspirationCategoryInput').value = item.category;
@@ -3575,7 +3575,7 @@ async function captureSharedInspiration() {
   const shared = [query.get('title'), query.get('text'), query.get('url')].filter(Boolean).join('\n').trim();
   if (!shared || isVisitor()) return;
   history.replaceState({}, '', `${location.pathname}${location.hash || '#home'}`);
-  try { await saveInspiration(shared, query.get('title') || ''); }
+  try { analyzeInspirationText(shared); showInspirationToast('已收到分享，确认后收好'); }
   catch (error) { console.warn('分享内容暂未收集', error.message); }
 }
 
@@ -6936,7 +6936,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=60').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=61').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);

@@ -189,6 +189,9 @@ try {
   assert.equal(editedIdea.note, '留给 12/29 晚餐。');
   const sharedPage = await context.newPage();
   await sharedPage.goto(`http://127.0.0.1:${server.address().port}/?title=${encodeURIComponent('分享面板自动收集')}&url=${encodeURIComponent('https://www.xiaohongshu.com/explore/share-target-test')}#home`);
+  await sharedPage.waitForFunction(() => document.querySelector('#inspirationSheet')?.classList.contains('open'));
+  assert.equal(await sharedPage.locator('#inspirationTitleInput').inputValue(), '分享面板自动收集');
+  await sharedPage.locator('#inspirationSaveBtn').click();
   await sharedPage.waitForFunction(() => document.querySelector('#inspirationList')?.textContent.includes('分享面板自动收集'));
   await sharedPage.waitForFunction(() => !JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]').length);
   assert.equal((await store.read('/inspirations', tripId)).data.length, 2);
