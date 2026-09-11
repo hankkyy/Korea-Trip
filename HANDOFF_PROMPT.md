@@ -1,59 +1,42 @@
-# Agent 交接说明
+# 在璐上接手与发布手册
 
-2026-09-10 用户明确指定：多设备、多用户的数据一致性和持久化是零号优先级，高于新功能、界面和发布速度。动态数据权威来源是 `kr_sync_state`，旧 `kr_*` 集合只作迁移备份，禁止恢复先删后插。前端入口为 `assets/sync-client.js`，HTTP 返回 `protocol: 2`，SDK 固定随站点发布于 `assets/vendor/cloudbase.full.js`，SW v72 已发布。CloudBase 根入口与 `/korea/` 镜像必须分别注册对应 scope 的 Worker，禁止让镜像复用根路径缓存壳。当前已实现两个实名账号登录、固定 UID 服务端授权、IndexedDB 队列、不可变快照、幂等回执、30 版历史与按记录三方合并。不同记录自动合并；同一记录冲突保留本机并提示备份，尚无页面内冲突选择器和真实 iPhone/iPad 双设备验收。
+更新时间：2026-09-11
+当前源码基线：`6a5e476`；Service Worker：`lu-travel-v77`
 
-你正在接手 `/Users/hankzhang/Desktop/lu-travel` 的「在璐上」多旅行管理 App。先阅读：
+## 先读
 
-1. `PROJECT_CONTEXT.md`：所有要求、决策、旅行资料和接手上下文的唯一事实源。
-2. `README.md`：项目入口和技术结构。
-3. `REQUIREMENTS.md`：用户不可妥协的需求和设计红线。
-4. `PROJECT_STATUS.md`：当前真正完成、部分完成和未完成的工作。
+1. [ARCHITECTURE.md](./ARCHITECTURE.md)：数据、权限、私有文件和缓存结构。
+2. [REQUIREMENTS.md](./REQUIREMENTS.md)：不可妥协的产品红线。
+3. [PROJECT_STATUS.md](./PROJECT_STATUS.md)：完成证据、风险和 P0 工作。
+4. [PROJECT_CONTEXT.md](./PROJECT_CONTEXT.md)：旅行资料与产品上下文。
 
-## 产品背景
+## 当前工作区与关键文件
 
-用户可乐与金鹿共同旅行。金鹿主要使用 iPhone/iPad，旅行中主要使用手机，因此移动端、触控、可读性、无网可用和低误触优先于桌面端。App 桌面名称必须是“在璐上”，网页标题按当前旅程显示。
+- 项目目录：`/Users/hankzhang/Desktop/lu-travel`
+- 前端：`index.html`
+- 同步客户端：`assets/sync-client.js`
+- 后端：`cloudfunctions/korea-api/index.js`、`cloudfunctions/korea-api/sync-store.js`
+- 离线缓存：`sw.js`
+- 浏览器回归：`scripts/sync-browser.mjs`
+- 同步单测：`scripts/sync-test.mjs`
+- UI 审查：`scripts/ui-audit.mjs`
 
-当前旅程：
+CloudBase 环境为 `hanoi-d4gj8vd2q1e7a3dc0`，HTTP 函数为 `korea-api`。生产入口是 `https://www.jinlu.cloud/`；CloudBase 也需发布根路径和 `/korea/` 镜像。不要在文档、终端输出或提交中记录账号密码、令牌或密钥。
 
-- 韩国：2026-12-26 至 2027-01-03，深圳 → 首尔 → 釜山 → 首尔 → 深圳，9 天跨年深度游，绿色主题。
-- 香港：2026-12-18 至 2026-12-20，周末下班出发，迪士尼和市区，紫色主题。
-- 厦门：2027-01-08 至 2027-01-10，周末短途，内容待定，蓝色主题。
+## 必须遵守
 
-## 不可违反的规则
+- 数据一致性、隐私和文件授权优先于视觉与新功能。
+- 可乐和金鹿是共同所有者；访客仅可看公开行程。授权必须在服务端依据会话令牌完成。
+- 动态数据继续使用 protocol 2；禁止恢复旧的先删后插写法。
+- 敏感文件不得进入 Vercel、CloudBase 静态目录、Service Worker 缓存或 Git。
+- 禁止用公开 Storage ACL 修复共同文件预览；应由后端校验所有者后签发短期 URL。
+- 低频修改和删除默认收进编辑态，删除二次确认；手机优先且触控目标至少 44px。
 
-- 不要把韩国数据复制到香港或厦门；所有动态资料必须按 `tripId` 隔离。
-- 不要用满屏 emoji、AI 味提示语、技术状态文案或过度绿色；保持低饱和浅色手帐风。
-- 所有打开/原图/文件预览优先使用站内 viewer，并提供返回和关闭；不能只打开裸 PDF/图片页面。
-- 所有删除必须二次确认；低频修改和删除默认收进“编辑”入口，减少误触。
-- 文件区只存文件资料，不显示“待准备/已准备/已上传”；待办区才记录待完成事项。
-- 支出统一换算成人民币，并显示“仅用于统计分析目的”，不能做情侣分摊语气。
-- 待办/行李排序必须保持 iOS 风格的长按拖动、占位和自动滚动手感。
-- 不引入网页内 AI 手帐转换或第三方模型依赖；手帐图片使用现有静态素材。
-- 不依赖单个 Google/Naver/Kakao 外链；为中国大陆、韩国和美国准备本地资源或备用入口。
-- 没有真实设备覆盖时，不得声称“全站无 bug”。
+## 当前最重要的未完成工作
 
-## 当前技术事实
+手动上传附件仍存为 data URL，非图片限制 1.5 MB；历史内置 PDF 虽已迁移到私有存储，但浏览器直接请求临时 URL 未完成“两个所有者均可用”的生产验证。应实现：上传仅保存私有文件 ID、后端按 `tripId` 和所有者身份签发短期 URL、两位所有者真实测试、访客拒绝、失败不破坏原引用。
 
-- 前端是单文件 `index.html`，原生 HTML/CSS/JavaScript。
-- 后端是 CloudBase HTTP 云函数 `cloudfunctions/korea-api/index.js`。
-- CloudBase 环境：`hanoi-d4gj8vd2q1e7a3dc0`，函数：`korea-api`，集合以 `kr_` 开头。
-- API 地址：`https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com/korea-api`。
-- Vercel 项目：`lu-travel`；生产地址：`https://jinlu.cloud/`。
-- 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`；前端或图片修改后必须额外部署 CloudBase 静态包。
-- 2026-09-11 已验证的 Vercel 生产部署为 `dpl_EvmNCmYN7FukHGwgLhE8xgFMcEER`，已绑定 `www.jinlu.cloud`；CloudBase 已更新函数及静态托管 `/korea/index.html`、`/korea/sw.js`。静态版本化页面哈希一致，生产匿名会话实测行程 200、待办/支出/文件 403、单一行程导航与 Service Worker 均正常。
-- 2026-09-11 v68 已发布：Vercel 当前生产部署为 `dpl_DMNfhCGheUrnSzH1Hn8hDh44im44`；CloudBase 已更新 `/korea/index.html`、`/korea/sw.js`、`/korea/assets/sync-client.js`，三者哈希均已核验。同步缓存不可阻塞页面启动；模拟 iPhone/PWA IndexedDB 不可用时，正式站仍会立刻渲染天气兜底和完整预报。
-- Service Worker 当前缓存版本：`lu-travel-v68`；改资源后必须递增并验证旧缓存清理。Safari/iPhone PWA 的 IndexedDB 打开、读取、写入均为 1.5 秒超时，首页启动不等待同步缓存，以免天气和动态模块卡在加载态。
-- 灵感箱为 `kr_inspirations`；入口在首页收集箱，剪贴板内容和 Android PWA 分享目标都会打开可编辑的确认卡。Android 分享目标参数为 `title`、`text`、`url`，保存前必须保持所有者登录。iPhone 没有 Web Share Target，用剪贴板收集入口。
-- 动态列表通过 HTTP protocol 2 提交整份不可变快照，带事务版本、幂等请求、30 版历史和稳定 ID 三方合并；不同记录并发修改自动合并，同一记录冲突保留本机。
-- API 读取需要 CloudBase 登录：可乐、金鹿为两个固定所有者。匿名访客只可读取总览行程；函数必须拒绝其读取待办、行李、支出、文件、美食、随笔、灵感箱和旅程管理，并拒绝其所有写入。支出、随笔的 `private` 记录必须带创建者 `ownerId` 并由函数过滤、保护，不能让另一位所有者通过整表同步删除。两位所有者的新密码已成功写入并通过正式站登录验证；不要把明文密码写入项目资料。敏感 PDF 和预览不应出现在静态部署包、Git 新增内容或 Service Worker 缓存。
-- 旅程选择层已有 JSON 导出/导入和冲突备份恢复；它们是应急工具，不能替代 IndexedDB 持久队列、身份授权和正常冲突处理。
-- 旅程设置已支持成员、时区、城市、封面和从已有旅程复制框架；不要把这误写成完整资料 CRUD。
-
-## 开发顺序
-
-继续完善 P0：把固定双账号授权升级为旅程成员模型，增加页面内冲突选择和版本恢复，再做真实 iPhone/iPad 双设备与中韩运营商验收。金鹿历史美食收藏未在云端、旧集合或现存历史中找到，只有她原设备未清理的缓存仍可能恢复；不要让她清缓存或卸载。P0 达标后再继续资料 CRUD 和视觉功能。
-
-## 每次修改后必须检查
+## 修改后的检查
 
 ```bash
 cd /Users/hankzhang/Desktop/lu-travel
@@ -67,12 +50,22 @@ node --check assets/sync-client.js
 git diff --check
 ```
 
-`scripts/verify.mjs` 在没有 token 时应确认受保护 API 返回 401；提供测试 token 才执行完整 API 协议检查。`sync-test.mjs` 与 `sync-browser.mjs` 覆盖同步、全部动态数据族和浏览器交互，但不能替代真实中国大陆/韩国网络及 iPhone/iPad 双用户双设备验收。还要确认 Vercel 与 CloudBase 国内入口版本一致。
+无测试 token 时，`verify.mjs` 对受保护 API 的 401 是预期行为。自动化不能代替真实 iPhone/iPad、两位所有者双设备及中韩网络验收。
 
-## 安全红线
+## 发布顺序
 
-绝不能提交或输出任何 `.env.local`、`VERCEL_OIDC_TOKEN`、CloudBase 密钥、`.git`、`.vercel`、账号密码或用户私密资料。证件、机票和酒店凭证只允许保存在 CloudBase 私有存储中，页面用临时签名地址访问。
+先完成本地检查和需要的后端部署，再发布静态入口。前端改动应递增 `sw.js` 缓存版本并同步更新 `index.html` 中的 `sw.js?v=…`。
 
-## 文档更新要求
+```bash
+tcb hosting deploy index.html /index.html -e hanoi-d4gj8vd2q1e7a3dc0 --concurrency 1 --json
+tcb hosting deploy sw.js /sw.js -e hanoi-d4gj8vd2q1e7a3dc0 --concurrency 1 --json
+tcb hosting deploy index.html /korea/index.html -e hanoi-d4gj8vd2q1e7a3dc0 --concurrency 1 --json
+tcb hosting deploy sw.js /korea/sw.js -e hanoi-d4gj8vd2q1e7a3dc0 --concurrency 1 --json
+vercel --prod --yes
+```
 
-完成代码后必须更新 `PROJECT_STATUS.md`，必要时更新 `README.md`、`REQUIREMENTS.md` 和本文件。明确写出做了什么、验证了什么、没有验证什么、剩余风险和下一步，不得只留下模糊的“已完成”。
+发布后确认：Vercel 和 CloudBase 两条入口取得同一页面版本；根入口与 `/korea/` Worker scope 分别为 `/` 和 `/korea/`；访客只能看公开行程；所有者可以读取对应资料。不要因为静态发布成功而跳过私有文件和真实会话检查。
+
+## 仓库卫生
+
+当前存在未跟踪的私人资料：签证行程文档、`assets/docs/visa/` PDF、`assets/photos/generated/`、`assets/photos/source/real/`。除非用户明确要求，保持未跟踪，绝不 `git add -A`。提交前先检查 `git status --short` 和 `git diff --cached --name-only`。
