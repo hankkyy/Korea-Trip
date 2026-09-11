@@ -161,6 +161,7 @@ try {
   console.log('Browser phase: encrypted essay saved');
 
   await page.evaluate(() => showTab('docs', false));
+  assert.equal(await page.evaluate(() => docAttachmentUrl({ attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf' })), 'cloud://hanoi-d4gj8vd2q1e7a3dc0.6861-hanoi-d4gj8vd2q1e7a3dc0-1448781892/private/korea/visa/携程英文版机票行程单.pdf');
   const firstDoc = page.locator('#docsGrid .doc-card').first();
   await firstDoc.locator('[data-act="edit"]').click();
   await firstDoc.locator('[data-act="title"]').fill('文件标题保存测试');

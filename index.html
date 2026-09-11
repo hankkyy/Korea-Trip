@@ -6011,6 +6011,15 @@ function initSheet() {
 /* ================= 文件 / 随笔（同步 + 本地兜底） ================= */
 const PRIVATE_STORAGE_ROOT = 'cloud://hanoi-d4gj8vd2q1e7a3dc0.6861-hanoi-d4gj8vd2q1e7a3dc0-1448781892/private';
 const privateFile = (path) => `${PRIVATE_STORAGE_ROOT}/${path}`;
+// These files were moved out of public static hosting into private CloudBase
+// storage. Old synced records can still contain their former /assets/docs URL.
+// Resolve by filename at open time, without touching user-uploaded documents.
+const LEGACY_PRIVATE_DOC_NAMES = new Set([
+  '仇金璐的韩亚航空官方行程单.pdf', '张子豪的韩亚航空官方行程单.pdf',
+  '携程中文版机票行程单.pdf', '携程英文版机票行程单.pdf',
+  '釜山ASTI酒店中文版入住凭证.pdf', '釜山ASTI酒店英文版入住凭证.pdf',
+  '首尔明洞万怡酒店入住凭证.pdf'
+]);
 // Travel documents are loaded from the authenticated data service. Keeping seed
 // filenames here would disclose document metadata to anyone downloading the app.
 const DOC_SEEDS = [];
@@ -6344,6 +6353,10 @@ function docAttachmentUrl(doc) {
     try { fileName = decodeURIComponent(fileName); } catch {}
     const bundled = DOC_SEEDS.find((seed) => seed.attachmentName === fileName);
     if (bundled) rawUrl = bundled.attachmentUrl;
+  }
+  const legacyName = fileNameFromPath(rawUrl);
+  if (LEGACY_PRIVATE_DOC_NAMES.has(legacyName) && /(^|\/)assets\/docs\/|vercel\.app\/assets\/docs\//i.test(rawUrl)) {
+    rawUrl = privateFile(`korea/visa/${legacyName}`);
   }
   return rawUrl.startsWith('data:') || rawUrl.startsWith('cloud://') ? rawUrl : encodeURI(rawUrl);
 }
@@ -7054,7 +7067,7 @@ function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
     // The CloudBase mirror has its own subpath and therefore its own cache scope.
     const appBase = /^\/korea(?:\/|$)/.test(location.pathname) ? '/korea/' : '/';
-    navigator.serviceWorker.register(`${appBase}sw.js?v=76`, { scope: appBase }).catch(() => {});
+    navigator.serviceWorker.register(`${appBase}sw.js?v=77`, { scope: appBase }).catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);

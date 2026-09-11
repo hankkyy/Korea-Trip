@@ -1,6 +1,6 @@
 // 在璐上 — Service Worker
 // 目的：Add to Home Screen 后离线也能打开壳，弱网下用缓存兜底
-const CACHE = 'lu-travel-v76';
+const CACHE = 'lu-travel-v77';
 // The CloudBase mirror is mounted at /korea/, while the primary site is at /.
 // Cache this worker's own shell so a root-scoped legacy worker cannot return
 // a stale build for the mirror.
