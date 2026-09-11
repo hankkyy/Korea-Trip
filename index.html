@@ -1755,7 +1755,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 
     <button id="ctaPlan"><i class="ti" data-ic="map"></i>开始规划旅程</button>
     <section class="inspiration-box" aria-labelledby="inspirationTitle">
-      <div class="inspiration-head"><div><h2 id="inspirationTitle">灵感收集箱</h2><p>把想去的店、路线和旅行想法简单记下来。<span class="inspiration-open-hint">点击打开小红书原帖</span></p></div><button id="inspirationCollectBtn" type="button"><i class="ti" data-ic="plus"></i>新建灵感</button></div>
+      <div class="inspiration-head"><div><h2 id="inspirationTitle">灵感收集箱</h2><p>把想去的店、路线和旅行想法简单记下来。<span class="inspiration-open-hint">点击卡片打开小红书或抖音原帖</span></p></div><button id="inspirationCollectBtn" type="button"><i class="ti" data-ic="plus"></i>新建灵感</button></div>
       <div id="inspirationList" class="inspiration-list"></div>
     </section>
     <div class="short-trip-banner" aria-live="polite"></div>
@@ -2428,7 +2428,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
   <div class="inspiration-sheet-top"><div><h3 id="inspirationSheetTitle">新建灵感</h3><p>填几项关键信息，之后随时回来补充或修改。</p></div><button class="inspiration-sheet-close" type="button" onclick="closeInspirationSheet()" aria-label="关闭">×</button></div>
   <div class="inspiration-field"><label for="inspirationTitleInput">标题</label><input id="inspirationTitleInput" maxlength="100" placeholder="例如：弘大烤肉备选"></div>
   <div class="inspiration-editor-grid"><div class="inspiration-field"><label for="inspirationPlaceInput">地点 <span>（可选）</span></label><input id="inspirationPlaceInput" maxlength="50" placeholder="例如：首尔、弘大"></div><div class="inspiration-field"><label for="inspirationCategoryInput">归类</label><select id="inspirationCategoryInput"><option value="other">待整理</option><option value="food">美食</option><option value="itinerary">行程</option><option value="stay">住宿</option><option value="shopping">购物</option></select></div></div>
-  <div class="inspiration-field"><label for="inspirationUrlInput">原帖链接</label><input id="inspirationUrlInput" type="url" inputmode="url" placeholder="小红书分享链接"></div>
+  <div class="inspiration-field"><label for="inspirationUrlInput">来源链接</label><input id="inspirationUrlInput" type="url" inputmode="url" placeholder="粘贴小红书或抖音分享链接"></div>
   <div class="inspiration-field"><label for="inspirationNoteInput">自己的备注 <span>（可选）</span></label><textarea id="inspirationNoteInput" maxlength="1000" placeholder="例如：留给 12/29 晚餐，先看排队情况。"></textarea></div>
   <div class="inspiration-sheet-actions"><button id="inspirationDeleteBtn" class="inspiration-delete" type="button">删除</button><button class="inspiration-cancel" type="button" onclick="closeInspirationSheet()">取消</button><button id="inspirationSaveBtn" class="inspiration-save" type="button">收好灵感</button></div>
 </section>
@@ -3492,6 +3492,14 @@ function inspirationSafeUrl(value) {
     return /^https?:$/.test(url.protocol) ? url.href : '';
   } catch { return ''; }
 }
+function inspirationSourceLabel(value) {
+  try {
+    const host = new URL(String(value || '')).hostname.toLowerCase();
+    if (/(^|\.)((v\.)?douyin\.com|iesdouyin\.com)$/.test(host)) return '抖音视频';
+    if (/(^|\.)(xiaohongshu\.com|xhslink\.com)$/.test(host)) return '小红书';
+  } catch {}
+  return '来源原帖';
+}
 function renderInspirations() {
   const container = $('#inspirationList');
   if (!container) return;
@@ -3499,7 +3507,8 @@ function renderInspirations() {
   container.innerHTML = items.length ? items.map((item) => {
     const sourceUrl = inspirationSafeUrl(item.sourceUrl);
     const content = `<div class="inspiration-card-top"><span class="inspiration-card-mark" aria-hidden="true">✦</span><div class="inspiration-item-copy"><div class="inspiration-item-title">${esc(item.title)}</div><div class="inspiration-item-meta"><span class="inspiration-meta-pill">${inspirationCategoryLabel(item.category)}</span>${item.place ? `<span class="inspiration-meta-pill">${esc(item.place)}</span>` : ''}</div>${item.note ? `<div class="inspiration-item-note">${esc(item.note)}</div>` : ''}</div></div>`;
-    return `<article class="inspiration-item" data-tone="${inspirationTone(item.id)}">${sourceUrl ? `<a class="inspiration-open-card" href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer" aria-label="打开《${esc(item.title)}》的小红书原帖">${content}</a>` : `<div class="inspiration-open-card">${content}</div>`}<div class="inspiration-card-bottom">${sourceUrl ? '' : '<span class="inspiration-item-meta">原帖链接无效</span>'}<button class="inspiration-edit-button" type="button" data-idea-edit="${esc(item.id)}">编辑</button></div></article>`;
+    const sourceLabel = inspirationSourceLabel(sourceUrl);
+    return `<article class="inspiration-item" data-tone="${inspirationTone(item.id)}">${sourceUrl ? `<a class="inspiration-open-card" href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer" aria-label="打开《${esc(item.title)}》的${sourceLabel}">${content}</a>` : `<div class="inspiration-open-card">${content}</div>`}<div class="inspiration-card-bottom">${sourceUrl ? `<span class="inspiration-item-meta">${sourceLabel} ↗</span>` : '<span class="inspiration-item-meta">来源链接无效</span>'}<button class="inspiration-edit-button" type="button" data-idea-edit="${esc(item.id)}">编辑</button></div></article>`;
   }).join('') : '<div class="inspiration-empty">还没有灵感，点上面的“新建灵感”记下一条。</div>';
 }
 function showInspirationToast(message) {
@@ -7045,7 +7054,7 @@ function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
     // The CloudBase mirror has its own subpath and therefore its own cache scope.
     const appBase = /^\/korea(?:\/|$)/.test(location.pathname) ? '/korea/' : '/';
-    navigator.serviceWorker.register(`${appBase}sw.js?v=75`, { scope: appBase }).catch(() => {});
+    navigator.serviceWorker.register(`${appBase}sw.js?v=76`, { scope: appBase }).catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
