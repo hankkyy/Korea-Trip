@@ -71,7 +71,7 @@ App 桌面名称固定为 **在璐上**。网页标题按当前旅程变化，�
 - 旅程配置和基础模板位于 `TRIP_DATA`；记录逐步迁移到 `tripId` 隔离。
 - Vercel：项目名 `lu-travel`；生产域名仍使用 `https://jinlu.cloud/`。
 - CloudBase 国内入口：`https://korea-hanoi-d4gj8vd2q1e7a3dc0.webapps.tcloudbase.com/`。
-- Service Worker 当前版本：`lu-travel-v62`。
+- Service Worker 当前版本：`lu-travel-v63`。
 - 2026-09-11 全量发布：CloudBase 云函数权限、`/korea/index.html` 与 `/korea/sw.js` 已发布；静态页可通过版本化地址立即获得新内容。已验证的 Vercel 生产部署 `dpl_EvmNCmYN7FukHGwgLhE8xgFMcEER`（`www.jinlu.cloud`）已就绪。生产匿名会话实测仅可见行程，行程为 200，待办、支出、文件为 403，Service Worker 已注册且页面无错误。
 - 灵感箱：`kr_inspirations` 使用既有 protocol 2 同步。首页展示双列灵感卡片墙；所有者可主动上传一张截图作封面。桌面和 iPhone 读取剪贴板后先给出可编辑的标题、归类、地点和备注确认卡，Android 已安装 PWA 可从系统分享面板接收标题、文字与 URL，并打开同一张确认卡。
 - 权限：`kele` 和 `jinlu` 是固定所有者。访客通过匿名登录后只可读取总览行程；函数拒绝其读取待办、行李、支出、文件、美食、随笔、灵感箱和旅程管理，也拒绝所有写入。支出、随笔逐条提供双方可见或仅创建者可见；后者由服务端 `ownerId` 强制隔离。两位所有者的新密码已成功写入并在正式站验证；密码明文不存入项目资料。

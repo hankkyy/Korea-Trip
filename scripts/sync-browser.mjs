@@ -174,6 +174,12 @@ try {
   await page.waitForFunction(() => document.querySelector('#inspirationSheet')?.classList.contains('open'));
   assert.equal(await page.locator('#inspirationCategoryInput').inputValue(), 'food');
   await page.keyboard.press('Escape');
+  await page.evaluate(() => showClipboardSuggestion('釜山咖啡攻略 https://www.xiaohongshu.com/explore/clipboard-suggestion-test'));
+  assert.equal(await page.locator('#inspirationClipboardPrompt').isVisible(), true);
+  await page.locator('#inspirationClipboardAddBtn').click();
+  await page.waitForFunction(() => document.querySelector('#inspirationSheet')?.classList.contains('open'));
+  assert.equal(await page.locator('#inspirationTitleInput').inputValue(), '釜山咖啡攻略');
+  await page.keyboard.press('Escape');
   await page.evaluate(() => saveInspiration('釜山烤肉攻略 https://www.xiaohongshu.com/explore/browser-test', '釜山烤肉攻略'));
   assert.equal((await store.read('/inspirations', tripId)).data.length, 1);
   assert.equal(await page.locator('#inspirationList .inspiration-item').count(), 1);

@@ -1691,8 +1691,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 .inspiration-capture{display:flex;gap:8px;margin-top:14px;padding:8px;border:1px solid rgba(114,166,127,.2);border-radius:14px;background:rgba(255,255,255,.76)}
 .inspiration-capture input{min-width:0;flex:1;border:0;background:transparent;padding:0 6px;color:var(--text);font:inherit;font-size:13px;outline:none}.inspiration-capture input::placeholder{color:#91a098}
 .inspiration-capture button{flex:none;min-height:34px;padding:0 11px;border:1px solid rgba(78,126,91,.24);border-radius:10px;background:#fff;color:var(--green-d);font-size:12px;font-weight:850}.inspiration-capture-hint{margin:7px 2px 0;color:var(--muted);font-size:11px;line-height:1.45}
+.inspiration-clipboard-prompt{display:flex;align-items:center;gap:9px;margin-top:10px;padding:10px 11px;border:1px solid rgba(109,160,123,.25);border-radius:13px;background:linear-gradient(135deg,#eef8ee,#fffaf0);color:var(--green-d);font-size:12px;font-weight:800}.inspiration-clipboard-prompt span{min-width:0;flex:1}.inspiration-clipboard-prompt button{flex:none;min-height:31px;padding:0 9px;border:1px solid rgba(78,126,91,.24);border-radius:9px;background:#fff;color:var(--green-d);font-size:11px;font-weight:850}.inspiration-clipboard-prompt .dismiss{color:var(--muted);border-color:transparent;background:transparent}
 body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{display:none!important}
-@media(max-width:560px){.inspiration-capture{align-items:center}.inspiration-capture input{font-size:12px}.inspiration-capture button{padding:0 9px}}
+@media(max-width:560px){.inspiration-capture{align-items:center}.inspiration-capture input{font-size:12px}.inspiration-capture button{padding:0 9px}.inspiration-clipboard-prompt{align-items:flex-start;flex-wrap:wrap}.inspiration-clipboard-prompt span{flex-basis:100%}.inspiration-clipboard-prompt button{margin-left:auto}.inspiration-clipboard-prompt .dismiss{margin-left:0}}
 /* 灵感墙：使用自己的截图和结论，不复制来源平台的正文或图片。 */
 .inspiration-list{display:block;column-count:2;column-gap:12px}.inspiration-item{display:block;break-inside:avoid;margin:0 0 12px;padding:0;overflow:hidden;border-radius:16px;box-shadow:0 8px 20px rgba(50,86,62,.06);transition:transform .18s ease,box-shadow .18s ease}.inspiration-item:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(50,86,62,.12)}.inspiration-cover{position:relative;min-height:112px;overflow:hidden;background:linear-gradient(145deg,#e8f4ea,#fbf5e9)}.inspiration-cover img{display:block;width:100%;max-height:260px;object-fit:cover}.inspiration-cover-empty{display:flex;align-items:flex-end;padding:16px;background:linear-gradient(145deg,#edf7ef,#fff8ed);color:var(--green-d);font-size:12px;font-weight:850}.inspiration-cover-empty::after{content:'✦';position:absolute;right:15px;top:7px;color:rgba(78,126,91,.24);font-size:42px}.inspiration-item-copy{padding:12px 13px 4px}.inspiration-item-title{white-space:normal;line-height:1.4}.inspiration-item-note{-webkit-line-clamp:2;line-height:1.45}.inspiration-actions{justify-content:space-between;padding:9px 12px 12px}.inspiration-action{min-height:30px}.inspiration-cover-draft{display:flex;align-items:center;justify-content:center;min-height:94px;overflow:hidden;border:1px dashed #c9ddcd;border-radius:13px;background:var(--green-xl)}.inspiration-cover-draft img{display:block;width:100%;max-height:180px;object-fit:cover}.inspiration-cover-draft.empty{color:var(--muted);font-size:12px}.inspiration-cover-tools{display:flex;gap:8px;margin-top:8px}.inspiration-cover-tools button{min-height:34px;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--green-d);font-size:12px;font-weight:850}.inspiration-cover-tools .remove{color:#a55b5b;border-color:#f0caca;background:#fff7f7}@media(max-width:400px){.inspiration-list{column-gap:9px}.inspiration-item-copy{padding:10px 11px 3px}.inspiration-actions{padding:8px 10px 10px}.inspiration-action{padding:0 7px;font-size:11px}}
 </style>
@@ -1743,6 +1744,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
       <div class="inspiration-head"><div><h2 id="inspirationTitle">灵感收集箱</h2><p>复制小红书分享链接后，自动识别；也可以直接粘贴分享文案。</p></div><button id="inspirationCollectBtn" type="button"><i class="ti" data-ic="plus"></i>读取剪贴板</button></div>
       <div class="inspiration-capture"><input id="inspirationPasteInput" type="text" autocomplete="off" placeholder="直接粘贴小红书链接或分享文案"><button id="inspirationAnalyzeBtn" type="button">识别并整理</button></div>
       <p class="inspiration-capture-hint">识别后先给你确认；标题、地点、分类和备注都可以改。</p>
+      <div id="inspirationClipboardPrompt" class="inspiration-clipboard-prompt" hidden><span>发现剪贴板里有一条小红书灵感</span><button id="inspirationClipboardAddBtn" type="button">加入灵感箱</button><button id="inspirationClipboardDismissBtn" class="dismiss" type="button">忽略</button></div>
       <div id="inspirationList" class="inspiration-list"></div>
     </section>
     <div class="short-trip-banner" aria-live="polite"></div>
@@ -3411,6 +3413,8 @@ async function apiPost(path, body) {
 let inspirationItems = [];
 let inspirationEditingId = null;
 let inspirationDraftCover = '';
+let clipboardInspirationText = '';
+let ignoredClipboardFingerprint = '';
 function sourceUrlFromText(text) {
   const match = String(text || '').match(/https?:\/\/[^\s，。；）】]+/i);
   return match ? match[0] : '';
@@ -3561,11 +3565,46 @@ async function collectClipboardInspiration() {
   try {
     if (!navigator.clipboard?.readText) throw new Error('请先在小红书点“复制链接”');
     const text = await navigator.clipboard.readText();
+    hideClipboardSuggestion();
     analyzeInspirationText(text);
   } catch (error) {
     $('#inspirationPasteInput')?.focus();
     showInspirationToast('没能读取剪贴板，直接粘贴分享内容也可以');
   }
+}
+function inspirationFingerprint(text) {
+  return String(text || '').trim().slice(0, 800);
+}
+function looksLikeInspiration(text) {
+  const value = String(text || '');
+  return /xiaohongshu\.com|xhslink\.com|小红书/i.test(value);
+}
+function showClipboardSuggestion(text) {
+  const prompt = $('#inspirationClipboardPrompt');
+  if (!prompt || !looksLikeInspiration(text)) return;
+  clipboardInspirationText = String(text).trim();
+  prompt.hidden = false;
+}
+function hideClipboardSuggestion(ignore = false) {
+  if (ignore) ignoredClipboardFingerprint = inspirationFingerprint(clipboardInspirationText);
+  const prompt = $('#inspirationClipboardPrompt');
+  if (prompt) prompt.hidden = true;
+  clipboardInspirationText = '';
+}
+async function checkClipboardSuggestion() {
+  if (isVisitor() || !navigator.clipboard?.readText) return;
+  try {
+    if (navigator.permissions?.query) {
+      const permission = await navigator.permissions.query({ name: 'clipboard-read' });
+      if (permission.state !== 'granted') return;
+    } else return;
+    const text = (await navigator.clipboard.readText()).trim();
+    const fingerprint = inspirationFingerprint(text);
+    if (!text || fingerprint === ignoredClipboardFingerprint || !looksLikeInspiration(text)) return;
+    const sourceUrl = sourceUrlFromText(text);
+    if (inspirationItems.some((item) => item.tripId === activeTrip().id && item.sourceUrl && item.sourceUrl === sourceUrl)) return;
+    showClipboardSuggestion(text);
+  } catch { /* Clipboard remains opt-in; manual collection is always available. */ }
 }
 function analyzeInspirationText(raw) {
   if (!ownerOnly()) return;
@@ -3596,6 +3635,10 @@ async function initInspirations() {
   $('#inspirationDeleteBtn')?.addEventListener('click', () => deleteInspiration().catch((error) => alert(error?.message || '删除灵感失败，请重试。')));
   $('#inspirationCoverAddBtn')?.addEventListener('click', addInspirationCover);
   $('#inspirationCoverRemoveBtn')?.addEventListener('click', () => { inspirationDraftCover = ''; renderInspirationCoverDraft(); });
+  $('#inspirationClipboardAddBtn')?.addEventListener('click', () => { const text = clipboardInspirationText; hideClipboardSuggestion(); analyzeInspirationText(text); });
+  $('#inspirationClipboardDismissBtn')?.addEventListener('click', () => hideClipboardSuggestion(true));
+  setTimeout(checkClipboardSuggestion, 650);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(checkClipboardSuggestion, 350); });
 }
 async function captureSharedInspiration() {
   const query = new URLSearchParams(location.search);
@@ -6963,7 +7006,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=62').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=63').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
