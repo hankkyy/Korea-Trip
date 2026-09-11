@@ -1693,6 +1693,8 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 .inspiration-capture button{flex:none;min-height:34px;padding:0 11px;border:1px solid rgba(78,126,91,.24);border-radius:10px;background:#fff;color:var(--green-d);font-size:12px;font-weight:850}.inspiration-capture-hint{margin:7px 2px 0;color:var(--muted);font-size:11px;line-height:1.45}
 body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{display:none!important}
 @media(max-width:560px){.inspiration-capture{align-items:center}.inspiration-capture input{font-size:12px}.inspiration-capture button{padding:0 9px}}
+/* 灵感墙：使用自己的截图和结论，不复制来源平台的正文或图片。 */
+.inspiration-list{display:block;column-count:2;column-gap:12px}.inspiration-item{display:block;break-inside:avoid;margin:0 0 12px;padding:0;overflow:hidden;border-radius:16px;box-shadow:0 8px 20px rgba(50,86,62,.06);transition:transform .18s ease,box-shadow .18s ease}.inspiration-item:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(50,86,62,.12)}.inspiration-cover{position:relative;min-height:112px;overflow:hidden;background:linear-gradient(145deg,#e8f4ea,#fbf5e9)}.inspiration-cover img{display:block;width:100%;max-height:260px;object-fit:cover}.inspiration-cover-empty{display:flex;align-items:flex-end;padding:16px;background:linear-gradient(145deg,#edf7ef,#fff8ed);color:var(--green-d);font-size:12px;font-weight:850}.inspiration-cover-empty::after{content:'✦';position:absolute;right:15px;top:7px;color:rgba(78,126,91,.24);font-size:42px}.inspiration-item-copy{padding:12px 13px 4px}.inspiration-item-title{white-space:normal;line-height:1.4}.inspiration-item-note{-webkit-line-clamp:2;line-height:1.45}.inspiration-actions{justify-content:space-between;padding:9px 12px 12px}.inspiration-action{min-height:30px}.inspiration-cover-draft{display:flex;align-items:center;justify-content:center;min-height:94px;overflow:hidden;border:1px dashed #c9ddcd;border-radius:13px;background:var(--green-xl)}.inspiration-cover-draft img{display:block;width:100%;max-height:180px;object-fit:cover}.inspiration-cover-draft.empty{color:var(--muted);font-size:12px}.inspiration-cover-tools{display:flex;gap:8px;margin-top:8px}.inspiration-cover-tools button{min-height:34px;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--green-d);font-size:12px;font-weight:850}.inspiration-cover-tools .remove{color:#a55b5b;border-color:#f0caca;background:#fff7f7}@media(max-width:400px){.inspiration-list{column-gap:9px}.inspiration-item-copy{padding:10px 11px 3px}.inspiration-actions{padding:8px 10px 10px}.inspiration-action{padding:0 7px;font-size:11px}}
 </style>
 </head>
 <body class="auth-pending">
@@ -2414,6 +2416,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
   <div class="inspiration-field"><label for="inspirationTitleInput">标题</label><input id="inspirationTitleInput" maxlength="100" placeholder="例如：弘大烤肉备选"></div>
   <div class="inspiration-editor-grid"><div class="inspiration-field"><label for="inspirationCategoryInput">归类</label><select id="inspirationCategoryInput"><option value="other">待整理</option><option value="food">美食</option><option value="itinerary">行程</option><option value="stay">住宿</option><option value="shopping">购物</option></select></div><div class="inspiration-field"><label for="inspirationPlaceInput">地点 / 城市</label><input id="inspirationPlaceInput" maxlength="50" placeholder="例如：首尔、弘大"></div></div>
   <div class="inspiration-field"><label for="inspirationUrlInput">原帖链接</label><input id="inspirationUrlInput" type="url" inputmode="url" placeholder="小红书分享链接"></div>
+  <div class="inspiration-field"><label>封面截图 <span>（可选，仅上传你们自己的截图）</span></label><div id="inspirationCoverDraft" class="inspiration-cover-draft empty">上传一张封面截图，让灵感墙更好找。</div><div class="inspiration-cover-tools"><button id="inspirationCoverAddBtn" type="button">添加截图</button><button id="inspirationCoverRemoveBtn" class="remove" type="button" hidden>移除截图</button></div></div>
   <div class="inspiration-field"><label for="inspirationNoteInput">自己的备注 <span>（可选）</span></label><textarea id="inspirationNoteInput" maxlength="1000" placeholder="例如：留给 12/29 晚餐，先看排队情况。"></textarea></div>
   <div class="inspiration-sheet-actions"><button id="inspirationDeleteBtn" class="inspiration-delete" type="button">删除</button><button class="inspiration-cancel" type="button" onclick="closeInspirationSheet()">取消</button><button id="inspirationSaveBtn" class="inspiration-save" type="button">收好灵感</button></div>
 </section>
@@ -3407,6 +3410,7 @@ async function apiPost(path, body) {
 /* ================= 灵感收集箱 ================= */
 let inspirationItems = [];
 let inspirationEditingId = null;
+let inspirationDraftCover = '';
 function sourceUrlFromText(text) {
   const match = String(text || '').match(/https?:\/\/[^\s，。；）】]+/i);
   return match ? match[0] : '';
@@ -3448,6 +3452,7 @@ function normalizeInspiration(item, idx = 0) {
     category: ['food', 'itinerary', 'stay', 'shopping', 'other'].includes(item.category) ? item.category : inspirationCategoryFromText(sourceText),
     place: String(item.place || inspirationPlaceFromText(sourceText)).trim().slice(0, 50),
     note: String(item.note || '').trim().slice(0, 1000),
+    coverUrl: String(item.coverUrl || '').trim(),
     createdAt: Number(item.createdAt) || Date.now(),
     updatedAt: Number(item.updatedAt) || Date.now()
   };
@@ -3459,7 +3464,7 @@ function renderInspirations() {
   const container = $('#inspirationList');
   if (!container) return;
   const items = inspirationItems.filter((item) => item.tripId === activeTrip().id).slice(0, 6);
-  container.innerHTML = items.length ? items.map((item) => `<article class="inspiration-item"><div class="inspiration-item-copy"><div class="inspiration-item-title">${esc(item.title)}</div><div class="inspiration-item-meta">${inspirationCategoryLabel(item.category)}${item.place ? ` · ${esc(item.place)}` : ''} · ${inspirationTime(item.createdAt)}</div>${item.note ? `<div class="inspiration-item-note">${esc(item.note)}</div>` : ''}</div><div class="inspiration-actions"><button class="inspiration-action edit" type="button" data-idea-edit="${esc(item.id)}">编辑</button>${item.sourceUrl ? `<a class="inspiration-action" href="${esc(item.sourceUrl)}" target="_blank" rel="noopener">原帖</a>` : ''}</div></article>`).join('') : '<div class="inspiration-empty">看到想去的店或攻略，复制分享链接后点上面的“收集链接”。</div>';
+  container.innerHTML = items.length ? items.map((item) => `<article class="inspiration-item"><div class="inspiration-cover${item.coverUrl ? '' : ' inspiration-cover-empty'}">${item.coverUrl ? `<img src="${esc(item.coverUrl)}" alt="${esc(item.title)} 的封面">` : inspirationCategoryLabel(item.category)}</div><div class="inspiration-item-copy"><div class="inspiration-item-title">${esc(item.title)}</div><div class="inspiration-item-meta">${item.place ? `${esc(item.place)} · ` : ''}${inspirationTime(item.createdAt)}</div>${item.note ? `<div class="inspiration-item-note">${esc(item.note)}</div>` : ''}</div><div class="inspiration-actions"><button class="inspiration-action edit" type="button" data-idea-edit="${esc(item.id)}">整理</button>${item.sourceUrl ? `<a class="inspiration-action" href="${esc(item.sourceUrl)}" target="_blank" rel="noopener">原帖</a>` : ''}</div></article>`).join('') : '<div class="inspiration-empty">看到想去的店或攻略，复制分享链接后点上面的“读取剪贴板”。</div>';
 }
 function showInspirationToast(message) {
   const toast = $('#inspirationToast');
@@ -3492,6 +3497,8 @@ function openInspirationSheet(entry = null) {
   $('#inspirationPlaceInput').value = item.place;
   $('#inspirationUrlInput').value = item.sourceUrl;
   $('#inspirationNoteInput').value = item.note;
+  inspirationDraftCover = item.coverUrl;
+  renderInspirationCoverDraft();
   $('#inspirationDeleteBtn').hidden = !inspirationEditingId;
   $('#inspirationSheet').dataset.sourceText = item.sourceText;
   $('#inspirationSheet').classList.add('open');
@@ -3502,6 +3509,24 @@ function closeInspirationSheet() {
   $('#inspirationSheet')?.classList.remove('open');
   $('#inspirationBackdrop')?.classList.remove('open');
   inspirationEditingId = null;
+}
+function renderInspirationCoverDraft() {
+  const preview = $('#inspirationCoverDraft');
+  if (!preview) return;
+  preview.classList.toggle('empty', !inspirationDraftCover);
+  preview.innerHTML = inspirationDraftCover ? `<img src="${esc(inspirationDraftCover)}" alt="灵感封面预览">` : '上传一张封面截图，让灵感墙更好找。';
+  $('#inspirationCoverRemoveBtn').hidden = !inspirationDraftCover;
+}
+function addInspirationCover() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) { alert('图片太大（超过 8MB），换一张试试。'); return; }
+    readAttachment(file, (dataUrl) => { inspirationDraftCover = dataUrl; renderInspirationCoverDraft(); });
+  };
+  input.click();
 }
 async function persistInspirations() {
   cache.set('kr_cache_inspirations', inspirationItems, activeTrip().id);
@@ -3517,7 +3542,7 @@ async function saveInspirationSheet() {
   if (duplicate) { openInspirationSheet(duplicate); showInspirationToast('这条链接已经在灵感箱里了'); return; }
   const now = Date.now();
   const previous = inspirationItems.find((item) => item.id === inspirationEditingId);
-  const candidate = normalizeInspiration({ ...previous, id: inspirationEditingId || newRecordId('idea'), tripId: activeTrip().id, title, sourceUrl, sourceText, category: $('#inspirationCategoryInput').value, place: $('#inspirationPlaceInput').value, note: $('#inspirationNoteInput').value, createdAt: previous?.createdAt || now, updatedAt: now });
+  const candidate = normalizeInspiration({ ...previous, id: inspirationEditingId || newRecordId('idea'), tripId: activeTrip().id, title, sourceUrl, sourceText, category: $('#inspirationCategoryInput').value, place: $('#inspirationPlaceInput').value, note: $('#inspirationNoteInput').value, coverUrl: inspirationDraftCover, createdAt: previous?.createdAt || now, updatedAt: now });
   const isEditing = Boolean(inspirationEditingId);
   inspirationItems = isEditing ? inspirationItems.map((item) => item.id === inspirationEditingId ? candidate : item) : [candidate, ...inspirationItems];
   await persistInspirations();
@@ -3569,6 +3594,8 @@ async function initInspirations() {
   });
   $('#inspirationSaveBtn')?.addEventListener('click', () => saveInspirationSheet().catch((error) => alert(error?.message || '保存灵感失败，请重试。')));
   $('#inspirationDeleteBtn')?.addEventListener('click', () => deleteInspiration().catch((error) => alert(error?.message || '删除灵感失败，请重试。')));
+  $('#inspirationCoverAddBtn')?.addEventListener('click', addInspirationCover);
+  $('#inspirationCoverRemoveBtn')?.addEventListener('click', () => { inspirationDraftCover = ''; renderInspirationCoverDraft(); });
 }
 async function captureSharedInspiration() {
   const query = new URLSearchParams(location.search);
@@ -6936,7 +6963,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=61').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=62').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
