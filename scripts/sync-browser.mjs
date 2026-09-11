@@ -167,9 +167,15 @@ try {
   await firstDoc.locator('[data-act="edit"]').click();
   await page.waitForFunction(() => !JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]').length);
   assert((await store.read('/docs', tripId)).data.some(item => item.kind === 'file' && item.title === '文件标题保存测试'));
+  assert.equal(await page.evaluate(() => inspirationTitleFromText('Hi Zihao,\n看看【首尔弘大烤肉必吃清单】\nhttps://www.xiaohongshu.com/explore/title-test')), '首尔弘大烤肉必吃清单');
+  await page.evaluate(() => showTab('home', false));
+  await page.locator('#inspirationPasteInput').fill('首尔弘大烤肉攻略 https://www.xiaohongshu.com/explore/paste-test');
+  await page.locator('#inspirationAnalyzeBtn').click();
+  await page.waitForFunction(() => document.querySelector('#inspirationSheet')?.classList.contains('open'));
+  assert.equal(await page.locator('#inspirationCategoryInput').inputValue(), 'food');
+  await page.keyboard.press('Escape');
   await page.evaluate(() => saveInspiration('釜山烤肉攻略 https://www.xiaohongshu.com/explore/browser-test', '釜山烤肉攻略'));
   assert.equal((await store.read('/inspirations', tripId)).data.length, 1);
-  await page.evaluate(() => showTab('home', false));
   assert.equal(await page.locator('#inspirationList .inspiration-item').count(), 1);
   await page.locator('[data-idea-edit]').click();
   await page.locator('#inspirationTitleInput').fill('釜山烤肉晚餐备选');

@@ -1687,6 +1687,12 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}
   html{scroll-behavior:auto}
 }
+/* 灵感收集：剪贴板不可用时，直接粘贴分享文案也能继续。 */
+.inspiration-capture{display:flex;gap:8px;margin-top:14px;padding:8px;border:1px solid rgba(114,166,127,.2);border-radius:14px;background:rgba(255,255,255,.76)}
+.inspiration-capture input{min-width:0;flex:1;border:0;background:transparent;padding:0 6px;color:var(--text);font:inherit;font-size:13px;outline:none}.inspiration-capture input::placeholder{color:#91a098}
+.inspiration-capture button{flex:none;min-height:34px;padding:0 11px;border:1px solid rgba(78,126,91,.24);border-radius:10px;background:#fff;color:var(--green-d);font-size:12px;font-weight:850}.inspiration-capture-hint{margin:7px 2px 0;color:var(--muted);font-size:11px;line-height:1.45}
+body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{display:none!important}
+@media(max-width:560px){.inspiration-capture{align-items:center}.inspiration-capture input{font-size:12px}.inspiration-capture button{padding:0 9px}}
 </style>
 </head>
 <body class="auth-pending">
@@ -1732,7 +1738,9 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 
     <button id="ctaPlan"><i class="ti" data-ic="map"></i>开始规划旅程</button>
     <section class="inspiration-box" aria-labelledby="inspirationTitle">
-      <div class="inspiration-head"><div><h2 id="inspirationTitle">灵感收集箱</h2><p>在小红书复制分享链接，回到这里收好、确认，再慢慢整理。</p></div><button id="inspirationCollectBtn" type="button"><i class="ti" data-ic="plus"></i>收集链接</button></div>
+      <div class="inspiration-head"><div><h2 id="inspirationTitle">灵感收集箱</h2><p>复制小红书分享链接后，自动识别；也可以直接粘贴分享文案。</p></div><button id="inspirationCollectBtn" type="button"><i class="ti" data-ic="plus"></i>读取剪贴板</button></div>
+      <div class="inspiration-capture"><input id="inspirationPasteInput" type="text" autocomplete="off" placeholder="直接粘贴小红书链接或分享文案"><button id="inspirationAnalyzeBtn" type="button">识别并整理</button></div>
+      <p class="inspiration-capture-hint">识别后先给你确认；标题、地点、分类和备注都可以改。</p>
       <div id="inspirationList" class="inspiration-list"></div>
     </section>
     <div class="short-trip-banner" aria-live="polite"></div>
@@ -3404,11 +3412,11 @@ function sourceUrlFromText(text) {
   return match ? match[0] : '';
 }
 function inspirationTitleFromText(text) {
-  const raw = String(text || '').replace(/https?:\/\/[^\s，。；）】]+/ig, ' ').replace(/\s+/g, ' ').trim();
+  const raw = String(text || '').replace(/https?:\/\/[^\s，。；）】]+/ig, ' ').trim();
   const quoted = raw.match(/[【「『“"]\s*([^】」』”"]{3,100}?)\s*[】」』”"]/);
   if (quoted?.[1]) return quoted[1].trim();
-  const ignored = /^(hi\b|hello\b|嗨[，,！!]?|复制|打开小红书|点击.*链接|分享给你|来自小红书|小红书|网页链接|#)/i;
-  const candidates = raw.split(/[\n。！？!?]+/).map((line) => line.trim().replace(/^[🎉✨📍🔗➡️]+\s*/, '')).filter((line) => line.length >= 4 && !ignored.test(line) && !/^https?:/i.test(line));
+  const ignored = /^(hi\b|hello\b|嗨[，,！!]?|复制|打开小红书|点击.*链接|分享给你|来自小红书|小红书|网页链接|#|快来看看|看看这篇)/i;
+  const candidates = raw.split(/\r?\n|[。！？!?]/).map((line) => line.replace(/\s+/g, ' ').trim().replace(/^[🎉✨📍🔗➡️]+\s*/, '')).filter((line) => line.length >= 4 && !ignored.test(line) && !/^https?:/i.test(line));
   const useful = candidates.find((line) => /[\u4e00-\u9fff]/.test(line) && !/^(看看|发现|点击|复制)/.test(line));
   return (useful || candidates[0] || '小红书旅行灵感').slice(0, 100);
 }
@@ -3528,12 +3536,20 @@ async function collectClipboardInspiration() {
   try {
     if (!navigator.clipboard?.readText) throw new Error('请先在小红书点“复制链接”');
     const text = await navigator.clipboard.readText();
-    if (!String(text || '').trim()) throw new Error('剪贴板里还没有分享内容');
-    const sourceUrl = sourceUrlFromText(text);
-    const duplicate = inspirationItems.find((item) => item.tripId === activeTrip().id && item.sourceUrl && item.sourceUrl === sourceUrl);
-    if (duplicate) { openInspirationSheet(duplicate); showInspirationToast('这条链接已经收过了，可以直接编辑'); return; }
-    openInspirationSheet(normalizeInspiration({ id: newRecordId('idea'), tripId: activeTrip().id, sourceText: text, sourceUrl, createdAt: Date.now(), updatedAt: Date.now() }));
-  } catch (error) { alert(error?.message || '没有读到分享内容。请在小红书点“复制链接”后再试一次。'); }
+    analyzeInspirationText(text);
+  } catch (error) {
+    $('#inspirationPasteInput')?.focus();
+    showInspirationToast('没能读取剪贴板，直接粘贴分享内容也可以');
+  }
+}
+function analyzeInspirationText(raw) {
+  if (!ownerOnly()) return;
+  const text = String(raw || '').trim();
+  if (!text) { $('#inspirationPasteInput')?.focus(); showInspirationToast('先粘贴一条小红书链接或分享文案'); return; }
+  const sourceUrl = sourceUrlFromText(text);
+  const duplicate = inspirationItems.find((item) => item.tripId === activeTrip().id && item.sourceUrl && item.sourceUrl === sourceUrl);
+  if (duplicate) { openInspirationSheet(duplicate); showInspirationToast('这条链接已经收过了，可以直接编辑'); return; }
+  openInspirationSheet(normalizeInspiration({ id: newRecordId('idea'), tripId: activeTrip().id, sourceText: text, sourceUrl, createdAt: Date.now(), updatedAt: Date.now() }));
 }
 async function initInspirations() {
   const tripId = activeTrip().id;
@@ -3545,6 +3561,8 @@ async function initInspirations() {
   inspirationItems = fresh.map(normalizeInspiration).sort((a, b) => b.createdAt - a.createdAt);
   cache.set('kr_cache_inspirations', inspirationItems, tripId); renderInspirations();
   $('#inspirationCollectBtn')?.addEventListener('click', collectClipboardInspiration);
+  $('#inspirationAnalyzeBtn')?.addEventListener('click', () => analyzeInspirationText($('#inspirationPasteInput')?.value));
+  $('#inspirationPasteInput')?.addEventListener('keydown', (event) => { if (event.key === 'Enter') { event.preventDefault(); analyzeInspirationText(event.currentTarget.value); } });
   $('#inspirationList')?.addEventListener('click', (event) => {
     const id = event.target.closest('[data-idea-edit]')?.dataset.ideaEdit;
     if (id) openInspirationSheet(inspirationItems.find((item) => item.id === id));
@@ -6918,7 +6936,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=59').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=60').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
