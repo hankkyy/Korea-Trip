@@ -32,12 +32,15 @@ const viewport = process.env.DESKTOP_VIEWPORT ? { width: 1440, height: 1000 } : 
 const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
 await context.addInitScript(() => {
   let session = { access_token: 'browser-test-token', user: { id: '2097823157655728129', is_anonymous: false } };
-  window.cloudbase = { init: () => ({ auth: () => ({
-    getSession: async () => ({ data: { session }, error: null }),
-    signInWithPassword: async () => ({ data: { session }, error: null }),
-    signInAnonymously: async () => ({ data: { session }, error: null }),
-    signOut: async () => { session = null; return { error: null }; }
-  }) }) };
+  window.cloudbase = { init: () => ({
+    auth: () => ({
+      getSession: async () => ({ data: { session }, error: null }),
+      signInWithPassword: async () => ({ data: { session }, error: null }),
+      signInAnonymously: async () => ({ data: { session }, error: null }),
+      signOut: async () => { session = null; return { error: null }; }
+    }),
+    getTempFileURL: async ({ fileList }) => ({ fileList: fileList.map(({ fileID }) => ({ tempFileURL: `https://private.example.test/download?file=${encodeURIComponent(fileID)}` })) })
+  }) };
 });
 const errors = []; let offline = false;
 await context.route('**/*', async route => {
@@ -162,6 +165,10 @@ try {
 
   await page.evaluate(() => showTab('docs', false));
   assert.equal(await page.evaluate(() => docAttachmentUrl({ attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf' })), 'cloud://hanoi-d4gj8vd2q1e7a3dc0.6861-hanoi-d4gj8vd2q1e7a3dc0-1448781892/private/korea/visa/携程英文版机票行程单.pdf');
+  await page.evaluate(() => openDocViewer({ title: '旧文件私有链接迁移', attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf', attachmentType: 'pdf' }));
+  await page.waitForFunction(() => document.querySelector('#docViewerFrame')?.src.includes('private.example.test/download'));
+  assert.match(await page.locator('#docViewerFrame').getAttribute('src'), /private\.example\.test\/download/);
+  await page.evaluate(() => closeDocViewer());
   const firstDoc = page.locator('#docsGrid .doc-card').first();
   await firstDoc.locator('[data-act="edit"]').click();
   await firstDoc.locator('[data-act="title"]').fill('文件标题保存测试');
