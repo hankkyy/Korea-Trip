@@ -1703,6 +1703,13 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 @media(max-width:560px){.inspiration-capture{align-items:center}.inspiration-capture input{font-size:12px}.inspiration-capture button{padding:0 9px}.inspiration-clipboard-prompt{align-items:flex-start;flex-wrap:wrap}.inspiration-clipboard-prompt span{flex-basis:100%}.inspiration-clipboard-prompt button{margin-left:auto}.inspiration-clipboard-prompt .dismiss{margin-left:0}}
 /* 灵感墙：使用自己的截图和结论，不复制来源平台的正文或图片。 */
 .inspiration-list{display:block;column-count:2;column-gap:12px}.inspiration-item{display:block;break-inside:avoid;margin:0 0 12px;padding:0;overflow:hidden;border-radius:16px;box-shadow:0 8px 20px rgba(50,86,62,.06);transition:transform .18s ease,box-shadow .18s ease}.inspiration-item:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(50,86,62,.12)}.inspiration-cover{position:relative;min-height:112px;overflow:hidden;background:linear-gradient(145deg,#e8f4ea,#fbf5e9)}.inspiration-cover img{display:block;width:100%;max-height:260px;object-fit:cover}.inspiration-cover-empty{display:flex;align-items:flex-end;padding:16px;background:linear-gradient(145deg,#edf7ef,#fff8ed);color:var(--green-d);font-size:12px;font-weight:850}.inspiration-cover-empty::after{content:'✦';position:absolute;right:15px;top:7px;color:rgba(78,126,91,.24);font-size:42px}.inspiration-item-copy{padding:12px 13px 4px}.inspiration-item-title{white-space:normal;line-height:1.4}.inspiration-item-note{-webkit-line-clamp:2;line-height:1.45}.inspiration-actions{justify-content:space-between;padding:9px 12px 12px}.inspiration-action{min-height:30px}.inspiration-cover-draft{display:flex;align-items:center;justify-content:center;min-height:94px;overflow:hidden;border:1px dashed #c9ddcd;border-radius:13px;background:var(--green-xl)}.inspiration-cover-draft img{display:block;width:100%;max-height:180px;object-fit:cover}.inspiration-cover-draft.empty{color:var(--muted);font-size:12px}.inspiration-cover-tools{display:flex;gap:8px;margin-top:8px}.inspiration-cover-tools button{min-height:34px;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--green-d);font-size:12px;font-weight:850}.inspiration-cover-tools .remove{color:#a55b5b;border-color:#f0caca;background:#fff7f7}@media(max-width:400px){.inspiration-list{column-gap:9px}.inspiration-item-copy{padding:10px 11px 3px}.inspiration-actions{padding:8px 10px 10px}.inspiration-action{padding:0 7px;font-size:11px}}
+/* Colourful inspiration notes. Tone comes from the stable record id, so it
+   feels random at creation while remaining identical across every device. */
+.inspiration-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;column-count:auto}
+.inspiration-item{position:relative;display:flex;min-height:172px;margin:0;padding:17px;flex-direction:column;align-items:stretch;justify-content:space-between;gap:14px;border:1px solid transparent;border-radius:19px;box-shadow:0 9px 24px rgba(50,86,62,.08);overflow:hidden}
+.inspiration-item::before{content:'';position:absolute;right:-25px;top:-30px;width:108px;height:108px;border:1px solid rgba(255,255,255,.58);border-radius:50%;background:rgba(255,255,255,.25)}
+.inspiration-item[data-tone="mint"]{background:linear-gradient(145deg,#e8f7ef,#f8fcf7);border-color:#cce7d5}.inspiration-item[data-tone="peach"]{background:linear-gradient(145deg,#fff0e8,#fffaf6);border-color:#f1d6c8}.inspiration-item[data-tone="lilac"]{background:linear-gradient(145deg,#f2edff,#fbf9ff);border-color:#dfd3f3}.inspiration-item[data-tone="sky"]{background:linear-gradient(145deg,#eaf7ff,#f8fcff);border-color:#cde4f0}.inspiration-item[data-tone="lemon"]{background:linear-gradient(145deg,#fff8d9,#fffdf4);border-color:#eee1af}.inspiration-item[data-tone="rose"]{background:linear-gradient(145deg,#ffecef,#fff9fa);border-color:#f0d0d7}
+.inspiration-card-top{position:relative;display:flex;align-items:flex-start;gap:10px;min-width:0}.inspiration-card-mark{display:grid;place-items:center;flex:none;width:33px;height:33px;border-radius:11px;background:rgba(255,255,255,.62);color:var(--green-d);font-size:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}.inspiration-item-title{padding:1px 31px 0 0;white-space:normal;overflow:visible;text-overflow:clip;font-size:15px;line-height:1.36;letter-spacing:-.01em}.inspiration-card-bottom{position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:8px}.inspiration-item-meta{display:flex;flex-wrap:wrap;gap:5px;margin:0;color:#587061;font-size:11px;font-weight:800}.inspiration-meta-pill{padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.53);border:1px solid rgba(255,255,255,.62)}.inspiration-item-note{display:-webkit-box;min-height:0;margin:8px 0 0;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#667a6c;font-size:12px;line-height:1.45}.inspiration-item-arrow{display:grid;place-items:center;flex:none;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.66);color:var(--green-d);font-size:21px;line-height:1;box-shadow:none}.inspiration-item:focus-visible{outline:3px solid rgba(78,126,91,.38);outline-offset:3px}@media(max-width:900px){.inspiration-list{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.inspiration-list{grid-template-columns:1fr;gap:10px}.inspiration-item{min-height:142px;padding:15px}}
 </style>
 </head>
 <body class="auth-pending">
@@ -3473,11 +3480,17 @@ function normalizeInspiration(item, idx = 0) {
 function inspirationTime(value) {
   return new Date(value).toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' });
 }
+function inspirationTone(id) {
+  const tones = ['mint', 'peach', 'lilac', 'sky', 'lemon', 'rose'];
+  let hash = 0;
+  for (const char of String(id || 'idea')) hash = ((hash << 5) - hash + char.charCodeAt(0)) | 0;
+  return tones[Math.abs(hash) % tones.length];
+}
 function renderInspirations() {
   const container = $('#inspirationList');
   if (!container) return;
   const items = inspirationItems.filter((item) => item.tripId === activeTrip().id).slice(0, 6);
-  container.innerHTML = items.length ? items.map((item) => `<button class="inspiration-item" type="button" data-idea-edit="${esc(item.id)}"><div class="inspiration-item-copy"><div class="inspiration-item-title">${esc(item.title)}</div><div class="inspiration-item-meta">${inspirationCategoryLabel(item.category)}${item.place ? ` · ${esc(item.place)}` : ''}</div>${item.note ? `<div class="inspiration-item-note">${esc(item.note)}</div>` : ''}</div><span class="inspiration-item-arrow" aria-hidden="true">›</span></button>`).join('') : '<div class="inspiration-empty">还没有灵感，点上面的“新建灵感”记下一条。</div>';
+  container.innerHTML = items.length ? items.map((item) => `<button class="inspiration-item" type="button" data-tone="${inspirationTone(item.id)}" data-idea-edit="${esc(item.id)}"><div class="inspiration-card-top"><span class="inspiration-card-mark" aria-hidden="true">✦</span><div class="inspiration-item-copy"><div class="inspiration-item-title">${esc(item.title)}</div><div class="inspiration-item-meta"><span class="inspiration-meta-pill">${inspirationCategoryLabel(item.category)}</span>${item.place ? `<span class="inspiration-meta-pill">${esc(item.place)}</span>` : ''}</div>${item.note ? `<div class="inspiration-item-note">${esc(item.note)}</div>` : ''}</div></div><div class="inspiration-card-bottom"><span class="inspiration-item-meta">原帖已保存</span><span class="inspiration-item-arrow" aria-hidden="true">›</span></div></button>`).join('') : '<div class="inspiration-empty">还没有灵感，点上面的“新建灵感”记下一条。</div>';
 }
 function showInspirationToast(message) {
   const toast = $('#inspirationToast');
@@ -7022,7 +7035,7 @@ function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
     // The CloudBase mirror has its own subpath and therefore its own cache scope.
     const appBase = /^\/korea(?:\/|$)/.test(location.pathname) ? '/korea/' : '/';
-    navigator.serviceWorker.register(`${appBase}sw.js?v=72`, { scope: appBase }).catch(() => {});
+    navigator.serviceWorker.register(`${appBase}sw.js?v=73`, { scope: appBase }).catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
