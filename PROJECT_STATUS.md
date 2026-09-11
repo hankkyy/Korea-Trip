@@ -72,6 +72,7 @@
 - 2026-09-11 iPhone 安装版安全区：状态栏从半透明模式改为系统默认，顶部栏在独立 App 模式固定并为 Dynamic Island 安全区预留空间，页面内容不会再延伸到状态栏下。界面审查增加独立 App 首页状态；Service Worker 已升至 v67。
 - 2026-09-11 动态数据加载修复：页面启动不再等待 IndexedDB 同步缓存完成；Safari/iPhone PWA 的数据库打开、读取和写入都限定 1.5 秒，失败后直接回退到 localStorage 与内存缓存。天气和首页动态区会立即渲染离线兜底，网络数据随后覆盖；Service Worker 已升至 v68。
 - 2026-09-11 v68 发布：CloudBase `/korea/index.html`、`/korea/sw.js`、`/korea/assets/sync-client.js` 的 SHA-256 已与本地一致；Vercel 生产部署 `dpl_DMNfhCGheUrnSzH1Hn8hDh44im44` 已绑定 `www.jinlu.cloud`。在模拟 iPhone/PWA IndexedDB 不可用的浏览器中，正式站天气仍在 600ms 内呈现温度、状态、10 天预报和 24 小时预报，页面错误为 0。
+- 2026-09-11 灵感收集修复：读取剪贴板按钮使用固定 16px 图标和文字居中布局；自动提示只认可真正的小红书 URL，且必须先成功记录初始剪贴板、再在离开页面后检测到新链接，杜绝首次加载、普通文字或历史内容误弹提示。Service Worker 已升至 v69。
 
 ## B. 部分完成，不能当作完成
 

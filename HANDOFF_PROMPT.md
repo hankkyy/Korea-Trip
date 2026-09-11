@@ -1,6 +1,6 @@
 # Agent 交接说明
 
-2026-09-10 用户明确指定：多设备、多用户的数据一致性和持久化是零号优先级，高于新功能、界面和发布速度。动态数据权威来源是 `kr_sync_state`，旧 `kr_*` 集合只作迁移备份，禁止恢复先删后插。前端入口为 `assets/sync-client.js`，HTTP 返回 `protocol: 2`，SDK 固定随站点发布于 `assets/vendor/cloudbase.full.js`，SW v68 已发布。当前已实现两个实名账号登录、固定 UID 服务端授权、IndexedDB 队列、不可变快照、幂等回执、30 版历史与按记录三方合并。不同记录自动合并；同一记录冲突保留本机并提示备份，尚无页面内冲突选择器和真实 iPhone/iPad 双设备验收。
+2026-09-10 用户明确指定：多设备、多用户的数据一致性和持久化是零号优先级，高于新功能、界面和发布速度。动态数据权威来源是 `kr_sync_state`，旧 `kr_*` 集合只作迁移备份，禁止恢复先删后插。前端入口为 `assets/sync-client.js`，HTTP 返回 `protocol: 2`，SDK 固定随站点发布于 `assets/vendor/cloudbase.full.js`，SW v69 已发布。当前已实现两个实名账号登录、固定 UID 服务端授权、IndexedDB 队列、不可变快照、幂等回执、30 版历史与按记录三方合并。不同记录自动合并；同一记录冲突保留本机并提示备份，尚无页面内冲突选择器和真实 iPhone/iPad 双设备验收。
 
 你正在接手 `/Users/hankzhang/Desktop/lu-travel` 的「在璐上」多旅行管理 App。先阅读：
 

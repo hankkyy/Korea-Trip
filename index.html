@@ -163,6 +163,9 @@ html.standalone-mode #appHeader{position:fixed;top:0;left:0;right:0;width:100%}
   padding:4px 11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44vw;
 }
 #tb-time{font-size:12.5px;color:var(--muted);font-weight:700;margin-left:auto;white-space:nowrap}
+#inspirationCollectBtn{display:inline-flex;align-items:center;justify-content:center;gap:7px;line-height:1}
+#inspirationCollectBtn .ti{width:16px;height:16px}
+#inspirationCollectBtn .ti .ic{display:block;width:16px;height:16px}
 #inspirationCollectBtn{min-height:38px;padding:0 13px;border:1px solid rgba(78,126,91,.26);border-radius:999px;background:var(--green-xl);color:var(--green-d);font-size:13px;font-weight:850;white-space:nowrap}.inspiration-box{margin:18px 0 22px;padding:20px;background:linear-gradient(135deg,rgba(255,254,250,.96),rgba(238,248,244,.8));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.inspiration-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.inspiration-head h2{margin:0;font-size:18px;color:var(--ink)}.inspiration-head p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.55}.inspiration-list{display:grid;gap:9px;margin-top:15px}.inspiration-item{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:14px;background:rgba(255,255,255,.78);border:1px solid rgba(114,166,127,.18)}.inspiration-item-copy{min-width:0;flex:1}.inspiration-item-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:850;color:var(--text);font-size:14px}.inspiration-item-meta{margin-top:3px;color:var(--muted);font-size:11px}.inspiration-item-note{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;margin-top:5px;color:var(--muted);font-size:12px}.inspiration-actions{display:flex;align-items:center;gap:7px;flex:none}.inspiration-action{min-height:32px;padding:0 9px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--green-d);font-size:12px;font-weight:800;white-space:nowrap}.inspiration-action.edit{background:var(--green-xl)}.inspiration-empty{padding:15px 2px 3px;color:var(--muted);font-size:13px}.inspiration-toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));z-index:2000;transform:translateX(-50%);padding:10px 15px;border-radius:999px;background:var(--green-d);color:#fff;box-shadow:var(--shadow-lg);font-size:13px;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s ease}.inspiration-toast.show{opacity:1}#inspirationBackdrop{position:fixed;inset:0;z-index:1490;background:rgba(27,46,37,.42);backdrop-filter:blur(5px);opacity:0;pointer-events:none;transition:opacity .2s ease}#inspirationBackdrop.open{opacity:1;pointer-events:auto}#inspirationSheet{position:fixed;z-index:1500;left:50%;bottom:18px;width:min(560px,calc(100vw - 24px));max-height:min(760px,calc(100dvh - 36px));overflow:auto;transform:translate(-50%,calc(100% + 30px));padding:17px 20px 20px;border:1px solid rgba(255,255,255,.82);border-radius:24px;background:#fffdf9;box-shadow:0 24px 70px rgba(29,56,42,.26);transition:transform .25s ease}#inspirationSheet.open{transform:translate(-50%,0)}.inspiration-sheet-handle{width:42px;height:5px;margin:0 auto 15px;border-radius:99px;background:#dcebe0}.inspiration-sheet-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.inspiration-sheet-top h3{margin:0;color:var(--ink);font-size:21px}.inspiration-sheet-top p{margin:5px 0 14px;color:var(--muted);font-size:13px;line-height:1.55}.inspiration-sheet-close{width:38px;height:38px;border:0;border-radius:50%;background:var(--green-xl);color:var(--green-d);font-size:28px;line-height:1}.inspiration-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.inspiration-field{display:grid;gap:6px;margin:0 0 12px}.inspiration-field label{color:var(--green-d);font-size:12px;font-weight:850}.inspiration-field input,.inspiration-field select,.inspiration-field textarea{width:100%;border:1px solid #dce9de;border-radius:13px;background:#fbfdfb;color:var(--text);font:inherit;padding:11px 12px;outline:none}.inspiration-field textarea{min-height:78px;resize:vertical;line-height:1.5}.inspiration-field input:focus,.inspiration-field select:focus,.inspiration-field textarea:focus{border-color:var(--green-m);box-shadow:0 0 0 3px rgba(114,166,127,.14)}.inspiration-sheet-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:2px}.inspiration-sheet-actions button{min-height:42px;padding:0 15px;border-radius:12px;font-weight:850}.inspiration-cancel{border:1px solid var(--line);background:#fff;color:var(--muted)}.inspiration-delete{margin-right:auto;border:1px solid #f0caca;background:#fff7f7;color:#a55b5b}.inspiration-save{border:1px solid var(--green-m);background:var(--green-d);color:#fff}@media(max-width:560px){.inspiration-box{padding:16px}.inspiration-head{align-items:flex-start}.inspiration-head p{max-width:230px}.inspiration-item{align-items:flex-start;flex-wrap:wrap}.inspiration-actions{width:100%;justify-content:flex-end}.inspiration-editor-grid{grid-template-columns:1fr}.inspiration-sheet-actions{position:sticky;bottom:-20px;margin:0 -20px -20px;padding:12px 20px calc(12px + env(safe-area-inset-bottom));background:rgba(255,253,249,.96);border-top:1px solid var(--line)}}
 
 /* ============ 底部悬浮导航 ============ */
@@ -3420,6 +3423,8 @@ let inspirationDraftCover = '';
 let clipboardInspirationText = '';
 let ignoredClipboardFingerprint = '';
 let clipboardBaselineFingerprint = '';
+let clipboardBaselineCaptured = false;
+let clipboardSuggestionArmed = false;
 let inspirationPageWasHidden = false;
 function sourceUrlFromText(text) {
   const match = String(text || '').match(/https?:\/\/[^\s，。；）】]+/i);
@@ -3582,9 +3587,15 @@ async function collectClipboardInspiration() {
 function inspirationFingerprint(text) {
   return String(text || '').trim().slice(0, 800);
 }
+function inspirationSourceUrl(text) {
+  const sourceUrl = sourceUrlFromText(text);
+  try {
+    const host = new URL(sourceUrl).hostname;
+    return /(^|\.)xiaohongshu\.com$|(^|\.)xhslink\.com$/i.test(host) ? sourceUrl : '';
+  } catch { return ''; }
+}
 function looksLikeInspiration(text) {
-  const value = String(text || '');
-  return /xiaohongshu\.com|xhslink\.com|小红书/i.test(value);
+  return Boolean(inspirationSourceUrl(text));
 }
 function showClipboardSuggestion(text) {
   const prompt = $('#inspirationClipboardPrompt');
@@ -3607,11 +3618,15 @@ async function checkClipboardSuggestion(shouldPrompt = false) {
     } else return;
     const text = (await navigator.clipboard.readText()).trim();
     const fingerprint = inspirationFingerprint(text);
-    if (!clipboardBaselineFingerprint) { clipboardBaselineFingerprint = fingerprint; return; }
+    if (!clipboardBaselineCaptured) {
+      clipboardBaselineFingerprint = fingerprint;
+      clipboardBaselineCaptured = true;
+      return;
+    }
     const changed = fingerprint !== clipboardBaselineFingerprint;
     clipboardBaselineFingerprint = fingerprint;
     if (!shouldPrompt || !changed || !text || fingerprint === ignoredClipboardFingerprint || !looksLikeInspiration(text)) return;
-    const sourceUrl = sourceUrlFromText(text);
+    const sourceUrl = inspirationSourceUrl(text);
     if (inspirationItems.some((item) => item.tripId === activeTrip().id && item.sourceUrl && item.sourceUrl === sourceUrl)) return;
     showClipboardSuggestion(text);
   } catch { /* Clipboard remains opt-in; manual collection is always available. */ }
@@ -3647,12 +3662,16 @@ async function initInspirations() {
   $('#inspirationCoverRemoveBtn')?.addEventListener('click', () => { inspirationDraftCover = ''; renderInspirationCoverDraft(); });
   $('#inspirationClipboardAddBtn')?.addEventListener('click', () => { const text = clipboardInspirationText; hideClipboardSuggestion(); analyzeInspirationText(text); });
   $('#inspirationClipboardDismissBtn')?.addEventListener('click', () => hideClipboardSuggestion(true));
-  // First read only records the current clipboard. A reminder appears only after
-  // the user has left this page and returned with a changed clipboard value.
-  setTimeout(() => checkClipboardSuggestion(false), 650);
+  // First read only records the current clipboard. Arm the return check only
+  // after it completed; otherwise a first-load race can mistake stale content
+  // for a newly copied link.
+  setTimeout(async () => {
+    await checkClipboardSuggestion(false);
+    clipboardSuggestionArmed = clipboardBaselineCaptured;
+  }, 650);
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) inspirationPageWasHidden = true;
-    else if (inspirationPageWasHidden) {
+    if (document.hidden && clipboardSuggestionArmed) inspirationPageWasHidden = true;
+    else if (!document.hidden && clipboardSuggestionArmed && inspirationPageWasHidden) {
       inspirationPageWasHidden = false;
       setTimeout(() => checkClipboardSuggestion(true), 350);
     }
@@ -7024,7 +7043,7 @@ if (window.innerWidth < 768) {
 /* ================= SW ================= */
 function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js?v=68').catch(() => {});
+    navigator.serviceWorker.register('/sw.js?v=69').catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
