@@ -32,6 +32,7 @@
 | 长表单 | 行程编辑保存操作需要滚动到底部 | 移动端加入粘性保存区，字段仍可独立滚动 |
 | 触控与图标 | 旅程切换、编辑、关闭、缩放等小控件偏小；部分静态图标使用 emoji | 统一提升到 40–50px 触控高度，静态图标改为 SVG |
 | 自动审计 | 原检查未覆盖字段高度、裁切、控件重叠 | `ui-audit.mjs` 新增四类几何检查，四档尺寸 96 状态通过 |
+| CloudBase 写入 | 网关可能给 POST 路径追加 `/`，导致写入误进旧接口分支并返回 426 | 服务端统一移除路径末尾 `/`；无凭证生产写入已验证成功 |
 
 ## 验证证据
 
@@ -58,4 +59,4 @@
 
 ## 发布记录
 
-2026-09-13 已发布 CloudBase HTTP 云函数、CloudBase 共享根入口与 `/korea/`、独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。自动冲突恢复已随 `lu-travel-v84` 发布：Vercel 部署 `dpl_3oKgDrkDwwEQywJynXj9a1Bv1Ahb`，Hosting 六个入口/同步文件上传成功，独立 webapps 版本 `korea-012`（SUCCESS）。生产抽查确认不再显示手动备份按钮，线上同步脚本包含自动修复逻辑。
+2026-09-12 已发布 CloudBase HTTP 云函数、CloudBase 共享根入口与 `/korea/`、独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。无账号公开共享模式已随 `lu-travel-v85` 发布：Vercel 部署 `dpl_MuKJiPP4DGEGc26GHDRFbjJUkJpX`，Hosting 六个入口/同步文件上传成功，独立 webapps 版本 `korea-014`（SUCCESS）。四套线上前端的 `index.html`、`sw.js` 和 `assets/sync-client.js` 与本地 SHA-256 一致；函数规则为公开调用，无凭证读取和写入已通过。
