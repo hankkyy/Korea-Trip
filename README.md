@@ -23,12 +23,20 @@
 - 支出和随笔可逐条设为双方可见或仅创建者可见。
 - 首页的灵感收集箱使用最简字段：标题、可选地点、归类、来源链接、可选备注。来源支持小红书和抖音；点击卡片在新标签打开原帖/原视频，编辑是次要操作。
 
+## 当前 UI 设计与响应式验收
+
+- 视觉基线是自然手账感：纸白、雾绿和 Songti/PingFang 中文层级；香港淡紫、厦门海盐蓝只作为对应旅程主题色。
+- 灵感区在桌面/平板采用“说明栏 + 内容栏”的编辑式构图，卡片按内容收紧；卡片只展示标题、归类、地点和备注，不把来源平台做成视觉标签。
+- 手机首页主视觉使用内容优先的高度约束；320px 窄屏的美食编辑操作改为“完成”独占一行，避免按钮拥挤；行程长表单保留底部粘性保存区。
+- 共用控件经过 320×667、390×844、768×1024、1440×1000 四档检查：按钮/字段无文字裁切、横向溢出或同组重叠；关键操作触控高度统一为 40–50px。
+- 页面图标统一由内置 SVG 图标集渲染，跨年企划与旅程选择层不再混用系统 emoji 图标。
+
 ## 当前技术结构
 
 - 前端：单文件原生应用 [index.html](./index.html)，无框架构建步骤。
 - 同步后端：CloudBase HTTP 云函数 [cloudfunctions/korea-api/index.js](./cloudfunctions/korea-api/index.js)，数据协议为 protocol 2。
 - 权威动态数据：CloudBase `kr_sync_state`；旧 `kr_*` 集合只用于迁移与恢复，不得恢复“先删后插”的旧写入方式。
-- 离线：Service Worker `lu-travel-v79`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
+- 离线：Service Worker `lu-travel-v80`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
 - 发布：Vercel 生产入口 `https://www.jinlu.cloud/`，以及 CloudBase 根入口和 `/korea/` 镜像。两个 CloudBase 路径必须各自注册作用域正确的 Service Worker，避免页面壳互相污染。
 
 ## 数据可靠性原则

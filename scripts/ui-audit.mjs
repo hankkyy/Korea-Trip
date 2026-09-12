@@ -48,6 +48,24 @@ async function auditPage(page, name) {
       const label = (button.innerText || button.getAttribute('aria-label') || button.getAttribute('title') || '').trim();
       if (!label) problems.push(`empty control: ${button.outerHTML.slice(0, 100)}`);
       if (!button.closest('#bnav') && (box.left < -1 || box.right > innerWidth + 1)) problems.push(`horizontal overflow: ${label}`);
+      if (box.width < 30 || box.height < 30) problems.push(`undersized control ${Math.round(box.width)}x${Math.round(box.height)}: ${label}`);
+      if (button.scrollWidth > button.clientWidth + 1 || button.scrollHeight > button.clientHeight + 1) problems.push(`clipped control label: ${label}`);
+    });
+    document.querySelectorAll('input, select, textarea').forEach(field => {
+      if (!visible(field)) return;
+      const box = field.getBoundingClientRect();
+      if (box.height < 40) problems.push(`undersized field ${Math.round(box.height)}px: #${field.id || field.className}`);
+      if (box.left < -1 || box.right > innerWidth + 1) problems.push(`field overflows horizontally: #${field.id || field.className}`);
+    });
+    if (document.scrollingElement.scrollWidth > innerWidth + 1) problems.push(`page overflows horizontally: ${document.scrollingElement.scrollWidth}px`);
+    document.querySelectorAll('.seg, .food-actions, .list-sheet-actions, .it-actions, .trip-picker-actions, .doc-actions, .l-actions, .tl-tools, .inspiration-sheet-actions, #bnav').forEach(group => {
+      const controls = [...group.children].filter(visible);
+      controls.forEach((first, index) => controls.slice(index + 1).forEach(second => {
+        const a = first.getBoundingClientRect(); const b = second.getBoundingClientRect();
+        const overlapX = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+        const overlapY = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+        if (overlapX > 2 && overlapY > 2) problems.push(`overlapping sibling controls in .${group.className || group.id}`);
+      }));
     });
     document.querySelectorAll('[role="dialog"].open, .panel.active').forEach(container => {
       if (!visible(container) || container.scrollWidth <= container.clientWidth + 1) return;

@@ -342,7 +342,7 @@ body.keyboard-open #bnav,body.essay-sheet-open #bnav{opacity:0;visibility:hidden
 .newyear-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .newyear-card{min-width:0;padding:12px 11px;border-radius:15px;background:rgba(255,255,255,.66);border:1px solid rgba(255,255,255,.86);box-shadow:0 5px 14px rgba(126,91,107,.05);display:flex;flex-direction:column}
 .newyear-card .ny-top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
-.newyear-card .ny-ic{width:29px;height:29px;display:grid;place-items:center;border-radius:10px;background:#FFF0EE;color:#B66F78;font-size:16px}
+.newyear-card .ny-ic{width:29px;height:29px;display:grid;place-items:center;border-radius:10px;background:#FFF0EE;color:#B66F78;font-size:16px}.newyear-card .ny-ic .ic{width:17px;height:17px}
 .newyear-card:nth-child(2) .ny-ic{background:#F1EDFA;color:#806B9A}
 .newyear-card:nth-child(3) .ny-ic{background:#FFF5DD;color:#A27A37}
 .newyear-card:nth-child(4) .ny-ic{background:#EDF6F7;color:#628E98}
@@ -1710,6 +1710,42 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 .inspiration-item::before{content:'';position:absolute;right:-25px;top:-30px;width:108px;height:108px;border:1px solid rgba(255,255,255,.58);border-radius:50%;background:rgba(255,255,255,.25)}
 .inspiration-item[data-tone="mint"]{background:linear-gradient(145deg,#e8f7ef,#f8fcf7);border-color:#cce7d5}.inspiration-item[data-tone="peach"]{background:linear-gradient(145deg,#fff0e8,#fffaf6);border-color:#f1d6c8}.inspiration-item[data-tone="lilac"]{background:linear-gradient(145deg,#f2edff,#fbf9ff);border-color:#dfd3f3}.inspiration-item[data-tone="sky"]{background:linear-gradient(145deg,#eaf7ff,#f8fcff);border-color:#cde4f0}.inspiration-item[data-tone="lemon"]{background:linear-gradient(145deg,#fff8d9,#fffdf4);border-color:#eee1af}.inspiration-item[data-tone="rose"]{background:linear-gradient(145deg,#ffecef,#fff9fa);border-color:#f0d0d7}
 .inspiration-open-card{position:relative;display:block;min-width:0;max-width:100%;padding-right:48px;color:inherit;text-decoration:none;cursor:pointer;overflow:hidden}.inspiration-card-top{display:flex;align-items:flex-start;gap:10px;min-width:0}.inspiration-card-mark{display:grid;place-items:center;flex:none;width:33px;height:33px;border-radius:11px;background:rgba(255,255,255,.62);color:var(--green-d);font-size:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}.inspiration-item-title{padding:1px 0 0;white-space:normal;overflow-wrap:anywhere;overflow:visible;text-overflow:clip;font-size:15px;line-height:1.36;letter-spacing:-.01em}.inspiration-item-meta{display:flex;flex-wrap:wrap;gap:5px;margin:0;color:#587061;font-size:11px;font-weight:800}.inspiration-meta-pill{padding:4px 7px;border-radius:999px;background:rgba(255,255,255,.53);border:1px solid rgba(255,255,255,.62)}.inspiration-item-note{display:-webkit-box;min-height:0;margin:8px 0 0;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#667a6c;font-size:12px;line-height:1.45}.inspiration-open-hint{color:var(--green-d);font-weight:800;white-space:nowrap}.inspiration-edit-button{position:absolute;z-index:2;right:10px;top:10px;display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 9px;border:0;border-radius:999px;background:rgba(255,255,255,.46);color:#587061;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}.inspiration-edit-button:hover{background:rgba(255,255,255,.78)}.inspiration-open-card:focus-visible,.inspiration-edit-button:focus-visible{outline:3px solid rgba(78,126,91,.38);outline-offset:3px}@media(max-width:900px){.inspiration-list{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.inspiration-list{grid-template-columns:minmax(0,1fr);gap:10px}.inspiration-item{padding:14px}.inspiration-open-card{padding-right:46px}.inspiration-open-hint{white-space:normal}}
+/* 视觉密度与触控精修：内容自适应，长表单保留随手可达的操作区。 */
+.brand{min-height:40px;padding:0 4px;margin-left:-4px;border-radius:10px}
+.inspiration-edit-button{min-height:38px;padding-inline:11px}
+.inspiration-sheet-close{width:42px;height:42px}
+.inspiration-sheet-actions button{min-height:46px}
+.food-add-btn{min-height:44px}
+.food-input,.food-select{min-height:44px}
+.essay-tabs button{min-height:42px}
+.essay-photo-head .tap{min-height:40px}
+.exp-edit,.exp-del,.l-mini{width:40px;height:40px}
+.it-row-remove{min-height:38px}
+#itAddRow{min-height:44px}
+.image-viewer-action,.doc-viewer-action{min-height:42px}
+.doc-viewer-zoom button{min-width:38px;height:38px}
+@media(min-width:768px){
+  .inspiration-box{display:grid;grid-template-columns:minmax(210px,.55fr) minmax(0,1.45fr);gap:22px;align-items:start}
+  .inspiration-head{display:block;padding:2px 0}
+  .inspiration-head p{max-width:31em}
+  #inspirationCollectBtn{margin-top:14px;min-height:42px}
+  .inspiration-list{grid-template-columns:minmax(0,1fr);margin-top:0}
+}
+@media(min-width:1080px){
+  .inspiration-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:430px){
+  .hero{min-height:clamp(330px,50dvh,390px)}
+  .food-card.editing .food-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .food-card.editing .food-edit-toggle{grid-column:1 / -1}
+  .l-mini{width:40px;height:40px}
+  #itSheet .it-actions{position:sticky;bottom:calc(-20px - env(safe-area-inset-bottom));z-index:3;margin:14px -16px -20px;padding:12px 16px calc(20px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(255,254,250,0),rgba(255,254,250,.98) 20%)}
+}
+@media(max-width:360px){
+  .it-topbar{grid-template-columns:minmax(0,1fr)}
+  .it-topbar .field:first-child{grid-column:auto}
+  .it-cover-controls{display:grid;grid-template-columns:minmax(0,1fr) auto}
+}
 #globalSyncStatus{position:fixed;bottom:calc(84px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 32px);padding:10px 14px;background:#fff4d7;color:#654b19;border:1px solid #ead5a4;border-radius:14px;font-size:12px;line-height:1.5;z-index:100;pointer-events:none}
 #globalSyncStatus[hidden]{display:none}
 </style>
@@ -1846,22 +1882,22 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
       </div>
       <div class="newyear-grid">
         <article class="newyear-card">
-          <div class="ny-top"><span class="ny-ic">🎉</span><h3>跨年倒计时</h3></div>
+          <div class="ny-top"><span class="ny-ic"><i class="ti" data-ic="target"></i></span><h3>跨年倒计时</h3></div>
           <p>重点关注钟路、普信阁一带的官方安排和入场规则。</p>
           <span class="ny-status">待确认 · 12/31</span>
         </article>
         <article class="newyear-card">
-          <div class="ny-top"><span class="ny-ic">✨</span><h3>烟花与灯光</h3></div>
+          <div class="ny-top"><span class="ny-ic"><i class="ti" data-ic="sparkle"></i></span><h3>烟花与灯光</h3></div>
           <p>记录烟花、灯光秀、倒数舞台等跨年夜特别节目。</p>
           <span class="ny-status">待公布</span>
         </article>
         <article class="newyear-card">
-          <div class="ny-top"><span class="ny-ic">🎤</span><h3>演出与快闪</h3></div>
+          <div class="ny-top"><span class="ny-ic"><i class="ti" data-ic="music"></i></span><h3>演出与快闪</h3></div>
           <p>演唱会、街头表演、商圈快闪和节日限定布置。</p>
           <span class="ny-status">待补充</span>
         </article>
         <article class="newyear-card">
-          <div class="ny-top"><span class="ny-ic">⛸️</span><h3>冬季限定</h3></div>
+          <div class="ny-top"><span class="ny-ic"><i class="ti" data-ic="snowflake"></i></span><h3>冬季限定</h3></div>
           <p>滑冰场、冬日市集、节日菜单和只在冬天出现的体验。</p>
           <span class="ny-status">持续收集</span>
         </article>
@@ -2470,10 +2506,10 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
   <p class="trip-picker-sub">进入后会记住上次选择，下次打开直接回到这段旅程。</p>
   <div class="trip-picker-list">
     <button class="trip-option active" type="button" data-trip-id="korea-2026">
-      <span class="trip-option-ic">🇰🇷</span><span class="trip-option-copy"><span class="trip-option-title">韩国冬日旅行</span><span class="trip-option-meta">Korea Trip · 2026.12.26–2027.01.03</span></span><span class="trip-option-state">进入</span>
+      <span class="trip-option-ic"><i class="ti" data-ic="map"></i></span><span class="trip-option-copy"><span class="trip-option-title">韩国冬日旅行</span><span class="trip-option-meta">Korea Trip · 2026.12.26–2027.01.03</span></span><span class="trip-option-state">进入</span>
     </button>
-    <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic">🇭🇰</span><span class="trip-option-copy"><span class="trip-option-title">香港旅行</span><span class="trip-option-meta">Hong Kong Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
-    <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic">🌊</span><span class="trip-option-copy"><span class="trip-option-title">厦门旅行</span><span class="trip-option-meta">Xiamen Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
+    <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic"><i class="ti" data-ic="bridge"></i></span><span class="trip-option-copy"><span class="trip-option-title">香港旅行</span><span class="trip-option-meta">Hong Kong Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
+    <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic"><i class="ti" data-ic="wave"></i></span><span class="trip-option-copy"><span class="trip-option-title">厦门旅行</span><span class="trip-option-meta">Xiamen Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
   </div>
   <div class="list-toolbar">
     <button id="tripExportBtn" type="button" class="list-add-btn">导出备份</button>
@@ -3324,6 +3360,12 @@ function tripDateRange(trip) {
   if (!start || !end) return `<span class="trip-option-date">${esc(trip.dates || '日期待补充')}</span>`;
   return `<span class="trip-option-date">${start}</span><span class="trip-option-date-sep">至</span><span class="trip-option-date">${end}</span>`;
 }
+function tripIconName(trip) {
+  if (trip.id === 'korea-2026') return 'map';
+  if (trip.id === 'hong-kong') return 'bridge';
+  if (trip.id === 'xiamen') return 'wave';
+  return 'pin';
+}
 function renderTripPicker() {
   const list = $('.trip-picker-list');
   if (!list) return;
@@ -3331,7 +3373,7 @@ function renderTripPicker() {
   list.innerHTML = allTrips().slice().sort((a, b) => String(a.startAt || '').localeCompare(String(b.startAt || ''))).map((trip) => {
     const disabled = trip.content !== 'ready';
     return `<${disabled ? 'div' : 'button'} class="trip-option trip-${esc(trip.id)}${trip.id === selected ? ' active' : ''}${disabled ? ' disabled' : ''}"${disabled ? ' aria-disabled="true"' : ` type="button" data-trip-id="${esc(trip.id)}"`}>
-      <span class="trip-option-ic">${trip.icon}</span><span class="trip-option-copy"><span class="trip-option-title">${esc(trip.name)}</span><span class="trip-option-meta">${esc(trip.brand)}</span><span class="trip-option-dates">${tripDateRange(trip)}</span></span><span class="trip-option-state">${disabled ? '未创建' : '进入'}</span>
+      <span class="trip-option-ic">${ic(tripIconName(trip))}</span><span class="trip-option-copy"><span class="trip-option-title">${esc(trip.name)}</span><span class="trip-option-meta">${esc(trip.brand)}</span><span class="trip-option-dates">${tripDateRange(trip)}</span></span><span class="trip-option-state">${disabled ? '未创建' : '进入'}</span>
     </${disabled ? 'div' : 'button'}>`;
   }).join('');
 }
@@ -3536,7 +3578,7 @@ function renderInspirations() {
   const items = inspirationItems.filter((item) => item.tripId === activeTrip().id).slice(0, 6);
   container.innerHTML = items.length ? items.map((item) => {
     const sourceUrl = inspirationSafeUrl(item.sourceUrl);
-    const content = `<div class="inspiration-card-top"><span class="inspiration-card-mark" aria-hidden="true">✦</span><div class="inspiration-item-copy"><div class="inspiration-item-title">${esc(item.title)}</div><div class="inspiration-item-meta"><span class="inspiration-meta-pill">${inspirationCategoryLabel(item.category)}</span>${item.place ? `<span class="inspiration-meta-pill">${esc(item.place)}</span>` : ''}</div>${item.note ? `<div class="inspiration-item-note">${esc(item.note)}</div>` : ''}</div></div>`;
+    const content = `<div class="inspiration-card-top"><span class="inspiration-card-mark" aria-hidden="true">${ic('sparkle')}</span><div class="inspiration-item-copy"><div class="inspiration-item-title">${esc(item.title)}</div><div class="inspiration-item-meta"><span class="inspiration-meta-pill">${inspirationCategoryLabel(item.category)}</span>${item.place ? `<span class="inspiration-meta-pill">${esc(item.place)}</span>` : ''}</div>${item.note ? `<div class="inspiration-item-note">${esc(item.note)}</div>` : ''}</div></div>`;
     const sourceLabel = inspirationSourceLabel(sourceUrl);
     return `<article class="inspiration-item" data-tone="${inspirationTone(item.id)}">${sourceUrl ? `<a class="inspiration-open-card" href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer" aria-label="打开《${esc(item.title)}》的${sourceLabel}">${content}</a>` : `<div class="inspiration-open-card">${content}</div>`}<button class="inspiration-edit-button" type="button" data-idea-edit="${esc(item.id)}">编辑</button></article>`;
   }).join('') : '<div class="inspiration-empty">还没有灵感，点上面的“新建灵感”记下一条。</div>';
