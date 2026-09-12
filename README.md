@@ -19,7 +19,7 @@
 
 - 11 个页面：首页、行程、交通、地图、美食、随笔、待办、行李、文件、支出、锦囊。
 - 已配置韩国、香港、厦门三段旅程；动态记录通过 `tripId` 隔离，不能把韩国资料带进另两段旅程。
-- 网站不再区分账号、登录或访客；打开后自动进入共享旅程，所有设备使用匿名会话访问同一份数据。
+- 网站没有账号、登录或身份验证；任何打开网站的人都直接拥有同一份共享旅程的完整读写权限。
 - 支出和随笔可逐条设为双方可见或仅创建者可见。
 - 首页的灵感收集箱使用最简字段：标题、可选地点、归类、来源链接、可选备注。来源支持小红书和抖音；点击卡片在新标签打开原帖/原视频，编辑是次要操作。
 
@@ -36,7 +36,7 @@
 - 前端：单文件原生应用 [index.html](./index.html)，无框架构建步骤。
 - 同步后端：CloudBase HTTP 云函数 [cloudfunctions/korea-api/index.js](./cloudfunctions/korea-api/index.js)，数据协议为 protocol 2。
 - 权威动态数据：CloudBase `kr_sync_state`；旧 `kr_*` 集合只用于迁移与恢复，不得恢复“先删后插”的旧写入方式。
-- 离线：Service Worker `lu-travel-v84`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
+- 离线：Service Worker `lu-travel-v85`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
 - 发布：Vercel 生产入口 `https://www.jinlu.cloud/`，以及 CloudBase 根入口和 `/korea/` 镜像。两个 CloudBase 路径必须各自注册作用域正确的 Service Worker，避免页面壳互相污染。
 
 ## 数据可靠性原则
@@ -47,7 +47,7 @@
 
 ## 文件与隐私
 
-证件、机票和酒店凭证不进入公开静态包、Vercel、Service Worker 缓存或公开 Git 仓库。历史内置 PDF 位于 CloudBase 私有存储；旧数据中已废弃的 `/assets/docs/` 地址，会按已知文件名迁移为私有文件 ID 后再请求临时链接。
+证件、机票和酒店凭证不进入静态包、Vercel、Service Worker 缓存或公开 Git 仓库。文件位于 CloudBase Storage，网页通过公共云函数按旅程路径签发 15 分钟临时链接；因此任何能打开网站的人都能查看和编辑共享文件。旧数据中已废弃的 `/assets/docs/` 地址，会按已知文件名迁移为文件 ID 后再请求临时链接。
 
 用户手动上传的附件会先上传到 CloudBase PRIVATE 存储；同步记录只保存 `cloud://` 文件 ID、名称、MIME 与大小等元数据。预览和下载由 `korea-api` 校验共同所有者与 `tripId` 后签发 15 分钟临时地址。附件上传需要联网，单个文件保存上限为 4 MB；图片选择阶段允许到 12 MB并会在浏览器压缩后上传。上传失败不会替换原附件。
 
@@ -67,10 +67,10 @@ node --check assets/sync-client.js
 git diff --check
 ```
 
-`sync-browser.mjs` 覆盖全部动态数据族、重载、离线队列、访客边界、灵感保存和历史私有 PDF 地址迁移/预览的浏览器回归。`ui-audit.mjs` 覆盖多种手机与桌面尺寸的页面、卡片、编辑层和预览层。自动化不能替代真实 iPhone/iPad、两位所有者双设备、弱网及跨地区网络验收。
+`sync-browser.mjs` 覆盖无凭证公开访问、全部动态数据族、重载、离线队列、灵感保存和历史 PDF 地址迁移/预览。`ui-audit.mjs` 覆盖多种手机与桌面尺寸的页面、卡片、编辑层和预览层。自动化不能替代真实 iPhone/iPad、双设备、弱网及跨地区网络验收。
 
 ## 安全与仓库卫生
 
 - 不提交或输出账号密码、`.env.local`、OIDC token、CloudBase 密钥、`.git`、`.vercel` 或用户私密资料。
 - 当前工作区中的签证行程、`assets/docs/visa/` PDF、`assets/photos/generated/` 和 `assets/photos/source/real/` 是未跟踪的私有资料；除非用户明确要求，禁止加入 Git。
-- 不扩大 CloudBase Storage 的公开读取权限来修复文件预览。共享私有文件应由后端完成所有者授权并签发短期访问地址。
+- CloudBase Storage 保持非公开读取；公共云函数只为符合当前旅程路径的文件签发短期访问地址。

@@ -80,15 +80,6 @@ async function auditPage(page, name) {
 async function runViewport(label, viewport) {
   const browser = await chromium.launch({ channel: 'chrome', headless: true });
   const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
-  await context.addInitScript(() => {
-    const session = { access_token: 'ui-audit-token', user: { id: '2097823157655728129', is_anonymous: false } };
-    window.cloudbase = { init: () => ({ auth: () => ({
-      getSession: async () => ({ data: { session }, error: null }),
-      signInWithPassword: async () => ({ data: { session }, error: null }),
-      signInAnonymously: async () => ({ data: { session }, error: null }),
-      signOut: async () => ({ error: null })
-    }) }) };
-  });
   await context.route('**/*', async route => {
     const request = route.request(); const url = new URL(request.url());
     if (url.hostname === '127.0.0.1') return route.continue();

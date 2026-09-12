@@ -30,18 +30,6 @@ const store = createSyncStore(db, paths);
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const viewport = process.env.DESKTOP_VIEWPORT ? { width: 1440, height: 1000 } : { width: 390, height: 844 };
 const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
-await context.addInitScript(() => {
-  let session = { access_token: 'browser-test-token', user: { id: '2097823157655728129', is_anonymous: false } };
-  window.cloudbase = { init: () => ({
-    auth: () => ({
-      getSession: async () => ({ data: { session }, error: null }),
-      signInWithPassword: async () => ({ data: { session }, error: null }),
-      signInAnonymously: async () => ({ data: { session }, error: null }),
-      signOut: async () => { session = null; return { error: null }; }
-    }),
-    getTempFileURL: async ({ fileList }) => ({ fileList: fileList.map(({ fileID }) => ({ tempFileURL: `https://private.example.test/download?file=${encodeURIComponent(fileID)}` })) })
-  }) };
-});
 const errors = []; let offline = false;
 await context.route('**/*', async route => {
   const request = route.request(); const url = new URL(request.url());
@@ -49,7 +37,7 @@ await context.route('**/*', async route => {
   const path = url.pathname.replace('/korea-api', '');
   if (path === '/files/url') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, url: `https://private.example.test/download?file=${encodeURIComponent(url.searchParams.get('fileID'))}`, expiresAt: Date.now() + 840000 }) });
   if (!paths[path]) return route.fulfill({ status: 200, contentType: url.pathname.endsWith('.js') ? 'text/javascript' : 'application/json', body: '{}' });
-  assert.equal(request.headers().authorization, 'Bearer browser-test-token');
+  assert.equal(request.headers().authorization, undefined);
   if (offline) return route.abort('internetdisconnected');
   try {
     const trip = url.searchParams.get('tripId');
@@ -215,12 +203,12 @@ try {
   assert.equal(await page.getByText('跨设备美食收藏测试', { exact: true }).count(), 1);
   assert.equal((await page.evaluate(() => essayRecords.length)), 1);
   assert.deepEqual(errors, []);
-  assert.equal(await page.locator('#authGate').isVisible(), false);
+  assert.equal(await page.locator('#authGate').count(), 0);
   assert.equal(await page.evaluate(() => accessRole), 'owner');
   await page.evaluate(() => showTab('food', false));
   assert((await page.locator('.food-add-btn:visible').count()) > 0);
   assert.equal(await page.locator('#todoAdd').count(), 1);
   assert.equal(await page.locator('#inspirationCollectBtn').count(), 1);
-  console.log('Browser phase: anonymous shared session opened directly with full editing controls.');
+  console.log('Browser phase: public shared workspace opened without an account or authorization header.');
   console.log('Browser passed: 11 tabs, all dynamic data families, stable IDs, encrypted essay, food/doc editing, deletion confirmation, rapid toggles, offline/IndexedDB recovery, polling and reload; no empty/duplicate render or page errors.');
 } finally { await browser.close(); server.close(); }

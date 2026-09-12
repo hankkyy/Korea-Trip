@@ -14,7 +14,6 @@ const baseUrls = [
   'https://www.jinlu.cloud/'
 ];
 const apiBase = 'https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com/korea-api';
-const testToken = process.env.LU_TRAVEL_TEST_TOKEN || '';
 const requiredHtml = ['在璐上', 'Korea Trip', 'imageViewer', 'docViewer', 'journalToggle'];
 const requiredHtmlMissing = requiredHtml.filter((item) => !html.includes(item));
 const assetPaths = [...sw.matchAll(/'([^']+)'/g)]
@@ -47,10 +46,8 @@ for (const path of syncPaths) {
   const res = await check(
     `API ${path}`,
     `${apiBase}${path}?tripId=korea-2026`,
-    testToken ? (response) => response.ok : (response) => response.status === 401,
-    testToken ? { headers: { Authorization: `Bearer ${testToken}` } } : {}
+    (response) => response.ok
   );
-  if (!testToken) continue;
   if (res?.ok) {
     try {
       const body = await res.json();
@@ -66,14 +63,17 @@ for (const path of syncPaths) {
   }
 }
 
-for (const path of ['/files/url?fileID=cloud%3A%2F%2Finvalid', '/files/upload']) {
-  await check(
-    `私有文件 API ${path}`,
-    `${apiBase}${path.includes('?') ? path + '&' : path + '?'}tripId=korea-2026`,
-    (response) => response.status === 401,
-    path === '/files/upload' ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' } : {}
-  );
-}
+await check(
+  '公开文件地址 API 的旅程范围校验',
+  `${apiBase}/files/url?fileID=cloud%3A%2F%2Finvalid&tripId=korea-2026`,
+  (response) => response.status === 403
+);
+await check(
+  '公开文件上传 API 的格式校验',
+  `${apiBase}/files/upload?tripId=korea-2026`,
+  (response) => response.status === 400,
+  { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }
+);
 
 await check('天气 API', 'https://api.open-meteo.com/v1/forecast?latitude=37.5665&longitude=126.978&current=temperature_2m&timezone=Asia%2FSeoul');
 

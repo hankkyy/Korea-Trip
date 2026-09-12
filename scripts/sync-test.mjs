@@ -133,22 +133,19 @@ test('corrupt local sync state is quarantined instead of preventing startup', as
   assert.deepEqual(await client.read('/todos', 'korea'), []);
   assert.equal([...disk.keys()].some(key => key.startsWith('kr_sync_queue_v2_corrupt_')), true);
 });
-test('visitors only receive itinerary data and owners cannot alter each other private records', () => {
-  const kele = { uid: 'kele-id', role: 'owner' };
-  const jinlu = { uid: 'jinlu-id', role: 'owner' };
-  const visitor = { uid: 'visitor-id', role: 'visitor' };
-  assert.doesNotThrow(() => allowRead('/itinerary', visitor));
-  assert.throws(() => allowRead('/docs', visitor), { status: 403 });
+test('all visitors receive the same data and writes become shared', () => {
+  assert.doesNotThrow(() => allowRead('/itinerary'));
+  assert.doesNotThrow(() => allowRead('/docs'));
   const records = [
     { clientId: 'shared', visibility: 'shared' },
-    { clientId: 'kele-private', visibility: 'private', ownerId: kele.uid },
-    { clientId: 'jinlu-private', visibility: 'private', ownerId: jinlu.uid }
+    { clientId: 'old-private', visibility: 'private', ownerId: 'old-user' }
   ];
-  assert.deepEqual(visibleItems('/expenses', records, kele).map(item => item.clientId), ['shared', 'kele-private']);
-  assert.deepEqual(visibleItems('/docs', records, jinlu).map(item => item.clientId), ['shared', 'jinlu-private']);
-  const saved = protectPrivateWrite('/expenses', [{ clientId: 'shared', visibility: 'shared' }], records, kele);
-  assert.deepEqual(saved.map(item => item.clientId), ['shared', 'jinlu-private']);
-  assert.throws(() => protectPrivateWrite('/expenses', [{ clientId: 'jinlu-private', visibility: 'shared' }], records, kele), { status: 403 });
+  assert.deepEqual(visibleItems('/expenses', records).map(item => item.clientId), ['shared', 'old-private']);
+  const saved = protectPrivateWrite('/expenses', records);
+  assert.deepEqual(saved, [
+    { clientId: 'shared', visibility: 'shared' },
+    { clientId: 'old-private', visibility: 'shared' }
+  ]);
 });
 test('a refresh not displayed must not advance the edit baseline', async () => {
   const store = createSyncStore(memoryDb(), paths), fetcher = fetchFor(store);
@@ -196,22 +193,19 @@ test('storage failure never reports a durable successful save', async () => {
   assert.equal(client.queue().length, 1);
   assert.deepEqual((await store.read('/todos', 'korea')).data, []);
 });
-test('private files authorize both owners, deny visitors/cross-trip, and preserve stable upload IDs', async () => {
+test('public files preserve stable upload IDs and reject cross-trip paths', async () => {
   const { createFileService, ROOT } = require('../cloudfunctions/korea-api/files.js');
   const saved = new Map();
   const files = createFileService({
     uploadFile: async ({ cloudPath, fileContent }) => { saved.set(cloudPath, fileContent); return { fileID: ROOT + cloudPath }; },
     getTempFileURL: async ({ fileList }) => ({ fileList: fileList.map(item => ({ fileID: item.fileID, tempFileURL: 'https://signed.test/file', code: 'SUCCESS' })) })
   });
-  const a = { uid: 'a', role: 'owner' }, b = { uid: 'b', role: 'owner' }, visitor = { role: 'visitor' };
   const body = { mime: 'application/pdf', base64: Buffer.from('%PDF-1.4 test').toString('base64') };
-  const uploaded = await files.upload(body, 'korea-2026', a);
-  assert.equal(uploaded.fileID, (await files.upload(body, 'korea-2026', a)).fileID);
+  const uploaded = await files.upload(body, 'korea-2026');
+  assert.equal(uploaded.fileID, (await files.upload(body, 'korea-2026')).fileID);
   assert.equal(saved.size, 1);
-  assert.equal((await files.resolve(uploaded.fileID, 'korea-2026', b)).success, true);
-  await assert.rejects(files.resolve(uploaded.fileID, 'hong-kong', b), { status: 403 });
-  await assert.rejects(files.resolve(uploaded.fileID, 'korea-2026', visitor), { status: 403 });
-  await assert.rejects(files.upload(body, 'korea-2026', visitor), { status: 403 });
-  await assert.rejects(files.upload({ ...body, mime: 'text/html' }, 'korea-2026', a), { status: 400 });
-  await assert.rejects(files.resolve(ROOT + 'private/shared/korea-2026/../secret.pdf', 'korea-2026', a), { status: 403 });
+  assert.equal((await files.resolve(uploaded.fileID, 'korea-2026')).success, true);
+  await assert.rejects(files.resolve(uploaded.fileID, 'hong-kong'), { status: 403 });
+  await assert.rejects(files.upload({ ...body, mime: 'text/html' }, 'korea-2026'), { status: 400 });
+  await assert.rejects(files.resolve(ROOT + 'private/shared/korea-2026/../secret.pdf', 'korea-2026'), { status: 403 });
 });

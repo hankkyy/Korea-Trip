@@ -20,11 +20,6 @@ const fileService = require('./files').createFileService(app);
 const PORT = process.env.PORT || 9000;
 const DEFAULT_TRIP_ID = 'korea-2026';
 const MAX_BODY_BYTES = 6 * 1024 * 1024;
-const OWNER_USER_IDS = new Set([
-  '2097823157655728129', // kele
-  '2097823165424365569'  // jinlu
-]);
-
 const WEATHER_CITIES = {
   busan: { latitude: 35.1796, longitude: 129.0756 },
   seoul: { latitude: 37.5665, longitude: 126.9780 }
@@ -75,30 +70,6 @@ function json(res, data, statusCode = 200) {
     'Cache-Control': 'no-store'
   });
   res.end(JSON.stringify(data));
-}
-
-// CloudBase gateway MUST validate Bearer signatures first (invoke: auth != null).
-// This parser only maps an already verified identity; never expose the raw HTTP port.
-function callerFromRequest(req) {
-  const token = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
-  try {
-    const payload = JSON.parse(Buffer.from(token.split('.')[1] || '', 'base64url').toString('utf8'));
-    const uid = String(payload.sub || payload.uid || '');
-    if (!uid || !Number.isFinite(payload.exp) || payload.exp * 1000 <= Date.now()) throw new Error('expired or missing uid');
-    // This is a shared trip workspace without account switching. CloudBase
-    // still verifies the bearer token, while every authenticated session may
-    // read and edit the shared trip data.
-    return { uid, role: 'owner' };
-  } catch {}
-  throw Object.assign(new Error('请先登录后再访问旅行资料'), { status: 401 });
-}
-
-function assertAuthorized(req, write = false) {
-  const caller = callerFromRequest(req);
-  if (write && caller.role !== 'owner') {
-    throw Object.assign(new Error('访客只能查看旅行资料，不能修改内容'), { status: 403 });
-  }
-  return caller;
 }
 
 function readBody(req) {
@@ -154,12 +125,11 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const route = url.pathname;
     const tripId = tripIdFromUrl(url);
-    const caller = assertAuthorized(req, req.method !== 'GET');
     if (route === '/files/upload' && req.method === 'POST') {
-      return json(res, await fileService.upload(await readBody(req), tripId, caller));
+      return json(res, await fileService.upload(await readBody(req), tripId));
     }
     if (route === '/files/url' && req.method === 'GET') {
-      return json(res, await fileService.resolve(url.searchParams.get('fileID'), tripId, caller));
+      return json(res, await fileService.resolve(url.searchParams.get('fileID'), tripId));
     }
     // Keep weather and exchange-rate requests on the domestic CloudBase origin.
     if (route === '/weather' && req.method === 'GET') {
@@ -183,9 +153,9 @@ const server = http.createServer(async (req, res) => {
 
     const collectionName = SYNC_COLLECTIONS[route];
     if (collectionName && req.method === 'GET') {
-      allowRead(route, caller);
+      allowRead(route);
       const result = await syncStore.read(route, tripId);
-      return json(res, { ...result, data: visibleItems(route, result.data, caller) });
+      return json(res, { ...result, data: visibleItems(route, result.data) });
     }
     if (collectionName && req.method === 'POST') {
       const body = await readBody(req);
@@ -195,9 +165,9 @@ const server = http.createServer(async (req, res) => {
       if (writeTrip.length > 120 || !/^[\w:@.-]+$/u.test(writeTrip)) throw Object.assign(new Error('旅程 ID 无效'), { status: 400 });
       if (!Array.isArray(body.items) || body.items.length > 5000) throw Object.assign(new Error('单次保存记录数量无效'), { status: 413 });
       const current = await syncStore.read(route, writeTrip);
-      const items = protectPrivateWrite(route, body.items, current.data, caller);
+      const items = protectPrivateWrite(route, body.items);
       const result = await syncStore.write(route, writeTrip, { ...body, items });
-      return json(res, { ...result, data: visibleItems(route, result.data, caller) });
+      return json(res, { ...result, data: visibleItems(route, result.data) });
     }
     if (req.method !== 'GET' && /^\/(records|todos|checklist|bucket-list)\//.test(route)) {
       return json(res, { success: false, error: '请刷新页面后再保存，当前版本已升级' }, 426);

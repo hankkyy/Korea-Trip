@@ -7,11 +7,7 @@ const TYPES = new Map([
   ['text/markdown', 'md'], ['application/msword', 'doc'],
   ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx']
 ]);
-function owner(caller) {
-  if (caller.role !== 'owner') throw Object.assign(new Error('文件仅旅行成员可用'), { status: 403 });
-}
-function assertFileScope(fileID, tripId, caller) {
-  owner(caller);
+function assertFileScope(fileID, tripId) {
   const legacy = tripId === 'korea-2026' ? 'korea' : tripId;
   const allowed = [`${ROOT}private/shared/${tripId}/`, `${ROOT}private/${legacy}/`];
   if (typeof fileID !== 'string' || /(?:\.\.|\\|%2e|%2f|%5c)/i.test(fileID) || !allowed.some(prefix => fileID.startsWith(prefix))) {
@@ -19,8 +15,7 @@ function assertFileScope(fileID, tripId, caller) {
   }
 }
 function createFileService(app) {
-  async function upload(body, tripId, caller) {
-    owner(caller);
+  async function upload(body, tripId) {
     const mime = String(body.mime || '').toLowerCase();
     if (!TYPES.has(mime)) throw Object.assign(new Error('不支持此文件格式，请使用图片、PDF、Word 或文本'), { status: 400 });
     if (typeof body.base64 !== 'string' || !/^[A-Za-z0-9+/]*={0,2}$/.test(body.base64)) throw Object.assign(new Error('文件编码无效'), { status: 400 });
@@ -29,11 +24,11 @@ function createFileService(app) {
     const digest = createHash('sha256').update(bytes).digest('hex');
     const result = await app.uploadFile({ cloudPath: `private/shared/${tripId}/${digest}.${TYPES.get(mime)}`, fileContent: bytes });
     if (!result.fileID) throw new Error('文件上传未确认，请重试');
-    assertFileScope(result.fileID, tripId, caller);
+    assertFileScope(result.fileID, tripId);
     return { success: true, fileID: result.fileID, mime, size: bytes.length };
   }
-  async function resolve(fileID, tripId, caller) {
-    assertFileScope(fileID, tripId, caller);
+  async function resolve(fileID, tripId) {
+    assertFileScope(fileID, tripId);
     const result = await app.getTempFileURL({ fileList: [{ fileID, maxAge: 900 }] });
     const entry = result.fileList?.[0];
     if (!entry?.tempFileURL || entry.code && entry.code !== 'SUCCESS') throw new Error('文件链接生成失败，请稍后重试');

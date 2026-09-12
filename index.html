@@ -15,7 +15,6 @@
 <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com">
 <link rel="preconnect" href="https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.tcloudbaseapp.com">
-<script>if (!window.cloudbase) document.write('<script src="assets/vendor/cloudbase.full.js"><\/script>');</script>
 <script src="assets/sync-client.js"></script>
 <script>
   if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
@@ -53,13 +52,6 @@ body.short-trip.trip-has-hotels #tab-home .grid.home-hotels{display:grid}
 .empty-state strong{font-size:18px;color:var(--ink)}
 .empty-state-icon{font-size:28px;color:var(--green);line-height:1}
 .empty-state .list-add-btn{margin-top:8px}
-.auth-gate{position:fixed;inset:0;z-index:99999;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);align-items:center;gap:clamp(28px,7vw,96px);padding:max(28px,env(safe-area-inset-top)) max(24px,8vw) max(28px,env(safe-area-inset-bottom));background:radial-gradient(circle at 14% 18%,rgba(134,181,154,.24),transparent 34%),linear-gradient(135deg,#F7FBF8,#FFF9ED)}
-.auth-gate[hidden]{display:none}.auth-gate-copy{max-width:560px;color:var(--green-d)}.auth-gate-copy small{display:block;margin-bottom:12px;font-size:13px;letter-spacing:.16em}.auth-gate-copy strong{display:block;font-family:"Songti SC","STSong",serif;font-size:clamp(42px,7vw,78px);line-height:1}.auth-gate-copy p{max-width:420px;margin:20px 0 0;color:#66776D;line-height:1.8}
-.auth-card{width:min(100%,420px);padding:30px;border:1px solid rgba(114,166,127,.2);border-radius:28px;background:rgba(255,254,250,.92);box-shadow:0 22px 60px rgba(63,96,78,.14);backdrop-filter:blur(18px)}.auth-card h1{margin:0 0 8px;color:var(--green-d);font-size:25px}.auth-card>p{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.6}.auth-field{display:grid;gap:7px;margin:14px 0}.auth-field label{color:var(--green-d);font-size:13px;font-weight:750}.auth-field input{min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:13px;background:#fff;font:inherit;font-size:16px;color:var(--text);outline:none}.auth-field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(114,166,127,.12)}.auth-password-wrap{position:relative}.auth-password-wrap input{width:100%;padding-right:92px}.auth-password-toggle{position:absolute;top:50%;right:7px;transform:translateY(-50%);min-height:34px;padding:0 10px;border-radius:10px;color:var(--green-d);font-size:12px;font-weight:850}.auth-password-toggle:hover{background:var(--green-xl)}.auth-submit{width:100%;min-height:48px;margin-top:10px;border:0;border-radius:14px;background:var(--green-d);color:white;font:inherit;font-size:15px;font-weight:800}.auth-visitor{width:100%;min-height:44px;margin-top:10px;border:1px solid rgba(64,104,79,.24);border-radius:14px;background:rgba(255,255,255,.64);color:var(--green-d);font:inherit;font-size:14px;font-weight:800}.auth-submit:disabled,.auth-visitor:disabled{opacity:.55}.auth-visitor-note{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.55;text-align:center}.auth-error{min-height:20px;margin:12px 0 0;color:#9B6468;font-size:13px;line-height:1.5}.auth-pending> :not(#authGate):not(script){visibility:hidden}
-body.visitor-mode .food-add-btn,body.visitor-mode .food-edit-toggle,body.visitor-mode .food-edit-only,body.visitor-mode .list-add-btn,body.visitor-mode .l-toggle,body.visitor-mode .l-drag,body.visitor-mode .l-actions,body.visitor-mode .exp-edit,body.visitor-mode .docs-primary,body.visitor-mode .doc-edit-only,body.visitor-mode #tripManageBtn,body.visitor-mode #tripNewBtn,body.visitor-mode #tripSettingsSave,body.visitor-mode #tripDeleteBtn,body.visitor-mode #itAddRow,body.visitor-mode .it-row-remove,body.visitor-mode .dc-tools,body.visitor-mode .tl-edit{display:none!important}
-body.visitor-mode main>.panel:not(#tab-itinerary),body.visitor-mode #bnav .bn-btn:not([data-tab="itinerary"]),body.visitor-mode footer{display:none!important}body.visitor-mode #bnav{justify-content:center;visibility:visible!important}body.visitor-mode #bnav .bn-btn[data-tab="itinerary"]{display:flex!important;visibility:visible!important}body.visitor-mode #tab-itinerary{display:block!important}
-body.visitor-mode .food-card .food-head-fields,body.visitor-mode .food-card>textarea{display:none!important}body.visitor-mode .food-card .food-display-title,body.visitor-mode .food-card .food-meta,body.visitor-mode .food-card .food-note{display:block!important}body.visitor-mode .visitor-mode-note{display:inline-flex}
-@media(max-width:720px){.auth-gate{grid-template-columns:1fr;align-content:center;padding-left:22px;padding-right:22px}.auth-gate-copy{display:none}.auth-card{justify-self:center;padding:25px 22px;border-radius:23px}}
 #dayChips{display:none!important}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:auto;width:100%;overflow-x:hidden}
@@ -1699,7 +1691,6 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 .inspiration-capture input{min-width:0;flex:1;border:0;background:transparent;padding:0 6px;color:var(--text);font:inherit;font-size:13px;outline:none}.inspiration-capture input::placeholder{color:#91a098}
 .inspiration-capture button{flex:none;min-height:34px;padding:0 11px;border:1px solid rgba(78,126,91,.24);border-radius:10px;background:#fff;color:var(--green-d);font-size:12px;font-weight:850}.inspiration-capture-hint{margin:7px 2px 0;color:var(--muted);font-size:11px;line-height:1.45}
 .inspiration-clipboard-prompt{display:flex;align-items:center;gap:9px;margin-top:10px;padding:10px 11px;border:1px solid rgba(109,160,123,.25);border-radius:13px;background:linear-gradient(135deg,#eef8ee,#fffaf0);color:var(--green-d);font-size:12px;font-weight:800}.inspiration-clipboard-prompt span{min-width:0;flex:1}.inspiration-clipboard-prompt button{flex:none;min-height:31px;padding:0 9px;border:1px solid rgba(78,126,91,.24);border-radius:9px;background:#fff;color:var(--green-d);font-size:11px;font-weight:850}.inspiration-clipboard-prompt .dismiss{color:var(--muted);border-color:transparent;background:transparent}
-body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{display:none!important}
 @media(max-width:560px){.inspiration-capture{align-items:center}.inspiration-capture input{font-size:12px}.inspiration-capture button{padding:0 9px}.inspiration-clipboard-prompt{align-items:flex-start;flex-wrap:wrap}.inspiration-clipboard-prompt span{flex-basis:100%}.inspiration-clipboard-prompt button{margin-left:auto}.inspiration-clipboard-prompt .dismiss{margin-left:0}}
 /* 灵感墙：使用自己的截图和结论，不复制来源平台的正文或图片。 */
 .inspiration-list{display:block;column-count:2;column-gap:12px}.inspiration-item{display:block;break-inside:avoid;margin:0 0 12px;padding:0;overflow:hidden;border-radius:16px;box-shadow:0 8px 20px rgba(50,86,62,.06);transition:transform .18s ease,box-shadow .18s ease}.inspiration-item:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(50,86,62,.12)}.inspiration-cover{position:relative;min-height:112px;overflow:hidden;background:linear-gradient(145deg,#e8f4ea,#fbf5e9)}.inspiration-cover img{display:block;width:100%;max-height:260px;object-fit:cover}.inspiration-cover-empty{display:flex;align-items:flex-end;padding:16px;background:linear-gradient(145deg,#edf7ef,#fff8ed);color:var(--green-d);font-size:12px;font-weight:850}.inspiration-cover-empty::after{content:'✦';position:absolute;right:15px;top:7px;color:rgba(78,126,91,.24);font-size:42px}.inspiration-item-copy{padding:12px 13px 4px}.inspiration-item-title{white-space:normal;line-height:1.4}.inspiration-item-note{-webkit-line-clamp:2;line-height:1.45}.inspiration-actions{justify-content:space-between;padding:9px 12px 12px}.inspiration-action{min-height:30px}.inspiration-cover-draft{display:flex;align-items:center;justify-content:center;min-height:94px;overflow:hidden;border:1px dashed #c9ddcd;border-radius:13px;background:var(--green-xl)}.inspiration-cover-draft img{display:block;width:100%;max-height:180px;object-fit:cover}.inspiration-cover-draft.empty{color:var(--muted);font-size:12px}.inspiration-cover-tools{display:flex;gap:8px;margin-top:8px}.inspiration-cover-tools button{min-height:34px;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--green-d);font-size:12px;font-weight:850}.inspiration-cover-tools .remove{color:#a55b5b;border-color:#f0caca;background:#fff7f7}@media(max-width:400px){.inspiration-list{column-gap:9px}.inspiration-item-copy{padding:10px 11px 3px}.inspiration-actions{padding:8px 10px 10px}.inspiration-action{padding:0 7px;font-size:11px}}
@@ -1750,20 +1741,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 #globalSyncStatus[hidden]{display:none}
 </style>
 </head>
-<body class="auth-pending">
-<section id="authGate" class="auth-gate" aria-label="登录" hidden>
-  <div class="auth-gate-copy"><small>KOREA TRIP JOURNAL</small><strong>在璐上</strong><p>可乐与金鹿的旅行资料。登录后，修改会在你们的设备之间安全同步。</p></div>
-  <form id="authForm" class="auth-card">
-    <h1>欢迎回来</h1>
-    <p>使用你自己的账号进入共同旅程。</p>
-    <div class="auth-field"><label for="authUsername">用户名</label><input id="authUsername" name="username" type="text" autocomplete="username" required></div>
-    <div class="auth-field"><label for="authPassword">密码</label><div class="auth-password-wrap"><input id="authPassword" name="password" type="password" autocomplete="current-password" required><button id="authPasswordToggle" class="auth-password-toggle" type="button" aria-controls="authPassword" aria-pressed="false">显示密码</button></div></div>
-    <button id="authSubmit" class="auth-submit" type="submit">登录</button>
-    <button id="visitorSubmit" class="auth-visitor" type="button">以访客身份浏览</button>
-    <p class="auth-visitor-note">访客可以查看共同资料，不能新增、编辑或修改。</p>
-    <p id="authError" class="auth-error" role="alert" aria-live="polite"></p>
-  </form>
-</section>
+<body>
 
 <!-- 顶部 App 头 -->
 <header id="appHeader">
@@ -2571,9 +2549,8 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
   <div class="field"><label>可见范围</label>
     <div class="seg" id="expVisibilitySeg">
       <button class="active" data-v="shared">双方可见</button>
-      <button data-v="private">仅自己可见</button>
     </div>
-    <div class="field-hint">仅自己可见的支出不会显示给另一位账号，也不会显示给访客。</div>
+    <div class="field-hint">所有打开网站的人都可以查看和编辑。</div>
   </div>
   <div class="field"><label>谁付的</label>
     <div class="seg" id="expPayerSeg">
@@ -2687,7 +2664,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
     </div>
   </div>
   <div class="essay-security-grid">
-    <div class="field"><label>可见范围</label><div class="seg" id="essayVisibilitySeg"><button class="active" data-v="shared">双方可见</button><button data-v="private">仅自己可见</button></div><div class="field-hint">私人随笔只显示给创建它的账号。</div></div>
+    <div class="field"><label>可见范围</label><div class="seg" id="essayVisibilitySeg"><button class="active" data-v="shared">共同可见</button></div><div class="field-hint">所有打开网站的人都可以看到这篇随笔。</div></div>
     <div class="field">
       <label>随笔密码</label>
       <input id="essayPasswordInput" type="password" placeholder="设置这篇随笔的密码">
@@ -2715,147 +2692,16 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 <script>
 /* ================= 常量 ================= */
 const API_BASE = 'https://hanoi-d4gj8vd2q1e7a3dc0-1448781892.ap-shanghai.app.tcloudbase.com/korea-api';
-const CLOUDBASE_PUBLISHABLE_KEY = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjlkMWRjMzFlLWI0ZDAtNDQ4Yi1hNzZmLWIwY2M2M2Q4MTQ5OCJ9.eyJpc3MiOiJodHRwczovL2hhbm9pLWQ0Z2o4dmQycTFlN2EzZGMwLmFwLXNoYW5naGFpLnRjYi1hcGkudGVuY2VudGNsb3VkYXBpLmNvbSIsInN1YiI6ImFub24iLCJhdWQiOiJoYW5vaS1kNGdqOHZkMnExZTdhM2RjMCIsImV4cCI6NDA4NjQ4NDYwMiwiaWF0IjoxNzgyODAxNDAyLCJub25jZSI6IjcyMng2S2VuUm5TMXFCM2xuRERWU0EiLCJhdF9oYXNoIjoiNzIyeDZLZW5SblMxcUIzbG5ERFZTQSIsIm5hbWUiOiJBbm9ueW1vdXMiLCJzY29wZSI6ImFub255bW91cyIsInByb2plY3RfaWQiOiJoYW5vaS1kNGdqOHZkMnExZTdhM2RjMCIsIm1ldGEiOnsicGxhdGZvcm0iOiJQdWJsaXNoYWJsZUtleSJ9LCJ1c2VyX3R5cGUiOiIiLCJjbGllbnRfdHlwZSI6ImNsaWVudF91c2VyIiwiaXNfc3lzdGVtX2FkbWluIjpmYWxzZX0.VLjYWcK8zfnIYQ74T5XWnLj1NA7NAxX6eMwIkJqZnO9RsAgLSArkttB6UMchfZplexGhe4K9DoHmzeQ1Lyxd07AWxygxnVG1nZX66u9DEm9vPWtijIEZqGQ7h6f5iFGtqtmRfp1IXW1lcXff9m6piNGQcydZHYnazOp4Baht8tVEPMb9lWczyh9eNSJH9yzcjk-NPul4UtYczZqzRPobxo-ki4zoDxvd4VVF8t8hvBZzaAdwuvRvQ-F81hxKhp4xRRRakGcMOzPq7Y3ccj-pEg5b9xiD52vyjewO_vloguuz5kes-JhAJLosxt51MAmULkz0HxnX7Fy_UCpmzX5n_Q';
 const FX_RATES = { CNY: 1, USD: 6.73, KRW: 1 / 202.06 };
 const FX_RATES_KEY = 'kr_fx_rates_latest';
 const FX_RATES_URL = `${API_BASE}/fx`;
 let FX_UPDATED_AT = '';
 const PEOPLE = ['可乐', '金鹿'];
-let cloudApp = null;
-let cloudAuth = null;
-let accessRole = 'owner';
-let currentUserId = '';
-const OWNER_UIDS = new Set(['2097823157655728129', '2097823165424365569']);
-const VISITOR_SESSION_KEY = 'kr_visitor_session';
-let resolveAuthReady;
-let appWasAuthenticated = false;
-const authReady = new Promise((resolve) => { resolveAuthReady = resolve; });
-function isVisitor() { return accessRole === 'visitor'; }
-function ownerOnly(message = '访客只能查看旅行资料，不能修改内容。') {
-  if (!isVisitor()) return true;
-  alert(message);
-  return false;
+const accessRole = 'owner';
+const currentUserId = 'shared';
+async function apiFetch(input, init = {}) {
+  return fetch(input, init);
 }
-function applyAccessRole(session) {
-  currentUserId = String(session?.user?.id || '');
-  // The app is a shared trip workspace without account switching. Every
-  // authenticated anonymous session has the same editing capabilities.
-  accessRole = 'owner';
-  document.body.classList.toggle('visitor-mode', isVisitor());
-}
-function revealAuthenticatedApp(session) {
-  if (appWasAuthenticated) { window.location.reload(); return; }
-  appWasAuthenticated = true;
-  applyAccessRole(session);
-  document.body.classList.remove('auth-pending');
-  const gate = document.getElementById('authGate');
-  if (gate) gate.hidden = true;
-  resolveAuthReady();
-}
-function revealLoggedOutGate() {
-  currentUserId = '';
-  accessRole = 'visitor';
-  sessionStorage.removeItem(VISITOR_SESSION_KEY);
-  closeTripPicker?.();
-  document.body.classList.remove('visitor-mode', 'auth-pending');
-  const gate = document.getElementById('authGate');
-  if (gate) gate.hidden = false;
-  const error = document.getElementById('authError');
-  if (error) error.textContent = '';
-  const form = document.getElementById('authForm');
-  form?.reset();
-  setTimeout(() => document.getElementById('authUsername')?.focus(), 80);
-}
-async function currentAuthSession() {
-  if (!cloudAuth) return null;
-  const { data, error } = await cloudAuth.getSession();
-  if (error) throw error;
-  const session = data?.session;
-  return session || null;
-}
-async function authenticatedFetch(input, init = {}) {
-  await authReady;
-  const session = await currentAuthSession();
-  if (!session?.access_token) throw new Error('登录已失效，请重新打开页面登录');
-  const headers = new Headers(init.headers || {});
-  headers.set('Authorization', `Bearer ${session.access_token}`);
-  return fetch(input, { ...init, headers });
-}
-function initAuthentication() {
-  const form = document.getElementById('authForm');
-  const errorEl = document.getElementById('authError');
-  const submit = document.getElementById('authSubmit');
-  const visitorSubmit = document.getElementById('visitorSubmit');
-  const passwordInput = document.getElementById('authPassword');
-  const passwordToggle = document.getElementById('authPasswordToggle');
-  passwordToggle?.addEventListener('click', () => {
-    const reveal = passwordInput.type === 'password';
-    passwordInput.type = reveal ? 'text' : 'password';
-    passwordToggle.textContent = reveal ? '隐藏密码' : '显示密码';
-    passwordToggle.setAttribute('aria-pressed', String(reveal));
-    passwordInput.focus();
-  });
-  try {
-    if (!window.cloudbase?.init) throw new Error('登录组件加载失败，请检查网络后刷新');
-    cloudApp = window.cloudbase.init({ env: 'hanoi-d4gj8vd2q1e7a3dc0', accessKey: CLOUDBASE_PUBLISHABLE_KEY });
-    cloudAuth = cloudApp.auth();
-  } catch (error) {
-    errorEl.textContent = error.message;
-  }
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    if (!cloudAuth) { errorEl.textContent = '登录组件尚未加载，请检查网络后刷新。'; return; }
-    submit.disabled = true;
-    errorEl.textContent = '';
-    try {
-      const username = document.getElementById('authUsername').value.trim();
-      const password = passwordInput.value;
-      const { error } = await cloudAuth.signInWithPassword({ username, password });
-      if (error) throw error;
-      const session = await currentAuthSession();
-      if (!session) throw new Error('登录未完成，请重试');
-      sessionStorage.removeItem(VISITOR_SESSION_KEY);
-      passwordInput.value = '';
-      passwordInput.type = 'password';
-      passwordToggle.textContent = '显示密码';
-      passwordToggle.setAttribute('aria-pressed', 'false');
-      revealAuthenticatedApp(session);
-    } catch (error) {
-      errorEl.textContent = error?.message || '用户名或密码不正确。';
-    } finally { submit.disabled = false; }
-  });
-  visitorSubmit.addEventListener('click', async () => {
-    if (!cloudAuth) { errorEl.textContent = '登录组件尚未加载，请检查网络后刷新。'; return; }
-    visitorSubmit.disabled = true; errorEl.textContent = '';
-    try {
-      const { error } = await cloudAuth.signInAnonymously();
-      if (error) throw error;
-      const session = await currentAuthSession();
-      if (!session?.user?.is_anonymous) throw new Error('访客登录未完成，请重试');
-      sessionStorage.setItem(VISITOR_SESSION_KEY, '1');
-      revealAuthenticatedApp(session);
-    } catch (error) { errorEl.textContent = error?.message || '访客入口暂不可用，请稍后重试。'; }
-    finally { visitorSubmit.disabled = false; }
-  });
-  currentAuthSession().then(async (session) => {
-    if (!session) {
-      const { error } = await cloudAuth.signInAnonymously();
-      if (error) throw error;
-      session = await currentAuthSession();
-    }
-    if (session) revealAuthenticatedApp(session);
-  }).catch((error) => { errorEl.textContent = error?.message || '登录状态读取失败。'; });
-}
-initAuthentication();
-const VISITOR_WRITE_ACTIONS = new Set(['add-item', 'attach', 'delete', 'drag', 'edit', 'edit-day', 'edit-row', 'newfood', 'photo', 'remove-photo', 'remove-row', 'switch-cover', 'toggle', 'up']);
-document.addEventListener('click', (event) => {
-  if (!isVisitor()) return;
-  const action = event.target.closest('[data-act]')?.dataset.act;
-  const control = event.target.closest('#todoAdd,#checklistAdd,#essayAddBtn,#docsNewBtn,#tripManageBtn,#tripNewBtn,#expSave,#itAddRow,#listSave,#listDelete,#essaySave,#essayDelete,#tripSettingsSave,#tripDeleteBtn,.list-add-btn,.exp-edit');
-  if (!VISITOR_WRITE_ACTIONS.has(action) && !control) return;
-  event.preventDefault(); event.stopImmediatePropagation();
-  ownerOnly();
-}, true);
 function displayPersonName(name) { return String(name || '').trim() === '仇金璐' ? '金鹿' : String(name || '').trim(); }
 
 window.addEventListener('error', (event) => {
@@ -3074,7 +2920,7 @@ let liveSyncFallbackBusy = false;
 const liveAppliedSnapshots = new Map();
 function applyLiveDataset(path, items, tripId, force = false) {
   if (!Array.isArray(items)) return false;
-  if (document.activeElement?.matches('input, textarea, select') && !document.activeElement.closest('#authGate')) return false;
+  if (document.activeElement?.matches('input, textarea, select')) return false;
   if (!force && syncClient.pending(path, tripId)) return false;
   if (!force && document.querySelector('[role="dialog"].open')) return false;
   if (!force && ['/todos', '/checklist'].includes(path) && Date.now() - listLocalChangeAt < 2500) return false;
@@ -3118,9 +2964,8 @@ function applyLiveDataset(path, items, tripId, force = false) {
 async function startLiveSync() {
   if (liveSyncStarted) return;
   liveSyncStarted = true;
-  // Use the HTTP API as the canonical cross-device channel. Direct SDK
-  // watchers can report an empty snapshot on mobile before auth settles and
-  // overwrite valid data with zero items.
+  // Use the HTTP API as the canonical cross-device channel so every browser
+  // reads and writes the same versioned snapshots.
   startLiveSyncFallback();
 }
 function startLiveSyncFallback() {
@@ -3129,7 +2974,7 @@ function startLiveSyncFallback() {
   liveSyncFallbackTimer = setInterval(refreshLiveDatasets, 4000);
 }
 async function refreshLiveDatasets() {
-  if (liveSyncFallbackBusy || document.hidden || isVisitor()) return;
+  if (liveSyncFallbackBusy || document.hidden) return;
   if (document.querySelector('[role="dialog"].open')) return;
   liveSyncFallbackBusy = true;
   try {
@@ -3347,14 +3192,14 @@ function renderSyncStatus() {
     document.body.appendChild(status);
   }
   const pending = syncClient.queue().filter(item => item.tripId === activeTrip().id);
-  status.hidden = isVisitor() || !pending.length;
+  status.hidden = !pending.length;
   status.textContent = pending.some(item => item.blocked)
     ? '正在修复同步状态，请保持页面联网'
     : `正在自动同步 ${pending.length} 项修改`;
 }
 
 const syncClient = createSyncClient({
-  storage: localStorage, fetcher: authenticatedFetch, baseUrl: API_BASE,
+  storage: localStorage, fetcher: apiFetch, baseUrl: API_BASE,
   online: () => navigator.onLine !== false,
   onStatus(path, state, tripId, message) {
     renderSyncStatus();
@@ -3364,8 +3209,7 @@ const syncClient = createSyncClient({
   }
 });
 function visibleCachedItems(path, items) {
-  if (isVisitor() && path !== '/itinerary') return [];
-  return items.filter(item => !['/docs', '/expenses'].includes(path) || item.visibility !== 'private' || item.ownerId === currentUserId);
+  return items;
 }
 async function apiGet(path, cacheKey, fallback, tripId = activeTrip().id) {
   try {
@@ -3383,11 +3227,9 @@ async function apiGet(path, cacheKey, fallback, tripId = activeTrip().id) {
 const OFFLINE_QUEUE_KEY = 'kr_offline_write_queue';
 function readOfflineQueue() { try { return JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]'); } catch { return []; } }
 async function flushOfflineQueue() {
-  if (isVisitor()) return;
   await syncClient.flush(); renderSyncStatus();
 }
 async function apiPost(path, body) {
-  if (!ownerOnly()) throw new Error('访客不能保存修改');
   const tripId = activeTrip().id;
   let result;
   try { result = await syncClient.write(path, tripId, body.items, items => applyLiveDataset(path, items, tripId, true)); }
@@ -3493,7 +3335,6 @@ function showInspirationToast(message) {
   showInspirationToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
 }
 async function saveInspiration(raw, suppliedTitle = '') {
-  if (!ownerOnly()) return false;
   const text = String(raw || '').trim();
   const sourceUrl = sourceUrlFromText(text);
   if (!text && !sourceUrl) throw new Error('没有发现可收集的分享内容');
@@ -3507,7 +3348,6 @@ async function saveInspiration(raw, suppliedTitle = '') {
   return true;
 }
 function openInspirationSheet(entry = null) {
-  if (!ownerOnly()) return;
   const item = entry ? normalizeInspiration(entry) : normalizeInspiration({ id: newRecordId('idea'), tripId: activeTrip().id, createdAt: Date.now(), updatedAt: Date.now() });
   inspirationEditingId = inspirationItems.some((saved) => saved.id === entry?.id) ? entry.id : null;
   $('#inspirationSheetTitle').textContent = inspirationEditingId ? '编辑灵感' : '新建灵感';
@@ -3613,7 +3453,7 @@ function hideClipboardSuggestion(ignore = false) {
   clipboardInspirationText = '';
 }
 async function checkClipboardSuggestion(shouldPrompt = false) {
-  if (isVisitor() || !navigator.clipboard?.readText) return;
+  if (!navigator.clipboard?.readText) return;
   try {
     if (navigator.permissions?.query) {
       const permission = await navigator.permissions.query({ name: 'clipboard-read' });
@@ -3635,7 +3475,6 @@ async function checkClipboardSuggestion(shouldPrompt = false) {
   } catch { /* Clipboard remains opt-in; manual collection is always available. */ }
 }
 function analyzeInspirationText(raw) {
-  if (!ownerOnly()) return;
   const text = String(raw || '').trim();
   if (!text) { $('#inspirationPasteInput')?.focus(); showInspirationToast('先粘贴一条小红书链接或分享文案'); return; }
   const sourceUrl = sourceUrlFromText(text);
@@ -3663,7 +3502,7 @@ async function initInspirations() {
 async function captureSharedInspiration() {
   const query = new URLSearchParams(location.search);
   const shared = [query.get('title'), query.get('text'), query.get('url')].filter(Boolean).join('\n').trim();
-  if (!shared || isVisitor()) return;
+  if (!shared) return;
   history.replaceState({}, '', `${location.pathname}${location.hash || '#home'}`);
   try { analyzeInspirationText(shared); showInspirationToast('已收到分享，确认后收好'); }
   catch (error) { console.warn('分享内容暂未收集', error.message); }
@@ -4105,7 +3944,6 @@ const SPOTS = {
 const TABS = ['home', 'itinerary', 'transport', 'map', 'food', 'essay', 'todos', 'packing', 'guide', 'docs', 'expenses'];
 let mapInited = false;
 function showTab(name, pushHash = true) {
-  if (isVisitor() && name !== 'itinerary') name = 'itinerary';
   if (!TABS.includes(name)) name = 'home';
   document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('active', p.id === 'tab-' + name));
   document.querySelectorAll('.bn-btn').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
@@ -4553,7 +4391,7 @@ async function fetchWeather(city) {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
   try {
-    const res = await authenticatedFetch(url, controller ? { signal: controller.signal } : undefined);
+    const res = await apiFetch(url, controller ? { signal: controller.signal } : undefined);
     if (!res.ok) throw new Error('weather request failed');
     const json = await res.json();
     if (!json?.current || !json?.daily?.time || !json?.hourly?.time) throw new Error('weather response incomplete');
@@ -5798,7 +5636,7 @@ async function refreshFxRates() {
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timer = controller ? setTimeout(() => controller.abort(), 4500) : null;
   try {
-    const res = await authenticatedFetch(FX_RATES_URL, controller ? { signal: controller.signal } : undefined);
+    const res = await apiFetch(FX_RATES_URL, controller ? { signal: controller.signal } : undefined);
     const data = await res.json();
     const usdPerCny = Number(data?.rates?.USD);
     const krwPerCny = Number(data?.rates?.KRW);
@@ -5910,7 +5748,7 @@ async function persistExpenses() {
   const payload = expenses.map((e) => ({
     clientId: e.clientId || e.id || e._id || expenseKey(e), desc: e.desc, amount: e.amount, currency: e.currency,
     tripId: e.tripId || currentTripData().id, splitType: e.splitType, people: (e.people || []).map(displayPersonName), category: e.category || '其他',
-    visibility: e.visibility === 'private' ? 'private' : 'shared', ownerId: e.visibility === 'private' ? (e.ownerId || currentUserId) : undefined,
+    visibility: 'shared', ownerId: undefined,
     createdAt: e.createdAt || Date.now(), updatedAt: e.updatedAt || Date.now()
   }));
   cache.set('kr_cache_expenses', expenses);
@@ -5972,9 +5810,9 @@ function initSheet() {
     const people = payerSeg.v === '共同' ? ['可乐', '金鹿'] : [payerSeg.v];
     if (editingExpenseId != null) {
       const item = expenses.find((expense) => (expense._id || expense.clientId) == editingExpenseId);
-      if (item) Object.assign(item, { desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, ownerId: visibilitySeg.v === 'private' ? currentUserId : undefined, updatedAt: Date.now() });
+      if (item) Object.assign(item, { desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: 'shared', ownerId: undefined, updatedAt: Date.now() });
     } else {
-      expenses.unshift({ clientId: newRecordId('expense'), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: visibilitySeg.v, ownerId: visibilitySeg.v === 'private' ? currentUserId : undefined, createdAt: Date.now(), updatedAt: Date.now() });
+      expenses.unshift({ clientId: newRecordId('expense'), desc, amount, currency: curSeg.v, splitType: splitSeg.v, people, category: catSeg.v, visibility: 'shared', ownerId: undefined, createdAt: Date.now(), updatedAt: Date.now() });
     }
     renderExpenses();
     closeSheet();
@@ -5994,7 +5832,7 @@ const LEGACY_PRIVATE_DOC_NAMES = new Set([
   '釜山ASTI酒店中文版入住凭证.pdf', '釜山ASTI酒店英文版入住凭证.pdf',
   '首尔明洞万怡酒店入住凭证.pdf'
 ]);
-// Travel documents are loaded from the authenticated data service. Keeping seed
+// Travel documents are loaded from the shared data service. Keeping seed
 // filenames here would disclose document metadata to anyone downloading the app.
 const DOC_SEEDS = [];
 const DOC_LEGACY_TITLES = new Set(['新文件', '护照 · 可乐', '护照 · 仇金璐', '签证 / K-ETA', '机票行程单', '釜山酒店订单', '首尔酒店订单', 'KTX 车票', 'eSIM 二维码', '紧急联系方式', '旅行保险单']);
@@ -6203,7 +6041,7 @@ function syncSeedDocs(payload) {
     const merged = { ...doc };
     // Seeds provide defaults only; never overwrite a user's edited title or attachment.
     if (!merged.sourceKey) merged.sourceKey = seed.id;
-    // Bundled confirmations moved to authenticated private storage. Migrate only
+    // Bundled confirmations moved to CloudBase storage. Migrate only
     // the known bundled path; user-selected replacement attachments stay intact.
     if (/^\/?assets\/docs\//.test(String(merged.attachmentUrl || '')) && merged.attachmentName === seed.attachmentName) {
       merged.attachmentUrl = seed.attachmentUrl;
@@ -6235,7 +6073,7 @@ async function uploadPrivateAttachment(dataUrl, mime, name, tripId) {
   if (!navigator.onLine) throw new Error('附件需要联网上传，原文件已保留。文字修改仍可离线保存。');
   const extensions = { pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt: 'text/plain', md: 'text/markdown' };
   mime = extensions[String(name).split('.').pop().toLowerCase()] || mime;
-  const response = await authenticatedFetch(`${API_BASE}/files/upload?tripId=${encodeURIComponent(tripId)}`, {
+  const response = await apiFetch(`${API_BASE}/files/upload?tripId=${encodeURIComponent(tripId)}`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ base64: dataUrl.split(',')[1], mime })
   });
@@ -6367,8 +6205,7 @@ async function resolvePrivateUrl(url) {
   if (!String(url).startsWith('cloud://')) return url;
   const cached = privateUrlCache.get(url);
   if (cached?.expiresAt > Date.now()) return cached.url;
-  await authReady;
-  const response = await authenticatedFetch(`${API_BASE}/files/url?tripId=${encodeURIComponent(activeTrip().id)}&fileID=${encodeURIComponent(url)}`, { cache: 'no-store' });
+  const response = await apiFetch(`${API_BASE}/files/url?tripId=${encodeURIComponent(activeTrip().id)}&fileID=${encodeURIComponent(url)}`, { cache: 'no-store' });
   const result = await response.json();
   if (!response.ok || !result.success || !result.url) throw new Error(result.error || '私密文件链接生成失败');
   privateUrlCache.set(url, { url: result.url, expiresAt: result.expiresAt });
@@ -6844,8 +6681,8 @@ async function saveEssaySheet() {
     passHash: sealed.hash,
     payloadEnc: sealed.data,
     payloadIv: sealed.iv,
-    visibility: essayVisibilitySeg.v,
-    ownerId: essayVisibilitySeg.v === 'private' ? currentUserId : undefined,
+    visibility: 'shared',
+    ownerId: undefined,
     createdAt: existing?.createdAt || Date.now(),
     updatedAt: Date.now()
   };
@@ -7093,13 +6930,12 @@ if (window.innerWidth < 768) {
 }
 
 /* ================= SW ================= */
-function initSW(visitor = false) {
+function initSW() {
   if ('serviceWorker' in navigator) {
     // The CloudBase mirror has its own subpath and therefore its own cache scope.
     const appBase = /^\/korea(?:\/|$)/.test(location.pathname) ? '/korea/' : '/';
-    navigator.serviceWorker.register(`${appBase}sw.js?v=84`, { scope: appBase }).catch(() => {});
+    navigator.serviceWorker.register(`${appBase}sw.js?v=85`, { scope: appBase }).catch(() => {});
   }
-  if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);
   if (navigator.onLine !== false) setTimeout(flushOfflineQueue, 900);
   // Keep retrying failed writes while the app remains open. A one-time retry
@@ -7116,25 +6952,18 @@ function initSW(visitor = false) {
 
 /* ================= 启动 ================= */
 (async function boot() {
-  // The page must become useful as soon as authentication is known. In some
-  // iPhone/PWA sessions IndexedDB can be unavailable or slow; syncClient keeps
+  // The page must become useful immediately. In some iPhone/PWA sessions
+  // IndexedDB can be unavailable or slow; syncClient keeps
   // its own bounded fallback, so it cannot be allowed to block weather, cards,
   // or the rest of the home page from rendering.
-  await authReady;
   syncClient.ready.catch((error) => console.warn('本地同步缓存未就绪，继续使用网页缓存', error));
-  const tripsSync = isVisitor() ? Promise.resolve() : syncCustomTrips().catch((error) => console.warn('旅程目录暂时无法同步', error.message));
+  const tripsSync = syncCustomTrips().catch((error) => console.warn('旅程目录暂时无法同步', error.message));
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   renderTripChrome();
   renderConfiguredTripData();
   updateHeader();
   updateRings();
   renderNextUp();
-  if (isVisitor()) {
-    initSW(true);
-    initItinerary();
-    showTab('itinerary', false);
-    return;
-  }
   let lastNextUpRender = 0;
   setInterval(() => {
     updateHeader();
