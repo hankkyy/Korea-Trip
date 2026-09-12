@@ -215,42 +215,12 @@ try {
   assert.equal(await page.getByText('跨设备美食收藏测试', { exact: true }).count(), 1);
   assert.equal((await page.evaluate(() => essayRecords.length)), 1);
   assert.deepEqual(errors, []);
-  await page.evaluate(async () => { await cloudAuth.signOut(); revealLoggedOutGate(); });
-  await page.waitForFunction(() => !document.querySelector('#authGate')?.hidden);
-  assert.equal(await page.locator('#authGate').isVisible(), true);
-  assert.equal(await page.locator('#tripPickerSheet.open').count(), 0);
-  const visitorContext = await browser.newContext({ viewport, serviceWorkers: 'block' });
-  await visitorContext.addInitScript(() => {
-    const session = { access_token: 'visitor-test-token', user: { id: 'visitor-user', is_anonymous: true } };
-    window.cloudbase = { init: () => ({ auth: () => ({
-      getSession: async () => ({ data: { session }, error: null }),
-      signInWithPassword: async () => ({ data: { session }, error: null }),
-      signInAnonymously: async () => ({ data: { session }, error: null }),
-      signOut: async () => ({ error: null })
-    }) }) };
-  });
-  await visitorContext.route('**/*', async route => {
-    const request = route.request(); const url = new URL(request.url());
-    if (url.hostname === '127.0.0.1') return route.continue();
-    const path = url.pathname.replace('/korea-api', '');
-    if (path === '/files/url') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, url: `https://private.example.test/download?file=${encodeURIComponent(url.searchParams.get('fileID'))}`, expiresAt: Date.now() + 840000 }) });
-  if (!paths[path]) return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
-    if (request.method() === 'POST' || path !== '/itinerary') return route.fulfill({ status: 403, contentType: 'application/json', body: JSON.stringify({ success: false, error: '此资料仅旅行成员可见' }) });
-    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(await store.read(path, url.searchParams.get('tripId'))) });
-  });
-  const visitorPage = await visitorContext.newPage();
-  await visitorPage.goto(`http://127.0.0.1:${server.address().port}/#food`);
-  assert.equal(await visitorPage.locator('#authGate').isVisible(), true);
-  await visitorPage.locator('#visitorSubmit').click();
-  await visitorPage.waitForFunction(() => document.body.classList.contains('visitor-mode'));
-  await visitorPage.evaluate(() => showTab('food', false));
-  assert.equal(await visitorPage.locator('#tab-itinerary.active').count(), 1);
-  assert.equal(await visitorPage.locator('#bnav .bn-btn:visible').count(), 1);
-  assert.equal(await visitorPage.locator('.food-add-btn:visible').count(), 0);
-  assert.equal(await visitorPage.locator('#todoAdd:visible').count(), 0);
-  assert.equal(await visitorPage.locator('#inspirationCollectBtn:visible').count(), 0);
-  await assert.rejects(visitorPage.evaluate(() => apiPost('/todos', { items: [] })));
-  await visitorContext.close();
-  console.log('Browser phase: visitor sign-in displayed only read controls and client writes were rejected.');
+  assert.equal(await page.locator('#authGate').isVisible(), false);
+  assert.equal(await page.evaluate(() => accessRole), 'owner');
+  await page.evaluate(() => showTab('food', false));
+  assert((await page.locator('.food-add-btn:visible').count()) > 0);
+  assert.equal(await page.locator('#todoAdd').count(), 1);
+  assert.equal(await page.locator('#inspirationCollectBtn').count(), 1);
+  console.log('Browser phase: anonymous shared session opened directly with full editing controls.');
   console.log('Browser passed: 11 tabs, all dynamic data families, stable IDs, encrypted essay, food/doc editing, deletion confirmation, rapid toggles, offline/IndexedDB recovery, polling and reload; no empty/duplicate render or page errors.');
 } finally { await browser.close(); server.close(); }

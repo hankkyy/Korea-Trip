@@ -36,12 +36,12 @@
 - 前端：单文件原生应用 [index.html](./index.html)，无框架构建步骤。
 - 同步后端：CloudBase HTTP 云函数 [cloudfunctions/korea-api/index.js](./cloudfunctions/korea-api/index.js)，数据协议为 protocol 2。
 - 权威动态数据：CloudBase `kr_sync_state`；旧 `kr_*` 集合只用于迁移与恢复，不得恢复“先删后插”的旧写入方式。
-- 离线：Service Worker `lu-travel-v83`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
+- 离线：Service Worker `lu-travel-v84`，配合 localStorage、IndexedDB 持久队列和前台/4 秒轮询同步。
 - 发布：Vercel 生产入口 `https://www.jinlu.cloud/`，以及 CloudBase 根入口和 `/korea/` 镜像。两个 CloudBase 路径必须各自注册作用域正确的 Service Worker，避免页面壳互相污染。
 
 ## 数据可靠性原则
 
-数据一致性与持久化高于界面和新功能。每次修改先持久化进本机写入队列，再由服务端做版本检查、幂等处理、不可变历史和三方合并。不同记录的并发修改可自动合并；同一记录的真实冲突不会静默覆盖，当前会保留本机版本供备份恢复。页面会在存在待同步或冲突数据时持续显示提示，关闭页面也会拦截提醒。
+数据一致性与持久化高于界面和新功能。每次修改先持久化进本机写入队列，再由服务端做版本检查、幂等处理、不可变历史和三方合并。不同记录的并发修改自动合并；同一记录同时修改时选择 `updatedAt` 最新的版本。旧队列或版本冲突会自动拉取远端快照、保留远端新增记录并重试，不要求用户导入、导出或手动处理同步。页面只显示“正在自动同步”，关闭页面时仍会保护尚未落云的修改。
 
 这不是“所有场景已完全解决”的声明：当前仍是整份列表快照协议，尚未有页面内冲突选择器、通用成员模型或真实双设备弱网全矩阵验收。完整的现状与边界见 [PROJECT_STATUS.md](./PROJECT_STATUS.md)。
 

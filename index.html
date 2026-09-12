@@ -56,7 +56,7 @@ body.short-trip.trip-has-hotels #tab-home .grid.home-hotels{display:grid}
 .auth-gate{position:fixed;inset:0;z-index:99999;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr);align-items:center;gap:clamp(28px,7vw,96px);padding:max(28px,env(safe-area-inset-top)) max(24px,8vw) max(28px,env(safe-area-inset-bottom));background:radial-gradient(circle at 14% 18%,rgba(134,181,154,.24),transparent 34%),linear-gradient(135deg,#F7FBF8,#FFF9ED)}
 .auth-gate[hidden]{display:none}.auth-gate-copy{max-width:560px;color:var(--green-d)}.auth-gate-copy small{display:block;margin-bottom:12px;font-size:13px;letter-spacing:.16em}.auth-gate-copy strong{display:block;font-family:"Songti SC","STSong",serif;font-size:clamp(42px,7vw,78px);line-height:1}.auth-gate-copy p{max-width:420px;margin:20px 0 0;color:#66776D;line-height:1.8}
 .auth-card{width:min(100%,420px);padding:30px;border:1px solid rgba(114,166,127,.2);border-radius:28px;background:rgba(255,254,250,.92);box-shadow:0 22px 60px rgba(63,96,78,.14);backdrop-filter:blur(18px)}.auth-card h1{margin:0 0 8px;color:var(--green-d);font-size:25px}.auth-card>p{margin:0 0 22px;color:var(--muted);font-size:14px;line-height:1.6}.auth-field{display:grid;gap:7px;margin:14px 0}.auth-field label{color:var(--green-d);font-size:13px;font-weight:750}.auth-field input{min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:13px;background:#fff;font:inherit;font-size:16px;color:var(--text);outline:none}.auth-field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(114,166,127,.12)}.auth-password-wrap{position:relative}.auth-password-wrap input{width:100%;padding-right:92px}.auth-password-toggle{position:absolute;top:50%;right:7px;transform:translateY(-50%);min-height:34px;padding:0 10px;border-radius:10px;color:var(--green-d);font-size:12px;font-weight:850}.auth-password-toggle:hover{background:var(--green-xl)}.auth-submit{width:100%;min-height:48px;margin-top:10px;border:0;border-radius:14px;background:var(--green-d);color:white;font:inherit;font-size:15px;font-weight:800}.auth-visitor{width:100%;min-height:44px;margin-top:10px;border:1px solid rgba(64,104,79,.24);border-radius:14px;background:rgba(255,255,255,.64);color:var(--green-d);font:inherit;font-size:14px;font-weight:800}.auth-submit:disabled,.auth-visitor:disabled{opacity:.55}.auth-visitor-note{margin:10px 0 0;color:var(--muted);font-size:12px;line-height:1.55;text-align:center}.auth-error{min-height:20px;margin:12px 0 0;color:#9B6468;font-size:13px;line-height:1.5}.auth-pending> :not(#authGate):not(script){visibility:hidden}
-body.visitor-mode .food-add-btn,body.visitor-mode .food-edit-toggle,body.visitor-mode .food-edit-only,body.visitor-mode .list-add-btn,body.visitor-mode .l-toggle,body.visitor-mode .l-drag,body.visitor-mode .l-actions,body.visitor-mode .exp-edit,body.visitor-mode .docs-primary,body.visitor-mode .doc-edit-only,body.visitor-mode #tripManageBtn,body.visitor-mode #tripNewBtn,body.visitor-mode #tripImportBtn,body.visitor-mode #tripSettingsSave,body.visitor-mode #tripDeleteBtn,body.visitor-mode #itAddRow,body.visitor-mode .it-row-remove,body.visitor-mode .dc-tools,body.visitor-mode .tl-edit{display:none!important}
+body.visitor-mode .food-add-btn,body.visitor-mode .food-edit-toggle,body.visitor-mode .food-edit-only,body.visitor-mode .list-add-btn,body.visitor-mode .l-toggle,body.visitor-mode .l-drag,body.visitor-mode .l-actions,body.visitor-mode .exp-edit,body.visitor-mode .docs-primary,body.visitor-mode .doc-edit-only,body.visitor-mode #tripManageBtn,body.visitor-mode #tripNewBtn,body.visitor-mode #tripSettingsSave,body.visitor-mode #tripDeleteBtn,body.visitor-mode #itAddRow,body.visitor-mode .it-row-remove,body.visitor-mode .dc-tools,body.visitor-mode .tl-edit{display:none!important}
 body.visitor-mode main>.panel:not(#tab-itinerary),body.visitor-mode #bnav .bn-btn:not([data-tab="itinerary"]),body.visitor-mode footer{display:none!important}body.visitor-mode #bnav{justify-content:center;visibility:visible!important}body.visitor-mode #bnav .bn-btn[data-tab="itinerary"]{display:flex!important;visibility:visible!important}body.visitor-mode #tab-itinerary{display:block!important}
 body.visitor-mode .food-card .food-head-fields,body.visitor-mode .food-card>textarea{display:none!important}body.visitor-mode .food-card .food-display-title,body.visitor-mode .food-card .food-meta,body.visitor-mode .food-card .food-note{display:block!important}body.visitor-mode .visitor-mode-note{display:inline-flex}
 @media(max-width:720px){.auth-gate{grid-template-columns:1fr;align-content:center;padding-left:22px;padding-right:22px}.auth-gate-copy{display:none}.auth-card{justify-self:center;padding:25px 22px;border-radius:23px}}
@@ -2512,8 +2512,6 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
     <div class="trip-option disabled" aria-disabled="true"><span class="trip-option-ic"><i class="ti" data-ic="wave"></i></span><span class="trip-option-copy"><span class="trip-option-title">厦门旅行</span><span class="trip-option-meta">Xiamen Trip · 后续创建</span></span><span class="trip-option-state">未创建</span></div>
   </div>
   <div class="list-toolbar">
-    <button id="tripExportBtn" type="button" class="list-add-btn">导出备份</button>
-    <button type="button" class="list-add-btn" onclick="recoverSyncConflicts()">备份后读取最新版本</button>
   </div>
 </div>
 
@@ -2853,7 +2851,7 @@ const VISITOR_WRITE_ACTIONS = new Set(['add-item', 'attach', 'delete', 'drag', '
 document.addEventListener('click', (event) => {
   if (!isVisitor()) return;
   const action = event.target.closest('[data-act]')?.dataset.act;
-  const control = event.target.closest('#todoAdd,#checklistAdd,#essayAddBtn,#docsNewBtn,#tripManageBtn,#tripNewBtn,#tripImportBtn,#expSave,#itAddRow,#listSave,#listDelete,#essaySave,#essayDelete,#tripSettingsSave,#tripDeleteBtn,.list-add-btn,.exp-edit');
+  const control = event.target.closest('#todoAdd,#checklistAdd,#essayAddBtn,#docsNewBtn,#tripManageBtn,#tripNewBtn,#expSave,#itAddRow,#listSave,#listDelete,#essaySave,#essayDelete,#tripSettingsSave,#tripDeleteBtn,.list-add-btn,.exp-edit');
   if (!VISITOR_WRITE_ACTIONS.has(action) && !control) return;
   event.preventDefault(); event.stopImmediatePropagation();
   ownerOnly();
@@ -3277,85 +3275,6 @@ async function deleteTripSettings() {
   closeTripSettings();
   window.location.reload();
 }
-function backupKeysForTrip(tripId) {
-  const prefix = `kr_`;
-  return Object.keys(localStorage).filter((key) => key.startsWith(prefix) && key.endsWith(`::${tripId}`));
-}
-function exportTripBackup() {
-  const trip = activeTrip();
-  const cacheData = {};
-  backupKeysForTrip(trip.id).forEach((key) => { cacheData[key] = localStorage.getItem(key); });
-  let pendingWrites = [];
-  try {
-    const queue = syncClient.queue();
-    pendingWrites = Array.isArray(queue) ? queue.filter(item => item?.tripId === trip.id && Array.isArray(item.items)) : [];
-  } catch {}
-  const payload = { format: 'zaishang-trip-backup', version: 1, exportedAt: new Date().toISOString(), trip, cacheData, pendingWrites };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${trip.id}-backup-${new Date().toISOString().slice(0, 10)}.json`;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-async function recoverSyncConflicts() {
-  if (!confirm('先保留本机修改的备份，再读取已同步的最新版本。未同步的修改会留在备份中，是否继续？')) return;
-  exportTripBackup();
-  if (await syncClient.archiveConflicts(activeTrip().id)) window.location.reload();
-  else alert('当前旅程没有需要处理的同步冲突。');
-}
-function importTripBackup(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      const payload = JSON.parse(String(reader.result || '{}'));
-      if (payload.format !== 'zaishang-trip-backup' || payload.version !== 1 || !payload.trip?.id || typeof payload.cacheData !== 'object') throw new Error('invalid backup');
-      if (payload.trip.id !== activeTrip().id && !confirm(`这个备份属于“${payload.trip.name || payload.trip.id}”，要导入为当前旅程的本地备份吗？`)) return;
-      if (!confirm(`确定用备份覆盖当前“${activeTrip().name}”的本机数据吗？云端数据不会被删除。`)) return;
-      Object.entries(payload.cacheData).forEach(([key, value]) => {
-        if (!key.startsWith('kr_') || key === 'kr_active_trip_id' || typeof value !== 'string') return;
-        const sourceSuffix = `::${payload.trip.id}`;
-        const targetKey = key.endsWith(sourceSuffix) ? `${key.slice(0, -sourceSuffix.length)}::${activeTrip().id}` : '';
-        if (targetKey) localStorage.setItem(targetKey, value);
-      });
-      if (Array.isArray(payload.pendingWrites) && payload.pendingWrites.length) {
-        const targetTripId = activeTrip().id;
-        const allowedPaths = new Set(Object.keys(DIRECT_COLLECTIONS).filter((path) => path !== '/trips'));
-        let queue = [];
-        try {
-          const savedQueue = JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]');
-          if (Array.isArray(savedQueue)) queue = savedQueue.filter((item) => item?.tripId !== targetTripId);
-        } catch {}
-        const restored = payload.pendingWrites.filter((item) => allowedPaths.has(item?.path) && Array.isArray(item.items)).map((item) => ({
-          ...item,
-          id: String(item.id || newRecordId('restored')),
-          key: `${item.path}::${targetTripId}`,
-          tripId: targetTripId,
-          blocked: true,
-          error: '从备份恢复，确认内容后再处理同步冲突'
-        }));
-        localStorage.setItem('kr_sync_queue_v2', JSON.stringify([...queue, ...restored]));
-        const cacheKeyByPath = {
-          '/itinerary': 'kr_cache_itinerary', '/todos': 'kr_cache_todos', '/checklist': 'kr_cache_checklist',
-          '/bucket-list': 'kr_cache_bucketlist', '/expenses': 'kr_cache_expenses', '/docs': 'kr_docs'
-        };
-        restored.forEach((item) => cache.set(cacheKeyByPath[item.path], item.items, targetTripId));
-      }
-      if (payload.trip.id === activeTrip().id) {
-        const custom = customTrips().filter((trip) => trip.id !== payload.trip.id);
-        if (!TRIP_REGISTRY.some((trip) => trip.id === payload.trip.id)) {
-          custom.push(payload.trip);
-          localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom));
-        }
-      }
-      alert('备份已恢复到本机，页面即将刷新。');
-      window.location.reload();
-    } catch { alert('这个备份文件无法读取，请选择“导出备份”生成的 JSON 文件。'); }
-  };
-  reader.readAsText(file);
-}
 function tripDateLabel(value) {
   const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
   return match ? `${match[1]}.${match[2]}.${match[3]}` : '';
@@ -3412,25 +3331,6 @@ function initTripPicker() {
   $('#tripSettingsSave')?.addEventListener('click', saveTripSettings);
   $('#tripSettingsCancel')?.addEventListener('click', closeTripSettings);
   $('#tripDeleteBtn')?.addEventListener('click', deleteTripSettings);
-  $('#tripExportBtn')?.addEventListener('click', exportTripBackup);
-  $('#authLogoutBtn')?.addEventListener('click', async () => {
-    if (syncClient.queue().length) { alert('还有未同步修改，请先联网同步或导出备份，再退出账号。'); return; }
-    const button = $('#authLogoutBtn');
-    if (!cloudAuth) { alert('登录组件未准备好，暂时无法退出。请刷新后重试。'); return; }
-    button.disabled = true;
-    button.textContent = '退出中…';
-    try {
-      const result = await cloudAuth.signOut();
-      if (result?.error) throw result.error;
-      revealLoggedOutGate();
-    } catch (error) {
-      alert(error?.message || '退出失败，请检查网络后重试。');
-      button.disabled = false;
-      button.textContent = '退出账号';
-    }
-  });
-  $('#tripImportBtn')?.addEventListener('click', () => $('#tripImportInput')?.click());
-  $('#tripImportInput')?.addEventListener('change', (event) => importTripBackup(event.target.files?.[0]));
   if (!localStorage.getItem(ACTIVE_TRIP_KEY)) {
     setTimeout(openTripPicker, 180);
   }
@@ -3449,8 +3349,8 @@ function renderSyncStatus() {
   const pending = syncClient.queue().filter(item => item.tripId === activeTrip().id);
   status.hidden = isVisitor() || !pending.length;
   status.textContent = pending.some(item => item.blocked)
-    ? '有修改尚未同步：请在旅程菜单处理冲突或导出备份'
-    : `还有 ${pending.length} 项修改待同步，请勿清除网站数据`;
+    ? '正在修复同步状态，请保持页面联网'
+    : `正在自动同步 ${pending.length} 项修改`;
 }
 
 const syncClient = createSyncClient({
@@ -3460,11 +3360,7 @@ const syncClient = createSyncClient({
     renderSyncStatus();
     if (tripId !== activeTrip().id) return;
     const kind = path === '/todos' ? 'todos' : path === '/checklist' ? 'checklist' : null;
-    if (kind) setListSync(kind, state === 'saved' ? 'saved' : state === 'conflict' ? 'error' : 'saving', state === 'saved' ? '已同步' : state === 'conflict' ? '修改已保留，需要处理冲突' : '已保存，待同步');
-    if (state === 'conflict' && !syncWarnings.has(path)) {
-      syncWarnings.add(path);
-      alert((message || '另一台设备修改了这份清单') + '。你的修改已保留，请在旅程菜单导出备份；不会覆盖其他设备的数据。');
-    }
+    if (kind) setListSync(kind, state === 'saved' ? 'saved' : 'saving', state === 'saved' ? '已同步' : '正在自动同步');
   }
 });
 function visibleCachedItems(path, items) {
@@ -5676,7 +5572,7 @@ async function persistTodos() {
   cache.set('kr_cache_todos', payload);
   try {
     const result = await apiPost('/todos', { items: payload });
-    setListSync('todos', result?.conflict ? 'error' : 'saved', result?.conflict ? '修改已保留，需要处理冲突' : result?.queued ? '已保存，待同步' : '已同步');
+    setListSync('todos', result?.queued ? 'saving' : 'saved', result?.queued ? '正在自动同步' : '已同步');
   } catch {
     setListSync('todos', 'error', '同步失败，已先存本机');
   }
@@ -5797,7 +5693,7 @@ async function persistChecklist() {
   cache.set('kr_cache_checklist', payload);
   try {
     const result = await apiPost('/checklist', { items: payload });
-    setListSync('checklist', result?.conflict ? 'error' : 'saved', result?.conflict ? '修改已保留，需要处理冲突' : result?.queued ? '已保存，待同步' : '已同步');
+    setListSync('checklist', result?.queued ? 'saving' : 'saved', result?.queued ? '正在自动同步' : '已同步');
   } catch {
     setListSync('checklist', 'error', '同步失败，已先存本机');
   }
@@ -6426,7 +6322,7 @@ async function persistDocs() {
   try {
     await apiPost('/docs', { items: payload });
   } catch {
-    alert('保存未完成，请保持页面打开，并在旅程菜单导出备份后重试。');
+    alert('保存正在后台重试，请保持页面联网。');
   }
 }
 function fileCardIcon(doc) {
@@ -7201,7 +7097,7 @@ function initSW(visitor = false) {
   if ('serviceWorker' in navigator) {
     // The CloudBase mirror has its own subpath and therefore its own cache scope.
     const appBase = /^\/korea(?:\/|$)/.test(location.pathname) ? '/korea/' : '/';
-    navigator.serviceWorker.register(`${appBase}sw.js?v=79`, { scope: appBase }).catch(() => {});
+    navigator.serviceWorker.register(`${appBase}sw.js?v=84`, { scope: appBase }).catch(() => {});
   }
   if (visitor) return;
   window.addEventListener('online', flushOfflineQueue);

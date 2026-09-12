@@ -107,14 +107,15 @@ test('two devices automatically merge changes to different records', async () =>
   assert.deepEqual(new Set((await store.read('/expenses', 'korea')).data.map(item => item.clientId)), new Set(['a', 'b']));
   assert.equal((await store.read('/expenses', 'korea')).data.find(item => item.clientId === 'b').amount, 3);
 });
-test('two devices preserve a genuine same-record conflict locally', async () => {
+test('two devices automatically resolve a genuine same-record conflict', async () => {
   const store = createSyncStore(memoryDb({ 'kr_expenses/a': { clientId: 'a', amount: 1, tripId: 'korea' } }), paths); const fetcher = fetchFor(store);
   const a = createClient(fetcher), b = createClient(fetcher);
   await Promise.all([a.read('/expenses', 'korea'), b.read('/expenses', 'korea')]);
   await a.write('/expenses', 'korea', [{ clientId: 'a', amount: 2 }]);
-  assert.equal((await b.write('/expenses', 'korea', [{ clientId: 'a', amount: 3 }])).conflict, true);
-  assert.equal(b.pending('/expenses', 'korea').items[0].amount, 3);
-  assert.equal((await store.read('/expenses', 'korea')).data[0].amount, 2);
+  const result = await b.write('/expenses', 'korea', [{ clientId: 'a', amount: 3 }]);
+  assert.equal(result.conflict, false);
+  assert.equal(b.pending('/expenses', 'korea'), undefined);
+  assert.equal((await store.read('/expenses', 'korea')).data[0].amount, 3);
 });
 test('same-origin tabs keep independent baselines and merge different records', async () => {
   const store = createSyncStore(memoryDb(), paths); const fetcher = fetchFor(store); const disk = storage();

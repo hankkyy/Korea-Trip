@@ -19,10 +19,17 @@ function mergeSnapshots(baseItems, localItems, remoteItems) {
     const before = base.get(id), left = local.get(id), right = remote.get(id);
     const leftChanged = stableJson(left) !== stableJson(before);
     const rightChanged = stableJson(right) !== stableJson(before);
+    let chosen;
     if (leftChanged && rightChanged && stableJson(left) !== stableJson(right)) {
-      throw Object.assign(new Error('同一条记录已在另一台设备修改，双方版本均已保留'), { status: 409 });
+      // Resolve concurrent edits automatically. Records written by the UI carry
+      // updatedAt; ties prefer the incoming edit so the user's latest action is
+      // never left permanently blocked in a local queue.
+      const leftTime = Number(left?.updatedAt || 0);
+      const rightTime = Number(right?.updatedAt || 0);
+      chosen = leftTime >= rightTime ? left : right;
+    } else {
+      chosen = leftChanged ? left : right;
     }
-    const chosen = leftChanged ? left : right;
     if (chosen) merged.push(chosen);
   }
   return merged;

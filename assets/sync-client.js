@@ -87,7 +87,7 @@
       try { storage.setItem(name, raw); localSaved = true; } catch {}
       const task = durableWrites.then(async () => {
         const durableSaved = await durablePut(name, raw);
-        if (!localSaved && !durableSaved) throw new Error('设备存储不可用，修改尚未持久保存。请保持页面打开并导出备份。');
+        if (!localSaved && !durableSaved) throw new Error('设备存储不可用，请保持页面打开，系统会自动重试。');
       });
       durableWrites = task.catch(() => {});
       return task;
@@ -170,19 +170,28 @@
       }
       return { ...entry, items: [...merged.values()], baseRevision: nextRevision };
     }
+    function overlaySnapshot(localItems, remoteItems) {
+      const id = item => String(item.clientId ?? item.id);
+      const merged = new Map(remoteItems.map(item => [id(item), item]));
+      for (const item of localItems) merged.set(id(item), item);
+      return [...merged.values()];
+    }
     async function runFlush() {
       await ready;
       if (!online()) return;
       const attempted = new Set();
+      const retryCounts = new Map();
       while (true) {
-        const item = queue().find(entry => !entry.blocked && !attempted.has(entry.id));
+        let item = queue().find(entry => !entry.blocked && !attempted.has(entry.id));
         if (!item) break;
         attempted.add(item.id);
         try {
           if (!Number.isInteger(item.baseRevision)) {
-            // No trustworthy baseline (old offline queue or edits before first load).
-            // Keep the edit locally instead of uploading a potentially stale whole list.
-            throw Object.assign(new Error('这份修改缺少同步版本，已保留在本机，请先导出备份'), { status: 409 });
+            // Repair an old/offline queue automatically. Preserve remote additions,
+            // overlay the device's saved records, then submit against the latest head.
+            const latest = await request(item.path, item.tripId);
+            item = { ...item, items: overlaySnapshot(item.items, latest.data), baseRevision: latest.revision, blocked: false };
+            await save(queueKey, queue().map(entry => entry.id === item.id ? item : entry));
           }
           await save(queueKey, queue().map(entry => entry.id === item.id ? { ...entry, sent: true } : entry));
           const result = await request(item.path, item.tripId, {
@@ -198,7 +207,24 @@
           await save(queueKey, current);
           onStatus(item.path, current.some(entry => entry.key === item.key) ? 'pending' : 'saved', item.tripId);
         } catch (error) {
-          const blocked = [400, 409, 413, 426].includes(error.status);
+          if (error.status === 409) {
+            try {
+              const latest = await request(item.path, item.tripId);
+              const repaired = { ...item, items: overlaySnapshot(item.items, latest.data), baseRevision: latest.revision, blocked: false, error: '' };
+              await save(queueKey, queue().map(entry => entry.id === item.id ? repaired : entry));
+              onStatus(item.path, 'pending', item.tripId, '已自动合并，正在重试');
+              const retries = (retryCounts.get(item.id) || 0) + 1;
+              retryCounts.set(item.id, retries);
+              if (retries < 3) {
+                attempted.delete(item.id);
+                continue;
+              }
+            } catch (repairError) {
+              onStatus(item.path, 'pending', item.tripId, repairError.message || '同步服务暂不可用，稍后自动重试');
+            }
+            break;
+          }
+          const blocked = [400, 413, 426].includes(error.status);
           if (blocked) await save(queueKey, queue().map(entry => entry.key === item.key ? { ...entry, blocked: true, error: error.message } : entry));
           onStatus(item.path, blocked ? 'conflict' : 'pending', item.tripId, error.message);
           if (!blocked) break;
@@ -241,14 +267,7 @@
       }
       return { success: true, queued: Boolean(remaining), conflict: Boolean(remaining?.blocked), ...(Array.isArray(saved?.data) ? { data: saved.data } : {}) };
     }
-    async function archiveConflicts(tripId) {
-      const items = queue().filter(item => item.tripId === tripId && item.blocked);
-      if (!items.length) return false;
-      await save(`kr_sync_conflict_backup::${tripId}`, { savedAt: Date.now(), items });
-      await save(queueKey, queue().filter(item => !items.some(saved => saved.id === item.id)));
-      return true;
-    }
-    return { read, write, flush, pending, revision, archiveConflicts, queue, ready, settled: () => durableWrites };
+    return { read, write, flush, pending, revision, queue, ready, settled: () => durableWrites };
   }
   if (typeof module !== 'undefined' && module.exports) module.exports = { createSyncClient };
   else root.createSyncClient = createSyncClient;
