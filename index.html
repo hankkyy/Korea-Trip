@@ -1793,7 +1793,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 
     <button id="ctaPlan"><i class="ti" data-ic="map"></i>开始规划旅程</button>
     <section class="inspiration-box" aria-labelledby="inspirationTitle">
-      <div class="inspiration-head"><div><h2 id="inspirationTitle">灵感收集箱</h2><p>把想去的店、路线和旅行想法简单记下来。<span class="inspiration-open-hint">点击卡片打开小红书或抖音原帖</span></p></div><button id="inspirationCollectBtn" type="button"><i class="ti" data-ic="plus"></i>新建灵感</button></div>
+      <div class="inspiration-head"><div><h2 id="inspirationTitle">灵感收集箱</h2><p>把想去的店、路线和旅行想法简单记下来。<span class="inspiration-open-hint">点击卡片打开原帖</span></p></div><button id="inspirationCollectBtn" type="button"><i class="ti" data-ic="plus"></i>新建灵感</button></div>
       <div id="inspirationList" class="inspiration-list"></div>
     </section>
     <div class="short-trip-banner" aria-live="polite"></div>
@@ -2268,7 +2268,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 <!-- ============ 美食 ============ -->
 <section class="panel" id="tab-food">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="food"></i>美食收藏 <span class="st-sub">小红书/攻略收藏都可以收进来</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="food"></i>美食收藏 <span class="st-sub">攻略收藏都可以收进来</span></h2>
     <div class="card food-note-card">
       <div class="food-note-title">把想吃的店先攒起来</div>
       <div class="food-note-text">下面这块是你们自己的美食收藏夹，可以自己新增、改名字、换照片。</div>
@@ -2466,7 +2466,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
   <div class="inspiration-sheet-top"><div><h3 id="inspirationSheetTitle">新建灵感</h3><p>填几项关键信息，之后随时回来补充或修改。</p></div><button class="inspiration-sheet-close" type="button" onclick="closeInspirationSheet()" aria-label="关闭">×</button></div>
   <div class="inspiration-field"><label for="inspirationTitleInput">标题</label><input id="inspirationTitleInput" maxlength="100" placeholder="例如：弘大烤肉备选"></div>
   <div class="inspiration-editor-grid"><div class="inspiration-field"><label for="inspirationPlaceInput">地点 <span>（可选）</span></label><input id="inspirationPlaceInput" maxlength="50" placeholder="例如：首尔、弘大"></div><div class="inspiration-field"><label for="inspirationCategoryInput">归类</label><select id="inspirationCategoryInput"><option value="other">待整理</option><option value="food">美食</option><option value="itinerary">行程</option><option value="stay">住宿</option><option value="shopping">购物</option></select></div></div>
-  <div class="inspiration-field"><label for="inspirationUrlInput">来源链接</label><input id="inspirationUrlInput" type="url" inputmode="url" placeholder="粘贴小红书或抖音分享链接"></div>
+  <div class="inspiration-field"><label for="inspirationUrlInput">来源链接</label><input id="inspirationUrlInput" type="url" inputmode="url" placeholder="粘贴分享链接"></div>
   <div class="inspiration-field"><label for="inspirationNoteInput">自己的备注 <span>（可选）</span></label><textarea id="inspirationNoteInput" maxlength="1000" placeholder="例如：留给 12/29 晚餐，先看排队情况。"></textarea></div>
   <div class="inspiration-sheet-actions"><button id="inspirationDeleteBtn" class="inspiration-delete" type="button">删除</button><button class="inspiration-cancel" type="button" onclick="closeInspirationSheet()">取消</button><button id="inspirationSaveBtn" class="inspiration-save" type="button">收好灵感</button></div>
 </section>
@@ -3514,7 +3514,7 @@ function inspirationTitleFromText(text) {
   const ignored = /^(hi\b|hello\b|嗨[，,！!]?|复制|打开小红书|点击.*链接|分享给你|来自小红书|小红书|网页链接|#|快来看看|看看这篇)/i;
   const candidates = raw.split(/\r?\n|[。！？!?]/).map((line) => line.replace(/\s+/g, ' ').trim().replace(/^[🎉✨📍🔗➡️]+\s*/, '')).filter((line) => line.length >= 4 && !ignored.test(line) && !/^https?:/i.test(line));
   const useful = candidates.find((line) => /[\u4e00-\u9fff]/.test(line) && !/^(看看|发现|点击|复制)/.test(line));
-  return (useful || candidates[0] || '小红书旅行灵感').slice(0, 100);
+  return (useful || candidates[0] || '旅行灵感').slice(0, 100);
 }
 function inspirationCategoryFromText(text) {
   const value = String(text || '');

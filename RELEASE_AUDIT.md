@@ -58,4 +58,4 @@
 
 ## 发布记录
 
-2026-09-11 已发布 CloudBase HTTP 函数、CloudBase 共享根入口与 `/korea/`、CloudBase 独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。当前前端缓存版本为 `lu-travel-v80`；本轮 UI 变更待发布，发布后需重新核对三端核心文件哈希。
+2026-09-12 已发布 CloudBase HTTP 函数、CloudBase 共享根入口与 `/korea/`、CloudBase 独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。本轮 UI 精修已随 `lu-travel-v80` 发布：Vercel 部署 `dpl_CH3Bzm7ZeMJZZoENEeP9EdJm8dHF`，CloudBase webapps 版本 `korea-008`（SUCCESS），Hosting 四个入口文件上传成功。
