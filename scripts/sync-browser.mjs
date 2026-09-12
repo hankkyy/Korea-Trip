@@ -30,12 +30,13 @@ const store = createSyncStore(db, paths);
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
 const viewport = process.env.DESKTOP_VIEWPORT ? { width: 1440, height: 1000 } : { width: 390, height: 844 };
 const context = await browser.newContext({ viewport, serviceWorkers: 'block' });
-const errors = []; let offline = false;
+const errors = []; const downloads = []; let offline = false;
 await context.route('**/*', async route => {
   const request = route.request(); const url = new URL(request.url());
   if (url.hostname === '127.0.0.1') return route.continue();
   const path = url.pathname.replace('/korea-api', '');
   if (path === '/files/url') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, url: `https://private.example.test/download?file=${encodeURIComponent(url.searchParams.get('fileID'))}`, expiresAt: Date.now() + 840000 }) });
+  if (path === '/files/upload') return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, fileID: 'cloud://test/private/shared/korea-2026/browser-file.png', mime: 'image/jpeg', size: 120 }) });
   if (!paths[path]) return route.fulfill({ status: 200, contentType: url.pathname.endsWith('.js') ? 'text/javascript' : 'application/json', body: '{}' });
   assert.equal(request.headers().authorization, undefined);
   if (offline) return route.abort('internetdisconnected');
@@ -49,6 +50,7 @@ await context.route('**/*', async route => {
 });
 const page = await context.newPage();
 page.on('pageerror', error => errors.push(error.message));
+page.on('download', download => downloads.push(download.suggestedFilename()));
 page.on('dialog', dialog => dialog.type() === 'beforeunload' ? dialog.accept() : dialog.dismiss());
 try {
   await page.goto(`http://127.0.0.1:${server.address().port}/#todos`);
@@ -151,12 +153,32 @@ try {
   const essay = (await store.read('/docs', tripId)).data.find(item => item.kind === 'essay');
   assert(essay?.payloadEnc && !JSON.stringify(essay).includes('这段正文只能存在于密文中'));
   console.log('Browser phase: encrypted essay saved');
+  await page.locator('#essayAddBtn').click();
+  await page.locator('#essayTitleInput').fill('直接保存的随笔');
+  await page.locator('#essayContentInput').fill('不设置密码也能直接保存和打开');
+  await page.locator('#essaySave').click();
+  await page.waitForFunction(() => essayRecords.length === 2 && !JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]').length);
+  const openEssay = (await store.read('/docs', tripId)).data.find(item => item.kind === 'essay' && item.payload?.title === '直接保存的随笔');
+  assert.equal(openEssay?.payload?.content, '不设置密码也能直接保存和打开');
+  console.log('Browser phase: password-free essay saved and opened directly');
 
   await page.evaluate(() => showTab('docs', false));
+  const docsBeforeAdd = await page.locator('#docsGrid .doc-card').count();
+  const chooserPromise = page.waitForEvent('filechooser');
+  await page.locator('#docsNewBtn').click();
+  const chooser = await chooserPromise;
+  await chooser.setFiles({
+    name: '酒店确认单.png', mimeType: 'image/png',
+    buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M/wHwAF/gL+qCkP7wAAAABJRU5ErkJggg==', 'base64')
+  });
+  await page.waitForFunction(expected => document.querySelectorAll('#docsGrid .doc-card').length === expected && !JSON.parse(localStorage.getItem('kr_sync_queue_v2') || '[]').length, docsBeforeAdd + 1);
+  assert.equal(await page.locator('#docsGrid .doc-card').first().locator('.doc-display-title').textContent(), '酒店确认单');
+  console.log('Browser phase: one-tap file selection compressed, named and saved automatically');
   assert.equal(await page.evaluate(() => docAttachmentUrl({ attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf' })), 'cloud://hanoi-d4gj8vd2q1e7a3dc0.6861-hanoi-d4gj8vd2q1e7a3dc0-1448781892/private/korea/visa/携程英文版机票行程单.pdf');
   await page.evaluate(() => openDocViewer({ title: '旧文件私有链接迁移', attachmentUrl: '/assets/docs/visa/携程英文版机票行程单.pdf', attachmentType: 'pdf' }));
-  await page.waitForFunction(() => document.querySelector('#docViewerFrame')?.src.includes('private.example.test/download'));
-  assert.match(await page.locator('#docViewerFrame').getAttribute('src'), /private\.example\.test\/download/);
+  await page.waitForFunction(() => document.querySelector('#docViewerFrame')?.src.startsWith('blob:'));
+  assert.match(await page.locator('#docViewerFrame').getAttribute('src'), /^blob:/);
+  assert.deepEqual(downloads, []);
   await page.evaluate(() => closeDocViewer());
   const firstDoc = page.locator('#docsGrid .doc-card').first();
   await firstDoc.locator('[data-act="edit"]').click();
@@ -201,7 +223,7 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('#docsGrid .doc-card').length > 0);
   assert.equal((await page.evaluate(id => currentItinerary.some(item => item.id === id), itineraryId)), true);
   assert.equal(await page.getByText('跨设备美食收藏测试', { exact: true }).count(), 1);
-  assert.equal((await page.evaluate(() => essayRecords.length)), 1);
+  assert.equal((await page.evaluate(() => essayRecords.length)), 2);
   assert.deepEqual(errors, []);
   assert.equal(await page.locator('#authGate').count(), 0);
   assert.equal(await page.evaluate(() => accessRole), 'owner');
@@ -210,5 +232,5 @@ try {
   assert.equal(await page.locator('#todoAdd').count(), 1);
   assert.equal(await page.locator('#inspirationCollectBtn').count(), 1);
   console.log('Browser phase: public shared workspace opened without an account or authorization header.');
-  console.log('Browser passed: 11 tabs, all dynamic data families, stable IDs, encrypted essay, food/doc editing, deletion confirmation, rapid toggles, offline/IndexedDB recovery, polling and reload; no empty/duplicate render or page errors.');
+  console.log('Browser passed: 11 tabs, all dynamic data families, stable IDs, optional essay locks, file preview without automatic download, food/doc editing, deletion confirmation, rapid toggles, offline/IndexedDB recovery, polling and reload; no empty/duplicate render or page errors.');
 } finally { await browser.close(); server.close(); }

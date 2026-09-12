@@ -2282,12 +2282,12 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 随笔 ============ -->
 <section class="panel" id="tab-essay">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="book"></i>随笔 <span class="st-sub">每篇独立密码 · 照片、地点、文字都可以写</span></h2>
+    <h2 class="sec-title"><i class="ti" data-ic="book"></i>随笔 <span class="st-sub">照片、地点、文字都可以写</span></h2>
     <div class="essay-note card">
       <div class="essay-note-ic"><i class="ti" data-ic="lock"></i></div>
       <div class="essay-note-body">
-        <div class="essay-note-title">每篇随笔都是独立锁</div>
-        <div class="essay-note-text">别人打开网页时只能看到锁住的卡片；只有输入对应那篇随笔的密码，才会展开标题、地点、照片和正文。</div>
+        <div class="essay-note-title">写完会自动保存</div>
+        <div class="essay-note-text">平时直接写就行；只有想把某一篇锁起来时，才需要设置密码。</div>
       </div>
     </div>
     <div class="essay-toolbar">
@@ -2359,16 +2359,16 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- ============ 证件 & 文件 ============ -->
 <section class="panel" id="tab-docs">
   <div class="wrap">
-    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">出行资料夹 · 多设备同步</span></h2>
-    <p class="docs-page-sub">机票、酒店、证件和临时资料都放在这里，文件本身就是状态，不再额外标记“待准备”或“已上传”。</p>
+    <h2 class="sec-title"><i class="ti" data-ic="file"></i>证件 &amp; 文件 <span class="st-sub">两个人打开都是同一份</span></h2>
+    <p class="docs-page-sub">机票、酒店订单和临时资料都放在这里。点“打开”直接看，改动会自动保存。</p>
     <div class="docs-layout">
       <aside class="card docs-rail">
         <div class="docs-rail-kicker">TRAVEL FOLDER</div>
         <div class="docs-rail-title">出行资料夹</div>
-        <p class="docs-rail-copy">保持一份清楚、轻量的旅行文件清单。附件会优先保存在本机，没网也能查看。</p>
+        <p class="docs-rail-copy">选择手机里的照片或文件，网站会自动处理并保存。</p>
         <div class="docs-stat"><strong id="docsCount">0</strong><span>份资料</span></div>
-        <button class="docs-primary" id="docsNewBtn" type="button"><i class="ti" data-ic="plus"></i>新增文件</button>
-        <div class="docs-rail-tip">支持图片、PDF、Word、TXT。网络恢复后会继续同步。</div>
+        <button class="docs-primary" id="docsNewBtn" type="button"><i class="ti" data-ic="plus"></i>从手机添加</button>
+        <div class="docs-rail-tip">照片会自动缩小到合适大小；保存完成后，两台设备都能看到。</div>
       </aside>
       <div class="docs-list" id="docsGrid"></div>
     </div>
@@ -2438,7 +2438,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <!-- 证件/文件预览器：站内保留返回网页和文件操作 -->
 <div id="docViewerBackdrop"></div>
 <div id="inspirationToast" class="inspiration-toast" role="status" aria-live="polite"></div>
-<div id="inspirationBackdrop" onclick="closeInspirationSheet()"></div>
+<div id="inspirationBackdrop"></div>
 <section id="inspirationSheet" role="dialog" aria-modal="true" aria-labelledby="inspirationSheetTitle">
   <div class="inspiration-sheet-handle"></div>
   <div class="inspiration-sheet-top"><div><h3 id="inspirationSheetTitle">新建灵感</h3><p>填几项关键信息，之后随时回来补充或修改。</p></div><button class="inspiration-sheet-close" type="button" onclick="closeInspirationSheet()" aria-label="关闭">×</button></div>
@@ -2457,7 +2457,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     <img id="docViewerImg" alt="">
     <div id="docViewerPages" aria-label="文件页面预览"></div>
     <iframe id="docViewerFrame" title="文件预览"></iframe>
-    <div class="doc-viewer-empty" id="docViewerEmpty">这个文件类型暂不支持站内预览，可以选择下载或在新窗口打开。</div>
+    <div class="doc-viewer-empty" id="docViewerEmpty">正在打开文件…</div>
   </div>
   <div class="doc-viewer-bottom">
     <div class="doc-viewer-title" id="docViewerTitle">文件预览</div>
@@ -2470,7 +2470,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
     </div>
     <div class="doc-viewer-actions">
       <button class="doc-viewer-action" id="docViewerDownload" type="button">下载文件</button>
-      <button class="doc-viewer-action" id="docViewerNewWindow" type="button">新窗口打开</button>
+      <button class="doc-viewer-action" id="docViewerNewWindow" type="button">在浏览器打开</button>
     </div>
   </div>
 </div>
@@ -2493,30 +2493,24 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
   </div>
 </div>
 
-<div id="tripSettingsBackdrop" onclick="closeTripSettings()"></div>
+<div id="tripSettingsBackdrop"></div>
 <div id="tripSettingsSheet" role="dialog" aria-modal="true" aria-labelledby="tripSettingsTitle">
   <div class="sheet-handle"></div>
   <button class="sheet-close" type="button" aria-label="关闭" onclick="closeTripSettings()">×</button>
   <h3 id="tripSettingsTitle">新建旅程</h3>
+  <div class="sheet-sub">只填旅程名称、日期和城市，其他内容网站会自动准备。</div>
   <div class="field"><label>旅程名称</label><input id="tripNameInput" placeholder="比如：香港周末旅行"></div>
-  <div class="field"><label>页面品牌</label><input id="tripBrandInput" placeholder="比如：Hong Kong Trip"></div>
   <div class="essay-sheet-grid">
     <div class="field"><label>开始时间</label><input id="tripStartInput" type="datetime-local"></div>
     <div class="field"><label>结束时间</label><input id="tripEndInput" type="datetime-local"></div>
   </div>
-  <div class="essay-sheet-grid">
-    <div class="field"><label>同行人</label><input id="tripMembersInput" placeholder="可乐、金鹿"></div>
-    <div class="field"><label>时区</label><input id="tripTimezoneInput" value="Asia/Shanghai" placeholder="Asia/Shanghai"></div>
-  </div>
+  <div class="field"><label>同行人</label><input id="tripMembersInput" placeholder="可乐、金鹿"></div>
   <div class="field"><label>主要城市</label><input id="tripCityInput" placeholder="比如：香港"></div>
-  <div class="field"><label>封面图片（可选）</label><input id="tripCoverInput" placeholder="assets/photos/xxx.webp"></div>
-  <div class="field" id="tripTemplateField"><label>复制已有旅程模板</label><select id="tripTemplateInput"></select></div>
-  <div class="field"><label>主题色</label><select id="tripThemeInput"><option value="green">薄荷绿</option><option value="purple">雾紫</option><option value="blue">海盐蓝</option></select></div>
   <div class="list-sheet-actions"><button id="tripDeleteBtn" type="button">删除</button><button id="tripSettingsCancel" type="button">取消</button><button id="tripSettingsSave" type="button">保存</button></div>
 </div>
 
 <!-- 记账弹层 -->
-<div id="sheetBackdrop" onclick="closeSheet()"></div>
+<div id="sheetBackdrop"></div>
 <div id="expSheet" role="dialog" aria-modal="true" aria-labelledby="expSheetTitle">
   <div class="sheet-handle"></div>
   <button class="sheet-close" type="button" aria-label="关闭" onclick="closeSheet()">×</button>
@@ -2546,12 +2540,6 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <button data-v="total">总额（两人平摊）</button>
     </div>
   </div>
-  <div class="field"><label>可见范围</label>
-    <div class="seg" id="expVisibilitySeg">
-      <button class="active" data-v="shared">双方可见</button>
-    </div>
-    <div class="field-hint">所有打开网站的人都可以查看和编辑。</div>
-  </div>
   <div class="field"><label>谁付的</label>
     <div class="seg" id="expPayerSeg">
       <button class="active" data-v="共同">共同</button>
@@ -2564,7 +2552,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 <button id="expFAB" aria-label="记一笔" onclick="openSheet()"><span class="fab-plus">+</span></button>
 
 <!-- 行程编辑弹层 -->
-<div id="itBackdrop" onclick="closeItSheet()"></div>
+<div id="itBackdrop"></div>
 <div id="itSheet" role="dialog" aria-modal="true" aria-labelledby="itSheetTitle">
   <div class="sheet-handle"></div>
   <button class="sheet-close" type="button" aria-label="关闭" onclick="closeItSheet()">×</button>
@@ -2614,7 +2602,7 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 </div>
 
 <!-- 待办 / 行李编辑弹层 -->
-<div id="listBackdrop" onclick="closeListSheet()"></div>
+<div id="listBackdrop"></div>
 <div id="listSheet" role="dialog" aria-modal="true" aria-labelledby="listSheetTitle">
   <div class="sheet-handle"></div>
   <button class="sheet-close" type="button" aria-label="关闭" onclick="closeListSheet()">×</button>
@@ -2635,12 +2623,12 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
 </div>
 
 <!-- 随笔编辑弹层 -->
-<div id="essayBackdrop" onclick="closeEssaySheet()"></div>
+<div id="essayBackdrop"></div>
 <div id="essaySheet" role="dialog" aria-modal="true" aria-labelledby="essaySheetTitle">
   <div class="sheet-handle"></div>
   <button class="sheet-close" type="button" aria-label="关闭" onclick="closeEssaySheet()">×</button>
   <h3 id="essaySheetTitle">新建随笔</h3>
-  <div class="sheet-sub">记录日记、攻略或美食，内容会按这篇的密码锁定。</div>
+  <div class="sheet-sub">写好后点保存就行；想锁起来时再设置密码。</div>
   <div class="field">
     <label>标题</label>
     <input id="essayTitleInput" placeholder="比如：釜山海边的晚餐">
@@ -2663,13 +2651,10 @@ footer .f-brand{margin-top:6px;font-size:11.5px}
       <input id="essayPlaceInput" placeholder="海云台 / 明洞">
     </div>
   </div>
-  <div class="essay-security-grid">
-    <div class="field"><label>可见范围</label><div class="seg" id="essayVisibilitySeg"><button class="active" data-v="shared">共同可见</button></div><div class="field-hint">所有打开网站的人都可以看到这篇随笔。</div></div>
-    <div class="field">
-      <label>随笔密码</label>
-      <input id="essayPasswordInput" type="password" placeholder="设置这篇随笔的密码">
-      <div class="essay-password-note">每篇随笔都必须设置密码；打开时需要输入正确密码。</div>
-    </div>
+  <div class="field">
+    <label>想锁起来？<span class="field-optional">（可选）</span></label>
+    <input id="essayPasswordInput" type="password" placeholder="不填就直接保存；需要时再设置密码">
+    <div class="essay-password-note">设置后，每次打开这篇随笔都要输入这个密码。</div>
   </div>
   <div class="field">
     <label>正文</label>
@@ -3063,20 +3048,14 @@ function localDateTime(value) {
   return local.toISOString().slice(0, 16);
 }
 function openTripSettings(trip = null) {
-  const item = trip || { name: '', brand: '', startAt: '', endAt: '', theme: 'green', members: PEOPLE, timezone: 'Asia/Shanghai', cities: {} };
+  const item = trip || { name: '', startAt: '', endAt: '', members: PEOPLE, cities: {} };
   tripSettingsId = trip?.id || null;
   $('#tripSettingsTitle').textContent = trip ? '编辑旅程' : '新建旅程';
   $('#tripNameInput').value = item.name || '';
-  $('#tripBrandInput').value = item.brand || '';
   $('#tripStartInput').value = localDateTime(item.startAt);
   $('#tripEndInput').value = localDateTime(item.endAt);
-  $('#tripThemeInput').value = item.theme || 'green';
   $('#tripMembersInput').value = Array.isArray(item.members) ? item.members.join('、') : (item.members || PEOPLE.join('、'));
-  $('#tripTimezoneInput').value = item.timezone || 'Asia/Shanghai';
   $('#tripCityInput').value = Object.values(item.cities || {}).map((city) => city.name).join('、');
-  $('#tripCoverInput').value = item.cover || '';
-  $('#tripTemplateInput').innerHTML = `<option value="">不复制，创建空白旅程</option>${allTrips().filter((candidate) => candidate.id !== trip?.id).map((candidate) => `<option value="${esc(candidate.id)}">从“${esc(candidate.name)}”复制框架</option>`).join('')}`;
-  $('#tripTemplateField').style.display = trip ? 'none' : 'block';
   $('#tripDeleteBtn').style.display = trip && !TRIP_REGISTRY.some((base) => base.id === trip.id) ? 'block' : 'none';
   closeTripPicker();
   $('#tripSettingsBackdrop').classList.add('open');
@@ -3090,18 +3069,19 @@ function closeTripSettings() {
 }
 async function saveTripSettings() {
   const name = $('#tripNameInput').value.trim();
-  const brand = $('#tripBrandInput').value.trim() || name;
+  const brand = name;
   const startAt = $('#tripStartInput').value ? `${$('#tripStartInput').value}:00+08:00` : '';
   const endAt = $('#tripEndInput').value ? `${$('#tripEndInput').value}:00+08:00` : '';
-  if (!name || !startAt || !endAt || new Date(endAt) <= new Date(startAt)) { alert('请填写名称、开始时间和结束时间，并确认结束时间晚于开始时间。'); return; }
+  if (!name) { alert('先给这段旅程起个名字。'); $('#tripNameInput').focus(); return; }
+  if (!startAt || !endAt) { alert('再选一下出发和回家的时间。'); return; }
+  if (new Date(endAt) <= new Date(startAt)) { alert('回家的时间要晚于出发时间。'); return; }
   const previous = tripSettingsId ? allTrips().find((trip) => trip.id === tripSettingsId) : null;
-  const template = !previous && $('#tripTemplateInput').value ? allTrips().find((trip) => trip.id === $('#tripTemplateInput').value) : null;
-  const base = previous || template || {};
+  const base = previous || {};
   const id = tripSettingsId || newRecordId('trip');
   const cityNames = $('#tripCityInput').value.split(/[、,，]/).map((value) => value.trim()).filter(Boolean);
   const cityList = cityNames.length ? cityNames : [name];
   const cities = Object.fromEntries(cityList.map((city, index) => [index ? `city-${index + 1}` : 'main', { name: city, lat: 0, lon: 0 }]));
-  const draft = { ...base, id, name, brand, dates: `${startAt.slice(0, 10)}–${endAt.slice(0, 10)}`, startAt, endAt, transferAt: base.transferAt || startAt, newYearAt: base.newYearAt || endAt, days: Math.max(1, Math.ceil((new Date(endAt) - new Date(startAt)) / 86400000)), defaultCity: base.defaultCity || Object.keys(cities)[0], cities, heroImages: base.heroImages || [], itinerary: base.itinerary || [], content: 'ready', theme: $('#tripThemeInput').value, members: $('#tripMembersInput').value.split(/[、,，]/).map((value) => value.trim()).filter(Boolean), timezone: $('#tripTimezoneInput').value.trim() || 'Asia/Shanghai', cover: $('#tripCoverInput').value.trim(), updatedAt: Date.now() };
+  const draft = { ...base, id, name, brand, dates: `${startAt.slice(0, 10)}–${endAt.slice(0, 10)}`, startAt, endAt, transferAt: base.transferAt || startAt, newYearAt: base.newYearAt || endAt, days: Math.max(1, Math.ceil((new Date(endAt) - new Date(startAt)) / 86400000)), defaultCity: base.defaultCity || Object.keys(cities)[0], cities, heroImages: base.heroImages || [], itinerary: base.itinerary || [], content: 'ready', theme: base.theme || 'green', members: $('#tripMembersInput').value.split(/[、,，]/).map((value) => value.trim()).filter(Boolean), timezone: base.timezone || 'Asia/Shanghai', cover: base.cover || '', updatedAt: Date.now() };
   const custom = customTrips().filter((trip) => trip.id !== id);
   custom.push(draft);
   localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom));
@@ -3112,7 +3092,7 @@ async function saveTripSettings() {
 }
 async function deleteTripSettings() {
   if (!tripSettingsId || TRIP_REGISTRY.some((trip) => trip.id === tripSettingsId)) return;
-  if (!confirm('删除这段旅程入口？该旅程的行程资料会保留，之后仍可用同一 ID 恢复。')) return;
+  if (!confirm('从列表里移除这段旅程？已经保存的资料会保留。')) return;
   const custom = customTrips().filter((trip) => trip.id !== tripSettingsId);
   localStorage.setItem(CUSTOM_TRIPS_KEY, JSON.stringify(custom));
   await apiPost('/trips', { items: custom });
@@ -3194,8 +3174,8 @@ function renderSyncStatus() {
   const pending = syncClient.queue().filter(item => item.tripId === activeTrip().id);
   status.hidden = !pending.length;
   status.textContent = pending.some(item => item.blocked)
-    ? '正在修复同步状态，请保持页面联网'
-    : `正在自动同步 ${pending.length} 项修改`;
+    ? '正在自动保存，网络恢复后会自己完成'
+    : `正在保存 ${pending.length} 项修改…`;
 }
 
 const syncClient = createSyncClient({
@@ -3205,7 +3185,7 @@ const syncClient = createSyncClient({
     renderSyncStatus();
     if (tripId !== activeTrip().id) return;
     const kind = path === '/todos' ? 'todos' : path === '/checklist' ? 'checklist' : null;
-    if (kind) setListSync(kind, state === 'saved' ? 'saved' : 'saving', state === 'saved' ? '已同步' : '正在自动同步');
+    if (kind) setListSync(kind, state === 'saved' ? 'saved' : 'saving', state === 'saved' ? '已保存' : '正在保存…');
   }
 });
 function visibleCachedItems(path, items) {
@@ -3233,7 +3213,7 @@ async function apiPost(path, body) {
   const tripId = activeTrip().id;
   let result;
   try { result = await syncClient.write(path, tripId, body.items, items => applyLiveDataset(path, items, tripId, true)); }
-  catch (error) { renderSyncStatus(); alert(error.message); throw error; }
+  catch (error) { renderSyncStatus(); showAppToast('已经先保存，网络恢复后会自动完成'); throw error; }
   return result;
 }
 
@@ -3334,6 +3314,7 @@ function showInspirationToast(message) {
   clearTimeout(showInspirationToast.timer);
   showInspirationToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
 }
+function showAppToast(message) { showInspirationToast(message); }
 async function saveInspiration(raw, suppliedTitle = '') {
   const text = String(raw || '').trim();
   const sourceUrl = sourceUrlFromText(text);
@@ -3380,7 +3361,6 @@ function addInspirationCover() {
   input.onchange = () => {
     const file = input.files?.[0];
     if (!file) return;
-    if (file.size > 8 * 1024 * 1024) { alert('图片太大（超过 8MB），换一张试试。'); return; }
     readAttachment(file, (dataUrl) => { inspirationDraftCover = dataUrl; renderInspirationCoverDraft(); });
   };
   input.click();
@@ -3496,8 +3476,8 @@ async function initInspirations() {
     const id = event.target.closest('[data-idea-edit]')?.dataset.ideaEdit;
     if (id) openInspirationSheet(inspirationItems.find((item) => item.id === id));
   });
-  $('#inspirationSaveBtn')?.addEventListener('click', () => saveInspirationSheet().catch((error) => alert(error?.message || '保存灵感失败，请重试。')));
-  $('#inspirationDeleteBtn')?.addEventListener('click', () => deleteInspiration().catch((error) => alert(error?.message || '删除灵感失败，请重试。')));
+  $('#inspirationSaveBtn')?.addEventListener('click', () => saveInspirationSheet().catch(() => showAppToast('已经先保存，网络恢复后会自动完成')));
+  $('#inspirationDeleteBtn')?.addEventListener('click', () => deleteInspiration().catch(() => showAppToast('已经先保存，网络恢复后会自动完成')));
 }
 async function captureSharedInspiration() {
   const query = new URLSearchParams(location.search);
@@ -5410,9 +5390,9 @@ async function persistTodos() {
   cache.set('kr_cache_todos', payload);
   try {
     const result = await apiPost('/todos', { items: payload });
-    setListSync('todos', result?.queued ? 'saving' : 'saved', result?.queued ? '正在自动同步' : '已同步');
+    setListSync('todos', result?.queued ? 'saving' : 'saved', result?.queued ? '正在保存…' : '已保存');
   } catch {
-    setListSync('todos', 'error', '同步失败，已先存本机');
+    setListSync('todos', 'saving', '稍后会自动保存');
   }
 }
 function renderTodos() {
@@ -5531,9 +5511,9 @@ async function persistChecklist() {
   cache.set('kr_cache_checklist', payload);
   try {
     const result = await apiPost('/checklist', { items: payload });
-    setListSync('checklist', result?.queued ? 'saving' : 'saved', result?.queued ? '正在自动同步' : '已同步');
+    setListSync('checklist', result?.queued ? 'saving' : 'saved', result?.queued ? '正在保存…' : '已保存');
   } catch {
-    setListSync('checklist', 'error', '同步失败，已先存本机');
+    setListSync('checklist', 'saving', '稍后会自动保存');
   }
 }
 function renderChecklist() {
@@ -5594,7 +5574,7 @@ let expenses = [], expensesTimer = null;
 const CATS = ['交通', '住宿', '餐饮', '门票', '购物', '其他'];
 const CAT_COLORS = { '交通': '#A7C8CF', '住宿': '#78AA8B', '餐饮': '#E2B96F', '门票': '#D7A0A5', '购物': '#A9B5BE', '其他': '#B9C4BD' };
 const CAT_ICONS = { '交通': 'train', '住宿': 'hotel', '餐饮': 'food', '门票': 'star', '购物': 'gift', '其他': 'receipt' };
-const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' }, visibilitySeg = { v: 'shared' };
+const curSeg = { v: 'KRW' }, splitSeg = { v: 'perPerson' }, payerSeg = { v: '共同' }, catSeg = { v: '餐饮' };
 function isPrivateExpense(it) { return it.visibility === 'private'; }
 function expenseKey(it) {
   return String(it?.clientId || it?.id || it?._id || `${it?.desc || ''}|${it?.amount || ''}|${it?.currency || ''}|${it?.createdAt || ''}`).trim();
@@ -5701,10 +5681,9 @@ function renderExpenses() {
     const isTotal = it.splitType === 'total';
     const cat = expCatOf(it);
     const col = CAT_COLORS[cat];
-    const visibilityLabel = isPrivateExpense(it) ? '<span class="exp-visibility">隐藏</span>' : '';
     return `<div class="exp-row" data-id="${esc(it._id || it.clientId)}">
       <span class="exp-ic" style="--eic-c:${col};--eic:${col}1f">${ic(CAT_ICONS[cat])}</span>
-      <span class="exp-main"><span class="exp-desc">${esc(it.desc)}<span class="exp-cat" style="--cc:${col};--cc-l:${col}1f">${cat}</span>${visibilityLabel}</span>
+      <span class="exp-main"><span class="exp-desc">${esc(it.desc)}<span class="exp-cat" style="--cc:${col};--cc-l:${col}1f">${cat}</span></span>
         <div class="exp-meta">${isTotal ? '总额平摊' : '人均'} · ${esc(displayPersonName(it.people && it.people[0]))}${it.people && it.people.length > 1 ? ' & ' + esc(displayPersonName(it.people[1])) : ''} · ¥${itemPerPersonRMB(it).toFixed(0)}/人</div></span>
       <span class="exp-amt"><span class="ea-main">¥${(it.amount * (FX_RATES[it.currency] || 1)).toFixed(0)}</span>
         <div class="ea-sub">${curSym}${Number(it.amount).toLocaleString()}${isTotal ? ' 总额' : '/人'}</div></span>
@@ -5740,7 +5719,6 @@ window.editExpense = function (id) {
   setExpenseSegment('expCatSeg', catSeg, expCatOf(item));
   setExpenseSegment('expCurSeg', curSeg, item.currency || 'KRW');
   setExpenseSegment('expSplitSeg', splitSeg, item.splitType || 'perPerson');
-  setExpenseSegment('expVisibilitySeg', visibilitySeg, item.visibility === 'private' ? 'private' : 'shared');
   setExpenseSegment('expPayerSeg', payerSeg, item.people?.length === 1 ? displayPersonName(item.people[0]) : '共同');
   openSheet();
 };
@@ -5759,7 +5737,7 @@ async function initExpenses() {
   setFxRateHint();
   const list = await apiGet('/expenses', 'kr_cache_expenses', []);
   const privateItems = cache.get('kr_private_expenses', activeTrip().id) || [];
-  expenses = mergeExpenses(list, privateItems).map((item) => item.visibility === 'private' && !item.ownerId ? { ...item, visibility: 'shared' } : item);
+  expenses = mergeExpenses(list, privateItems).map((item) => ({ ...item, visibility: 'shared', ownerId: undefined }));
   renderExpenses();
   if (privateItems.length) {
     cache.set('kr_private_expenses', []);
@@ -5781,7 +5759,6 @@ window.openSheet = function () {
     setExpenseSegment('expCatSeg', catSeg, '餐饮');
     setExpenseSegment('expCurSeg', curSeg, 'KRW');
     setExpenseSegment('expSplitSeg', splitSeg, 'perPerson');
-    setExpenseSegment('expVisibilitySeg', visibilitySeg, 'shared');
     setExpenseSegment('expPayerSeg', payerSeg, '共同');
     $('#expDesc').value = '';
     $('#expAmount').value = '';
@@ -5802,7 +5779,6 @@ function initSheet() {
   bindSeg('expSplitSeg', splitSeg);
   bindSeg('expPayerSeg', payerSeg);
   bindSeg('expCatSeg', catSeg);
-  bindSeg('expVisibilitySeg', visibilitySeg);
   $('#expSave').addEventListener('click', async () => {
     const desc = $('#expDesc').value.trim();
     const amount = parseFloat($('#expAmount').value);
@@ -5846,7 +5822,6 @@ let essayUnlockedPasswords = new Map();
 let essayEditingId = null;
 let essayDraftPhotos = [];
 let essayFilter = 'all';
-const essayVisibilitySeg = { v: 'shared' };
 
 function base64FromBytes(bytes) {
   let bin = '';
@@ -5974,6 +5949,7 @@ function normalizeEssayVault(doc, idx) {
     payloadIv: doc.payloadIv || doc.contentIv || '',
     passSalt: doc.passSalt || '',
     passHash: doc.passHash || '',
+    payload: doc.payload && typeof doc.payload === 'object' ? doc.payload : null,
     visibility: doc.visibility === 'private' && doc.ownerId ? 'private' : 'shared',
     ownerId: doc.ownerId || '',
     createdAt: Number(doc.createdAt) || Date.now(),
@@ -6070,21 +6046,23 @@ function syncSeedDocs(payload) {
   return { payload: next, changed };
 }
 async function uploadPrivateAttachment(dataUrl, mime, name, tripId) {
-  if (!navigator.onLine) throw new Error('附件需要联网上传，原文件已保留。文字修改仍可离线保存。');
+  if (!navigator.onLine) throw new Error('现在没有网络，文件还在手机里；联网后再选一次就好。');
   const extensions = { pdf: 'application/pdf', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt: 'text/plain', md: 'text/markdown' };
   mime = extensions[String(name).split('.').pop().toLowerCase()] || mime;
-  const response = await apiFetch(`${API_BASE}/files/upload?tripId=${encodeURIComponent(tripId)}`, {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ base64: dataUrl.split(',')[1], mime })
+  return retryFileTask(async () => {
+    const response = await apiFetch(`${API_BASE}/files/upload?tripId=${encodeURIComponent(tripId)}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base64: dataUrl.split(',')[1], mime })
+    });
+    const result = await response.json();
+    if (!response.ok || !result.success) throw new Error(result.error || '文件暂时没有保存成功');
+    return result;
   });
-  const result = await response.json();
-  if (!response.ok || !result.success) throw new Error(result.error || '上传未完成，原附件已保留');
-  return result;
 }
 function hydratePrivateImages(container) {
   container?.querySelectorAll('img[data-private-src]').forEach(async image => {
     try { image.src = await resolvePrivateUrl(image.dataset.privateSrc); }
-    catch { image.alt = '图片暂不可用，请联网后重试'; }
+    catch { image.alt = '图片暂时没有打开'; }
   });
 }
 function attachmentImageAttributes(url) {
@@ -6097,15 +6075,14 @@ function attachImage(doc) {
   input.onchange = () => {
     const file = input.files && input.files[0];
     if (!file) return;
-    if (file.size > 12 * 1024 * 1024) { alert('图片太大（>12MB），先压缩或换一张'); return; }
     readAttachment(file, async (dataUrl, mime) => {
       const tripId = activeTrip().id;
       let uploaded;
       try { uploaded = await uploadPrivateAttachment(dataUrl, mime, file.name, tripId); }
-      catch (error) { alert(error.message || '上传失败，原附件已保留'); return; }
+      catch (error) { alert(error.message || '网站已经自动试了几次，文件仍没保存；原文件还在手机里。'); return; }
       if (activeTrip().id !== tripId) return;
       doc = [...docsData, ...foodRecords].find(item => item.id === doc.id);
-      if (!doc) { alert('这条记录已被删除，上传的文件未绑定。'); return; }
+      if (!doc) { showAppToast('这条记录已经删除'); return; }
       doc.attachmentUrl = uploaded.fileID;
       doc.attachmentMime = mime;
       doc.attachmentType = 'image';
@@ -6141,7 +6118,7 @@ async function loadDocs() {
   docsData = seededSync.payload;
   essayRecords = essaySource.map(normalizeEssayVault).filter((d) => d.kind !== 'essay-meta').sort((a, b) => a.sortOrder - b.sortOrder);
   foodRecords = foodSource.map(normalizeFoodRecord).sort((a, b) => a.sortOrder - b.sortOrder);
-  essayOpenPayloads = new Map();
+  essayOpenPayloads = new Map(essayRecords.filter((item) => item.payload).map((item) => [item.id, item.payload]));
   essayUnlockedPasswords = new Map();
   cache.set('kr_docs', [...docsData, ...(essayLegacyMeta ? [essayLegacyMeta] : []), ...essayRecords, ...foodRecords]);
   const needSeedSync = seededSync.changed || docsData.length !== fileSource.length || seedDocs(fileSource.map(normalizeFileDoc)).length !== docsData.length;
@@ -6151,16 +6128,16 @@ async function loadDocs() {
 }
 async function persistDocs() {
   const payload = [...docsData.filter((doc) => docBelongsToCurrentTrip(doc)).map((doc, idx) => normalizeFileDoc(doc, idx)).filter(shouldKeepFileDoc)];
-  const legacyRemain = essayRecords.some((item) => !item.passSalt || !item.passHash);
+  const legacyRemain = essayRecords.some((item) => item.payloadEnc && (!item.passSalt || !item.passHash));
   if (essayLegacyMeta && legacyRemain) payload.push(essayLegacyMeta);
   payload.push(...essayRecords);
   payload.push(...foodRecords);
   docsData = payload.filter((doc) => doc.kind === 'file');
-  if (!cache.set('kr_docs', payload)) alert('本机缓存空间不足，正在尝试持久队列保存；请勿清除网站数据。');
+  if (!cache.set('kr_docs', payload)) showAppToast('正在安全保存，请先别关闭页面');
   try {
     await apiPost('/docs', { items: payload });
   } catch {
-    alert('保存正在后台重试，请保持页面联网。');
+    showAppToast('已经先保存，网络恢复后会自动完成');
   }
 }
 function fileCardIcon(doc) {
@@ -6211,6 +6188,17 @@ async function resolvePrivateUrl(url) {
   privateUrlCache.set(url, { url: result.url, expiresAt: result.expiresAt });
   return result.url;
 }
+async function retryFileTask(task, attempts = 3) {
+  let lastError;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try { return await task(); }
+    catch (error) {
+      lastError = error;
+      if (attempt + 1 < attempts) await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
+    }
+  }
+  throw lastError;
+}
 async function openDocViewer(doc) {
   if (!doc?.attachmentUrl) return;
   const viewer = $('#docViewer');
@@ -6222,14 +6210,22 @@ async function openDocViewer(doc) {
   if (!viewer || !backdrop || !image || !frame || !empty) return;
   activeDocViewer = doc;
   if (docViewerObjectUrl) { URL.revokeObjectURL(docViewerObjectUrl); docViewerObjectUrl = null; }
+  $('#docViewerTitle').textContent = doc.title || doc.attachmentName || '文件预览';
+  image.style.display = 'none';
+  pages.style.display = 'none';
+  frame.style.display = 'none';
+  empty.style.display = 'flex';
+  empty.textContent = '正在打开文件…';
+  backdrop.classList.add('open');
+  viewer.classList.add('open');
+  document.body.classList.add('doc-viewer-open');
   let url;
   let previewImages;
   try {
-    url = await resolvePrivateUrl(docAttachmentUrl(doc));
-    previewImages = await Promise.all(docPreviewImages(doc).map(resolvePrivateUrl));
+    url = await retryFileTask(() => resolvePrivateUrl(docAttachmentUrl(doc)));
+    previewImages = await Promise.all(docPreviewImages(doc).map((src) => retryFileTask(() => resolvePrivateUrl(src))));
   } catch (error) {
-    alert(error?.message || '文件暂时无法打开，请稍后重试。');
-    activeDocViewer = null;
+    empty.textContent = '文件暂时没打开，过一会儿再试就好。';
     return;
   }
   const isImage = isImagePath(doc.attachmentUrl, doc.attachmentMime);
@@ -6238,8 +6234,9 @@ async function openDocViewer(doc) {
   image.style.display = isImage ? 'block' : 'none';
   pages.style.display = hasPagePreview ? 'flex' : 'none';
   pages.innerHTML = hasPagePreview ? previewImages.map((src, index) => `<img class="doc-preview-page" src="${esc(src)}" alt="${esc(doc.title || '文件')} 第${index + 1}页">`).join('') : '';
-  frame.style.display = !isImage && !hasPagePreview && isPreviewable ? 'block' : 'none';
-  empty.style.display = isPreviewable ? 'none' : 'block';
+  frame.style.display = 'none';
+  empty.style.display = isImage || hasPagePreview ? 'none' : 'flex';
+  empty.textContent = isPreviewable ? '正在打开文件…' : '这个文件需要在浏览器里打开。';
   $('#docViewerZoom').style.display = isImage || hasPagePreview ? 'flex' : 'none';
   docImageScale = 1;
   image.removeAttribute('src');
@@ -6256,27 +6253,35 @@ async function openDocViewer(doc) {
     // Signed CloudBase URLs may send Content-Disposition: attachment. Fetching
     // into a blob gives the embedded viewer an inline object URL and prevents
     // Safari/Chrome from downloading the PDF when the user only wants to view it.
-    frame.src = url;
     try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 5000);
-      const response = await fetch(url, { cache: 'no-store', signal: controller.signal });
-      clearTimeout(timeout);
+      let response;
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 7000);
+        try {
+          response = await fetch(url, { cache: 'no-store', signal: controller.signal });
+          if (response.ok) break;
+        } catch {
+          if (attempt === 1) throw new Error('文件读取失败');
+        } finally { clearTimeout(timeout); }
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
       if (!response.ok) throw new Error(`文件读取失败（${response.status}）`);
-      const contentType = response.headers.get('content-type') || '';
-      if (contentType && !/application\/pdf|text\//i.test(contentType)) return;
-      const blob = await response.blob();
+      const source = await response.blob();
+      const blob = new Blob([await source.arrayBuffer()], { type: doc.attachmentType === 'pdf' ? 'application/pdf' : (source.type || 'text/plain') });
       if (activeDocViewer !== doc) return;
       docViewerObjectUrl = URL.createObjectURL(blob);
       frame.src = docViewerObjectUrl;
+      frame.style.display = 'block';
+      empty.style.display = 'none';
     } catch {
-      // Keep the direct URL fallback for browsers that block cross-origin reads.
+      // Never place an attachment URL directly in the iframe: some browsers
+      // download it automatically instead of showing a preview.
+      frame.style.display = 'none';
+      empty.style.display = 'flex';
+      empty.textContent = '这里暂时没能预览，点下面“在浏览器打开”即可查看。';
     }
   }
-  $('#docViewerTitle').textContent = doc.title || doc.attachmentName || '文件预览';
-  backdrop.classList.add('open');
-  viewer.classList.add('open');
-  document.body.classList.add('doc-viewer-open');
   $('#docViewerClose')?.focus();
 }
 function closeDocViewer() {
@@ -6379,7 +6384,7 @@ function renderDocs() {
       <div class="doc-actions">
         <button class="doc-btn" data-act="edit">${ic('edit')}编辑</button>
         <button class="doc-btn doc-edit-only" data-act="attach">${ic('attach')}${d.attachmentUrl ? '替换文件' : '添加文件'}</button>
-        <button class="doc-btn" data-act="open"${d.attachmentUrl ? '' : ' disabled'}>${ic('refresh')}打开</button>
+        <button class="doc-btn" data-act="open"${d.attachmentUrl ? '' : ' disabled'}>${ic('file')}打开</button>
         <button class="doc-btn danger doc-edit-only" data-act="delete">${ic('x')}删除</button>
       </div>
     </article>`;
@@ -6393,6 +6398,7 @@ function renderDocs() {
 function readAttachment(file, cb) {
   if (file.type.startsWith('image/')) {
     const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
     img.onload = () => {
       const MAX = 1280;
       const scale = Math.min(1, MAX / Math.max(img.width, img.height));
@@ -6400,10 +6406,11 @@ function readAttachment(file, cb) {
       canvas.width = Math.max(1, Math.round(img.width * scale));
       canvas.height = Math.max(1, Math.round(img.height * scale));
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(objectUrl);
       cb(canvas.toDataURL('image/jpeg', 0.82), 'image/jpeg');
     };
-    img.onerror = () => alert('图片读取失败，换一张试试');
-    img.src = URL.createObjectURL(file);
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); alert('这张图片没有读出来，请重新选择一次。'); };
+    img.src = objectUrl;
     return;
   }
   const reader = new FileReader();
@@ -6411,22 +6418,29 @@ function readAttachment(file, cb) {
   reader.onerror = () => alert('文件读取失败，换一个试试');
   reader.readAsDataURL(file);
 }
-function attachFile(doc) {
+function attachFile(doc, isNew = false) {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*,.pdf,.doc,.docx,.txt,.md';
   input.onchange = () => {
     const file = input.files && input.files[0];
     if (!file) return;
-    if (file.size > (file.type.startsWith('image/') ? 12 : 4) * 1024 * 1024) { alert('图片原文件上限 12MB，其他文件上限 4MB，请先压缩。'); return; }
+    if (!file.type.startsWith('image/') && file.size > 4 * 1024 * 1024) { alert('这个文件太大，网站暂时装不下。请选择小一点的版本。'); return; }
+    showAppToast('正在保存文件…');
     readAttachment(file, async (dataUrl, mime) => {
       const tripId = activeTrip().id;
       let uploaded;
       try { uploaded = await uploadPrivateAttachment(dataUrl, mime, file.name, tripId); }
-      catch (error) { alert(error.message || '上传失败，原附件已保留'); return; }
+      catch (error) { alert(error.message || '网站已经自动试了几次，文件仍没保存；原文件还在手机里。'); return; }
       if (activeTrip().id !== tripId) return;
-      doc = [...docsData, ...foodRecords].find(item => item.id === doc.id);
-      if (!doc) { alert('这条记录已被删除，上传的文件未绑定。'); return; }
+      if (isNew) {
+        doc = normalizeFileDoc({ ...doc, title: file.name.replace(/\.[^.]+$/, ''), createdAt: Date.now(), updatedAt: Date.now() }, 0);
+        docsData.unshift(doc);
+        docsData = docsData.map((item, idx) => ({ ...item, sortOrder: idx + 1 }));
+      } else {
+        doc = [...docsData, ...foodRecords].find(item => item.id === doc.id);
+        if (!doc) { showAppToast('这条记录已经删除'); return; }
+      }
       doc.attachmentUrl = uploaded.fileID;
       doc.attachmentMime = mime;
       doc.attachmentType = guessAttachmentType(file);
@@ -6434,7 +6448,8 @@ function attachFile(doc) {
       if (!doc.title) doc.title = file.name.replace(/\.[^.]+$/, '');
       doc.updatedAt = Date.now();
       renderDocs(); hydratePrivateImages(document);
-      persistDocs();
+      await persistDocs();
+      showAppToast('文件已保存');
     });
   };
   input.click();
@@ -6446,18 +6461,7 @@ async function initDocs() {
   renderFood(); hydratePrivateImages(document);
   renderEssay();
   $('#docsNewBtn').addEventListener('click', async () => {
-    docsData.unshift(normalizeFileDoc({ id: newRecordId('doc'), kind: 'file', title: '', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1, createdAt: Date.now(), updatedAt: Date.now() }, 0));
-    docsData = docsData.map((d, idx) => ({ ...d, sortOrder: idx + 1 }));
-    renderDocs();
-    const firstCard = $('#docsGrid .doc-card');
-    const firstEditButton = firstCard?.querySelector('[data-act="edit"]');
-    if (firstCard && firstEditButton) {
-      firstCard.classList.add('editing');
-      firstEditButton.innerHTML = `${ic('check')}完成`;
-    }
-    const firstInput = firstCard?.querySelector('.doc-title-input');
-    if (firstInput) firstInput.focus();
-    await persistDocs();
+    attachFile({ id: newRecordId('doc'), kind: 'file', title: '', note: '', attachmentUrl: '', attachmentName: '', sortOrder: 1, createdAt: Date.now(), updatedAt: Date.now() }, true);
   });
   $('#docsGrid').addEventListener('click', async (e) => {
     const btn = e.target.closest('.doc-btn');
@@ -6603,7 +6607,7 @@ function openEssaySheet(entry = null) {
   $('#essayPlaceInput').value = entry?.place || '';
   $('#essayContentInput').value = entry?.content || '';
   $('#essayPasswordInput').value = '';
-  setExpenseSegment('essayVisibilitySeg', essayVisibilitySeg, entry?.visibility === 'private' ? 'private' : 'shared');
+  $('#essayDelete').style.display = entry ? '' : 'none';
   renderEssayDraftPhotos();
   $('#essayBackdrop').classList.add('open');
   $('#essaySheet').classList.add('open');
@@ -6637,7 +6641,6 @@ function addEssayPhoto() {
   input.onchange = () => {
     const file = input.files && input.files[0];
     if (!file) return;
-    if (file.size > 8 * 1024 * 1024) { alert('图片太大（>8MB），先压缩或换一张'); return; }
     readAttachment(file, (dataUrl) => {
       essayDraftPhotos.push(dataUrl);
       renderEssayDraftPhotos();
@@ -6655,10 +6658,6 @@ async function saveEssaySheet() {
   const inputPassword = String($('#essayPasswordInput').value || '').trim();
   const currentPassword = essayEditingId ? essayUnlockedPasswords.get(essayEditingId) : '';
   const password = inputPassword || currentPassword || '';
-  if (!password) {
-    alert('请先填写这篇随笔的密码。');
-    return;
-  }
   const payload = {
     title,
     category: ESSAY_KIND_LABELS[category] ? category : 'diary',
@@ -6669,36 +6668,40 @@ async function saveEssaySheet() {
     createdAt: existing?.createdAt || Date.now(),
     updatedAt: Date.now()
   };
-  const useExistingSalt = Boolean(existing?.passSalt && existing.passHash && !inputPassword);
-  const sealed = await essayEncryptWithPassword(payload, password, useExistingSalt ? existing.passSalt : '');
-  const base = {
+  const common = {
     id: existing?.id || newRecordId('essay'),
     tripId: existing?.tripId || currentTripData().id,
     kind: 'essay',
     sortOrder: Number.isFinite(Number(existing?.sortOrder)) ? Number(existing.sortOrder) : Date.now(),
     category: payload.category,
-    passSalt: sealed.salt,
-    passHash: sealed.hash,
-    payloadEnc: sealed.data,
-    payloadIv: sealed.iv,
     visibility: 'shared',
     ownerId: undefined,
     createdAt: existing?.createdAt || Date.now(),
     updatedAt: Date.now()
   };
+  let base;
+  if (password) {
+    const useExistingSalt = Boolean(existing?.passSalt && existing.passHash && !inputPassword);
+    const sealed = await essayEncryptWithPassword(payload, password, useExistingSalt ? existing.passSalt : '');
+    base = { ...common, passSalt: sealed.salt, passHash: sealed.hash, payloadEnc: sealed.data, payloadIv: sealed.iv, payload: null };
+  } else {
+    base = { ...common, passSalt: '', passHash: '', payloadEnc: '', payloadIv: '', payload };
+  }
   const idx = essayRecords.findIndex((it) => it.id === essayEditingId);
   if (idx >= 0) essayRecords[idx] = base;
   else essayRecords.unshift(base);
   essayRecords = essayRecords.map((it, i) => ({ ...it, sortOrder: i + 1 }));
-  // 保存后重新锁定，避免新建或编辑完成后绕过密码直接看到正文。
-  essayUnlockedPasswords.delete(base.id);
-  essayOpenPayloads.delete(base.id);
+  if (password) {
+    essayUnlockedPasswords.delete(base.id);
+    essayOpenPayloads.delete(base.id);
+  } else {
+    essayOpenPayloads.set(base.id, payload);
+  }
   closeEssaySheet();
   renderEssay();
   await persistDocs();
 }
 function initEssay() {
-  bindSeg('essayVisibilitySeg', essayVisibilitySeg);
   $('#essayAddBtn').addEventListener('click', () => {
     openEssaySheet();
   });
@@ -6934,7 +6937,7 @@ function initSW() {
   if ('serviceWorker' in navigator) {
     // The CloudBase mirror has its own subpath and therefore its own cache scope.
     const appBase = /^\/korea(?:\/|$)/.test(location.pathname) ? '/korea/' : '/';
-    navigator.serviceWorker.register(`${appBase}sw.js?v=85`, { scope: appBase }).catch(() => {});
+    navigator.serviceWorker.register(`${appBase}sw.js?v=86`, { scope: appBase }).catch(() => {});
   }
   window.addEventListener('online', flushOfflineQueue);
   if (navigator.onLine !== false) setTimeout(flushOfflineQueue, 900);
