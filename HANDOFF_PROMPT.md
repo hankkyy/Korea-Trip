@@ -1,7 +1,7 @@
 # 在璐上接手与发布手册
 
 更新时间：2026-09-12
-当前实现基线：待本轮发布提交；Service Worker：`lu-travel-v86`
+当前实现基线：`dad2bff`；Service Worker：`lu-travel-v86`
 
 ## 先读
 

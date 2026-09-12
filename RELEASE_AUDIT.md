@@ -64,4 +64,4 @@
 
 ## 发布记录
 
-2026-09-12 已发布 CloudBase HTTP 云函数、CloudBase 共享根入口与 `/korea/`、独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。无账号公开共享模式已随 `lu-travel-v85` 发布：Vercel 部署 `dpl_MuKJiPP4DGEGc26GHDRFbjJUkJpX`，Hosting 六个入口/同步文件上传成功，独立 webapps 版本 `korea-014`（SUCCESS）。四套线上前端的 `index.html`、`sw.js` 和 `assets/sync-client.js` 与本地 SHA-256 一致；函数规则为公开调用，无凭证读取和写入已通过。
+2026-09-12 已发布 CloudBase HTTP 云函数、CloudBase 共享根入口与 `/korea/`、独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。无账号公共共享和零技术门槛体验随 `lu-travel-v86` 发布：Vercel 部署 `dpl_Yzp7hzfSBcicDoQVVeEZy1oLcTUw`，Hosting 六个入口/同步文件上传成功，独立 webapps 版本 `korea-016`（SUCCESS）。四套线上前端的 `index.html`、`sw.js` 和 `assets/sync-client.js` 与本地 SHA-256 一致；线上页面已确认包含一键文件添加、可选随笔密码且没有登录入口，函数规则为公开调用，无凭证读取和写入通过。
