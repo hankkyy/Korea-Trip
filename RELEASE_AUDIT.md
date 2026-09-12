@@ -4,7 +4,7 @@
 
 ## 审计范围与结论
 
-审计覆盖 11 个页面、所有编辑层和预览层、韩国/香港/厦门旅程隔离、认证和访客权限、全部动态数据族、离线队列、多标签页、多设备合并、私有文件、Service Worker、Vercel 与 CloudBase 发布配置。
+审计覆盖 11 个页面、所有编辑层和预览层、韩国/香港/厦门旅程隔离、匿名共享会话、全部动态数据族、离线队列、多标签页、多设备合并、私有文件、Service Worker、Vercel 与 CloudBase 发布配置。
 
 本次修复后，自动化范围内没有阻断上线的问题。仍有两类只能由真实使用者完成的验收：两位所有者各自账号打开同一个私有文件；两台真实 iPhone/iPad 在弱网、后台恢复与 PWA 升级中的共同编辑。它们列在本文末尾，不能用模拟测试替代。
 
@@ -51,11 +51,11 @@
 ## 发布后人工验收
 
 1. 可乐上传一个新 PDF，金鹿在另一台设备预览、下载；再反向测试一次。
-2. 访客确认看不到文件、美食、待办、行李、支出、随笔和灵感。
+2. 在两台设备确认匿名共享会话均可看到文件、美食、待办、行李、支出、随笔和灵感。
 3. 两台设备分别新增不同待办与美食，4 秒内互相出现；同时修改同一条，确认双方版本不被覆盖并能导出本机备份。
 4. 一台设备断网新增待办，完全关闭再打开 PWA，确认待同步提示和内容仍在；联网后另一台设备可见。
 5. iPhone/iPad 更新到 `lu-travel-v82`，确认首页、底部导航、键盘弹出、文件 viewer 和横竖屏。
 
 ## 发布记录
 
-2026-09-12 已发布 CloudBase HTTP 函数、CloudBase 共享根入口与 `/korea/`、CloudBase 独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。文件预览修复已随 `lu-travel-v81` 发布：Vercel 部署 `dpl_HsqfsgSPGZYZaXGTVmsXdbEDmJpF`，CloudBase webapps 版本 `korea-008`（SUCCESS），Hosting 四个入口文件上传成功。
+2026-09-12 已发布 CloudBase HTTP 云函数、CloudBase 共享根入口与 `/korea/`、CloudBase 独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。匿名共享模式与文件预览修复已随 `lu-travel-v83` 发布：Vercel 部署 `dpl_8Fe7ogkjcJUoQeTtEapozwWV2pvL`，Hosting 四个入口文件上传成功。
