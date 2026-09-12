@@ -47,7 +47,7 @@
 ## 2026-09-11 生产发布
 
 - CloudBase `korea-api` 已更新并确认状态 `Available`、代码结果 `success`。
-- CloudBase 共享根入口与 `/korea/` 已上传 `lu-travel-v83`；独立 webapps 当前仍为 `korea-008`，本次部署接口超时，需稍后重试。
+- CloudBase 共享根入口与 `/korea/` 已上传 `lu-travel-v83`；独立 webapps 已发布 `korea-011`（SUCCESS），使用精简发布包避免原始照片打包超时。
 - Vercel 生产部署 `dpl_CH3Bzm7ZeMJZZoENEeP9EdJm8dHF` 已就绪并绑定 `https://www.jinlu.cloud/`。
 - 三个生产域名的 `index.html`、`sw.js`、`assets/sync-client.js` 与本地发布候选 SHA-256 完全一致。
 - 线上访客浏览器检查：11 页加载无脚本错误，6 个敏感模块入口全部隐藏；5 个入口与 8 个同步 API smoke 全部通过。
