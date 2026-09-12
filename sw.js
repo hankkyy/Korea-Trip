@@ -1,5 +1,5 @@
 // 在璐上 — only public, same-origin application resources belong in offline cache.
-const VERSION = 'lu-travel-v80';
+const VERSION = 'lu-travel-v81';
 const SCOPE_PATH = new URL(self.registration.scope).pathname;
 const CACHE = `${VERSION}:${SCOPE_PATH}`;
 const APP_SHELL = SCOPE_PATH === '/korea/' ? '/korea/index.html' : '/';

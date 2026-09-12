@@ -54,8 +54,8 @@
 2. 访客确认看不到文件、美食、待办、行李、支出、随笔和灵感。
 3. 两台设备分别新增不同待办与美食，4 秒内互相出现；同时修改同一条，确认双方版本不被覆盖并能导出本机备份。
 4. 一台设备断网新增待办，完全关闭再打开 PWA，确认待同步提示和内容仍在；联网后另一台设备可见。
-5. iPhone/iPad 更新到 `lu-travel-v80`，确认首页、底部导航、键盘弹出、文件 viewer 和横竖屏。
+5. iPhone/iPad 更新到 `lu-travel-v81`，确认首页、底部导航、键盘弹出、文件 viewer 和横竖屏。
 
 ## 发布记录
 
-2026-09-12 已发布 CloudBase HTTP 函数、CloudBase 共享根入口与 `/korea/`、CloudBase 独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。本轮 UI 精修已随 `lu-travel-v80` 发布：Vercel 部署 `dpl_CH3Bzm7ZeMJZZoENEeP9EdJm8dHF`，CloudBase webapps 版本 `korea-008`（SUCCESS），Hosting 四个入口文件上传成功。
+2026-09-12 已发布 CloudBase HTTP 函数、CloudBase 共享根入口与 `/korea/`、CloudBase 独立 `webapps` 镜像，以及 Vercel `www.jinlu.cloud`。文件预览修复已随 `lu-travel-v81` 发布：Vercel 部署 `dpl_HsqfsgSPGZYZaXGTVmsXdbEDmJpF`，CloudBase webapps 版本 `korea-008`（SUCCESS），Hosting 四个入口文件上传成功。

@@ -6428,6 +6428,7 @@ function fileCardIcon(doc) {
 }
 let activeDocViewer = null;
 let docImageScale = 1;
+let docViewerObjectUrl = null;
 const privateUrlCache = new Map();
 function setDocImageScale(value) {
   docImageScale = Math.min(3, Math.max(.5, value));
@@ -6481,6 +6482,7 @@ async function openDocViewer(doc) {
   const empty = $('#docViewerEmpty');
   if (!viewer || !backdrop || !image || !frame || !empty) return;
   activeDocViewer = doc;
+  if (docViewerObjectUrl) { URL.revokeObjectURL(docViewerObjectUrl); docViewerObjectUrl = null; }
   let url;
   let previewImages;
   try {
@@ -6512,7 +6514,25 @@ async function openDocViewer(doc) {
     image.src = url;
     image.alt = doc.title || doc.attachmentName || '文件附件';
   } else if (!hasPagePreview && isPreviewable) {
+    // Signed CloudBase URLs may send Content-Disposition: attachment. Fetching
+    // into a blob gives the embedded viewer an inline object URL and prevents
+    // Safari/Chrome from downloading the PDF when the user only wants to view it.
     frame.src = url;
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const response = await fetch(url, { cache: 'no-store', signal: controller.signal });
+      clearTimeout(timeout);
+      if (!response.ok) throw new Error(`文件读取失败（${response.status}）`);
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType && !/application\/pdf|text\//i.test(contentType)) return;
+      const blob = await response.blob();
+      if (activeDocViewer !== doc) return;
+      docViewerObjectUrl = URL.createObjectURL(blob);
+      frame.src = docViewerObjectUrl;
+    } catch {
+      // Keep the direct URL fallback for browsers that block cross-origin reads.
+    }
   }
   $('#docViewerTitle').textContent = doc.title || doc.attachmentName || '文件预览';
   backdrop.classList.add('open');
@@ -6531,6 +6551,7 @@ function closeDocViewer() {
   $('#docViewerImg')?.style.removeProperty('max-height');
   $('#docViewerZoom')?.style.removeProperty('display');
   $('#docViewerFrame')?.removeAttribute('src');
+  if (docViewerObjectUrl) { URL.revokeObjectURL(docViewerObjectUrl); docViewerObjectUrl = null; }
   activeDocViewer = null;
 }
 async function openDocInNewWindow(doc) {

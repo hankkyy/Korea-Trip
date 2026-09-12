@@ -1,7 +1,7 @@
 # 项目实际状态与迭代路线
 
 更新时间：2026-09-12
-实现基线：`d2da522`（UI 精修已发布）；前端缓存版本：`lu-travel-v80`
+实现基线：`d2da522`（UI 精修已发布）；前端缓存版本：`lu-travel-v81`
 
 本文件记录可验证的当前状态。`已发布` 不等于所有设备均已更新，`自动化通过` 不等于真实设备无 bug，`本机可见` 不等于云端已确认。
 
@@ -47,7 +47,7 @@
 ## 2026-09-11 生产发布
 
 - CloudBase `korea-api` 已更新并确认状态 `Available`、代码结果 `success`。
-- CloudBase 共享根入口、`/korea/` 镜像和独立 `webapps` 镜像均已更新到 `lu-travel-v80`；独立 webapps 最新版本为 `korea-008`（SUCCESS）。
+- CloudBase 共享根入口、`/korea/` 镜像和独立 `webapps` 镜像均已更新到 `lu-travel-v81`；独立 webapps 最新版本为 `korea-008`（SUCCESS）。
 - Vercel 生产部署 `dpl_CH3Bzm7ZeMJZZoENEeP9EdJm8dHF` 已就绪并绑定 `https://www.jinlu.cloud/`。
 - 三个生产域名的 `index.html`、`sw.js`、`assets/sync-client.js` 与本地发布候选 SHA-256 完全一致。
 - 线上访客浏览器检查：11 页加载无脚本错误，6 个敏感模块入口全部隐藏；5 个入口与 8 个同步 API smoke 全部通过。
