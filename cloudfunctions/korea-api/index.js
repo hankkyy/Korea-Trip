@@ -85,7 +85,10 @@ function callerFromRequest(req) {
     const payload = JSON.parse(Buffer.from(token.split('.')[1] || '', 'base64url').toString('utf8'));
     const uid = String(payload.sub || payload.uid || '');
     if (!uid || !Number.isFinite(payload.exp) || payload.exp * 1000 <= Date.now()) throw new Error('expired or missing uid');
-    return { uid, role: OWNER_USER_IDS.has(uid) ? 'owner' : 'visitor' };
+    // This is a shared trip workspace without account switching. CloudBase
+    // still verifies the bearer token, while every authenticated session may
+    // read and edit the shared trip data.
+    return { uid, role: 'owner' };
   } catch {}
   throw Object.assign(new Error('请先登录后再访问旅行资料'), { status: 401 });
 }

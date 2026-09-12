@@ -1751,7 +1751,7 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
 </style>
 </head>
 <body class="auth-pending">
-<section id="authGate" class="auth-gate" aria-label="登录">
+<section id="authGate" class="auth-gate" aria-label="登录" hidden>
   <div class="auth-gate-copy"><small>KOREA TRIP JOURNAL</small><strong>在璐上</strong><p>可乐与金鹿的旅行资料。登录后，修改会在你们的设备之间安全同步。</p></div>
   <form id="authForm" class="auth-card">
     <h1>欢迎回来</h1>
@@ -2514,7 +2514,6 @@ body.visitor-mode #inspirationCollectBtn,body.visitor-mode .inspiration-capture{
   <div class="list-toolbar">
     <button id="tripExportBtn" type="button" class="list-add-btn">导出备份</button>
     <button type="button" class="list-add-btn" onclick="recoverSyncConflicts()">备份后读取最新版本</button>
-    <button id="authLogoutBtn" type="button" class="list-add-btn">退出账号</button>
   </div>
 </div>
 
@@ -2741,7 +2740,9 @@ function ownerOnly(message = '访客只能查看旅行资料，不能修改内�
 }
 function applyAccessRole(session) {
   currentUserId = String(session?.user?.id || '');
-  accessRole = session?.user?.is_anonymous || !OWNER_UIDS.has(currentUserId) ? 'visitor' : 'owner';
+  // The app is a shared trip workspace without account switching. Every
+  // authenticated anonymous session has the same editing capabilities.
+  accessRole = 'owner';
   document.body.classList.toggle('visitor-mode', isVisitor());
 }
 function revealAuthenticatedApp(session) {
@@ -2838,8 +2839,13 @@ function initAuthentication() {
     } catch (error) { errorEl.textContent = error?.message || '访客入口暂不可用，请稍后重试。'; }
     finally { visitorSubmit.disabled = false; }
   });
-  currentAuthSession().then((session) => {
-    if (session && (!session.user?.is_anonymous || sessionStorage.getItem(VISITOR_SESSION_KEY) === '1')) revealAuthenticatedApp(session);
+  currentAuthSession().then(async (session) => {
+    if (!session) {
+      const { error } = await cloudAuth.signInAnonymously();
+      if (error) throw error;
+      session = await currentAuthSession();
+    }
+    if (session) revealAuthenticatedApp(session);
   }).catch((error) => { errorEl.textContent = error?.message || '登录状态读取失败。'; });
 }
 initAuthentication();
