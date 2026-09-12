@@ -123,7 +123,10 @@ const server = http.createServer(async (req, res) => {
 
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
-    const route = url.pathname;
+    // CloudBase's HTTP gateway may append a trailing slash to POST paths even
+    // when the browser requested `/todos`. Normalize both forms so reads and
+    // writes always reach the same versioned collection route.
+    const route = url.pathname.replace(/\/+$/, '') || '/';
     const tripId = tripIdFromUrl(url);
     if (route === '/files/upload' && req.method === 'POST') {
       return json(res, await fileService.upload(await readBody(req), tripId));
